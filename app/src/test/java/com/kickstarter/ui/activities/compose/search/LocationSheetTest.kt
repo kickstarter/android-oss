@@ -39,7 +39,11 @@ class LocationSheetTest : KSRobolectricTestCase() {
             object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
-                    term: String?
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
                 ): Result<List<Location>> {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
@@ -87,7 +91,11 @@ class LocationSheetTest : KSRobolectricTestCase() {
             object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
-                    term: String?
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
                 ): Result<List<Location>> {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
@@ -132,7 +140,11 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 object : MockApolloClientV2() {
                     override suspend fun getLocations(
                         useDefault: Boolean,
-                        term: String?
+                        term: String?,
+                        lat: Float?,
+                        long: Float?,
+                        radius: Float?,
+                        filterByCoordinates: Boolean?
                     ): Result<List<Location>> {
                         return if (term?.contains("mexico", ignoreCase = true) == true) {
                             Result.success(listOf(LocationFactory.mexico()))
@@ -184,7 +196,11 @@ class LocationSheetTest : KSRobolectricTestCase() {
             object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
-                    term: String?
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
                 ): Result<List<Location>> {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }

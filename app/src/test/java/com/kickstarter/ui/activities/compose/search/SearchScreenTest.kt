@@ -337,8 +337,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, _ -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount, _ ->
+                    onApply = { state, category, _, _ -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, _, _ ->
                         selectedCounts.add(
                             statusCount to categoryCount
                         )
@@ -394,15 +394,17 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     categories = categories,
                     currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, bucket ->
+                    onApply = { state, category, bucket, location ->
                         appliedFilters.add(state)
                         appliedFilters.add(category)
                         appliedFilters.add(bucket)
+                        appliedFilters.add(location)
                     },
-                    updateSelectedCounts = { statusCount, categoryCount, bucket ->
+                    updateSelectedCounts = { statusCount, categoryCount, bucket, location ->
                         selectedCounts.add(statusCount)
                         selectedCounts.add(categoryCount)
                         selectedCounts.add(bucket)
+                        appliedFilters.add(location)
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,
@@ -446,8 +448,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { },
-                    onApply = { _, _, _ -> },
-                    updateSelectedCounts = { _, _, _ ->
+                    onApply = { _, _, _, _ -> },
+                    updateSelectedCounts = { _, _, _, _ ->
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,
@@ -481,8 +483,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { },
-                    onApply = { _, _, _ -> },
-                    updateSelectedCounts = { _, _, _ ->
+                    onApply = { _, _, _, _ -> },
+                    updateSelectedCounts = { _, _, _, _ ->
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,

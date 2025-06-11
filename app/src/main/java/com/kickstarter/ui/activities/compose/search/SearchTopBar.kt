@@ -305,10 +305,9 @@ fun PillBar(
         val activeFilters: Int =
             selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) +
-                if (shouldShowPhase) selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.PERCENTAGE_RAISED.name,
-                    0
-                ) else 0
+                selectedFilterCounts.getOrDefault(FilterRowPillType.PERCENTAGE_RAISED.name, 0) +
+                if (shouldShowPhase) selectedFilterCounts.getOrDefault(FilterRowPillType.LOCATION.name, 0)
+                else 0
 
         KSIconPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),

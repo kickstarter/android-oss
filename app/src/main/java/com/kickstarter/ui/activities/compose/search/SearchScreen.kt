@@ -484,8 +484,10 @@ fun FilterPagerSheet(
     val category = remember { mutableStateOf(currentCategory) }
     val projectState = remember { mutableStateOf(selectedProjectStatus) }
     val bucket = remember { mutableStateOf(currentPercentage) }
-    val currentStateLocation = remember { mutableStateOf(currentLocation) }
+    val location = remember { mutableStateOf(currentLocation) }
 
+    // - In case de bottomSheet is dismissed without the user pressing
+    // - see results button, should return to default states
     LaunchedEffect(!sheetState.isVisible) {
         coroutineScope.launch {
             if (currentCategory != category.value) {
@@ -500,8 +502,8 @@ fun FilterPagerSheet(
                 bucket.value = currentPercentage
             }
 
-            if (currentLocation != currentStateLocation.value) {
-                currentStateLocation.value = currentLocation
+            if (currentLocation != location.value) {
+                location.value = currentLocation
             }
         }
     }
@@ -533,7 +535,7 @@ fun FilterPagerSheet(
                             projectState = projectState.value,
                             category = category.value,
                             bucket = bucket.value,
-                            location = currentStateLocation.value,
+                            location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -577,7 +579,7 @@ fun FilterPagerSheet(
                             projectState = projectState.value,
                             category = category.value,
                             bucket = bucket.value,
-                            location = currentStateLocation.value,
+                            location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -592,15 +594,15 @@ fun FilterPagerSheet(
                     coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
                 },
                 onDismiss = onDismiss,
-                onApply = { location, applyAndDismiss ->
-                    currentStateLocation.value = location
+                onApply = { selLocation, applyAndDismiss ->
+                    location.value = selLocation
                     if (applyAndDismiss != null) {
                         applyUserSelection(
                             onApply = onApply,
                             projectState = projectState.value,
                             category = category.value,
                             bucket = bucket.value,
-                            location = currentStateLocation.value,
+                            location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -622,7 +624,7 @@ fun FilterPagerSheet(
                             projectState = projectState.value,
                             category = category.value,
                             bucket = bucket.value,
-                            location = currentStateLocation.value,
+                            location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -748,6 +750,7 @@ private fun sheetContent(
                     selectedProjectStatus = currentProjectState.value,
                     currentCategory = currentCategory.value,
                     currentPercentage = currentPercentage.value,
+                    currentLocation = currentLocation.value,
                     categories = categories,
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }

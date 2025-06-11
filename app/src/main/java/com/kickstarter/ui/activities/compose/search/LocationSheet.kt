@@ -314,12 +314,13 @@ fun LocationSheet(
                 }
 
                 KSSearchBottomSheetFooter(
-                    leftButtonIsEnabled = false,
+                    leftButtonIsEnabled = currentLocation.value.isNotNull(),
                     leftButtonClickAction = {
                         currentLocation.value = null
                         inputValue.value = ""
                         onApply(currentLocation.value, false)
                     },
+                    rightButtonIsEnabled = currentLocation.value.isNotNull(),
                     rightButtonOnClickAction = {
                         onApply(currentLocation.value, true)
                     }

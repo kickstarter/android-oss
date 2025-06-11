@@ -6,6 +6,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -271,7 +272,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -305,10 +306,11 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.term(), null)
         assertEquals(params?.state(), null)
         assertEquals(params?.raisedBucket(), null)
+        assertEquals(params?.location(), null)
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, load two pages`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val secondPageList = listOf(ProjectFactory.caProject(), ProjectFactory.mxProject())
@@ -356,7 +358,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching a tem with category, sorting, projectStatus and percentage raised, load two pages`() = runTest {
+    fun `test for searching a tem with category, sorting, projectStatus, percentage raised and location, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
 
@@ -391,7 +393,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                 CategoryFactory.gamesCategory(),
                 DiscoveryParams.Sort.MOST_FUNDED,
                 DiscoveryParams.State.LIVE,
-                DiscoveryParams.RaisedBuckets.BUCKET_2
+                DiscoveryParams.RaisedBuckets.BUCKET_2,
+                LocationFactory.vancouver()
             )
             viewModel.updateSearchTerm("cats")
             viewModel.loadMore()
@@ -404,6 +407,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.term(), "cats")
         assertEquals(params?.state(), DiscoveryParams.State.LIVE)
         assertEquals(params?.raisedBucket(), DiscoveryParams.RaisedBuckets.BUCKET_2)
+        assertEquals(params?.location(), LocationFactory.vancouver())
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
         assertEquals(errorNumber, 0)

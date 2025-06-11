@@ -26,6 +26,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertThat
 import org.junit.Test
 
 class LocationSheetTest : KSRobolectricTestCase() {
@@ -296,4 +297,43 @@ class LocationSheetTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(INPUT_SEARCH)
             .assertTextContains(LocationFactory.mexico().displayableName())
     }
+
+    @Test
+    fun `Debounce reduce number of API calls`() = runTest {
+        var callCount = 0
+
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
+                ): Result<List<Location>> {
+                    callCount++
+                    return Result.success(emptyList())
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet()
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("M")
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("Me")
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("Mex")
+
+        advanceUntilIdle() // wait for debounce
+
+        assertNotSame(callCount,3)
+    }
+
 }

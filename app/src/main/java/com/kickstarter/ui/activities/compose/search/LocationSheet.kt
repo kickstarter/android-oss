@@ -106,7 +106,7 @@ fun LocationSheetPreview() {
             }
         }
     ).build()
-    val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+    val fakeViewModel = FilterMenuViewModel(env)
 
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {

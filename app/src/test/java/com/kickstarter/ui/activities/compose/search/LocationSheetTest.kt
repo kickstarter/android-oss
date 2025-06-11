@@ -49,7 +49,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {
@@ -101,7 +101,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {
@@ -155,7 +155,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             ).build()
 
-            val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+            val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
             composeTestRule.setContent {
                 KSTheme {
@@ -206,7 +206,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {
@@ -273,7 +273,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+        val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
         composeTestRule.setContent {
             KSTheme {
@@ -316,7 +316,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+        val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
         composeTestRule.setContent {
             KSTheme {
@@ -354,7 +354,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {

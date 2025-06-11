@@ -7,7 +7,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,8 +33,7 @@ data class LocationsUIState(
 
 open class FilterMenuViewModel(
     private val environment: Environment,
-    private val testDispatcher: CoroutineDispatcher? = null,
-    private val isInPreview: Boolean = false
+    private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
@@ -67,13 +65,11 @@ open class FilterMenuViewModel(
     private var nearbyLocations = emptyList<Location>()
     private var suggestedLocations = emptyList<Location>()
 
-    private lateinit var searchJob: Job
-
     init {
         scope.launch {
             getLocations(default = true)
 
-            searchJob = scope.launch {
+            scope.launch {
                 _searchQuery
                     .debounce(300L)
                     .distinctUntilChanged()

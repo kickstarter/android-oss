@@ -7,7 +7,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
@@ -671,28 +670,28 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             viewModelScope.launch {
-                currentUser.observable()
-                    .asFlow()
-                    .combine(currentProjectData.asFlow()) { user, projectData ->
-                        if (user.isPresent()) {
-                            val deeplink = projectData.fullDeeplink()
-                            val token = deeplink?.takeIf { it.hasSecretRewardToken() }?.secretRewardToken()
-                            token?.let { Pair(projectData.project(), token) }
-                        } else {
-                            null
+                runCatching {
+                    currentUser.observable()
+                        .asFlow()
+                        .combine(currentProjectData.asFlow()) { user, projectData ->
+                            if (user.isPresent()) {
+                                val deeplink = projectData.fullDeeplink()
+                                val token = deeplink?.takeIf { it.hasSecretRewardToken() }
+                                    ?.secretRewardToken()
+                                token?.let { Pair(projectData.project(), token) }
+                            } else {
+                                null
+                            }
                         }
-                    }
-                    .filterNotNull().take(1)
-                    .distinctUntilChanged()
-                    .collectLatest { pair ->
-                        val project = pair.first
-                        val token = pair.second
-                        try {
-                            environment.apolloClientV2()?.addUserToSecretRewardGroup(project, token)
-                        } catch (e: Exception) {
-                            FirebaseCrashlytics.getInstance().recordException(e)
+                        .filterNotNull()
+                        .take(1)
+                        .distinctUntilChanged()
+                        .collectLatest { pair ->
+                            val project = pair.first
+                            val token = pair.second
+                            apolloClient.addUserToSecretRewardGroup(project, token)
                         }
-                    }
+                }
             }
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))

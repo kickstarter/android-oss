@@ -286,10 +286,15 @@ fun LocationSheet(
                         defaultLocations = defaultLocations,
                         currentLocation = selectedLocation,
                         onclickCallback = { locationClicked ->
-                            currentLocation.value = locationClicked
-                            inputValue.value = locationClicked?.displayableName() ?: ""
-                            locationClicked?.displayableName()?.let {
-                                viewModel.updateQuery(locationClicked.displayableName())
+                            if (locationClicked.isNotNull()) {
+                                currentLocation.value = locationClicked
+                                inputValue.value = locationClicked?.displayableName() ?: ""
+                                locationClicked?.displayableName()?.let {
+                                    viewModel.updateQuery(locationClicked.displayableName())
+                                }
+                            } else {
+                                currentLocation.value = null
+                                inputValue.value = ""
                             }
                         }
                     )
@@ -504,7 +509,7 @@ private fun DefaultLocationComposable(
                             bottom = dimensions.paddingMediumSmall
                         )
                         .clickable {
-                            onclickCallback(location)
+                            onclickCallback(null)
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),

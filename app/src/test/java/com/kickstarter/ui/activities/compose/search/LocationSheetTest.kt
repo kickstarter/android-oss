@@ -252,4 +252,48 @@ class LocationSheetTest : KSRobolectricTestCase() {
             .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
             .isDisplayed() // Default locations visible after input cancel button
     }
+
+    @Test
+    fun `Selecting a suggested location updates input`() = runTest {
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
+                ): Result<List<Location>> {
+                    return if (term?.contains("mexico", ignoreCase = true) == true) {
+                        Result.success(listOf(LocationFactory.mexico()))
+                    } else {
+                        Result.success(emptyList())
+                    }
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet()
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("Mexico")
+        advanceUntilIdle()
+
+        val mexicoTag = LocationTestTags.locationTag(LocationFactory.mexico())
+
+        composeTestRule.onNodeWithTag(mexicoTag).performClick()
+
+        composeTestRule.onNodeWithTag(SUGGESTED_LOCATIONS_LIST)
+            .assertExists()
+
+        composeTestRule.onNodeWithTag(INPUT_SEARCH)
+            .assertTextContains(LocationFactory.mexico().displayableName())
+    }
 }

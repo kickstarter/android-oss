@@ -2410,13 +2410,26 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     @Test
     fun addUserToSecretRewardGroup_isCalled_whenDeeplinkContainsSecretToken() {
         val secretToken = "secret_123"
+        val user = UserFactory.user()
+        val currentUserMock = MockCurrentUserV2(user)
         val deeplinkUri = Uri.parse("https://www.kickstarter.com/projects/cool-project?secret_reward_token=$secretToken")
         val project = ProjectFactory.project()
         val capturedProject = slot<Project>()
         val capturedToken = slot<String>()
+        var timesCalled = 0
+        val mockedApollo = object : MockApolloClientV2() {
+            override suspend fun addUserToSecretRewardGroup(
+                project: Project,
+                secretRewardToken: String
+            ): Result<Project> {
+                timesCalled ++
+                return Result.success(project)
+            }
+        }
 
-        val mockApolloClient = spyk(MockApolloClientV2(), recordPrivateCalls = true)
+        val mockApolloClient = spyk(mockedApollo, recordPrivateCalls = true)
         val environment = environment().toBuilder()
+            .currentUserV2(currentUserMock)
             .apolloClientV2(mockApolloClient)
             .build()
 
@@ -2433,6 +2446,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             mockApolloClient.addUserToSecretRewardGroup(capture(capturedProject), capture(capturedToken))
         }
 
+        assertTrue(timesCalled == 1)
         assertEquals(secretToken, capturedToken.captured)
     }
 

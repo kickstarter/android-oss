@@ -70,8 +70,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 import java.math.RoundingMode
@@ -376,6 +378,7 @@ interface ProjectPageViewModel {
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
         private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -668,18 +671,25 @@ interface ProjectPageViewModel {
 
             viewModelScope.launch {
                 runCatching {
-                    currentProjectData
+                    currentUser.observable()
                         .asFlow()
-                        .mapNotNull { data ->
-                            val deeplink = data.fullDeeplink()
-                            val token = deeplink?.takeIf { it.hasSecretRewardToken() }?.secretRewardToken()
-                            token?.let { Pair(data.project(), it) }
+                        .combine(currentProjectData.asFlow()) { user, projectData ->
+                            if (user.isPresent()) {
+                                val deeplink = projectData.fullDeeplink()
+                                val token = deeplink?.takeIf { it.hasSecretRewardToken() }
+                                    ?.secretRewardToken()
+                                token?.let { Pair(projectData.project(), token) }
+                            } else {
+                                null
+                            }
                         }
+                        .filterNotNull()
+                        .take(1)
                         .distinctUntilChanged()
                         .collectLatest { pair ->
                             val project = pair.first
                             val token = pair.second
-                            environment.apolloClientV2()?.addUserToSecretRewardGroup(project, token)
+                            apolloClient.addUserToSecretRewardGroup(project, token)
                         }
                 }
             }

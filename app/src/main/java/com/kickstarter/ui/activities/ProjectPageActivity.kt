@@ -669,7 +669,15 @@ class ProjectPageActivity :
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
-                        onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
+                        onContinueClicked = {
+                            checkoutFlowViewModel.onContinueClicked(
+                                logInCallback = { startLoginToutActivity() },
+                                continueCallback = {
+                                    rewardsSelectionViewModel.provideProjectData(projectData)
+                                    checkoutFlowViewModel.onBackThisProjectClicked()
+                                }
+                            )
+                        },
                         onBackClicked = {
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },

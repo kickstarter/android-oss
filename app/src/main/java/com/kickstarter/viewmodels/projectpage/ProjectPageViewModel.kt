@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.CurrentUserV2
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
@@ -694,7 +693,6 @@ interface ProjectPageViewModel {
                             FirebaseCrashlytics.getInstance().recordException(e)
                         }
                     }
-
             }
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))

@@ -87,7 +87,7 @@ type Query {
   """
   Searches locations.
   """
-  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean): LocationsConnection
+  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): LocationsConnection
 
   """
   You.
@@ -124,7 +124,7 @@ type Query {
   """
   Get some projects
   """
-  projects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Get projects backed by the current user." backed: Boolean, "Get projects where the current user is a collaborator." collaborated: Boolean, "Get projects in only this category." categoryId: String, "Get projects created by the current user." created: Boolean, "Get projects with a USD goal amount in this bucket." goal: GoalBuckets, "Get projects from this location." locationId: ID, "Get projects with a USD pledged amount in this bucket." pledged: PledgedBuckets, "Get projects with a raised percent in this bucket." raised: RaisedBuckets, "Get projects recommended for the current user." recommended: Boolean, "The recommendations models to use" recommendationsModels: [RecommendationsModel!], "The source for recommendations." recommendationsSource: [RecommendationsSource!], "Seed for ordering the projects" seed: Int, "Find projects similar to the given project by pid." similarToPid: String, "Find projects similar to the given project term." similarTo: String, "The sort order for returned projects." sort: ProjectSort, "Get project selected as staff picks." staffPicks: Boolean, "Get projects starred by the current user." starred: Boolean, "Get projects with this state." state: PublicProjectState, "Get projects with this tag." tagId: Int, "Project search term." term: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Get projects with deadlines after this date" deadlineAfter: DateTime, "Get projects with deadlines before this date" deadlineBefore: DateTime): ProjectsConnectionWithTotalCount
+  projects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Get projects backed by the current user." backed: Boolean, "Get projects where the current user is a collaborator." collaborated: Boolean, "Get projects in only this category." categoryId: String, "Get projects created by the current user." created: Boolean, "Get projects with a USD goal amount in this bucket." goal: GoalBuckets, "Get projects from this location." locationId: ID, "Get projects with a USD pledged amount in this bucket." pledged: PledgedBuckets, "Get projects with a raised percent in this bucket." raised: RaisedBuckets, "Get projects recommended for the current user." recommended: Boolean, "The recommendations models to use" recommendationsModels: [RecommendationsModel!], "The source for recommendations." recommendationsSource: [RecommendationsSource!], "Seed for ordering the projects" seed: Int, "Find projects similar to the given project by pid." similarToPid: String, "Find projects similar to the given project term." similarTo: String, "The sort order for returned projects." sort: ProjectSort, "Get project selected as staff picks." staffPicks: Boolean, "Get projects starred by the current user." starred: Boolean, "Get projects with this state." state: PublicProjectState, "Get projects with this tag." tagId: Int, "Project search term." term: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Get projects with deadlines after this date" deadlineAfter: DateTime, "Get projects with deadlines before this date" deadlineBefore: DateTime, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): ProjectsConnectionWithTotalCount
 
   """
   Editorialized quiz projects for the taste profile quiz.
@@ -178,6 +178,8 @@ type Query {
   """
   tags("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Scoped to a provided scope" scope: TagScope!): TagsConnection
 
+  trackBackgroundJobProgress(jobName: String!, projectId: ID!): BackgroundJobProgress!
+
   """
   Fetches a project update given its ID.
   """
@@ -192,6 +194,11 @@ type Query {
   How USD currencies should be rendered, based on user's location
   """
   usdType: UsdType
+
+  """
+  Validates a digital resource CSV file
+  """
+  validateDigitalResourceCsv(s3Key: String!, projectId: ID!, searchQuery: JSON): ValidateDigitalResource!
 
   """
   Countries that are visible to the current user. This may include countries that cannot launch projects.
@@ -242,6 +249,11 @@ type User implements Node {
   Projects a user has backed.
   """
   backedProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackedProjectsConnection
+
+  """
+  Projects a user has backed, including finalized dummy backings
+  """
+  backedProjectsWithDummy("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackedProjectsConnection
 
   """
   Count of pledges with pending action
@@ -806,10 +818,6 @@ enum Feature {
 
   pledge_projects_overview_ios_2024
 
-  copy_rewards
-
-  survey_reward_questions_2024
-
   prelaunch_story_editor
 
   prelaunch_story_exception
@@ -838,8 +846,6 @@ enum Feature {
 
   discover_ui_2025
 
-  pledge_management_beta
-
   pledge_management_reward_setup
 
   creator_experience_2025
@@ -852,33 +858,25 @@ enum Feature {
 
   creator_tab_2025
 
-  weight_based_shipping_2025
-
   show_creative_download_2024_report_in_nav
 
   recent_searches_2025
 
-  pledge_management_self_launch_2025
-
   project_classifiers_2025
 
-  pledge_management_backer_report
-
-  improved_tax_code_collection_2025
-
-  pledge_upgrade_2025
+  backer_report_tracking_numbers_2025
 
   pledge_over_time_ga_2025
 
-  pm_open_beta_v1_2025
+  pledge_over_time_monthly_cadence_2025
 
   remove_event_sourcing_2025
 
   digital_rewards_2025
 
-  new_pm_backers_2025
+  digital_rewards__upload_button_2025
 
-  tariff_manager_contact_form_2025
+  pm_pledge_shipping_supported_2025
 }
 
 """
@@ -1339,7 +1337,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Filter by whether the backer is a late pledge" isLatePledge: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!]): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Filter by whether the backer is a late pledge" isLatePledge: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by pledge manager backer" isPledgeManagerBacker: Boolean): JSON
 
   """
   Backer survey for the project
@@ -1626,6 +1624,16 @@ type Project implements Node & Commentable {
   """
   hasSupportingMaterials: Boolean!
 
+  """
+  Whether the project still has backings in "pledged" or "errored" state
+  """
+  hasUnresolvedBackings: Boolean!
+
+  """
+  Whether the project has incremental pledges enabled
+  """
+  hasUnresolvedIncrementalPledges: Boolean!
+
   id: ID!
 
   """
@@ -1752,6 +1760,11 @@ type Project implements Node & Commentable {
   The max pledge amount for a single reward tier.
   """
   maxPledge: Int!
+
+  """
+  Whether the project meets the criteria to use pledge manager
+  """
+  meetsPledgeManagerUsageCriteria: Boolean!
 
   """
   Whether or not the project has met KYC requirement
@@ -2081,6 +2094,11 @@ type Project implements Node & Commentable {
   targetLaunchDateUpdatedAt: ISO8601DateTime
 
   """
+  Whether tariff surcharges are enabled for the project
+  """
+  tariffSurchargesEnabled: Boolean!
+
+  """
   Tax categories configured for the project excluding the non-taxable category
   """
   taxCategories: [TaxCategory!]!
@@ -2371,6 +2389,11 @@ type Backing implements Node {
   amount: Money!
 
   """
+  The amount pledged by the backer, less shipping.
+  """
+  amountLessShipping: Float!
+
+  """
   Add-ons available to be added at Pledge Redemption
   """
   availableCrossSells: [Reward!]!
@@ -2565,7 +2588,7 @@ type Backing implements Node {
   """
   How much the backer paid on their base reward, after refunds
   """
-  remainingTotalOnBackerReward: Money
+  remainingTotalOnBackerReward: Money!
 
   """
   Whether or not a removal request task is marked as nonissue
@@ -5006,12 +5029,17 @@ type Order implements Node {
   """
   The amount refunded for the shipping
   """
-  refundedShippingAmount: Int!
+  refundedShippingAmount: Int
 
   """
   The amount refunded for the total tax
   """
-  refundedTotalTax: Int!
+  refundedTotalTax: Int
+
+  """
+  The remaining cost
+  """
+  remainingCost: Int!
 
   """
   The remaining cost
@@ -5021,12 +5049,22 @@ type Order implements Node {
   """
   The remaining shipping amount
   """
-  remainingShippingAmountFormatted: String!
+  remainingShippingAmount: Int
+
+  """
+  The remaining shipping amount
+  """
+  remainingShippingAmountFormatted: String
 
   """
   The remaining total tax
   """
-  remainingTotalTaxFormatted: String!
+  remainingTotalTax: Int
+
+  """
+  The remaining total tax
+  """
+  remainingTotalTaxFormatted: String
 
   """
   The currently-selected reward upgrade on an order
@@ -5044,7 +5082,7 @@ type Order implements Node {
   shipments: [Shipment!]!
 
   """
-  The cost of shipping
+  The amount of shipping
   """
   shippingAmount: Int
 
@@ -5052,6 +5090,21 @@ type Order implements Node {
   The cost of shipping, formatted
   """
   shippingAmountFormatted: String
+
+  """
+  The amount of shipping before any vouchers
+  """
+  shippingBaseAmountFormatted: String
+
+  """
+  Discount amount for shipping that was already paid
+  """
+  shippingVoucherAmount: Int!
+
+  """
+  Discount amount for shipping that was already paid, formatted
+  """
+  shippingVoucherAmountFormatted: String!
 
   """
   The order's state, e.g. draft, collected, dropped, etc.
@@ -5186,11 +5239,6 @@ type OrderOrderable {
   remainingCostFormatted: String!
 
   """
-  Whether the reward is voucher
-  """
-  voucher: Boolean!
-
-  """
   The amount of the voucher
   """
   voucherAmount: Int!
@@ -5250,9 +5298,9 @@ A shipment included in an Order.
 """
 type Shipment {
   """
-  The amount charged for shipping this shipment.
+  The cost of this shipment. This is the total amount charged for shipping (base amount), minus the amount charged at pledge (voucher amount).
   """
-  amount: Int!
+  cost: Int!
 
   id: ID!
 
@@ -5755,6 +5803,11 @@ type RefundAdjustmentData {
   Whether the adjustment was successfully refunded
   """
   success: Boolean!
+
+  """
+  The adjustment details for the surcharge
+  """
+  surcharge: String
 
   """
   The adjustment details for the sales tax
@@ -9254,6 +9307,11 @@ type PledgeManager {
   project: Project!
 
   """
+  The user assigned to review this pledge manager
+  """
+  reviewer: User
+
+  """
   The pledge manager's state, e.g. draft, submitted, approved, denied, etc.
   """
   state: PledgeManagerStateEnum!
@@ -12035,6 +12093,42 @@ type SavedSearchSegment implements Node {
 }
 
 """
+Validates a digital resource CSV file
+"""
+type ValidateDigitalResource {
+  """
+  List of duplicate resources
+  """
+  duplicateResources: [String!]!
+
+  """
+  List of used resources
+  """
+  usedResources: [String!]!
+
+  """
+  Are there enough provide resources for the selected amount of backings
+  """
+  valid: Boolean!
+
+  """
+  Count of resources that can be imported
+  """
+  validResources: Int!
+}
+
+"""
+Progress of tracking number processing
+"""
+type BackgroundJobProgress {
+  completed: Int!
+
+  status: String!
+
+  total: Int!
+}
+
+"""
 The mutation root of the Kickstarter GraphQL interface
 """
 type Mutation {
@@ -12054,6 +12148,11 @@ type Mutation {
   activatePrelaunch(input: ActivateProjectPrelaunchInput!): ActivateProjectPrelaunchPayload
 
   """
+  Adds a user to a secret reward user group
+  """
+  addUserToSecretRewardGroup(input: AddUserToSecretRewardGroupInput!): AddUserToSecretRewardGroupPayload
+
+  """
   Updates the toggle-able options of the spreadsheet graph
   """
   answerProjectFeedbackQuestion(input: AnswerProjectFeedbackQuestionInput!): AnswerProjectFeedbackQuestionPayload
@@ -12062,6 +12161,11 @@ type Mutation {
   Given a checkout that already exists, this mutation just applies a specific payment source to its backing. That's it! If you need to create a checkout and backing from scratch, use CreateBackingType.
   """
   applyPaymentSourceToCheckout(input: ApplyPaymentSourceToCheckoutInput!): ApplyPaymentSourceToCheckoutPayload
+
+  """
+  Assigns a user to review a pledge manager. If not given any optional parameters, will assign the pledge manager to the current logged-in user
+  """
+  assignPledgeManager(input: AssignPledgeManagerInput!): AssignPledgeManagerPayload
 
   """
   Batch updates addresses for users's active survey responses
@@ -12517,6 +12621,11 @@ type Mutation {
   postIncludeReward(input: PostIncludeRewardInput!): PostIncludeRewardPayload
 
   """
+  Distribute digital access resources from csv upload
+  """
+  processDigitalResourcesCsv(input: ProcessDigitalResourcesCsvInput!): ProcessDigitalResourcesCsvPayload
+
+  """
   Processes tracking numbers for a given project
   """
   processTrackingNumbers(input: ProcessTrackingNumbersInput!): ProcessTrackingNumbersPayload
@@ -12552,6 +12661,11 @@ type Mutation {
   Reset a backer survey
   """
   resetBackerSurvey(input: ResetBackerSurveyInput!): ResetBackerSurveyPayload
+
+  """
+  Reverts a pledge manager to draft state
+  """
+  revertPledgeManagerToDraft(input: RevertPledgeManagerToDraftInput!): RevertPledgeManagerToDraftPayload
 
   """
   Sets pledge manager state to approved or denied based on outcome of review
@@ -14989,6 +15103,10 @@ input SetBackingFulfillmentStatusesInput {
   pledgeRedemptionState: [String!]
 
   actionsTaken: [String!]
+
+  pledgeOverTime: [Boolean!]
+
+  isPledgeManagerBacker: Boolean
 
   """
   A unique identifier for the client performing the mutation.
@@ -17572,6 +17690,62 @@ input ReviewPledgeManagerInput {
 }
 
 """
+Autogenerated return type of RevertPledgeManagerToDraft
+"""
+type RevertPledgeManagerToDraftPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project!
+}
+
+"""
+Autogenerated input type of RevertPledgeManagerToDraft
+"""
+input RevertPledgeManagerToDraftInput {
+  """
+  The pledge manager id
+  """
+  pledgeManagerId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AssignPledgeManager
+"""
+type AssignPledgeManagerPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project!
+}
+
+"""
+Autogenerated input type of AssignPledgeManager
+"""
+input AssignPledgeManagerInput {
+  pledgeManagerId: ID!
+
+  """
+  (optional) assigns a user to a pledge manager to review
+  """
+  userId: ID = null
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of ToggleTariffSurchargesEnabled
 """
 type ToggleTariffSurchargesEnabledPayload {
@@ -18494,6 +18668,8 @@ type ProcessTrackingNumbersPayload {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  project: Project!
 }
 
 """
@@ -18502,7 +18678,37 @@ Autogenerated input type of ProcessTrackingNumbers
 input ProcessTrackingNumbersInput {
   projectId: ID!
 
-  s3Key: [String!]!
+  s3Key: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of ProcessDigitalResourcesCsv
+"""
+type ProcessDigitalResourcesCsvPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project!
+}
+
+"""
+Autogenerated input type of ProcessDigitalResourcesCsv
+"""
+input ProcessDigitalResourcesCsvInput {
+  projectId: ID!
+
+  s3Key: String!
+
+  description: String!
+
+  searchQuery: JSON
 
   """
   A unique identifier for the client performing the mutation.
@@ -19126,6 +19332,41 @@ input UpdateResourceAudienceInput {
 }
 
 """
+Autogenerated return type of AddUserToSecretRewardGroup
+"""
+type AddUserToSecretRewardGroupPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Project data
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of AddUserToSecretRewardGroup
+"""
+input AddUserToSecretRewardGroupInput {
+  """
+  ID of the project with secret rewards
+  """
+  projectId: ID!
+
+  """
+  Secret reward token shared by the creator
+  """
+  secretRewardToken: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of IssueRefund
 """
 type IssueRefundPayload {
@@ -19409,9 +19650,9 @@ input DistributeDigitalAccessResourcesInput {
 
   resources: String!
 
-  backerIds: [ID!]!
+  description: String!
 
-  description: String
+  searchQuery: JSON!
 
   """
   A unique identifier for the client performing the mutation.

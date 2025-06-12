@@ -5,11 +5,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -21,9 +26,16 @@ data class FilterMenuUIState(
     val categoriesList: List<Category> = emptyList()
 )
 
-class FilterMenuViewModel(
+data class LocationsUIState(
+    val isLoading: Boolean = false,
+    val nearLocations: List<Location> = emptyList(),
+    val searchedLocations: List<Location> = emptyList()
+)
+
+open class FilterMenuViewModel(
     private val environment: Environment,
-    private val testDispatcher: CoroutineDispatcher? = null
+    private val testDispatcher: CoroutineDispatcher? = null,
+    private val isInPreview: Boolean = false
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
@@ -40,7 +52,54 @@ class FilterMenuViewModel(
                 initialValue = FilterMenuUIState()
             )
 
+    private val _locations = MutableStateFlow(LocationsUIState())
+    val locationsUIState = _locations
+        .asStateFlow()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = LocationsUIState()
+        )
+
     private var categoriesList = emptyList<Category>()
+
+    private val _searchQuery = MutableStateFlow("")
+    private var nearbyLocations = emptyList<Location>()
+    private var suggestedLocations = emptyList<Location>()
+
+    private lateinit var searchJob: Job
+
+    init {
+        if (isInPreview) {
+            scope.launch {
+                // - This call can potentially be moved to the Activity
+                getLocations(default = true)
+
+                searchJob = scope.launch {
+                    _searchQuery
+                        .debounce(300L)
+                        .distinctUntilChanged()
+                        .collectLatest { query ->
+                            if (query.isNotBlank()) {
+                                getLocations(default = false, term = query)
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    fun cancelLocationSearch() {
+        searchJob.cancel()
+    }
+
+    fun updateQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun clearQuery() {
+        _searchQuery.value = ""
+    }
 
     fun getRootCategories() {
         scope.launch {
@@ -57,6 +116,20 @@ class FilterMenuViewModel(
         }
     }
 
+    private suspend fun getLocations(default: Boolean, term: String? = null) {
+        emitCurrentState(isLoading = true)
+
+        val response = apolloClient.getLocations(useDefault = default, term = term)
+
+        if (response.isSuccess) {
+            if (default) nearbyLocations = response.getOrDefault(emptyList())
+            if (!term.isNullOrEmpty()) suggestedLocations = response.getOrDefault(emptyList())
+        } else
+            errorAction.invoke(response.exceptionOrNull()?.message)
+
+        emitLocationsCurrentState(isLoading = false, nearBy = nearbyLocations, searched = suggestedLocations)
+    }
+
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
     }
@@ -66,6 +139,16 @@ class FilterMenuViewModel(
             FilterMenuUIState(
                 isLoading = isLoading,
                 categoriesList = categoriesList
+            )
+        )
+    }
+
+    private suspend fun emitLocationsCurrentState(isLoading: Boolean = false, nearBy: List<Location>, searched: List<Location>) {
+        _locations.emit(
+            LocationsUIState(
+                isLoading = isLoading,
+                nearLocations = nearBy,
+                searchedLocations = searched
             )
         )
     }

@@ -6,6 +6,7 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
@@ -35,6 +36,7 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
+import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isNonZero
@@ -44,6 +46,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.secretRewardToken
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
@@ -66,6 +69,13 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
@@ -143,6 +153,8 @@ interface ProjectPageViewModel {
         fun onVideoPlayButtonClicked()
 
         fun activityResult(result: ActivityResult)
+
+        fun continuePledgeFlow(callback: () -> Unit)
     }
 
     interface Outputs {
@@ -365,6 +377,7 @@ interface ProjectPageViewModel {
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
+        private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -641,6 +654,7 @@ interface ProjectPageViewModel {
                 .distinctUntilChanged()
                 .subscribe {
                     this.projectData.onNext(it)
+
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(
                         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT,
@@ -655,6 +669,30 @@ interface ProjectPageViewModel {
                 }
                 .addToDisposable(disposables)
 
+            viewModelScope.launch {
+                runCatching {
+                    currentUser.observable()
+                        .asFlow()
+                        .combine(currentProjectData.asFlow()) { user, projectData ->
+                            if (user.isPresent()) {
+                                val deeplink = projectData.fullDeeplink()
+                                val token = deeplink?.takeIf { it.hasSecretRewardToken() }
+                                    ?.secretRewardToken()
+                                token?.let { Pair(projectData.project(), token) }
+                            } else {
+                                null
+                            }
+                        }
+                        .filterNotNull()
+                        .take(1)
+                        .distinctUntilChanged()
+                        .collectLatest { pair ->
+                            val project = pair.first
+                            val token = pair.second
+                            apolloClient.addUserToSecretRewardGroup(project, token)
+                        }
+                }
+            }
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
                 .map {
@@ -779,8 +817,9 @@ interface ProjectPageViewModel {
                             openBackingDetailsWebview.onNext(it)
                         }
                     } else {
-                        // Open native view pledge screen
-                        this.expandPledgeSheet.onNext(Pair(true, true))
+                        this.continuePledgeFlow.onNext {
+                            expandPledgeSheet.onNext(Pair(true, true))
+                        }
                     }
                 }
                 .addToDisposable(disposables)
@@ -1150,6 +1189,25 @@ interface ProjectPageViewModel {
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
+
+            continuePledgeFlow
+                .flatMap { callback ->
+                    currentUser.observable()
+                        .take(1)
+                        .flatMap { user ->
+                            if (user.isPresent()) {
+                                Observable.just(callback)
+                            } else {
+                                startLoginToutActivity.onNext(Unit)
+                                currentUser.observable()
+                                    .filter { it.isPresent() }
+                                    .take(1)
+                                    .map { callback }
+                            }
+                        }
+                }
+                .subscribe { callback -> callback() }
+                .addToDisposable(disposables)
         }
 
         override fun onCleared() {
@@ -1433,6 +1491,10 @@ interface ProjectPageViewModel {
 
         override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
             this.showPledgeRedemptionScreen
+
+        override fun continuePledgeFlow(callback: () -> Unit) {
+            this.continuePledgeFlow.onNext(callback)
+        }
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

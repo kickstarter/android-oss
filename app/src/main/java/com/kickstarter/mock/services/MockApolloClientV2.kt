@@ -359,7 +359,18 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
+    override suspend fun addUserToSecretRewardGroup(
+        project: Project,
+        secretRewardToken: String,
+    ): Result<Project> {
+        return Result.success(project)
+    }
+
     override suspend fun getCategories(): Result<List<Category>> {
+        return Result.success(emptyList())
+    }
+
+    override suspend fun getLocations(useDefault: Boolean, term: String?): Result<List<Location>> {
         return Result.success(emptyList())
     }
 

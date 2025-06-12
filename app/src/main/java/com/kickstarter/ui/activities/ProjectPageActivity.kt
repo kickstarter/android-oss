@@ -203,7 +203,6 @@ class ProjectPageActivity :
             paymentOptionCallback = ::onPaymentOption,
             paymentResultCallback = ::onPaymentSheetResult
         )
-
         this.ksString = requireNotNull(environment?.ksString())
 
         viewModel.configureWith(intent)
@@ -256,8 +255,6 @@ class ProjectPageActivity :
         this.viewModel.outputs.projectData()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                // - Every time the ProjectData gets updated
-                // - the fragments on the viewPager are updated as well
                 (binding.projectPager.adapter as? ProjectPagerAdapter)?.updatedWithProjectData(it)
 
                 if (it.project().showLatePledgeFlow()) {
@@ -672,23 +669,27 @@ class ProjectPageActivity :
 
                     ProjectPledgeButtonAndFragmentContainer(
                         expanded = expanded,
-                        onContinueClicked = { checkoutFlowViewModel.onBackThisProjectClicked() },
+                        onContinueClicked = {
+                            checkoutFlowViewModel.onContinueClicked(
+                                logInCallback = { startLoginToutActivity() },
+                                continueCallback = {
+                                    rewardsSelectionViewModel.provideProjectData(projectData)
+                                    checkoutFlowViewModel.onBackThisProjectClicked()
+                                }
+                            )
+                        },
                         onBackClicked = {
                             checkoutFlowViewModel.onBackPressed(pagerState.currentPage)
                         },
                         pagerState = pagerState,
                         isLoading = addOnsIsLoading || checkoutLoading || rewardLoading,
                         onAddOnsContinueClicked = {
-                            // - if user not logged at this point, start login Flow, and provide after login completed callback
-                            checkoutFlowViewModel.onContinueClicked(
-                                logInCallback = { startLoginToutActivity() },
-                                continueCallback = {
-                                    val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
-                                    dataAndReason?.let { pData ->
-                                        latePledgeCheckoutViewModel.providePledgeData(pData.first)
-                                    }
+                            checkoutFlowViewModel.onContinueClicked {
+                                val dataAndReason = addOnsViewModel.getPledgeDataAndReason()
+                                dataAndReason?.let { pData ->
+                                    latePledgeCheckoutViewModel.providePledgeData(pData.first)
                                 }
-                            )
+                            }
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,

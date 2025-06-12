@@ -13,6 +13,7 @@ import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
+import com.kickstarter.AddUserToSecretRewardGroupMutation
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CancelBackingMutation
 import com.kickstarter.ClearUserUnseenActivityMutation
@@ -66,6 +67,7 @@ import com.kickstarter.libs.utils.extensions.toBoolean
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.libs.utils.extensions.toProjectState
 import com.kickstarter.libs.utils.extensions.toRaisedBucket
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.BuildPaymentPlanData
@@ -237,9 +239,11 @@ interface ApolloClientTypeV2 {
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
+    suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
+    suspend fun getLocations(useDefault: Boolean = true, term: String?): Result<List<Location>>
     fun cleanDisposables()
 }
 
@@ -1797,6 +1801,25 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
+    override suspend fun addUserToSecretRewardGroup(
+        project: Project,
+        secretRewardToken: String,
+    ): Result<Project> = executeForResult {
+        val mutation = AddUserToSecretRewardGroupMutation(
+            projectId = encodeRelayId(project).toString(),
+            secretRewardToken = secretRewardToken
+        )
+
+        val response = service.mutation(mutation).execute()
+
+        if (response.hasErrors()) {
+            throw buildClientException(response.errors)
+        }
+
+        val updatedProject = response.data?.addUserToSecretRewardGroup?.project
+        projectTransformer(updatedProject)
+    }
+
     // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview
     override fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload> {
         return Observable.defer {
@@ -1921,6 +1944,27 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 projectTransformer(it?.similarProject)
             }
         } ?: emptyList()
+    }
+
+    override suspend fun getLocations(useDefault: Boolean, term: String?): Result<List<Location>> = executeForResult {
+        if (useDefault) Result.success(listOf(LocationFactory.vancouver()))
+        val searched = listOf(
+            LocationFactory.sydney(),
+            LocationFactory.mexico(),
+            LocationFactory.canada(),
+            LocationFactory.germany(),
+            LocationFactory.unitedStates(),
+            LocationFactory.nigeria(),
+            LocationFactory.sydney(),
+            LocationFactory.mexico(),
+            LocationFactory.canada(),
+            LocationFactory.germany(),
+            LocationFactory.unitedStates(),
+            LocationFactory.nigeria(),
+        )
+        if (term.isNotNull()) Result.success(searched)
+
+        emptyList()
     }
 
     sealed class KSApolloClientV2Exception(

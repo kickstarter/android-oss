@@ -27,7 +27,7 @@ object RewardUtils {
     fun hasBackers(reward: Reward) = reward.backersCount().isNonZero()
 
     fun isAvailable(project: Project, reward: Reward) =
-        (project.isLive || (project.isInPostCampaignPledgingPhase() ?: false && project.postCampaignPledgingEnabled() ?: false)) && !isLimitReached(reward) && !isExpired(reward) && reward.isAvailable()
+        (project.isLive || (project.isInPostCampaignPledgingPhase() ?: false && project.postCampaignPledgingEnabled() ?: false)) && !isLimitReached(reward) && !isExpired(reward)
 
     /**
      * Returns `true` if the reward has expired.

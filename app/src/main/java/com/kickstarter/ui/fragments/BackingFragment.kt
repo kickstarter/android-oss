@@ -271,6 +271,23 @@ class BackingFragment : Fragment() {
             }
             .addToDisposable(disposables)
 
+        this.viewModel.outputs.backingError()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { error ->
+                context?.let {
+                    binding?.root?.let { it1 ->
+                        showErrorToast(
+                            it,
+                            it1,
+                            error.localizedMessage ?: getString(
+                                R.string.general_error_something_wrong
+                            )
+                        )
+                    }
+                }
+            }
+            .addToDisposable(disposables)
+
         binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply {
             val sb = StringBuilder(text.toString())
             sb.append(" " + resources.getString(R.string.Delays_or_changes_are_possible))

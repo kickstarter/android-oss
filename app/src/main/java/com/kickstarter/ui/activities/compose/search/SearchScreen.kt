@@ -529,6 +529,7 @@ fun FilterPagerSheet(
                         if (applyAndDismiss.isFalse()) {
                             category.value = null
                             bucket.value = null
+                            location.value = null
                         }
                         applyUserSelection(
                             onApply = onApply,

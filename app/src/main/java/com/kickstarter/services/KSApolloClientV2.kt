@@ -1965,7 +1965,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
         response.data?.let { responseData ->
             responseData.locations?.nodes?.map {
-                // TODO: Add lat/long to the Location model
                 Location.builder()
                     .name(it?.location?.name)
                     .displayableName(it?.location?.displayableName)

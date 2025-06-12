@@ -20,10 +20,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,6 +51,7 @@ import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.views.compose.checkout.ShippingSelector
+import kotlinx.coroutines.delay
 import org.joda.time.DateTime
 import java.math.RoundingMode
 
@@ -123,6 +127,20 @@ fun RewardCarouselScreen(
     val interactionSource = remember {
         MutableInteractionSource()
     }
+    val hasScrolledToSecretReward = remember { mutableStateOf(false) }
+
+    LaunchedEffect(rewards) {
+        if (!hasScrolledToSecretReward.value) {
+            val index = rewards.indexOfFirst {
+                it.isSecretReward() == true && it.isAvailable()
+            }
+            if (index >= 0) {
+                delay(600) // Delay to ensure the UI is ready before scrolling
+                lazyRowState.animateScrollToItem(index)
+                hasScrolledToSecretReward.value = true
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -157,14 +175,17 @@ fun RewardCarouselScreen(
                         .clickable(enabled = false) { },
                     contentAlignment = Alignment.Center
                 ) {
-                    KSCircularProgressIndicator()
+                    KSCircularProgressIndicator(
+                        modifier = Modifier.testTag("LOADING_INDICATOR")
+                    )
                 }
             }
 
             if (countryList.isNotEmpty()) {
                 ShippingSelector(
                     modifier = Modifier
-                        .padding(dimensions.paddingMedium),
+                        .padding(dimensions.paddingMedium)
+                        .testTag("SHIPPING_SELECTOR"),
                     interactionSource = interactionSource,
                     currentShippingRule = currentShippingRule,
                     countryList = countryList,
@@ -224,6 +245,7 @@ fun RewardCarouselScreen(
 
                     if (RewardUtils.isNoReward(reward)) {
                         KSRewardCard(
+                            modifier = Modifier.testTag("REWARD_CARD_${reward.id()}"),
                             isCTAButtonEnabled = ctaButtonEnabled,
                             ctaButtonText = stringResource(id = ctaButtonText),
                             title = if (isBacked) stringResource(id = R.string.You_pledged_without_a_reward) else stringResource(
@@ -238,6 +260,7 @@ fun RewardCarouselScreen(
                         )
                     } else {
                         KSRewardCard(
+                            modifier = Modifier.testTag("REWARD_CARD_${reward.id()}"),
                             onRewardSelectClicked = { onRewardSelected(reward) },
                             amount = environment.ksCurrency()?.let {
                                 RewardViewUtils.styleCurrency(

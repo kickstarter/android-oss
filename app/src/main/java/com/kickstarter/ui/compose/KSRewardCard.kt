@@ -267,6 +267,7 @@ fun KSRewardCardPreviewNoImageNoSelectedNoSecret() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun KSRewardCard(
+    modifier: Modifier = Modifier,
     amount: String? = null,
     conversion: String? = null,
     title: String? = null,
@@ -288,7 +289,7 @@ fun KSRewardCard(
     onRewardSelectClicked: () -> Unit,
     isSecret: Boolean = false,
 ) {
-    Box(modifier = Modifier.width(KSTheme.dimensions.cardWidth)) {
+    Box(modifier = modifier.width(KSTheme.dimensions.cardWidth)) {
         if (isSecret && image == null && !yourSelectionIsVisible) {
             Box(
                 modifier = Modifier

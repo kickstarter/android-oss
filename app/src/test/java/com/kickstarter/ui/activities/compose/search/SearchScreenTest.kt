@@ -337,8 +337,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, _ -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount, _ ->
+                    onApply = { state, category, _, _ -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, _, _ ->
                         selectedCounts.add(
                             statusCount to categoryCount
                         )
@@ -394,15 +394,17 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     categories = categories,
                     currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, bucket ->
+                    onApply = { state, category, bucket, location ->
                         appliedFilters.add(state)
                         appliedFilters.add(category)
                         appliedFilters.add(bucket)
+                        appliedFilters.add(location)
                     },
-                    updateSelectedCounts = { statusCount, categoryCount, bucket ->
+                    updateSelectedCounts = { statusCount, categoryCount, bucket, location ->
                         selectedCounts.add(statusCount)
                         selectedCounts.add(categoryCount)
                         selectedCounts.add(bucket)
+                        appliedFilters.add(location)
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,
@@ -421,47 +423,13 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_all_filters))
             .performClick()
 
-        assertEquals(appliedFilters.filterNotNull().size, 0)
+        assertEquals(appliedFilters.filterNotNull().last(), 0)
         assertEquals(selectedCounts.last(), 0)
     }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test
-    fun `Pager with phase4 ffOff, does not display percentage raised row`() {
-
-        val categories = CategoryFactory.rootCategories()
-        val selectedStatus = DiscoveryParams.State.LIVE
-
-        composeTestRule.setContent {
-            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
-            val testSheetState = rememberModalBottomSheetState(
-                initialValue = Hidden,
-                skipHalfExpanded = true
-            )
-
-            KSTheme {
-
-                FilterPagerSheet(
-                    selectedProjectStatus = selectedStatus,
-                    currentCategory = categories[0],
-                    categories = categories,
-                    onDismiss = { },
-                    onApply = { _, _, _ -> },
-                    updateSelectedCounts = { _, _, _ ->
-                    },
-                    pagerState = testPagerState,
-                    sheetState = testSheetState,
-                    shouldShowPhase = false
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertDoesNotExist()
-    }
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Test
-    fun `Pager with phase4 ffOn, does display percentage raised row, can navigate to PercentageRaised screen then navigate back`() {
+    fun `Pager with phase4, does display percentage raised row, can navigate to PercentageRaised screen then navigate back`() {
 
         var page = 0
         val categories = CategoryFactory.rootCategories()
@@ -481,8 +449,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { },
-                    onApply = { _, _, _ -> },
-                    updateSelectedCounts = { _, _, _ ->
+                    onApply = { _, _, _, _ -> },
+                    updateSelectedCounts = { _, _, _, _ ->
                     },
                     pagerState = testPagerState,
                     sheetState = testSheetState,

@@ -51,6 +51,7 @@ object FilterMenuTestTags {
     const val CATEGORY_ROW = "category_filter_row"
     const val PROJECT_STATUS_ROW = "project_status_row"
     const val PERCENTAGE_RAISED_ROW = "percentage_raised_row"
+    const val LOCATION_ROW = "location_row"
     const val FOOTER = "footer"
 
     fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
@@ -59,6 +60,7 @@ object FilterMenuTestTags {
 enum class FilterType {
     CATEGORIES,
     PROJECT_STATUS,
+    LOCATION,
     PERCENTAGE_RAISED
 }
 
@@ -104,6 +106,12 @@ fun FilterMenuBottomSheet(
                             },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
+                        )
+                        FilterType.LOCATION -> FilterRow(
+                            text = titleForFilter(filter),
+                            onClickAction = { onNavigate(FilterType.LOCATION) },
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.LOCATION_ROW)
                         )
                         FilterType.PERCENTAGE_RAISED -> FilterRow(
                             text = titleForFilter(filter),
@@ -284,6 +292,7 @@ private fun titleForFilter(filter: FilterType): String {
     return when (filter) {
         FilterType.CATEGORIES -> stringResource(R.string.Category)
         FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
+        FilterType.LOCATION -> stringResource(R.string.Location_fpo)
         FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised)
     }
 }

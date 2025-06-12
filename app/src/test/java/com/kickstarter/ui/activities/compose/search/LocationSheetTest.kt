@@ -39,13 +39,17 @@ class LocationSheetTest : KSRobolectricTestCase() {
             object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
-                    term: String?
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
                 ): Result<List<Location>> {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {
@@ -87,13 +91,17 @@ class LocationSheetTest : KSRobolectricTestCase() {
             object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
-                    term: String?
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
                 ): Result<List<Location>> {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {
@@ -132,7 +140,11 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 object : MockApolloClientV2() {
                     override suspend fun getLocations(
                         useDefault: Boolean,
-                        term: String?
+                        term: String?,
+                        lat: Float?,
+                        long: Float?,
+                        radius: Float?,
+                        filterByCoordinates: Boolean?
                     ): Result<List<Location>> {
                         return if (term?.contains("mexico", ignoreCase = true) == true) {
                             Result.success(listOf(LocationFactory.mexico()))
@@ -143,7 +155,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 }
             ).build()
 
-            val fakeViewModel = FilterMenuViewModel(env, isInPreview = true, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+            val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
             composeTestRule.setContent {
                 KSTheme {
@@ -184,13 +196,17 @@ class LocationSheetTest : KSRobolectricTestCase() {
             object : MockApolloClientV2() {
                 override suspend fun getLocations(
                     useDefault: Boolean,
-                    term: String?
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
                 ): Result<List<Location>> {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
         ).build()
-        val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             KSTheme {
@@ -235,5 +251,132 @@ class LocationSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
             .isDisplayed() // Default locations visible after input cancel button
+    }
+
+    @Test
+    fun `Selecting a suggested location updates input`() = runTest {
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
+                ): Result<List<Location>> {
+                    return if (term?.contains("mexico", ignoreCase = true) == true) {
+                        Result.success(listOf(LocationFactory.mexico()))
+                    } else {
+                        Result.success(emptyList())
+                    }
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet()
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("Mexico")
+        advanceUntilIdle()
+
+        val mexicoTag = LocationTestTags.locationTag(LocationFactory.mexico())
+
+        composeTestRule.onNodeWithTag(mexicoTag).performClick()
+
+        composeTestRule.onNodeWithTag(SUGGESTED_LOCATIONS_LIST)
+            .assertExists()
+
+        composeTestRule.onNodeWithTag(INPUT_SEARCH)
+            .assertTextContains(LocationFactory.mexico().displayableName())
+    }
+
+    @Test
+    fun `Debounce reduce number of API calls`() = runTest {
+        var callCount = 0
+
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
+                ): Result<List<Location>> {
+                    callCount++
+                    return Result.success(emptyList())
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet()
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("M")
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("Me")
+        composeTestRule.onNodeWithTag(INPUT_SEARCH).performTextInput("Mex")
+
+        advanceUntilIdle() // wait for debounce
+
+        assertNotSame(callCount, 3)
+    }
+
+    @Test
+    fun `Clicking "See Results" button sends selected location`() {
+        var selected: Location? = null
+        var applied: Boolean? = null
+
+        val env = Environment.builder().apolloClientV2(
+            object : MockApolloClientV2() {
+                override suspend fun getLocations(
+                    useDefault: Boolean,
+                    term: String?,
+                    lat: Float?,
+                    long: Float?,
+                    radius: Float?,
+                    filterByCoordinates: Boolean?
+                ): Result<List<Location>> {
+                    return Result.success(listOf(LocationFactory.vancouver()))
+                }
+            }
+        ).build()
+        val fakeViewModel = FilterMenuViewModel(env)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    LocationSheet(
+                        onApply = { loc, confirmed ->
+                            selected = loc
+                            applied = confirmed
+                        }
+                    )
+                }
+            }
+        }
+
+        val location = LocationFactory.vancouver()
+
+        composeTestRule.onNodeWithTag(LocationTestTags.locationTag(location)).performClick()
+
+        composeTestRule.onNodeWithText(context.getString(R.string.See_results))
+            .performClick()
+
+        assertEquals(selected, location)
+        assertEquals(applied, true)
     }
 }

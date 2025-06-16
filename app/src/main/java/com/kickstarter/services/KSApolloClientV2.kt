@@ -167,7 +167,7 @@ interface ApolloClientTypeV2 {
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
-    fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>>
+    fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String? = null): Observable<List<Reward>>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
@@ -815,13 +815,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
         }?.toList() ?: emptyList()
     }
-    override fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>> {
+    override fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String?): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
 
             val query = GetRewardAllowedAddOnsQuery(
-                slug,
                 locationId = encodeRelayId(locationId),
+                rewardId = encodeRelayId(rewardId)
             )
 
             this.service
@@ -836,10 +836,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     }
 
                     response.data?.let { data ->
-                        val rewardNode = data.project?.rewards?.nodes?.firstOrNull { node ->
-                            node?.id?.let { decodeRelayId(it) } == rewardId
-                        }
-                        val allowedAddOns = rewardNode?.allowedAddons
+                        val allowedAddOns = data.node?.onReward?.allowedAddons
 
                         val addOns = if (allowedAddOns != null)
                             getAddOnsFromAllowedAddOns(allowedAddOns)

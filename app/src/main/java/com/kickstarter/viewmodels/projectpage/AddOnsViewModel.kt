@@ -194,8 +194,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
             scope.launch(dispatcher) {
                 apolloClient
                     .getRewardAllowedAddOns(
-                        slug = project.slug() ?: "",
-                        rewardId = currentUserReward.id(),
+                        rewardId = currentUserReward,
                         locationId = selectedShippingRule.location() ?: Location.builder().build()
                     )
                     .asFlow()

@@ -1953,9 +1953,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         val query = GetLocationsQuery(
             useSessionLocation = if (useDefault.isTrue()) Optional.present(useDefault) else Optional.absent(),
             term = if (term.isNullOrEmpty()) Optional.absent() else Optional.present(term),
-            radius = if (radius == null) Optional.present(radius) else Optional.absent(),
             filterByCoordinates = if (filterByCoordinates == null) Optional.absent() else Optional.present(filterByCoordinates),
-            first = if (useDefault) Optional.Present(1) else Optional.present(10)
+            first = if (useDefault) Optional.Present(1) else Optional.present(10),
+            radius = if (radius == null) Optional.absent() else Optional.present(radius.toDouble()),
+            long = if (long == null) Optional.absent() else Optional.present(long.toDouble()),
+            lat = if (lat == null) Optional.absent() else Optional.present(lat.toDouble())
         )
 
         val response = this.service.query(query).execute()

@@ -69,19 +69,17 @@ open class FilterMenuViewModel(
         scope.launch {
             getLocations(default = true)
 
-            scope.launch {
-                _searchQuery
-                    .debounce(300L)
-                    .distinctUntilChanged()
-                    .collectLatest { query ->
-                        if (query.isNotBlank()) {
-                            getLocations(default = false, term = query)
-                        }
+            _searchQuery
+                .debounce(300L)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    if (query.isNotBlank()) {
+                        getLocations(default = false, term = query)
                     }
-                    .runCatching {
-                        errorAction.invoke(null)
-                    }
-            }
+                }
+                .runCatching {
+                    errorAction.invoke(null)
+                }
         }
     }
 

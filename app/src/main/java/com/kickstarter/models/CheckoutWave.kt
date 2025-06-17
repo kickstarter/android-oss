@@ -11,7 +11,7 @@ import kotlinx.parcelize.Parcelize
 class CheckoutWave private constructor(
     private val id: Long?,
     private val active: Boolean, // Whether this CheckoutWave is active or not
-   ) : Parcelable {
+) : Parcelable {
 
     fun id() = this.id
     fun active() = this.active

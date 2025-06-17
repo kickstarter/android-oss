@@ -285,6 +285,16 @@ object ProjectFactory {
     }
 
     @JvmStatic
+    fun projectWithActivePMForNewBackers(): Project {
+        val project = project()
+        return project
+            .toBuilder()
+            .lastWave(CheckoutWaveFactory.checkoutWaveActive())
+            .redemptionPageUrl("https://ksr.com/backing/redeem")
+            .build()
+    }
+
+    @JvmStatic
     fun projectWithAddOns(): Project {
         val rwWithAddOn =
             RewardFactory.reward().toBuilder().hasAddons(true).build()

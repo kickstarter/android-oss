@@ -26,12 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -60,11 +55,15 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private var pReason: PledgeReason = PledgeReason.PLEDGE
     private var backing: Backing? = null
 
-    private var addOns: List<Reward> = listOf()
+    private var addOns = mutableListOf<Reward>()
     private var errorAction: (message: String?) -> Unit = {}
     private val currentSelection = mutableMapOf<Long, Int>()
 
     private var backedAddOns = emptyList<Reward>()
+
+    // Pagination variables
+    private var nextPage: String? = null
+    var hasMorePages = false
 
     private var scope: CoroutineScope = viewModelScope
     private var dispatcher: CoroutineDispatcher = Dispatchers.IO
@@ -187,29 +186,42 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         }
     }
 
+    fun loadMore() {
+        getAddOns(shippingRule)
+    }
+
     private fun getAddOns(selectedShippingRule: ShippingRule) {
 
         // - Do not execute call unless reward has addOns
         if (currentUserReward.hasAddons()) {
             scope.launch(dispatcher) {
-                apolloClient
-                    .getRewardAllowedAddOns(
-                        rewardId = currentUserReward,
-                        locationId = selectedShippingRule.location() ?: Location.builder().build()
-                    )
-                    .asFlow()
-                    .onStart {
-                        emitCurrentState(isLoading = true)
+                emitCurrentState(isLoading = true)
+                val envelopeResult = apolloClient.getRewardAllowedAddOns(
+                    rewardId = currentUserReward,
+                    locationId = selectedShippingRule.location() ?: Location.builder().build(),
+                    cursor = nextPage
+                )
+
+                if (envelopeResult.isSuccess) {
+                    val addOns = envelopeResult.getOrNull()?.addOnsList
+                    // - pagination related stuff
+                    nextPage = envelopeResult.getOrNull()?.pageInfo?.endCursor
+                    hasMorePages = envelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
+                    if (!addOns.isNullOrEmpty()) {
+                        val updatedList = getUpdatedList(
+                            addOns,
+                            backedAddOns,
+                            selectedShippingRule.location() ?: Location.builder().build()
+                        )
+
+                        this@AddOnsViewModel.addOns.addAll(updatedList)
                     }
-                    .map { addOns ->
-                        if (!addOns.isNullOrEmpty()) {
-                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns, selectedShippingRule.location() ?: Location.builder().build())
-                        }
-                    }.onCompletion {
-                        emitCurrentState(isLoading = false)
-                    }.catch {
-                        errorAction.invoke(null)
-                    }.collect()
+                    emitCurrentState(isLoading = false)
+                }
+
+                if (envelopeResult.isFailure) {
+                    errorAction.invoke(null)
+                }
             }
         } else {
             scope.launch {
@@ -266,7 +278,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableAddOnsUIState.emit(
             AddOnsUIState(
-                addOns = addOns,
+                addOns = addOns.toList(),
                 isLoading = isLoading,
                 totalCount = currentSelection.values.sum(),
                 shippingRule = shippingRule,

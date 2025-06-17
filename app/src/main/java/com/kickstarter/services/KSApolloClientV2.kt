@@ -57,6 +57,7 @@ import com.kickstarter.UserPaymentsQuery
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.ValidateCheckoutQuery
 import com.kickstarter.WatchProjectMutation
+import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.search.data.SearchEnvelope
@@ -167,7 +168,7 @@ interface ApolloClientTypeV2 {
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
-    fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String? = null): Observable<List<Reward>>
+    suspend fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String? = null): Result<AddOnsEnvelope>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
@@ -815,40 +816,35 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
         }?.toList() ?: emptyList()
     }
-    override fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String?): Observable<List<Reward>> {
-        return Observable.defer {
-            val ps = PublishSubject.create<List<Reward>>()
 
-            val query = GetRewardAllowedAddOnsQuery(
-                locationId = encodeRelayId(locationId),
-                rewardId = encodeRelayId(rewardId)
+    override suspend fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String?): Result<AddOnsEnvelope> = executeForResult {
+        val query = GetRewardAllowedAddOnsQuery(
+            locationId = encodeRelayId(locationId),
+            rewardId = encodeRelayId(rewardId),
+            cursor = cursor?.let { Optional.present(it) } ?: Optional.absent()
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let {
+            val allowedAddOns = it.node?.onReward?.allowedAddons
+
+            val addOns = if (allowedAddOns != null)
+                getAddOnsFromAllowedAddOns(allowedAddOns)
+            else emptyList()
+
+            val pageInfoEnvelope = allowedAddOns?.pageInfo?.pageInfo?.let {
+                createPageInfoObject(it)
+            }
+
+            AddOnsEnvelope(
+                addOnsList = addOns,
+                pageInfo = pageInfoEnvelope
             )
-
-            this.service
-                .query(query)
-                .rxSingle()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    }
-
-                    response.data?.let { data ->
-                        val allowedAddOns = data.node?.onReward?.allowedAddons
-
-                        val addOns = if (allowedAddOns != null)
-                            getAddOnsFromAllowedAddOns(allowedAddOns)
-                        else emptyList()
-                        ps.onNext(addOns)
-                    }
-
-                    ps.onComplete()
-                }.addToDisposable(disposables)
-
-            return@defer ps
-        }
+        } ?: AddOnsEnvelope()
     }
 
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {

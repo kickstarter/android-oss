@@ -2158,11 +2158,11 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        val url = "https://ksr.com/backing/redeem"
+        val url = "https://www.kickstarter.com/backing/redeem"
 
         this.expandPledgeSheet.assertNoValues()
-        this.openBackingDetailsWebview.assertValue(url)
-        this.openPledgeManagerWebview.assertNoValues()
+        this.openBackingDetailsWebview.assertNoValues()
+        this.openPledgeManagerWebview.assertValue(url)
     }
 
     @Test

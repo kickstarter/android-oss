@@ -20,7 +20,6 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +28,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.rx2.asFlow
+import kotlin.coroutines.EmptyCoroutineContext
 
 data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
@@ -40,7 +41,12 @@ data class AddOnsUIState(
     val totalBonusAmount: Double = 0.0
 )
 
-class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
+class AddOnsViewModel(
+    private val environment: Environment,
+    bundle: Bundle? = null,
+    private val testDispatcher: CoroutineDispatcher? = null
+) : ViewModel() {
+
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val currentUser = requireNotNull(environment.currentUserV2())
     private var isUserLoggedIn = false
@@ -65,7 +71,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private var nextPage: String? = null
     var hasMorePages = false
 
-    private var scope: CoroutineScope = viewModelScope
+    private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private var dispatcher: CoroutineDispatcher = Dispatchers.IO
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
@@ -80,16 +86,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
-    }
-
-    /**
-     * By default run in
-     * scope: viewModelScope
-     * dispatcher: Dispatchers.IO
-     */
-    fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
-        this.scope = scope
-        this.dispatcher = dispatcher
     }
 
     init {
@@ -191,10 +187,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     }
 
     private fun getAddOns(selectedShippingRule: ShippingRule) {
-
-        // - Do not execute call unless reward has addOns
-        if (currentUserReward.hasAddons()) {
-            scope.launch(dispatcher) {
+        scope.launch(dispatcher) {
+            // - Do not execute call unless reward has addOns
+            if (currentUserReward.hasAddons()) {
                 emitCurrentState(isLoading = true)
                 val envelopeResult = apolloClient.getRewardAllowedAddOns(
                     rewardId = currentUserReward,
@@ -222,9 +217,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 if (envelopeResult.isFailure) {
                     errorAction.invoke(null)
                 }
-            }
-        } else {
-            scope.launch {
+            } else {
                 emitCurrentState(isLoading = false)
             }
         }
@@ -333,10 +326,14 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         return getPledgeDataAndReason()?.first?.pledgeAmountTotalPlusBonus() ?: 0.0
     }
 
-    class Factory(private val environment: Environment, private val bundle: Bundle? = null) :
+    class Factory(
+        private val environment: Environment,
+        private val bundle: Bundle? = null,
+        private val testDispatcher: CoroutineDispatcher? = null
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AddOnsViewModel(environment, bundle) as T
+            return AddOnsViewModel(environment, bundle, testDispatcher) as T
         }
     }
 }

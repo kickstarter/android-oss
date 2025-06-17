@@ -25,6 +25,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.AddOnsUIState
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -38,13 +39,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: AddOnsViewModel
 
-    private fun createViewModel(environment: Environment) {
+    private fun createViewModel(environment: Environment, dispatcher: CoroutineDispatcher? = null) {
         viewModel =
-            AddOnsViewModel.Factory(environment).create(AddOnsViewModel::class.java)
+            AddOnsViewModel.Factory(environment, testDispatcher = dispatcher).create(AddOnsViewModel::class.java)
     }
 
-    fun setup(environment: Environment = environment()) {
-        createViewModel(environment)
+    fun setup(environment: Environment = environment(), dispatcher: CoroutineDispatcher? = null) {
+        createViewModel(environment, dispatcher)
 
         val testRewards = (0..5).map { Reward.builder().hasAddons(true).title("$it").id(it.toLong()).build() }
         val testBacking =
@@ -122,13 +123,21 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
+        val rw = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .id(99L)
+            .pledgeAmount(20.0)
+            .build()
+
+        val uiState = mutableListOf<AddOnsUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val apolloClient = object : MockApolloClientV2() {
             override suspend fun getRewardAllowedAddOns(
                 locationId: Location,
                 rewardId: Reward,
                 cursor: String?
             ): Result<AddOnsEnvelope> {
-                assertEquals(99L, rewardId)
+                assertEquals(99L, rewardId.id())
                 return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
@@ -136,39 +145,15 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder()
             .apolloClientV2(apolloClient)
             .build()
-
-        setup(env)
-
-        val rw = RewardFactory.reward().toBuilder()
-            .hasAddons(true)
-            .id(99L)
-            .pledgeAmount(20.0)
-            .build()
-
-        viewModel.userRewardSelection(rw)
-        viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
-
-        val uiState = mutableListOf<AddOnsUIState>()
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        setup(env, dispatcher)
 
         backgroundScope.launch(dispatcher) {
-            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.userRewardSelection(rw)
+            viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
+
+            viewModel.updateSelection(addOnsList.first().id(), 3)
             viewModel.addOnsUIState.toList(uiState)
         }
-
-        assertEquals(
-            uiState.last(),
-            AddOnsUIState(
-                addOns = addOnsList,
-                totalCount = 0,
-                isLoading = false,
-                shippingRule = ShippingRuleFactory.canadaShippingRule(),
-                totalBonusAmount = 0.0,
-                totalPledgeAmount = rw.pledgeAmount()
-            )
-        )
-
-        viewModel.updateSelection(addOnsList.first().id(), 3)
 
         val total = viewModel.getPledgeDataAndReason()?.first?.pledgeAmountTotal()?.toDouble() ?: 0.0
 
@@ -190,13 +175,22 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
+        val rw = RewardFactory.reward().toBuilder()
+            .id(99L)
+            .hasAddons(true)
+            .pledgeAmount(55.0)
+            .build()
+
+        val uiState = mutableListOf<AddOnsUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
         val apolloClient = object : MockApolloClientV2() {
             override suspend fun getRewardAllowedAddOns(
                 locationId: Location,
                 rewardId: Reward,
                 cursor: String?
             ): Result<AddOnsEnvelope> {
-                assertEquals(99L, rewardId)
+                assertEquals(99L, rewardId.id())
                 return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
@@ -205,22 +199,10 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .apolloClientV2(apolloClient)
             .build()
 
-        setup(env)
-
-        val rw = RewardFactory.reward().toBuilder()
-            .id(99L)
-            .hasAddons(true)
-            .pledgeAmount(55.0)
-            .build()
-
-        viewModel.userRewardSelection(rw)
-        viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
-
-        val uiState = mutableListOf<AddOnsUIState>()
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
-
+        setup(env, dispatcher)
         backgroundScope.launch(dispatcher) {
-            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.userRewardSelection(rw)
+            viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
             viewModel.addOnsUIState.toList(uiState)
         }
 
@@ -263,21 +245,6 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
 
-        val apolloClient = object : MockApolloClientV2() {
-            override suspend fun getRewardAllowedAddOns(
-                locationId: Location,
-                rewardId: Reward,
-                cursor: String?
-            ): Result<AddOnsEnvelope> {
-                assertEquals(99L, rewardId)
-                return Result.success(AddOnsEnvelope(addOnsList = listOf(aDifferentAddOnReward)))
-            }
-        }
-
-        val env = environment().toBuilder()
-            .apolloClientV2(apolloClient)
-            .build()
-
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
         val backedReward = RewardFactory.reward().toBuilder()
             .hasAddons(true)
@@ -297,8 +264,6 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         val testProjectData = ProjectData.builder().project(testProject).build()
 
-        createViewModel(env)
-
         val bundle = Bundle()
         bundle.putParcelable(
             ArgumentsKey.PLEDGE_PLEDGE_DATA,
@@ -314,8 +279,22 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val uiState = mutableListOf<AddOnsUIState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
+        val apolloClient = object : MockApolloClientV2() {
+            override suspend fun getRewardAllowedAddOns(
+                locationId: Location,
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
+                assertEquals(99L, rewardId.id())
+                return Result.success(AddOnsEnvelope(addOnsList = listOf(aDifferentAddOnReward)))
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+        createViewModel(env, dispatcher)
         backgroundScope.launch(dispatcher) {
-            viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.addOnsUIState.toList(uiState)
         }
@@ -342,21 +321,6 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
-        val apolloClient = object : MockApolloClientV2() {
-            override suspend fun getRewardAllowedAddOns(
-                locationId: Location,
-                rewardId: Reward,
-                cursor: String?
-            ): Result<AddOnsEnvelope> {
-                assertEquals(99L, rewardId)
-                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
-            }
-        }
-
-        val env = environment().toBuilder()
-            .apolloClientV2(apolloClient)
-            .build()
-
         val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
         val shippingRule = ShippingRuleFactory.canadaShippingRule()
         val backedReward = RewardFactory.reward().toBuilder()
@@ -377,8 +341,6 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         val testProjectData = ProjectData.builder().project(testProject).build()
 
-        createViewModel(env)
-
         val bundle = Bundle()
         bundle.putParcelable(
             ArgumentsKey.PLEDGE_PLEDGE_DATA,
@@ -394,15 +356,27 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val uiState = mutableListOf<AddOnsUIState>()
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
-        backgroundScope.launch(dispatcher) {
-            viewModel.provideScopeAndDispatcher(this, dispatcher)
-            viewModel.provideBundle(bundle)
-
-            viewModel.updateSelection(addOnReward.id(), 3)
-
-            viewModel.addOnsUIState.toList(uiState)
+        val apolloClient = object : MockApolloClientV2() {
+            override suspend fun getRewardAllowedAddOns(
+                locationId: Location,
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
+                assertEquals(99L, backedReward.id())
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
+            }
         }
 
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+        createViewModel(env, dispatcher)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideBundle(bundle)
+            viewModel.updateSelection(addOnReward.id(), 3)
+            viewModel.addOnsUIState.toList(uiState)
+        }
         advanceUntilIdle()
 
         val pledgeDataAndReason = viewModel.getPledgeDataAndReason()

@@ -84,6 +84,9 @@ fragment fullProject on Project {
     }
     currency
     canComment
+    pledgeManager {
+        ... pledgeManager
+    }
     prelaunchActivated
     projectNotice
     projectOfTheDayAt
@@ -99,6 +102,9 @@ fragment fullProject on Project {
     }
     id
     isWatched
+    lastWave {
+        ...lastWave
+    }
     launchedAt
     location {
         ... location
@@ -112,6 +118,7 @@ fragment fullProject on Project {
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
+    redemptionPageUrl
     rewards { # query within project the bare minimum for rewards
         nodes {
             ... reward
@@ -556,4 +563,16 @@ fragment order on Order {
     checkoutState
     currency
     total
+}
+
+fragment pledgeManager on PledgeManager {
+    id
+    acceptsNewBackers
+    optedOut
+    state
+}
+
+fragment lastWave on CheckoutWave {
+    id
+    active
 }

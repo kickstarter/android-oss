@@ -87,6 +87,7 @@ import com.kickstarter.ui.extensions.startPledgeRedemption
 import com.kickstarter.ui.extensions.startRootCommentsActivity
 import com.kickstarter.ui.extensions.startUpdatesActivity
 import com.kickstarter.ui.extensions.startVideoActivity
+import com.kickstarter.ui.extensions.startWebViewActivity
 import com.kickstarter.ui.fragments.BackingFragment
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
@@ -457,6 +458,11 @@ class ProjectPageActivity :
         this.viewModel.outputs.openBackingDetailsWebview()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startBackingDetailsWebViewActivity(it) }
+            .addToDisposable(disposables)
+
+        this.viewModel.outputs.openPledgeManagerWebview()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startWebViewActivity(it, getString(R.string.fpo_pledge_manager)) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.projectMedia()

@@ -12,6 +12,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.utils.extensions.acceptsNewBackersForPM
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
@@ -39,7 +40,9 @@ object ProjectViewUtils {
     }
 
     fun pledgeActionButtonText(project: Project, currentUser: User?): Int {
-        return if (project.creator().id() == currentUser?.id()) {
+        return if (project.acceptsNewBackersForPM()) {
+            return R.string.fpo_go_to_pledge_manager
+        } else if (project.creator().id() == currentUser?.id()) {
             R.string.View_your_rewards
         } else if (!project.isBacking() && project.isLive) {
             R.string.Back_this_project

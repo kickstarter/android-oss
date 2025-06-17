@@ -286,11 +286,6 @@ type User implements Node {
   canCurate: Boolean
 
   """
-  Whether a user is trusted to configure prelaunch early.
-  """
-  canPrelaunchEarly: Boolean!
-
-  """
   Whether user can see the confirmation modal that appears after the user likes or dislike a project for the first time
   """
   canSeeConfirmSignalModal: Boolean
@@ -798,10 +793,6 @@ enum Feature {
 
   web_braze
 
-  late_pledges_learn_more_cta
-
-  post_campaign_backings_2024
-
   ckeditor_project_updates
 
   payments_stripe_link_on_checkout
@@ -852,8 +843,6 @@ enum Feature {
 
   backings_dash_v2_2025
 
-  secret_rewards_2025
-
   featured_rewards_2025
 
   creator_tab_2025
@@ -863,8 +852,6 @@ enum Feature {
   recent_searches_2025
 
   project_classifiers_2025
-
-  backer_report_tracking_numbers_2025
 
   pledge_over_time_ga_2025
 
@@ -876,7 +863,17 @@ enum Feature {
 
   digital_rewards__upload_button_2025
 
-  pm_pledge_shipping_supported_2025
+  pledge_over_time_edit_pledge_2025
+
+  gate_pm_for_plot_2025
+
+  eufymake_backer_report
+
+  multi_vat_ids_2025
+
+  shopify_sync_integration_2025
+
+  creator_tax_reporting_2025
 }
 
 """
@@ -1300,9 +1297,9 @@ type Project implements Node & Commentable {
   aiDisclosure: AiDisclosure
 
   """
-  The total amount collected for add-ons in the pledge manager
+  The total amount collected for add-ons, upgrades, and new backers in the pledge manager
   """
-  amountCollectedForPledgeManagerAddons: String!
+  amountCollectedForAddonsUpgradesAndNewBackers: String!
 
   """
   The total amount collected for shipping in the pledge manager
@@ -1360,7 +1357,7 @@ type Project implements Node & Commentable {
   backersCount: Int!
 
   """
-  The number of backers who have yet to go through the pledge manager
+  The number of original backers who have yet to go through the pledge manager
   """
   backersRemainingForPledgeRedemption: Int!
 
@@ -1368,6 +1365,11 @@ type Project implements Node & Commentable {
   The current user's backing of this project.  Does not include inactive backings.
   """
   backing: Backing
+
+  """
+  URL/path for the backing details page
+  """
+  backingDetailsPageRoute(type: Route!, tab: BackingDetailsPageTab): String!
 
   """
   True if the current user can comment (considers restrictions)
@@ -1378,6 +1380,11 @@ type Project implements Node & Commentable {
   True if the current user can comment (does not consider restrictions)
   """
   canCommentSansRestrictions: Boolean!
+
+  """
+  Whether the project is eligible for early prelaunch
+  """
+  canPrelaunchEarly: Boolean!
 
   """
   Whether user is allowed to edit project status
@@ -1413,6 +1420,11 @@ type Project implements Node & Commentable {
   Will this project be using a pledge manager to charge shipping?
   """
   chargeShippingInPledgeManager: Boolean!
+
+  """
+  The date after which errored pledges should be dropped
+  """
+  cleanupErroredPledgesDeadline: DateTime
 
   """
   Permissions that can be assigned to a collaborator on a project
@@ -1647,6 +1659,16 @@ type Project implements Node & Commentable {
   imageUrl("Whether or not to blur the image." blur: Boolean, "The width of the image in pixels." width: Int!): String!
 
   """
+  Whether the project has stock locations outside the EU that ship to the EU
+  """
+  importsToEu: Boolean!
+
+  """
+  Whether the project has stock locations outside the UK that ship to the UK
+  """
+  importsToUk: Boolean!
+
+  """
   Is the project's submission state accepted.
   """
   isApproved: Boolean!
@@ -1732,6 +1754,11 @@ type Project implements Node & Commentable {
   latePledgeBackersCount: Int!
 
   """
+  The datetime at which the last available time-limited reward will end, if all the rewards are time-limited
+  """
+  latePledgePlannedEndDate: DateTime
+
+  """
   How much money is pledged to the project during late pledge phase.
   """
   latePledgePledged: Money!
@@ -1795,6 +1822,11 @@ type Project implements Node & Commentable {
   The project's name.
   """
   name: String!
+
+  """
+  The number of new backers who have gone through the pledge manager
+  """
+  newBackersCount: Int
 
   """
   Whether the project has been enabled to allow new backers into pledge manager
@@ -1877,7 +1909,7 @@ type Project implements Node & Commentable {
   pledged: Money!
 
   """
-  The percentage of pledges that have been redeemed
+  The percentage of original pledges that have been redeemed
   """
   pledgesRedeemedPercentage: Float!
 
@@ -1959,6 +1991,11 @@ type Project implements Node & Commentable {
   recommendations: Recommendations
 
   """
+  URL for redeeming the backing
+  """
+  redemptionPageUrl: String!
+
+  """
   Project rewards.
   """
   rewards("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filters available rewards by pledge redemption only" pledgeManagementOnly: Boolean, "Filters by active backings" withActiveBackings: Boolean, "Sort the rewards by availability and cost" sort: Boolean): ProjectRewardConnection
@@ -2012,6 +2049,16 @@ type Project implements Node & Commentable {
   Shipping zones configured for the project.
   """
   shippingZones: [ShippingZone!]!
+
+  """
+  Whether the project has stock locations in the EU that ship to the EU
+  """
+  shipsWithinEu: Boolean!
+
+  """
+  Whether the project has stock locations in the UK that ship to the UK
+  """
+  shipsWithinUk: Boolean!
 
   """
   Whether or not to show ended to live cta
@@ -2442,16 +2489,6 @@ type Backing implements Node {
   Extra amount the backer pledged on top of the minimum.
   """
   bonusAmount: Money!
-
-  """
-  Whether or not the creator can perform a partial refund now
-  """
-  canAcceptPartialRefund: Boolean!
-
-  """
-  Whether or not the creator can perform a pledge manager refund now
-  """
-  canAcceptPledgeManagerRefund: Boolean!
 
   """
   If the backing can be cancelled
@@ -4920,11 +4957,6 @@ type Order implements Node {
   backing: Backing!
 
   """
-  Whether or not the order can be partially refunded
-  """
-  canBePartiallyRefunded: Boolean!
-
-  """
   Contains the backer's item preferences and responses to survey questions
   """
   cart: Cart
@@ -5032,6 +5064,11 @@ type Order implements Node {
   refundedShippingAmount: Int
 
   """
+  The amount refunded for the surcharge
+  """
+  refundedSurchargeAmount: Int
+
+  """
   The amount refunded for the total tax
   """
   refundedTotalTax: Int
@@ -5055,6 +5092,11 @@ type Order implements Node {
   The remaining shipping amount
   """
   remainingShippingAmountFormatted: String
+
+  """
+  The remaining surcharge amount
+  """
+  remainingSurchargeAmount: Int
 
   """
   The remaining total tax
@@ -5120,6 +5162,11 @@ type Order implements Node {
   The total surcharge amount for the order, formatted
   """
   surchargeAmountFormatted: String
+
+  """
+  The localized tax (VAT, Tax, HST, etc) based on order address
+  """
+  taxLocalization("Whether or not the display is for a refund" refund: Boolean): String
 
   """
   The total cost for the order including taxes and shipping
@@ -5773,6 +5820,16 @@ type RefundAdjustmentData {
   The adjustment details for the bonus support
   """
   bonusSupport: String
+
+  """
+  The client secret for the adjustment
+  """
+  clientSecret: String
+
+  """
+  Whether the adjustment requires action
+  """
+  requiresAction: Boolean
 
   """
   The adjustment details for the reward
@@ -6684,6 +6741,8 @@ enum CollaboratorPermission {
   configure_pledge_manager
 
   launch_pledge_manager
+
+  launch_prelaunch
 }
 
 """
@@ -9123,9 +9182,9 @@ type CreatorToolsPaths {
   dashboardPath: String!
 
   """
-  The path to the disbursement page for a successful post-pledge redemption payout
+  The path to the disbursements page
   """
-  disbursementPath: String
+  disbursementsPath: String!
 
   """
   The edit rewards project path
@@ -9176,6 +9235,11 @@ type CreatorToolsPaths {
   The project path
   """
   projectPath: String!
+
+  """
+  The Shopify sync path path
+  """
+  shopifySyncPath: String!
 }
 
 """
@@ -9299,12 +9363,17 @@ type PledgeManager {
   """
   Whether the creator opted out of the pledge manager.
   """
-  optedOut: Boolean!
+  optedOut: Boolean
 
   """
   The associated project
   """
   project: Project!
+
+  """
+  The date by which the PM will be reviewed (Date of review submission + 5 business days)
+  """
+  reviewAt: DateTime
 
   """
   The user assigned to review this pledge manager
@@ -9314,12 +9383,12 @@ type PledgeManager {
   """
   The pledge manager's state, e.g. draft, submitted, approved, denied, etc.
   """
-  state: PledgeManagerStateEnum!
+  state: PledgeManagerStateEnum
 
   """
   Whether the pledge manager can be used to charge for tariffs.
   """
-  tariffSurchargesEnabled: Boolean!
+  tariffSurchargesEnabled: Boolean
 }
 
 """
@@ -9409,6 +9478,11 @@ type CheckoutWave {
   The associated project
   """
   project: Project!
+
+  """
+  The date when the creator can review the collected funds from PM
+  """
+  reviewCollectedFundsAt: DateTime!
 
   """
   The start date of the wave
@@ -9577,6 +9651,141 @@ enum VatConfigLocationEnum {
   European Union
   """
   EU
+
+  """
+  Austria
+  """
+  AT
+
+  """
+  Belgium
+  """
+  BE
+
+  """
+  Bulgaria
+  """
+  BG
+
+  """
+  Croatia
+  """
+  HR
+
+  """
+  Cyprus
+  """
+  CY
+
+  """
+  Czech Republic
+  """
+  CZ
+
+  """
+  Denmark
+  """
+  DK
+
+  """
+  Estonia
+  """
+  EE
+
+  """
+  Finland
+  """
+  FI
+
+  """
+  France
+  """
+  FR
+
+  """
+  Germany
+  """
+  DE
+
+  """
+  Greece
+  """
+  GR
+
+  """
+  Hungary
+  """
+  HU
+
+  """
+  Ireland
+  """
+  IE
+
+  """
+  Italy
+  """
+  IT
+
+  """
+  Latvia
+  """
+  LV
+
+  """
+  Lithuania
+  """
+  LT
+
+  """
+  Luxembourg
+  """
+  LU
+
+  """
+  Malta
+  """
+  MT
+
+  """
+  Netherlands
+  """
+  NL
+
+  """
+  Poland
+  """
+  PL
+
+  """
+  Portugal
+  """
+  PT
+
+  """
+  Romania
+  """
+  RO
+
+  """
+  Slovakia
+  """
+  SK
+
+  """
+  Slovenia
+  """
+  SI
+
+  """
+  Spain
+  """
+  ES
+
+  """
+  Sweden
+  """
+  SE
 }
 
 """
@@ -12123,9 +12332,29 @@ Progress of tracking number processing
 type BackgroundJobProgress {
   completed: Int!
 
-  status: String!
+  status: BackgroundJobProgressStatusEnum!
 
   total: Int!
+}
+
+"""
+Status of background job progress
+"""
+enum BackgroundJobProgressStatusEnum {
+  """
+  Job is processing
+  """
+  PROCESSING
+
+  """
+  Job is completed
+  """
+  COMPLETED
+
+  """
+  Job has failed
+  """
+  FAILED
 }
 
 """
@@ -12891,6 +13120,11 @@ type Mutation {
   updateOption(input: UpdateOptionInput!): UpdateOptionPayload
 
   """
+  Update an order adjustment success state and error message
+  """
+  updateOrderAdjustment(input: UpdateOrderAdjustmentInput!): UpdateOrderAdjustmentPayload
+
+  """
   Update OrderableConfig for an Orderable
   """
   updateOrderableConfig(input: UpdateOrderableConfigInput!): UpdateOrderableConfigPayload
@@ -12925,6 +13159,11 @@ type Mutation {
   Updates a question
   """
   updateQuestion(input: UpdateQuestionInput!): UpdateQuestionPayload
+
+  """
+  Update a refund checkout state and error message
+  """
+  updateRefundCheckout(input: UpdateRefundCheckoutInput!): UpdateRefundCheckoutPayload
 
   """
   Updates audience for a specified resource
@@ -17083,6 +17322,8 @@ input UpdateBackingInput {
 
   applePay: ApplePayInput
 
+  incremental: Boolean
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -18233,6 +18474,11 @@ type UpdateOrderableConfigPayload {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  """
+  The project associated with the reward
+  """
+  project: Project!
 }
 
 """
@@ -19378,6 +19624,11 @@ type IssueRefundPayload {
   errors: [String!]!
 
   refund: Refund!
+
+  """
+  The in-memory refund checkout instance
+  """
+  refundCheckout: RefundCheckout
 }
 
 """
@@ -19410,11 +19661,6 @@ input IssueRefundInput {
   Parameters to refund a pledge. Leave blank to not refund the pledge.
   """
   refundPledgeInput: RefundPledgeInput
-
-  """
-  (legacy) Whether or not the refund the order
-  """
-  refundOrder: Boolean
 
   """
   Parameters to refund a order.
@@ -19552,6 +19798,62 @@ input OrderOrderableInput {
 }
 
 """
+Autogenerated return type of UpdateRefundCheckout
+"""
+type UpdateRefundCheckoutPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  refundCheckout: RefundCheckout!
+}
+
+"""
+Autogenerated input type of UpdateRefundCheckout
+"""
+input UpdateRefundCheckoutInput {
+  refundCheckoutId: ID!
+
+  state: String!
+
+  stateReason: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UpdateOrderAdjustment
+"""
+type UpdateOrderAdjustmentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  orderAdjustment: RefundAdjustmentData!
+}
+
+"""
+Autogenerated input type of UpdateOrderAdjustment
+"""
+input UpdateOrderAdjustmentInput {
+  refundId: ID!
+
+  success: Boolean!
+
+  stateReason: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of CreateBackerReportSegment
 """
 type CreateBackerReportSegmentPayload {
@@ -19650,6 +19952,11 @@ input DistributeDigitalAccessResourcesInput {
 
   resources: String!
 
+  """
+  Type of resource distribution: 'unique' or 'shared'
+  """
+  resourcesType: ResourcesTypeEnum!
+
   description: String!
 
   searchQuery: JSON!
@@ -19658,6 +19965,18 @@ input DistributeDigitalAccessResourcesInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+enum ResourcesTypeEnum {
+  """
+  Each backer gets a unique resource
+  """
+  UNIQUE
+
+  """
+  All backers share the same resource
+  """
+  SHARED
 }
 
 """

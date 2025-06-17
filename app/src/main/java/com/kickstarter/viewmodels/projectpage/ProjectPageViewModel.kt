@@ -34,6 +34,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
+import com.kickstarter.libs.utils.extensions.acceptsNewBackersForPM
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
@@ -48,7 +49,6 @@ import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.secretRewardToken
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
-import com.kickstarter.libs.utils.extensions.acceptsNewBackersForPM
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
@@ -261,7 +261,7 @@ interface ProjectPageViewModel {
         /** Emits when user clicks View Pledge button and should start the [com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity.kt]. */
         fun openBackingDetailsWebview(): Observable<String>
 
-        /** Emits when user clicks View Rewards button and should start the [com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity.kt]. */
+        /** Emits when user clicks Go to Pledge Manager button and should start the [com.kickstarter.ui.activities.WebViewActivity.kt]. */
         fun openPledgeManagerWebview(): Observable<String>
 
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
@@ -824,10 +824,10 @@ interface ProjectPageViewModel {
                             openBackingDetailsWebview.onNext(it)
                         }
                     } else if (project.acceptsNewBackersForPM() && goToPMWebviewFeatureFlag) {
-                         project.redemptionPageUrl()?.let { path ->
+                        project.redemptionPageUrl()?.let { path ->
                             val redemptionPageUrl = UrlUtils.appendPath(environment.webEndpoint(), path)
                             openPledgeManagerWebview.onNext(redemptionPageUrl)
-                         }
+                        }
                     } else {
                         this.continuePledgeFlow.onNext {
                             expandPledgeSheet.onNext(Pair(true, true))

@@ -12,8 +12,8 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
-import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.acceptsNewBackersForPM
+import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
 import com.kickstarter.models.User

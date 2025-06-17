@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
@@ -122,13 +123,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getRewardAllowedAddOns(
-                slug: String,
+            override suspend fun getRewardAllowedAddOns(
                 locationId: Location,
-                rewardId: Long
-            ): Observable<List<Reward>> {
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
                 assertEquals(99L, rewardId)
-                return Observable.just(addOnsList)
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
 
@@ -190,13 +191,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getRewardAllowedAddOns(
-                slug: String,
+            override suspend fun getRewardAllowedAddOns(
                 locationId: Location,
-                rewardId: Long
-            ): Observable<List<Reward>> {
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
                 assertEquals(99L, rewardId)
-                return Observable.just(addOnsList)
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
 
@@ -263,13 +264,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getRewardAllowedAddOns(
-                slug: String,
+            override suspend fun getRewardAllowedAddOns(
                 locationId: Location,
-                rewardId: Long,
-            ): Observable<List<Reward>> {
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
                 assertEquals(99L, rewardId)
-                return Observable.just(listOf(aDifferentAddOnReward))
+                return Result.success(AddOnsEnvelope(addOnsList = listOf(aDifferentAddOnReward)))
             }
         }
 
@@ -342,13 +343,13 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getRewardAllowedAddOns(
-                slug: String,
+            override suspend fun getRewardAllowedAddOns(
                 locationId: Location,
-                rewardId: Long
-            ): Observable<List<Reward>> {
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
                 assertEquals(99L, rewardId)
-                return Observable.just(addOnsList)
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
 

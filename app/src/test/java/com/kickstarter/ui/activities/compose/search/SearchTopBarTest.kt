@@ -11,7 +11,7 @@ import org.junit.Test
 class SearchTopBarTest : KSRobolectricTestCase() {
 
     @Test
-    fun `SearchTopBar when phase 4 feature flag is off`() {
+    fun `SearchTopBar when phase 3 feature flag is off`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -21,7 +21,8 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.SORT.name to 0,
                         FilterRowPillType.CATEGORY.name to 0,
                         FilterRowPillType.PROJECT_STATUS.name to 0,
-                        FilterRowPillType.PERCENTAGE_RAISED.name to 0
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                        FilterRowPillType.LOCATION.name to 0
                     ),
                     onPillPressed = {},
                     shouldShowPhase = false
@@ -32,12 +33,13 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertDoesNotExist()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
     }
 
     @Test
-    fun `SearchTopBar when phase 4 feature flag is on`() {
+    fun `SearchTopBar when phase 3 feature flag is on`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -47,7 +49,8 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.SORT.name to 0,
                         FilterRowPillType.CATEGORY.name to 0,
                         FilterRowPillType.PROJECT_STATUS.name to 0,
-                        FilterRowPillType.PERCENTAGE_RAISED.name to 0
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                        FilterRowPillType.LOCATION.name to 0
                     ),
                     onPillPressed = {},
                     shouldShowPhase = true
@@ -58,7 +61,8 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertExists() // Requires scroll is wanna check isDisplayed
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
     }
 

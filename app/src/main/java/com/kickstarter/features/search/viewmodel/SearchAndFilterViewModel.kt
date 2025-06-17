@@ -9,6 +9,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import kotlinx.coroutines.CoroutineDispatcher
@@ -107,7 +108,8 @@ class SearchAndFilterViewModel(
         category: Category? = null,
         projectSort: DiscoveryParams.Sort,
         projectState: DiscoveryParams.State? = null,
-        raisedBucket: DiscoveryParams.RaisedBuckets? = null
+        raisedBucket: DiscoveryParams.RaisedBuckets? = null,
+        location: Location? = null
     ) {
         val update = params.value.toBuilder()
             .apply {
@@ -115,6 +117,7 @@ class SearchAndFilterViewModel(
                 this.sort(projectSort)
                 this.state(projectState)
                 this.raisedBucket(raisedBucket)
+                this.location(location)
             }
             .build()
 

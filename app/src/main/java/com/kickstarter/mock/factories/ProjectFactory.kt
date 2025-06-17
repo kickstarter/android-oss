@@ -289,8 +289,9 @@ object ProjectFactory {
         val project = project()
         return project
             .toBuilder()
+            .pledgeManager(PledgeManagerFactory.pledgeManagerAcceptsNetNewBackers())
             .lastWave(CheckoutWaveFactory.checkoutWaveActive())
-            .redemptionPageUrl("https://ksr.com/backing/redeem")
+            .redemptionPageUrl("backing/redeem")
             .build()
     }
 

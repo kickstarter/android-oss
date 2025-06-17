@@ -7,7 +7,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,8 +33,7 @@ data class LocationsUIState(
 
 open class FilterMenuViewModel(
     private val environment: Environment,
-    private val testDispatcher: CoroutineDispatcher? = null,
-    private val isInPreview: Boolean = false
+    private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
@@ -67,30 +65,22 @@ open class FilterMenuViewModel(
     private var nearbyLocations = emptyList<Location>()
     private var suggestedLocations = emptyList<Location>()
 
-    private lateinit var searchJob: Job
-
     init {
-        if (isInPreview) {
-            scope.launch {
-                // - This call can potentially be moved to the Activity
-                getLocations(default = true)
+        scope.launch {
+            getLocations(default = true)
 
-                searchJob = scope.launch {
-                    _searchQuery
-                        .debounce(300L)
-                        .distinctUntilChanged()
-                        .collectLatest { query ->
-                            if (query.isNotBlank()) {
-                                getLocations(default = false, term = query)
-                            }
-                        }
+            _searchQuery
+                .debounce(300L)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    if (query.isNotBlank()) {
+                        getLocations(default = false, term = query)
+                    }
                 }
-            }
+                .runCatching {
+                    errorAction.invoke(null)
+                }
         }
-    }
-
-    fun cancelLocationSearch() {
-        searchJob.cancel()
     }
 
     fun updateQuery(query: String) {
@@ -99,6 +89,7 @@ open class FilterMenuViewModel(
 
     fun clearQuery() {
         _searchQuery.value = ""
+        suggestedLocations = emptyList()
     }
 
     fun getRootCategories() {
@@ -116,7 +107,7 @@ open class FilterMenuViewModel(
         }
     }
 
-    private suspend fun getLocations(default: Boolean, term: String? = null) {
+    suspend fun getLocations(default: Boolean, term: String? = null) {
         emitCurrentState(isLoading = true)
 
         val response = apolloClient.getLocations(useDefault = default, term = term)

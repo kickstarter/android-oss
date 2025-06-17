@@ -28,6 +28,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -78,7 +79,11 @@ fun LocationSheetPreview() {
         object : MockApolloClientV2() {
             override suspend fun getLocations(
                 useDefault: Boolean,
-                term: String?
+                term: String?,
+                lat: Float?,
+                long: Float?,
+                radius: Float?,
+                filterByCoordinates: Boolean?
             ): Result<List<Location>> {
                 if (useDefault) return Result.success(listOf(LocationFactory.vancouver()))
                 val searched = listOf(
@@ -101,7 +106,7 @@ fun LocationSheetPreview() {
             }
         }
     ).build()
-    val fakeViewModel = FilterMenuViewModel(env, isInPreview = true)
+    val fakeViewModel = FilterMenuViewModel(env)
 
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
@@ -122,7 +127,8 @@ fun DefaultLocationComposablePreview() {
             DefaultLocationComposable(
                 defaultLocations = listOf(LocationFactory.vancouver(), LocationFactory.sydney()),
                 currentLocation = remember { mutableStateOf(LocationFactory.sydney()) },
-                input = remember { mutableStateOf("") }
+                onclickCallback = { location ->
+                }
             )
         }
     }
@@ -207,6 +213,7 @@ fun LocationSheet(
     val dimensions: KSDimensions = KSTheme.dimensions
 
     val currentLocation = remember { mutableStateOf(selectedLocation) }
+
     KSTheme {
         Surface(
             color = colors.backgroundSurfacePrimary
@@ -267,7 +274,10 @@ fun LocationSheet(
                     isFocused = isFocused,
                     input = inputValue,
                     searchCallback = { term -> viewModel.updateQuery(term) },
-                    cancelCallback = { viewModel.cancelLocationSearch() }
+                    cancelCallback = {
+                        currentLocation.value = null
+                        viewModel.clearQuery()
+                    }
                 )
 
                 if (!isFocused.value && inputValue.value.isEmpty()) {
@@ -275,7 +285,18 @@ fun LocationSheet(
                         modifier = Modifier.weight(1f),
                         defaultLocations = defaultLocations,
                         currentLocation = selectedLocation,
-                        input = inputValue
+                        onclickCallback = { locationClicked ->
+                            if (locationClicked.isNotNull()) {
+                                currentLocation.value = locationClicked
+                                inputValue.value = locationClicked?.displayableName() ?: ""
+                                locationClicked?.displayableName()?.let {
+                                    viewModel.updateQuery(locationClicked.displayableName())
+                                }
+                            } else {
+                                currentLocation.value = null
+                                inputValue.value = ""
+                            }
+                        }
                     )
                 }
 
@@ -289,16 +310,22 @@ fun LocationSheet(
                     SuggestedLocationsComposable(
                         modifier = Modifier.weight(1f),
                         suggestedLocations = searched,
-                        currentLocation = selectedLocation
+                        currentLocation = selectedLocation,
+                        onclickCallback = { clickedLocation ->
+                            currentLocation.value = clickedLocation
+                            inputValue.value = clickedLocation?.displayableName() ?: ""
+                        }
                     )
                 }
 
                 KSSearchBottomSheetFooter(
-                    leftButtonIsEnabled = false,
+                    leftButtonIsEnabled = currentLocation.value.isNotNull(),
                     leftButtonClickAction = {
                         currentLocation.value = null
+                        inputValue.value = ""
                         onApply(currentLocation.value, false)
                     },
+                    rightButtonIsEnabled = currentLocation.value.isNotNull(),
                     rightButtonOnClickAction = {
                         onApply(currentLocation.value, true)
                     }
@@ -312,9 +339,9 @@ fun LocationSheet(
 private fun SuggestedLocationsComposable(
     modifier: Modifier = Modifier,
     suggestedLocations: List<Location> = emptyList(),
-    currentLocation: MutableState<Location?>
+    currentLocation: MutableState<Location?>,
+    onclickCallback: (Location?) -> Unit = {}
 ) {
-    val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
     LazyColumn(
@@ -334,7 +361,7 @@ private fun SuggestedLocationsComposable(
                         bottom = dimensions.paddingMediumSmall
                     )
                     .clickable {
-                        currentLocation.value = location
+                        onclickCallback(location)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
@@ -404,7 +431,18 @@ private fun InputSearchComposable(
             label = {
                 Text(text = stringResource(id = R.string.Location_searchbox_placeholder))
             },
-            singleLine = true
+            singleLine = true,
+            trailingIcon = {
+                if (input.value.isNotEmpty()) {
+                    KSIconButton(
+                        onClick = {
+                            input.value = ""
+                        },
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = stringResource(id = R.string.social_buttons_cancel)
+                    )
+                }
+            },
         )
 
         AnimatedVisibility(
@@ -439,7 +477,7 @@ private fun DefaultLocationComposable(
     modifier: Modifier = Modifier,
     defaultLocations: List<Location>,
     currentLocation: MutableState<Location?>,
-    input: MutableState<String>,
+    onclickCallback: (Location?) -> Unit = {}
 ) {
 
     val backgroundDisabledColor = colors.backgroundDisabled
@@ -471,14 +509,13 @@ private fun DefaultLocationComposable(
                             bottom = dimensions.paddingMediumSmall
                         )
                         .clickable {
-                            currentLocation.value = null
-                            input.value = ""
+                            onclickCallback(null)
                         },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
                 ) {
                     RadioButton(
-                        selected = currentLocation.value.isNull() && input.value.isEmpty(),
+                        selected = currentLocation.value.isNull(),
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
                             unselectedColor = colors.backgroundSelected,
@@ -501,8 +538,7 @@ private fun DefaultLocationComposable(
                         bottom = dimensions.paddingMediumSmall
                     )
                     .clickable {
-                        currentLocation.value = location
-                        input.value = location.displayableName()
+                        onclickCallback(location)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),

@@ -3,8 +3,10 @@ package com.kickstarter.features.search.viewmodel
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -81,5 +83,49 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
         assertEquals(errorCounter, 1)
         assertEquals(state.size, 1)
         assertEquals(state.first().categoriesList, emptyList<Category>())
+    }
+
+    @Test
+    fun `Default locations loaded on init, and search query triggers getLocations and updates searchedLocations`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val searched = listOf(LocationFactory.vancouver())
+        val default = listOf(LocationFactory.unitedStates())
+
+        var timesCalled = 0
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getLocations(
+                        useDefault: Boolean,
+                        term: String?,
+                        lat: Float?,
+                        long: Float?,
+                        radius: Float?,
+                        filterByCoordinates: Boolean?
+                    ): Result<List<Location>> {
+                        timesCalled++
+                        return if (!useDefault && term == "Vancouver") {
+                            Result.success(searched)
+                        } else {
+                            Result.success(default)
+                        }
+                    }
+                }).build()
+
+        val state = mutableListOf<LocationsUIState>()
+        backgroundScope.launch(dispatcher) {
+            setUpEnvironment(environment, dispatcher)
+
+            viewModel.updateQuery("Vancouver")
+
+            viewModel.locationsUIState.toList(state)
+        }
+        advanceUntilIdle()
+
+        assertEquals(timesCalled, 2)
+        assertEquals(state.size, 3)
+        assertEquals(state.last().nearLocations.last(), default.last())
+        assertEquals(state.last().searchedLocations.last(), searched.last())
     }
 }

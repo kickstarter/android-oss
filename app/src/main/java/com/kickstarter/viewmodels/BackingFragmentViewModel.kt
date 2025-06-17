@@ -49,6 +49,12 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+sealed class BackingState {
+    object Loading : BackingState()
+    data class Success(val backing: Backing) : BackingState()
+    data class Error(val throwable: Throwable) : BackingState()
+}
+
 interface BackingFragmentViewModel {
     interface Inputs {
         /** Configure with current [ProjectData]. */
@@ -168,6 +174,9 @@ interface BackingFragmentViewModel {
 
         /** Emits whether the pledge is a PLOT pledge. */
         fun pledgeIsPlot(): Observable<Boolean>
+
+        /** Emits any error that occurs when loading the backing. */
+        fun backingError(): Observable<Throwable>
     }
 
     class BackingFragmentViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -178,6 +187,7 @@ interface BackingFragmentViewModel {
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
         private val refreshProject = PublishSubject.create<Unit>()
         private val isExpanded = PublishSubject.create<Boolean>()
+        private val backingError = BehaviorSubject.create<Throwable>()
 
         private val backerAvatar = BehaviorSubject.create<String>()
         private val backerName = BehaviorSubject.create<String>()
@@ -219,6 +229,7 @@ interface BackingFragmentViewModel {
         val ksString: KSString? = this.environment.ksString()
         private val currentUser = requireNotNull(this.environment.currentUserV2())
         private val disposables = CompositeDisposable()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -229,6 +240,7 @@ interface BackingFragmentViewModel {
                 .addToDisposable(disposables)
 
             this.projectDataInput
+                .distinctUntilChanged()
                 .filter { it.project().isBacking() || it.project().userIsCreator(it.user()) }
                 .map { projectData -> joinProjectDataAndReward(projectData) }
                 .subscribe { this.projectDataAndReward.onNext(it) }
@@ -237,10 +249,13 @@ interface BackingFragmentViewModel {
             val backedProject = this.projectDataInput
                 .map { it.project() }
 
-            val backing = this.projectDataInput
+            val backingState = this.projectDataInput
                 .switchMap { getBackingInfo(it) }
-                .compose(neverErrorV2())
-                .filter { it.isNotNull() }
+                .share()
+
+            val backing = backingState
+                .ofType(BackingState.Success::class.java)
+                .map { it.backing }
                 .share()
 
             val rewardA = backing
@@ -371,6 +386,30 @@ interface BackingFragmentViewModel {
                 .map { it.negate() }
                 .distinctUntilChanged()
                 .subscribe { this.paymentMethodIsGone.onNext(it) }
+                .addToDisposable(disposables)
+
+            backingState
+                .ofType(BackingState.Loading::class.java)
+                .map { true }
+                .subscribe(swipeRefresherProgressIsVisible::onNext)
+                .addToDisposable(disposables)
+
+            backingState
+                .ofType(BackingState.Error::class.java)
+                .map { false }
+                .subscribe(swipeRefresherProgressIsVisible::onNext)
+                .addToDisposable(disposables)
+
+            backingState
+                .ofType(BackingState.Success::class.java)
+                .map { false }
+                .subscribe(swipeRefresherProgressIsVisible::onNext)
+                .addToDisposable(disposables)
+
+            backingState
+                .ofType(BackingState.Error::class.java)
+                .map { it.throwable }
+                .subscribe(backingError::onNext)
                 .addToDisposable(disposables)
 
             val paymentSource = backing
@@ -535,11 +574,21 @@ interface BackingFragmentViewModel {
                 RewardUtils.isLocalPickup(rw)
             } ?: true
 
-        private fun getBackingInfo(it: ProjectData): Observable<Backing> {
-            return if (it.backing() == null) {
-                this.apolloClient.getProjectBacking(it.project().slug() ?: "")
-            } else {
-                Observable.just(it.backing())
+        private fun getBackingInfo(projectData: ProjectData): Observable<BackingState> {
+            val backing = projectData.backing()
+            val slug = projectData.project().slug()
+
+            return when {
+                backing != null -> Observable.just(BackingState.Success(backing))
+                !slug.isNullOrBlank() -> Observable.concat(
+                    Observable.just(BackingState.Loading),
+                    apolloClient.getProjectBacking(slug)
+                        .timeout(5, TimeUnit.SECONDS)
+                        .retry(1)
+                        .map<BackingState> { BackingState.Success(it) }
+                        .onErrorReturn { BackingState.Error(it) }
+                )
+                else -> Observable.empty()
             }
         }
 
@@ -785,8 +834,8 @@ interface BackingFragmentViewModel {
             disposables.clear()
             super.onCleared()
         }
+        override fun backingError(): Observable<Throwable> = this.backingError
     }
-
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return BackingFragmentViewModel(environment) as T

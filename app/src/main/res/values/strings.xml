@@ -118,4 +118,8 @@
   <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
   <string name="fpo_track_shipment" formatted="false">Track shipment</string>
 
+  <!-- FPO net new backer -->
+  <string name="fpo_pledge_manager" formatted="false">Pledge Manager</string>
+  <string name="fpo_go_to_pledge_manager" formatted="false">Go to Pledge Manager</string>
+
 </resources>

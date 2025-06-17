@@ -389,7 +389,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         backgroundScope.launch(dispatcher) {
             viewModel.provideBundle(bundle)
-            viewModel.updateSelection(addOnReward.id(), 3)
+            viewModel.updateSelection(addOnReward.id(), 4)
             viewModel.addOnsUIState.toList(uiState)
         }
         advanceUntilIdle()
@@ -397,14 +397,14 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val pledgeDataAndReason = viewModel.getPledgeDataAndReason()
         val pledgeData = pledgeDataAndReason?.first
 
-        assertEquals(7, uiState.last().totalCount)
+        assertEquals(8, uiState.last().totalCount)
         assertEquals(2, pledgeData?.addOns()?.size)
 
         val firstAddOn = pledgeData?.addOns()?.first()
         val secondAddOn = pledgeData?.addOns()?.last()
 
         assertEquals(addOnReward.id(), firstAddOn?.id())
-        assertEquals(3, firstAddOn?.quantity())
+        assertEquals(4, firstAddOn?.quantity())
 
         assertEquals(backedAddOnq.id(), secondAddOn?.id())
         assertEquals(backedAddOnq.quantity(), secondAddOn?.quantity())

@@ -34,6 +34,7 @@ import com.kickstarter.models.AiDisclosure
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
+import com.kickstarter.models.CheckoutWave
 import com.kickstarter.models.Comment
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Item
@@ -44,6 +45,7 @@ import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Photo
+import com.kickstarter.models.PledgeManager
 import com.kickstarter.models.Project
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.Relay
@@ -69,6 +71,7 @@ import com.kickstarter.type.CreateOrUpdateBackingAddressInput
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
+import com.kickstarter.type.PledgeManagerStateEnum
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
 import com.kickstarter.type.ThirdPartyEventItemInput
@@ -325,6 +328,9 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val isBacking = projectFragment?.backing?.backing?.let { true } ?: false
     val isPledgeOverTimeAllowed = projectFragment?.isPledgeOverTimeAllowed ?: false
     val isStarred = projectFragment?.isWatched ?: false
+    val lastWave = projectFragment?.lastWave?.lastWave?.let { checkoutWave ->
+        checkoutWaveTransformer(checkoutWave)
+    }
     val launchedAt = projectFragment?.launchedAt
     val location = locationTransformer(projectFragment?.location?.location)
     val name = projectFragment?.name
@@ -340,8 +346,12 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         }
     }
     val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
+    val pledgeManager = projectFragment?.pledgeManager?.pledgeManager?.let { pledgeManager ->
+        pledgeManagerTransformer(projectFragment.pledgeManager.pledgeManager)
+    }
     val photo = getPhoto(projectFragment?.full?.image?.url, projectFragment?.full?.image?.altText)
     val projectNotice = projectFragment?.projectNotice
+    val redemptionPageUrl = projectFragment?.redemptionPageUrl
     val tags = mutableListOf<String>()
     projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
     projectFragment?.tagsDiscovery?.tags?.map { tags.add(it?.id ?: "") }
@@ -428,14 +438,17 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .isPledgeOverTimeAllowed(isPledgeOverTimeAllowed)
         .isStarred(isStarred)
         .lastUpdatePublishedAt(updatedAt)
+        .lastWave(lastWave)
         .launchedAt(launchedAt)
         .location(location)
         .name(name)
         .permissions(permission)
         .pledged(pledged)
+        .pledgeManager(pledgeManager)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
         .projectNotice(projectNotice)
+        .redemptionPageUrl(redemptionPageUrl)
         .sendMetaCapiEvents(sendMetaCapiEvents)
         .sendThirdPartyEvents(sendThirdPartyEvents)
         .tags(tags)
@@ -1232,4 +1245,29 @@ fun getShippingPreference(shippingPreference: ShippingPreference?): Reward.Shipp
         ShippingPreference.local -> Reward.ShippingPreference.LOCAL
         else -> Reward.ShippingPreference.UNKNOWN
     }
+}
+
+fun getPledgeManagerStateType(checkoutStateType: PledgeManagerStateEnum?) =
+    when (checkoutStateType) {
+        PledgeManagerStateEnum.draft -> PledgeManager.PledgeManagerStateEnum.DRAFT
+        PledgeManagerStateEnum.submitted -> PledgeManager.PledgeManagerStateEnum.SUBMITTED
+        PledgeManagerStateEnum.approved -> PledgeManager.PledgeManagerStateEnum.APPROVED
+        PledgeManagerStateEnum.denied -> PledgeManager.PledgeManagerStateEnum.DENIED
+        else -> PledgeManager.PledgeManagerStateEnum.DENIED
+    }
+
+fun pledgeManagerTransformer(pledgeManager: com.kickstarter.fragment.PledgeManager): PledgeManager {
+    return PledgeManager.builder()
+        .id(decodeRelayId(pledgeManager.id))
+        .acceptsNewBackers(pledgeManager.acceptsNewBackers)
+        .optedOut(pledgeManager.optedOut)
+        .state(getPledgeManagerStateType(pledgeManager.state))
+        .build()
+}
+
+fun checkoutWaveTransformer(checkoutWave: com.kickstarter.fragment.LastWave): CheckoutWave {
+    return CheckoutWave.builder()
+        .id(decodeRelayId(checkoutWave.id))
+        .active(checkoutWave.active)
+        .build()
 }

@@ -98,6 +98,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val openBackingDetailsWebview = TestSubscriber<String>()
+    private val openPledgeManagerWebview = TestSubscriber<String>()
     private val updateFragments = TestSubscriber<ProjectData>()
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
@@ -151,6 +152,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startMessagesActivity().subscribe { this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startThanksActivity().subscribe { this.startThanksActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.openBackingDetailsWebview().subscribe { this.openBackingDetailsWebview.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.openPledgeManagerWebview().subscribe { this.openPledgeManagerWebview.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.updateFragments().subscribe { this.updateFragments.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe { this.startRootCommentsForCommentsThreadActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }.addToDisposable(disposables)
@@ -2138,6 +2140,29 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.expandPledgeSheet.assertNoValues()
         this.openBackingDetailsWebview.assertValue(url)
+        this.openPledgeManagerWebview.assertNoValues()
+    }
+
+    @Test
+    fun `test open Pledge Manager Webview when project is actively accepting new backers to PM, and feature flag on`() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
+
+        // Start the view model with a project that is actively accepting new backers to PM
+        val backedProject = ProjectFactory.projectWithActivePMForNewBackers()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        val url = "https://ksr.com/backing/redeem"
+
+        this.expandPledgeSheet.assertNoValues()
+        this.openBackingDetailsWebview.assertValue(url)
+        this.openPledgeManagerWebview.assertNoValues()
     }
 
     @Test
@@ -2164,6 +2189,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.openBackingDetailsWebview.assertNoValues()
+        this.openPledgeManagerWebview.assertNoValues()
         this.expandPledgeSheet.assertValue(Pair(true, true))
     }
 

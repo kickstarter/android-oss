@@ -48,6 +48,7 @@ import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
 import com.kickstarter.libs.utils.extensions.secretRewardToken
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
+import com.kickstarter.libs.utils.extensions.acceptsNewBackersForPM
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
 import com.kickstarter.models.Backing
@@ -260,6 +261,9 @@ interface ProjectPageViewModel {
         /** Emits when user clicks View Pledge button and should start the [com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity.kt]. */
         fun openBackingDetailsWebview(): Observable<String>
 
+        /** Emits when user clicks View Rewards button and should start the [com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity.kt]. */
+        fun openPledgeManagerWebview(): Observable<String>
+
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
 
@@ -366,6 +370,7 @@ interface ProjectPageViewModel {
             PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val openBackingDetailsWebview = PublishSubject.create<String>()
+        private val openPledgeManagerWebview = PublishSubject.create<String>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
@@ -810,12 +815,19 @@ interface ProjectPageViewModel {
                 .withLatestFrom(currentProject) { _, project -> project }
                 .subscribe { project ->
                     val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_COMPLETED_PM_CHECKOUT_WEBVIEW) ?: false
+                    val goToPMWebviewFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKER_GO_TO_PM_WEBVIEW) ?: false
+
                     if (project.backing()?.isOrderPresentAndComplete() ?: false && netNewBackFeatureFlag) {
                         // Open webview to backing/survey_responses endpoint instead of backing/details
                         // endpoint to avoid prompting user to re-login
                         project.backing()?.backingDetailsPageRoute()?.let {
                             openBackingDetailsWebview.onNext(it)
                         }
+                    } else if (project.acceptsNewBackersForPM() && goToPMWebviewFeatureFlag) {
+                         project.redemptionPageUrl()?.let { path ->
+                            val redemptionPageUrl = UrlUtils.appendPath(environment.webEndpoint(), path)
+                            openPledgeManagerWebview.onNext(redemptionPageUrl)
+                         }
                     } else {
                         this.continuePledgeFlow.onNext {
                             expandPledgeSheet.onNext(Pair(true, true))
@@ -1470,6 +1482,9 @@ interface ProjectPageViewModel {
 
         override fun openBackingDetailsWebview(): Observable<String> =
             this.openBackingDetailsWebview
+
+        override fun openPledgeManagerWebview(): Observable<String> =
+            this.openPledgeManagerWebview
 
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> =
             this.onOpenVideoInFullScreen

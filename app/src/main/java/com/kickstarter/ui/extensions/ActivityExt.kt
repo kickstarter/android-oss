@@ -43,6 +43,7 @@ import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.MessagesActivity
+import com.kickstarter.ui.activities.WebViewActivity
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -330,5 +331,13 @@ fun Activity.startBackingDetailsWebViewActivity(url: String) {
     startActivity(
         Intent(this, BackingDetailsActivity::class.java)
             .putExtra(IntentKey.URL, url)
+    )
+}
+
+fun Activity.startWebViewActivity(url: String, toolbarTitle: String) {
+    startActivity(
+        Intent(this, WebViewActivity::class.java)
+            .putExtra(IntentKey.URL, url)
+            .putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle)
     )
 }

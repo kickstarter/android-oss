@@ -113,74 +113,74 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
-//    @Test
-//    fun `test amount of backed addOns has been increased plus loads second addOns page`() = runTest {
-//        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
-//        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
-//        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
-//
-//        val addOnReward2 = RewardFactory.addOn().toBuilder().id(7L).build()
-//        val aDifferentAddOnReward2 = RewardFactory.addOnSingle().toBuilder().id(8L).build()
-//        val secondPageAddOns = listOf(addOnReward2, aDifferentAddOnReward2)
-//
-//        var page = 0
-//
-//        val rw = RewardFactory.reward().toBuilder()
-//            .hasAddons(true)
-//            .id(99L)
-//            .pledgeAmount(20.0)
-//            .build()
-//
-//        val uiState = mutableListOf<AddOnsUIState>()
-//        val dispatcher = UnconfinedTestDispatcher(testScheduler)
-//
-//        val apolloClient = object : MockApolloClientV2() {
-//            override suspend fun getRewardAllowedAddOns(
-//                locationId: Location,
-//                rewardId: Reward,
-//                cursor: String?
-//            ): Result<AddOnsEnvelope> {
-//                page++
-//                assertEquals(99L, rewardId.id())
-//                val returnedList = if (page == 1) addOnsList else secondPageAddOns
-//                return Result.success(AddOnsEnvelope(addOnsList = returnedList))
-//            }
-//        }
-//
-//        val env = environment().toBuilder()
-//            .apolloClientV2(apolloClient)
-//            .build()
-//        setup(env, dispatcher)
-//
-//        var total = 0.0
-//        backgroundScope.launch(dispatcher) {
-//            viewModel.userRewardSelection(rw)
-//            viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
-//
-//            viewModel.updateSelection(addOnsList.first().id(), 3)
-//
-//            advanceUntilIdle()
-//            //viewModel.loadMore()
-//
-//            total = viewModel.getPledgeDataAndReason()?.first?.pledgeAmountTotal()?.toDouble() ?: 0.0
-//            viewModel.addOnsUIState.toList(uiState)
-//        }
-//
-//        advanceUntilIdle()
-//
-//        val paginatedList = addOnsList + secondPageAddOns
-//        assertTrue(page == 2)
-//        assertEquals(
-//            uiState.last(),
-//            AddOnsUIState(
-//                addOns = addOnsList,
-//                totalCount = 3,
-//                isLoading = false,
-//                shippingRule = ShippingRuleFactory.canadaShippingRule(),
-//                totalPledgeAmount = total
-//            )
-//        )
-//    }
+    @Test
+    fun `test amount of backed addOns has been increased plus loads second addOns page`() = runTest {
+        val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
+        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
+
+        val addOnReward2 = RewardFactory.addOn().toBuilder().id(7L).build()
+        val aDifferentAddOnReward2 = RewardFactory.addOnSingle().toBuilder().id(8L).build()
+        val secondPageAddOns = listOf(addOnReward2, aDifferentAddOnReward2)
+
+        var page = 0
+
+        val rw = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .id(99L)
+            .pledgeAmount(20.0)
+            .build()
+
+        val uiState = mutableListOf<AddOnsUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override suspend fun getRewardAllowedAddOns(
+                locationId: Location,
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
+                page++
+                assertEquals(99L, rewardId.id())
+                val returnedList = if (page == 1) addOnsList else secondPageAddOns
+                return Result.success(AddOnsEnvelope(addOnsList = returnedList))
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+        setup(env, dispatcher)
+
+        var total = 0.0
+        backgroundScope.launch(dispatcher) {
+            viewModel.userRewardSelection(rw)
+            viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
+
+            viewModel.updateSelection(addOnsList.first().id(), 3)
+
+            advanceUntilIdle()
+            viewModel.loadMore()
+
+            total = viewModel.getPledgeDataAndReason()?.first?.pledgeAmountTotal()?.toDouble() ?: 0.0
+            viewModel.addOnsUIState.toList(uiState)
+        }
+
+        advanceUntilIdle()
+
+        val paginatedList = addOnsList + secondPageAddOns
+        assertTrue(page == 2)
+        assertEquals(
+            uiState.last(),
+            AddOnsUIState(
+                addOns = paginatedList,
+                totalCount = 3,
+                isLoading = false,
+                shippingRule = ShippingRuleFactory.canadaShippingRule(),
+                totalPledgeAmount = total
+            )
+        )
+    }
 
     @Test
     fun `test amount of backed addOns has been increased`() = runTest {

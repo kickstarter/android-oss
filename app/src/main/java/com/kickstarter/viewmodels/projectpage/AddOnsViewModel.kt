@@ -20,7 +20,6 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -72,7 +71,6 @@ class AddOnsViewModel(
     var hasMorePages = false
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
-    private var dispatcher: CoroutineDispatcher = Dispatchers.IO
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
     val addOnsUIState: StateFlow<AddOnsUIState>
@@ -150,7 +148,9 @@ class AddOnsViewModel(
                 }
             }
 
-            getAddOns(shippingRule)
+            scope.launch {
+                getAddOns(shippingRule)
+            }
         }
     }
 
@@ -178,48 +178,50 @@ class AddOnsViewModel(
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
         if (this.shippingRule != shippingRule) {
             this.shippingRule = shippingRule
-            getAddOns(shippingRule)
+            scope.launch {
+                getAddOns(shippingRule)
+            }
         }
     }
 
     fun loadMore() {
-        getAddOns(shippingRule)
+        scope.launch {
+            getAddOns(shippingRule)
+        }
     }
 
-    private fun getAddOns(selectedShippingRule: ShippingRule) {
-        scope.launch(dispatcher) {
-            // - Do not execute call unless reward has addOns
-            if (currentUserReward.hasAddons()) {
-                emitCurrentState(isLoading = true)
-                val envelopeResult = apolloClient.getRewardAllowedAddOns(
-                    rewardId = currentUserReward,
-                    locationId = selectedShippingRule.location() ?: Location.builder().build(),
-                    cursor = nextPage
-                )
+    private suspend fun getAddOns(selectedShippingRule: ShippingRule) {
+        // - Do not execute call unless reward has addOns
+        if (currentUserReward.hasAddons()) {
+            emitCurrentState(isLoading = true)
+            val envelopeResult = apolloClient.getRewardAllowedAddOns(
+                rewardId = currentUserReward,
+                locationId = selectedShippingRule.location() ?: Location.builder().build(),
+                cursor = nextPage
+            )
 
-                if (envelopeResult.isSuccess) {
-                    val addOns = envelopeResult.getOrNull()?.addOnsList
-                    // - pagination related stuff
-                    nextPage = envelopeResult.getOrNull()?.pageInfo?.endCursor
-                    hasMorePages = envelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
-                    if (!addOns.isNullOrEmpty()) {
-                        val updatedList = getUpdatedList(
-                            addOns,
-                            backedAddOns,
-                            selectedShippingRule.location() ?: Location.builder().build()
-                        )
+            if (envelopeResult.isSuccess) {
+                val addOns = envelopeResult.getOrNull()?.addOnsList
+                // - pagination related stuff
+                nextPage = envelopeResult.getOrNull()?.pageInfo?.endCursor
+                hasMorePages = envelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
+                if (!addOns.isNullOrEmpty()) {
+                    val updatedList = getUpdatedList(
+                        addOns,
+                        backedAddOns,
+                        selectedShippingRule.location() ?: Location.builder().build()
+                    )
 
-                        this@AddOnsViewModel.addOns.addAll(updatedList)
-                    }
-                    emitCurrentState(isLoading = false)
+                    this@AddOnsViewModel.addOns.addAll(updatedList)
                 }
-
-                if (envelopeResult.isFailure) {
-                    errorAction.invoke(null)
-                }
-            } else {
                 emitCurrentState(isLoading = false)
             }
+
+            if (envelopeResult.isFailure) {
+                errorAction.invoke(null)
+            }
+        } else {
+            emitCurrentState(isLoading = false)
         }
     }
 

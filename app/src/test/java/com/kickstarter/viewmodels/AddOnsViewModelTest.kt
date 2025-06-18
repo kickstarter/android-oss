@@ -24,7 +24,6 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.projectpage.AddOnsUIState
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
-import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -63,11 +62,12 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getProjectAddOns(
-                slug: String,
-                locationId: Location
-            ): Observable<List<Reward>> {
-                return Observable.just(addOnsList)
+            override suspend fun getRewardAllowedAddOns(
+                locationId: Location,
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
 
@@ -99,11 +99,12 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
 
         val apolloClient = object : MockApolloClientV2() {
-            override fun getProjectAddOns(
-                slug: String,
-                locationId: Location
-            ): Observable<List<Reward>> {
-                return Observable.just(addOnsList)
+            override suspend fun getRewardAllowedAddOns(
+                locationId: Location,
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
             }
         }
 
@@ -156,7 +157,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
         setup(env, dispatcher)
 
-        backgroundScope.launch {
+        backgroundScope.launch(dispatcher) {
             viewModel.userRewardSelection(rw)
             viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
@@ -387,7 +388,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
         createViewModel(env, dispatcher)
 
-        backgroundScope.launch {
+        backgroundScope.launch(dispatcher) {
             viewModel.provideBundle(bundle)
             viewModel.updateSelection(addOnReward.id(), 4)
             viewModel.addOnsUIState.toList(uiState)

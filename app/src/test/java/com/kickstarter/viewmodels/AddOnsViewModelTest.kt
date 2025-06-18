@@ -156,7 +156,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
         setup(env, dispatcher)
 
-        backgroundScope.launch(dispatcher) {
+        backgroundScope.launch {
             viewModel.userRewardSelection(rw)
             viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
@@ -387,7 +387,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
         createViewModel(env, dispatcher)
 
-        backgroundScope.launch(dispatcher) {
+        backgroundScope.launch {
             viewModel.provideBundle(bundle)
             viewModel.updateSelection(addOnReward.id(), 4)
             viewModel.addOnsUIState.toList(uiState)

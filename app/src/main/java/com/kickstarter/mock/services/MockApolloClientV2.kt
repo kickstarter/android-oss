@@ -371,7 +371,7 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return Result.success(emptyList())
     }
 
-    override suspend fun getLocations(useDefault: Boolean, term: String?): Result<List<Location>> {
+    override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> {
         return Result.success(emptyList())
     }
 

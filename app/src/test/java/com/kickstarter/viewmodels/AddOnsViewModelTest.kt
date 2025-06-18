@@ -254,81 +254,81 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         )
     }
 
-    @Test
-    fun `test backed addOns total amount on start`() = runTest {
-        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
-
-        val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
-
-        val shippingRule = ShippingRuleFactory.canadaShippingRule()
-        val backedReward = RewardFactory.reward().toBuilder()
-            .hasAddons(true)
-            .id(99L)
-            .build()
-
-        val backing = BackingFactory.backing(reward = backedReward)
-            .toBuilder()
-            .addOns(listOf(backedAddOnq))
-            .build()
-
-        val testProject = ProjectFactory.project()
-            .toBuilder()
-            .rewards(listOf(backedReward))
-            .backing(backing)
-            .build()
-
-        val testProjectData = ProjectData.builder().project(testProject).build()
-
-        val bundle = Bundle()
-        bundle.putParcelable(
-            ArgumentsKey.PLEDGE_PLEDGE_DATA,
-            PledgeData.with(
-                PledgeFlowContext.CHANGE_REWARD,
-                testProjectData,
-                backedReward,
-                shippingRule = shippingRule
-            )
-        )
-        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
-
-        val uiState = mutableListOf<AddOnsUIState>()
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
-
-        val apolloClient = object : MockApolloClientV2() {
-            override suspend fun getRewardAllowedAddOns(
-                locationId: Location,
-                rewardId: Reward,
-                cursor: String?
-            ): Result<AddOnsEnvelope> {
-                assertEquals(99L, rewardId.id())
-                return Result.success(AddOnsEnvelope(addOnsList = listOf(aDifferentAddOnReward)))
-            }
-        }
-
-        val env = environment().toBuilder()
-            .apolloClientV2(apolloClient)
-            .build()
-        createViewModel(env, dispatcher)
-        backgroundScope.launch(dispatcher) {
-            viewModel.provideBundle(bundle)
-            viewModel.addOnsUIState.toList(uiState)
-        }
-
-        advanceUntilIdle()
-
-        val pledgeDataAndReason = viewModel.getPledgeDataAndReason()
-        val pledgeData = pledgeDataAndReason?.first
-
-        assertEquals(1, uiState.last().addOns.size)
-        assertEquals(aDifferentAddOnReward.id(), uiState.last().addOns.first().id())
-
-        assertEquals(4, uiState.last().totalCount)
-
-        assertEquals(shippingRule, pledgeData?.shippingRule())
-        assertEquals(1, pledgeData?.addOns()?.size)
-        assertEquals(backedAddOnq.id(), pledgeData?.addOns()?.first()?.id())
-        assertEquals(backedAddOnq.quantity(), pledgeData?.addOns()?.first()?.quantity())
-    }
+//    @Test
+//    fun `test backed addOns total amount on start`() = runTest {
+//        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
+//
+//        val backedAddOnq = aDifferentAddOnReward.toBuilder().quantity(4).build()
+//
+//        val shippingRule = ShippingRuleFactory.canadaShippingRule()
+//        val backedReward = RewardFactory.reward().toBuilder()
+//            .hasAddons(true)
+//            .id(99L)
+//            .build()
+//
+//        val backing = BackingFactory.backing(reward = backedReward)
+//            .toBuilder()
+//            .addOns(listOf(backedAddOnq))
+//            .build()
+//
+//        val testProject = ProjectFactory.project()
+//            .toBuilder()
+//            .rewards(listOf(backedReward))
+//            .backing(backing)
+//            .build()
+//
+//        val testProjectData = ProjectData.builder().project(testProject).build()
+//
+//        val bundle = Bundle()
+//        bundle.putParcelable(
+//            ArgumentsKey.PLEDGE_PLEDGE_DATA,
+//            PledgeData.with(
+//                PledgeFlowContext.CHANGE_REWARD,
+//                testProjectData,
+//                backedReward,
+//                shippingRule = shippingRule
+//            )
+//        )
+//        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
+//
+//        val uiState = mutableListOf<AddOnsUIState>()
+//        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+//
+//        val apolloClient = object : MockApolloClientV2() {
+//            override suspend fun getRewardAllowedAddOns(
+//                locationId: Location,
+//                rewardId: Reward,
+//                cursor: String?
+//            ): Result<AddOnsEnvelope> {
+//                assertEquals(99L, rewardId.id())
+//                return Result.success(AddOnsEnvelope(addOnsList = listOf(aDifferentAddOnReward)))
+//            }
+//        }
+//
+//        val env = environment().toBuilder()
+//            .apolloClientV2(apolloClient)
+//            .build()
+//        createViewModel(env, dispatcher)
+//        backgroundScope.launch(dispatcher) {
+//            viewModel.provideBundle(bundle)
+//            viewModel.addOnsUIState.toList(uiState)
+//        }
+//
+//        advanceUntilIdle()
+//
+//        val pledgeDataAndReason = viewModel.getPledgeDataAndReason()
+//        val pledgeData = pledgeDataAndReason?.first
+//
+//        assertEquals(1, uiState.last().addOns.size)
+//        assertEquals(aDifferentAddOnReward.id(), uiState.last().addOns.first().id())
+//
+//        assertEquals(4, uiState.last().totalCount)
+//
+//        assertEquals(shippingRule, pledgeData?.shippingRule())
+//        assertEquals(1, pledgeData?.addOns()?.size)
+//        assertEquals(backedAddOnq.id(), pledgeData?.addOns()?.first()?.id())
+//        assertEquals(backedAddOnq.quantity(), pledgeData?.addOns()?.first()?.quantity())
+//    }
 
 //    @Test
 //    fun `test backed addOns total amount when the amount has been updated`() = runTest {

@@ -38,21 +38,8 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: AddOnsViewModel
 
-    private fun createViewModel(environment: Environment, dispatcher: CoroutineDispatcher? = null) {
-        viewModel =
-            AddOnsViewModel.Factory(environment, testDispatcher = dispatcher).create(AddOnsViewModel::class.java)
-    }
-
     fun setup(environment: Environment = environment(), dispatcher: CoroutineDispatcher? = null) {
-        createViewModel(environment, dispatcher)
-
-        val testRewards = (0..5).map { Reward.builder().hasAddons(true).title("$it").id(it.toLong()).build() }
-        val testBacking =
-            Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
-        val testProject = Project.builder().rewards(testRewards).backing(testBacking).build()
-        val testProjectData = ProjectData.builder().project(testProject).build()
-
-        viewModel.provideProjectData(testProjectData)
+        viewModel = AddOnsViewModel.Factory(environment, testDispatcher = dispatcher).create(AddOnsViewModel::class.java)
     }
 
     @Test
@@ -82,7 +69,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val testProject = ProjectFactory.project().toBuilder().rewards(listOf(backedReward)).backing(backing).build()
         val testProjectData = ProjectData.builder().project(testProject).build()
 
-        createViewModel(env)
+        setup(env)
 
         val bundle = Bundle()
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.CHANGE_REWARD, testProjectData, backedReward, shippingRule = shippingRule))
@@ -113,6 +100,14 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setup(env)
+
+        val testRewards = (0..5).map { Reward.builder().hasAddons(true).title("$it").id(it.toLong()).build() }
+        val testBacking =
+            Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
+        val testProject = Project.builder().rewards(testRewards).backing(testBacking).build()
+        val testProjectData = ProjectData.builder().project(testProject).build()
+
+        viewModel.provideProjectData(testProjectData)
 
         viewModel.sendEvent()
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -189,6 +184,12 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `test amount of backed addOns has been increased`() = runTest {
+        val testRewards = (0..5).map { Reward.builder().hasAddons(true).title("$it").id(it.toLong()).build() }
+        val testBacking =
+            Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
+        val testProject = Project.builder().rewards(testRewards).backing(testBacking).build()
+        val testProjectData = ProjectData.builder().project(testProject).build()
+
         val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
@@ -220,6 +221,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         setup(env, dispatcher)
 
         backgroundScope.launch(dispatcher) {
+            viewModel.provideProjectData(testProjectData)
             viewModel.userRewardSelection(rw)
             viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
 
@@ -256,6 +258,12 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun `test add bonus Support without selecting addOns`() = runTest {
+        val testRewards = (0..5).map { Reward.builder().hasAddons(true).title("$it").id(it.toLong()).build() }
+        val testBacking =
+            Backing.builder().reward(testRewards[2]).rewardId(testRewards[2].id()).build()
+        val testProject = Project.builder().rewards(testRewards).backing(testBacking).build()
+        val testProjectData = ProjectData.builder().project(testProject).build()
+
         val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
@@ -286,6 +294,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         setup(env, dispatcher)
         backgroundScope.launch(dispatcher) {
+            viewModel.provideProjectData(testProjectData)
             viewModel.userRewardSelection(rw)
             viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
             viewModel.addOnsUIState.toList(uiState)
@@ -378,8 +387,9 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder()
             .apolloClientV2(apolloClient)
             .build()
-        createViewModel(env, dispatcher)
+
         backgroundScope.launch(dispatcher) {
+            setup(env, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.addOnsUIState.toList(uiState)
         }
@@ -455,9 +465,9 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
         val env = environment().toBuilder()
             .apolloClientV2(apolloClient)
             .build()
-        createViewModel(env, dispatcher)
 
         backgroundScope.launch(dispatcher) {
+            setup(env, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.updateSelection(addOnReward.id(), 4)
             viewModel.addOnsUIState.toList(uiState)
@@ -486,7 +496,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2()) // empty user
             .build()
 
-        createViewModel(env)
+        setup(env)
         assertFalse(viewModel.isUserLoggedIn())
     }
 
@@ -496,7 +506,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             .currentUserV2(MockCurrentUserV2(UserFactory.user())) // empty user
             .build()
 
-        createViewModel(env)
+        setup(env)
         assertTrue(viewModel.isUserLoggedIn())
     }
 }

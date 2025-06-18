@@ -6,7 +6,6 @@ import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory

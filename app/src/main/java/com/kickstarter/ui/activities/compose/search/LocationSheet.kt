@@ -267,7 +267,6 @@ fun LocationSheet(
                 }
 
                 val isFocused = remember { mutableStateOf(false) }
-                val selectedLocation = remember { mutableStateOf(currentLocation.value) }
                 var inputValue = remember { mutableStateOf("") }
 
                 InputSearchComposable(
@@ -276,6 +275,7 @@ fun LocationSheet(
                     searchCallback = { term -> viewModel.updateQuery(term) },
                     cancelCallback = {
                         currentLocation.value = null
+                        inputValue.value = ""
                         viewModel.clearQuery()
                     }
                 )
@@ -284,14 +284,10 @@ fun LocationSheet(
                     DefaultLocationComposable(
                         modifier = Modifier.weight(1f),
                         defaultLocations = defaultLocations,
-                        currentLocation = selectedLocation,
+                        currentLocation = currentLocation,
                         onclickCallback = { locationClicked ->
                             if (locationClicked.isNotNull()) {
                                 currentLocation.value = locationClicked
-                                inputValue.value = locationClicked?.displayableName() ?: ""
-                                locationClicked?.displayableName()?.let {
-                                    viewModel.updateQuery(locationClicked.displayableName())
-                                }
                             } else {
                                 currentLocation.value = null
                                 inputValue.value = ""
@@ -310,7 +306,7 @@ fun LocationSheet(
                     SuggestedLocationsComposable(
                         modifier = Modifier.weight(1f),
                         suggestedLocations = searched,
-                        currentLocation = selectedLocation,
+                        currentLocation = currentLocation,
                         onclickCallback = { clickedLocation ->
                             currentLocation.value = clickedLocation
                             inputValue.value = clickedLocation?.displayableName() ?: ""
@@ -325,7 +321,7 @@ fun LocationSheet(
                         inputValue.value = ""
                         onApply(currentLocation.value, false)
                     },
-                    rightButtonIsEnabled = currentLocation.value.isNotNull(),
+                    rightButtonIsEnabled = currentLocation.value.isNotNull() || (currentLocation.value.isNull() && inputValue.value.isNullOrEmpty()),
                     rightButtonOnClickAction = {
                         onApply(currentLocation.value, true)
                     }
@@ -437,6 +433,7 @@ private fun InputSearchComposable(
                     KSIconButton(
                         onClick = {
                             input.value = ""
+                            cancelCallback()
                         },
                         imageVector = Icons.Filled.Clear,
                         contentDescription = stringResource(id = R.string.social_buttons_cancel)
@@ -483,6 +480,8 @@ private fun DefaultLocationComposable(
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
+    val isSelectedId = currentLocation.value?.id()
+
     LazyColumn(
         modifier = modifier
             .testTag(LocationTestTags.DEFAULT_LOCATION_LIST)
@@ -515,7 +514,7 @@ private fun DefaultLocationComposable(
                     horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
                 ) {
                     RadioButton(
-                        selected = currentLocation.value.isNull(),
+                        selected = isSelectedId == null,
                         onClick = null,
                         colors = RadioButtonDefaults.colors(
                             unselectedColor = colors.backgroundSelected,
@@ -544,7 +543,7 @@ private fun DefaultLocationComposable(
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
             ) {
                 RadioButton(
-                    selected = currentLocation.value?.id() == location.id(),
+                    selected = isSelectedId == location.id(),
                     onClick = null,
                     colors = RadioButtonDefaults.colors(
                         unselectedColor = colors.backgroundSelected,

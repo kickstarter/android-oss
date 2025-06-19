@@ -518,6 +518,8 @@ fun FilterPagerSheet(
     ) { page ->
         when (page) {
             FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
+                selectedLocation = currentLocation,
+                selectedPercentage = currentPercentage,
                 selectedProjectStatus = projectState.value,
                 onDismiss = {
                     onDismiss.invoke()

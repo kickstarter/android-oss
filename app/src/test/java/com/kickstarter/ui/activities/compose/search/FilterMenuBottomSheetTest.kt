@@ -38,11 +38,11 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuBottomSheet(
-                    onApply = { a, b -> },
-                    onDismiss = {},
-                    onNavigate = {},
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
+                    onDismiss = {},
+                    onApply = { a, b -> },
+                    onNavigate = {}
                 )
             }
         }
@@ -60,11 +60,11 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 FilterMenuBottomSheet(
                     selectedProjectStatus = DiscoveryParams.State.LIVE,
-                    onApply = { a, b -> },
-                    onDismiss = {},
-                    onNavigate = {},
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
+                    onDismiss = {},
+                    onApply = { a, b -> },
+                    onNavigate = {}
                 )
             }
         }

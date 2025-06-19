@@ -12,28 +12,28 @@ query GetShippingRulesForRewardId($rewardId: ID!) {
     }
 }
 
-query GetRewardAllowedAddOns($slug: String!, $locationId: ID! , $rewardImageWidth: Int = 1024) {
-    project(slug: $slug) {
-        rewards {
-            nodes {
-                id
-                allowedAddons {
-                    edges {
-                        node {
-                            shippingRulesExpanded(forLocation: $locationId) {
-                                nodes {
-                                    ... shippingRule
-                                }
+query GetRewardAllowedAddOns($locationId: ID! , $rewardImageWidth: Int = 1024, $rewardId: ID!, $first: Int = 5, $cursor: String) {
+    node(id: $rewardId) {
+        ... on Reward {
+            allowedAddons(first: $first, after:$cursor) {
+                edges {
+                    cursor
+                    node {
+                        shippingRulesExpanded(forLocation: $locationId) {
+                            nodes {
+                                ... shippingRule
                             }
-                            ... reward
-                            items {
-                                ... rewardItems
-                            }
-                            ...rewardImage
                         }
+                        ... reward
+                        items {
+                            ... rewardItems
+                        }
+                        ...rewardImage
                     }
                 }
-
+                pageInfo {
+                    ... pageInfo
+                }
             }
         }
     }

@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.models.Location
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
@@ -280,9 +281,12 @@ private fun FilterRow(
 
             if (subText != null) {
                 Text(
+                    modifier = Modifier.padding(
+                        top = dimensions.paddingSmall
+                    ),
                     text = subText,
                     style = typographyV2.bodyMD,
-                    color = colors.textPrimary
+                    color = colors.textSecondary
                 )
             }
         }
@@ -327,7 +331,8 @@ private fun FilterMenuSheetPreview() {
         FilterMenuBottomSheet(
             selectedProjectStatus = DiscoveryParams.State.LIVE,
             onDismiss = {},
-            onApply = { a, b -> }
+            onApply = { a, b -> },
+            selectedLocation = LocationFactory.vancouver(),
         )
     }
 }

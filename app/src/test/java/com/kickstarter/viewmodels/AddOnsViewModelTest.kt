@@ -114,7 +114,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test amount of backed addOns has been increased plus loads second addOns page`() = runTest {
+    fun `test amount of backed addOns has been increased for page 1 loads second page, and increase addon from second page`() = runTest {
         val addOnReward = RewardFactory.addOn().toBuilder().id(1L).build()
         val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L).build()
         val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
@@ -162,6 +162,9 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             advanceUntilIdle()
             viewModel.loadMore()
 
+            advanceUntilIdle()
+            viewModel.updateSelection(secondPageAddOns.first().id(), 3)
+
             total = viewModel.getPledgeDataAndReason()?.first?.pledgeAmountTotal()?.toDouble() ?: 0.0
             viewModel.addOnsUIState.toList(uiState)
         }
@@ -174,7 +177,7 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
             uiState.last(),
             AddOnsUIState(
                 addOns = paginatedList,
-                totalCount = 3,
+                totalCount = 6,
                 isLoading = false,
                 shippingRule = ShippingRuleFactory.canadaShippingRule(),
                 totalPledgeAmount = total

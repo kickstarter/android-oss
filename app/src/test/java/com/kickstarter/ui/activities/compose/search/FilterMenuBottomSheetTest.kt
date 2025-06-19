@@ -20,7 +20,10 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 Surface {
-                    FilterMenuBottomSheet()
+                    FilterMenuBottomSheet(
+                        selectedLocation = currentLocation,
+                        selectedPercentage = currentPercentage
+                    )
                 }
             }
         }
@@ -38,11 +41,13 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuBottomSheet(
-                    onApply = { a, b -> },
-                    onDismiss = {},
-                    onNavigate = {},
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
+                    onDismiss = {},
+                    onApply = { a, b -> },
+                    onNavigate = {},
+                    selectedLocation = currentLocation,
+                    selectedPercentage = currentPercentage
                 )
             }
         }
@@ -60,11 +65,13 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 FilterMenuBottomSheet(
                     selectedProjectStatus = DiscoveryParams.State.LIVE,
-                    onApply = { a, b -> },
-                    onDismiss = {},
-                    onNavigate = {},
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
+                    onDismiss = {},
+                    onApply = { a, b -> },
+                    onNavigate = {},
+                    selectedLocation = currentLocation,
+                    selectedPercentage = currentPercentage
                 )
             }
         }
@@ -96,7 +103,9 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
                             assertEquals(publicState, null)
 
                         assertNull(from)
-                    }
+                    },
+                    selectedLocation = currentLocation,
+                    selectedPercentage = currentPercentage
                 )
             }
         }
@@ -116,7 +125,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
                 FilterMenuBottomSheet(onApply = { state, from ->
                     selected = state
                     contextFrom = from
-                })
+                }, selectedLocation = currentLocation, selectedPercentage = currentPercentage)
             }
         }
 
@@ -144,7 +153,9 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
                     onApply = { state, from ->
                         selected = state
                         contextFrom = from
-                    }
+                    },
+                    selectedLocation = currentLocation,
+                    selectedPercentage = currentPercentage
                 )
             }
         }

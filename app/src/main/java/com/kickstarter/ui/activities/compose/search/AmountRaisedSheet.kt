@@ -181,5 +181,4 @@ fun textForBucket(bucket: DiscoveryParams.AmountBuckets) = when (bucket) {
     DiscoveryParams.AmountBuckets.BUCKET_0 -> stringResource(R.string.Amount_raised_bucket_0_fpo)
     DiscoveryParams.AmountBuckets.BUCKET_3 -> stringResource(R.string.Amount_raised_bucket_3_fpo)
     DiscoveryParams.AmountBuckets.BUCKET_4 -> stringResource(R.string.Amount_raised_bucket_4_fpo)
-    else -> ""
 }

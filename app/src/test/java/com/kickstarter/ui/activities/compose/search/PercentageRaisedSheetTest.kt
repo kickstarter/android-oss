@@ -59,4 +59,12 @@ class PercentageRaisedSheetTest : KSRobolectricTestCase() {
             .onNodeWithText(context.resources.getString(R.string.Percentage_raised_bucket_2))
             .isDisplayed()
     }
+
+    @Test
+    fun `Initial buttons state`() {
+    }
+
+    @Test
+    fun `Buttons state when one bucket is selected`() {
+    }
 }

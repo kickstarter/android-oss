@@ -20,21 +20,16 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import kotlinx.coroutines.rx2.asFlow
+import kotlin.coroutines.EmptyCoroutineContext
 
 data class AddOnsUIState(
     val addOns: List<Reward> = emptyList(),
@@ -45,7 +40,12 @@ data class AddOnsUIState(
     val totalBonusAmount: Double = 0.0
 )
 
-class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
+class AddOnsViewModel(
+    private val environment: Environment,
+    bundle: Bundle? = null,
+    private val testDispatcher: CoroutineDispatcher? = null
+) : ViewModel() {
+
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val currentUser = requireNotNull(environment.currentUserV2())
     private var isUserLoggedIn = false
@@ -60,14 +60,17 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private var pReason: PledgeReason = PledgeReason.PLEDGE
     private var backing: Backing? = null
 
-    private var addOns: List<Reward> = listOf()
+    private var addOns = mutableListOf<Reward>()
     private var errorAction: (message: String?) -> Unit = {}
     private val currentSelection = mutableMapOf<Long, Int>()
 
     private var backedAddOns = emptyList<Reward>()
 
-    private var scope: CoroutineScope = viewModelScope
-    private var dispatcher: CoroutineDispatcher = Dispatchers.IO
+    // Pagination variables
+    private var nextPage: String? = null
+    var hasMorePages = false
+
+    private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
 
     private val mutableAddOnsUIState = MutableStateFlow(AddOnsUIState())
     val addOnsUIState: StateFlow<AddOnsUIState>
@@ -81,16 +84,6 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
-    }
-
-    /**
-     * By default run in
-     * scope: viewModelScope
-     * dispatcher: Dispatchers.IO
-     */
-    fun provideScopeAndDispatcher(scope: CoroutineScope, dispatcher: CoroutineDispatcher) {
-        this.scope = scope
-        this.dispatcher = dispatcher
     }
 
     init {
@@ -155,7 +148,9 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
                 }
             }
 
-            getAddOns(shippingRule)
+            scope.launch {
+                getAddOns(shippingRule)
+            }
         }
     }
 
@@ -183,39 +178,50 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     fun provideSelectedShippingRule(shippingRule: ShippingRule) {
         if (this.shippingRule != shippingRule) {
             this.shippingRule = shippingRule
+            scope.launch {
+                getAddOns(shippingRule)
+            }
+        }
+    }
+
+    fun loadMore() {
+        scope.launch {
             getAddOns(shippingRule)
         }
     }
 
-    private fun getAddOns(selectedShippingRule: ShippingRule) {
-
+    private suspend fun getAddOns(selectedShippingRule: ShippingRule) {
         // - Do not execute call unless reward has addOns
         if (currentUserReward.hasAddons()) {
-            scope.launch(dispatcher) {
-                apolloClient
-                    .getRewardAllowedAddOns(
-                        slug = project.slug() ?: "",
-                        rewardId = currentUserReward.id(),
-                        locationId = selectedShippingRule.location() ?: Location.builder().build()
+            emitCurrentState(isLoading = true)
+            val envelopeResult = apolloClient.getRewardAllowedAddOns(
+                rewardId = currentUserReward,
+                locationId = selectedShippingRule.location() ?: Location.builder().build(),
+                cursor = nextPage
+            )
+
+            if (envelopeResult.isSuccess) {
+                val addOns = envelopeResult.getOrNull()?.addOnsList
+                // - pagination related stuff
+                nextPage = envelopeResult.getOrNull()?.pageInfo?.endCursor
+                hasMorePages = envelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false
+                if (!addOns.isNullOrEmpty()) {
+                    val updatedList = getUpdatedList(
+                        addOns,
+                        backedAddOns,
+                        selectedShippingRule.location() ?: Location.builder().build()
                     )
-                    .asFlow()
-                    .onStart {
-                        emitCurrentState(isLoading = true)
-                    }
-                    .map { addOns ->
-                        if (!addOns.isNullOrEmpty()) {
-                            this@AddOnsViewModel.addOns = getUpdatedList(addOns, backedAddOns, selectedShippingRule.location() ?: Location.builder().build())
-                        }
-                    }.onCompletion {
-                        emitCurrentState(isLoading = false)
-                    }.catch {
-                        errorAction.invoke(null)
-                    }.collect()
-            }
-        } else {
-            scope.launch {
+
+                    this@AddOnsViewModel.addOns.addAll(updatedList)
+                }
                 emitCurrentState(isLoading = false)
             }
+
+            if (envelopeResult.isFailure) {
+                errorAction.invoke(null)
+            }
+        } else {
+            emitCurrentState(isLoading = false)
         }
     }
 
@@ -267,7 +273,7 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
     private suspend fun emitCurrentState(isLoading: Boolean = false) {
         mutableAddOnsUIState.emit(
             AddOnsUIState(
-                addOns = addOns,
+                addOns = addOns.toList(),
                 isLoading = isLoading,
                 totalCount = currentSelection.values.sum(),
                 shippingRule = shippingRule,
@@ -322,10 +328,14 @@ class AddOnsViewModel(val environment: Environment, bundle: Bundle? = null) : Vi
         return getPledgeDataAndReason()?.first?.pledgeAmountTotalPlusBonus() ?: 0.0
     }
 
-    class Factory(private val environment: Environment, private val bundle: Bundle? = null) :
+    class Factory(
+        private val environment: Environment,
+        private val bundle: Bundle? = null,
+        private val testDispatcher: CoroutineDispatcher? = null
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AddOnsViewModel(environment, bundle) as T
+            return AddOnsViewModel(environment, bundle, testDispatcher) as T
         }
     }
 }

@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -36,8 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.models.Location
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
+import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -72,6 +73,8 @@ fun FilterMenuBottomSheet(
     onDismiss: () -> Unit = {},
     onApply: (DiscoveryParams.State?, Boolean?) -> Unit = { a, b -> },
     onNavigate: (FilterType) -> Unit = {},
+    selectedLocation: Location? = null,
+    selectedPercentage: DiscoveryParams.RaisedBuckets? = null,
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -111,13 +114,15 @@ fun FilterMenuBottomSheet(
                             text = titleForFilter(filter),
                             onClickAction = { onNavigate(FilterType.LOCATION) },
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            modifier = Modifier.testTag(FilterMenuTestTags.LOCATION_ROW)
+                            modifier = Modifier.testTag(FilterMenuTestTags.LOCATION_ROW),
+                            subText = selectedLocation?.displayableName()
                         )
                         FilterType.PERCENTAGE_RAISED -> FilterRow(
                             text = titleForFilter(filter),
                             onClickAction = { onNavigate(FilterType.PERCENTAGE_RAISED) },
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            modifier = Modifier.testTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW)
+                            modifier = Modifier.testTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW),
+                            subText = selectedPercentage?.let { textForBucket(it) }
                         )
                     }
                 }
@@ -234,7 +239,8 @@ private fun FilterRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Filter),
     onClickAction: () -> Unit,
-    icon: ImageVector
+    icon: ImageVector,
+    subText: String? = null
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -264,26 +270,34 @@ private fun FilterRow(
             typographyV2.headingLG
         }
 
-        Text(
-            text = text,
-            style = style,
-            modifier = Modifier.weight(1f),
-            color = colors.textPrimary
-        )
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = text,
+                style = style,
+                color = colors.textPrimary
+            )
 
-        // TODO: change to KSIconButton
-        IconButton(
+            if (subText != null) {
+                Text(
+                    modifier = Modifier.padding(
+                        top = dimensions.paddingSmall
+                    ),
+                    text = subText,
+                    style = typographyV2.bodyMD,
+                    color = colors.textSecondary
+                )
+            }
+        }
+
+        KSIconButton(
             modifier = Modifier.testTag(text),
             onClick = {
                 onClickAction.invoke()
-            }
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = "Dismiss Filter Menu",
-                tint = colors.icon
-            )
-        }
+            },
+            imageVector = icon
+        )
     }
 }
 
@@ -316,8 +330,9 @@ private fun FilterMenuSheetPreview() {
     KSTheme {
         FilterMenuBottomSheet(
             selectedProjectStatus = DiscoveryParams.State.LIVE,
+            onDismiss = {},
             onApply = { a, b -> },
-            onDismiss = {}
+            selectedLocation = LocationFactory.vancouver(),
         )
     }
 }

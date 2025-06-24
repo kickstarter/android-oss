@@ -11,7 +11,7 @@ import com.kickstarter.ui.data.ManagePledgeMenuOptions
  * This class determines which menu options should be visible based on the project and backing status.
  *
  * @param project The project for which to create menu options.
- * @param ffClient The feature flag client used to check feature flag statuses.
+ * @param ffClient The feature flag client used to check feature flag s statuses.
  * @return A [ManagePledgeMenuOptions] instance with the appropriate visibility settings for each menu item.
  */
 fun createManagePledgeMenuOptions(

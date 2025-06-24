@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Pair
+import androidx.appcompat.widget.Toolbar
+import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -34,6 +36,7 @@ import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.MediaElement
@@ -41,6 +44,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.helpers.createManagePledgeMenuOptions
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.usecases.TPEventInputData
@@ -57,6 +61,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
+import org.robolectric.Robolectric
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -69,7 +74,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
     private val goBack = TestSubscriber<Unit>()
     private val heartDrawableId = TestSubscriber<Int>()
-    private val managePledgeMenu = TestSubscriber<Int?>()
     private val pledgeActionButtonColor = TestSubscriber<Int>()
     private val pledgeActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeActionButtonText = TestSubscriber<Int>()
@@ -2439,6 +2443,90 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         // Callback should be invoked immediately
         assertTrue(callbackInvoked.get())
+    }
+
+    @Test
+    fun `manage pledge menu is inflated when project is backed`() {
+        val project = ProjectFactory.backedProject()
+        val intent = Intent(ApplicationProvider.getApplicationContext(), ProjectPageActivity::class.java)
+        intent.putExtra(IntentKey.PROJECT, project)
+
+        val activity = Robolectric.buildActivity(ProjectPageActivity::class.java, intent)
+            .create()
+            .start()
+            .resume()
+            .get()
+
+        val toolbar = activity.findViewById<Toolbar>(R.id.pledge_toolbar)
+        val menu = toolbar.menu
+
+        assertTrue(menu.findItem(R.id.contact_creator)?.isVisible == true)
+        assertTrue(menu.findItem(R.id.cancel_pledge)?.isVisible == true)
+    }
+
+    @Test
+    fun `edit pledge is shown when feature flag is on and project is pledge over time`() {
+        val user = UserFactory.user().toBuilder().isAdmin(false).build()
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(true)
+            .build()
+
+        val currentUserMock = MockCurrentUserV2(user)
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLEDGE_OVER_TIME,
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> true
+                    else -> false
+                }
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .currentUserV2(currentUserMock)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        val intent = Intent(ApplicationProvider.getApplicationContext(), ProjectPageActivity::class.java)
+        intent.putExtra(IntentKey.PROJECT, project)
+
+        val activity = Robolectric.buildActivity(ProjectPageActivity::class.java, intent)
+            .create()
+            .start()
+            .resume()
+            .get()
+
+        val toolbar = activity.findViewById<Toolbar>(R.id.pledge_toolbar)
+        val menu = toolbar.menu
+
+        assertTrue(menu.findItem(R.id.edit_pledge)?.isVisible == true)
+    }
+
+    @Test
+    fun `showEditPledge is false when feature flag is off`() {
+        val backing = BackingFactory.backing()
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(true)
+            .backing(backing)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLEDGE_OVER_TIME -> true
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> false
+                    else -> false
+                }
+            }
+        }
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertFalse(options.showEditPledge)
     }
 
     private fun deepLinkIntent(): Intent {

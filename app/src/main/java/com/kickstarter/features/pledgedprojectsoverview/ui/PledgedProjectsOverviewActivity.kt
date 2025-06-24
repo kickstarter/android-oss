@@ -106,7 +106,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
                         onProjectPledgeSummaryClick = { url, isPlegdgeManagement ->
                             openBackingDetailsWebView(
-                                url = if (isPlegdgeManagement) UrlUtils.appendPath(env.webEndpoint(), url) else url,
+                                url = url,
                                 toolbarTitle = if (isPlegdgeManagement) R.string.Pledge_management else R.string.Backing_details,
                                 resultLauncher = null
                             )
@@ -148,7 +148,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 PPOCardViewType.PLEDGE_MANAGEMENT -> {
                                     env.analytics()?.trackPPOFinalizePledgeCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
-                                        url = UrlUtils.appendPath(env.webEndpoint(), PPOCard.webviewUrl ?: "",),
+                                        url = PPOCard.webviewUrl ?: "",
                                         toolbarTitle = R.string.Pledge_management,
                                         resultLauncher = startForResult
                                     )

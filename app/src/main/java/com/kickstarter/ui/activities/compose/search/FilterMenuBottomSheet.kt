@@ -75,6 +75,7 @@ fun FilterMenuBottomSheet(
     onNavigate: (FilterType) -> Unit = {},
     selectedLocation: Location? = null,
     selectedPercentage: DiscoveryParams.RaisedBuckets? = null,
+    selectedAmount: DiscoveryParams.AmountBuckets? = null
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 

@@ -65,7 +65,7 @@ jobs:
           command: ./gradlew lintExternalRelease -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
       - run:
           name: Jacoco External Debug Report
-          command: ./gradlew jacocoExternalDebugReport -PdisablePreDex -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
+          command: ./gradlew jacocoExternalDebugReport cleanTest -PdisablePreDex -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
           no_output_timeout: 30m
       - store_artifacts:
           path: app/build/reports

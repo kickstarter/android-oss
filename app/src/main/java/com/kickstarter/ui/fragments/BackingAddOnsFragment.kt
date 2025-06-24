@@ -7,12 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.kickstarter.R
 import com.kickstarter.databinding.FragmentBackingAddonsBinding
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -79,11 +84,13 @@ class BackingAddOnsFragment : Fragment() {
                     val project = viewModelC.getProject()
                     val selectedRw = viewModelC.getSelectedReward()
 
+                    val listState = rememberLazyListState()
+
                     KSTheme {
                         AddOnsScreen(
                             modifier = Modifier.padding(top = dimensions.paddingDoubleLarge),
                             environment = requireNotNull(env),
-                            lazyColumnListState = rememberLazyListState(),
+                            lazyColumnListState = listState,
                             selectedReward = selectedRw,
                             addOns = addOns,
                             project = project,
@@ -111,6 +118,24 @@ class BackingAddOnsFragment : Fragment() {
                             totalPledgeAmount = totalPledgeAmount,
                             totalBonusSupport = addOnsUIState.totalBonusAmount
                         )
+
+                        // Load more when scroll to the end
+                        val shouldLoadMore by remember {
+                            derivedStateOf {
+                                val layoutInfo = listState.layoutInfo
+                                val totalItems = layoutInfo.totalItemsCount
+                                val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+                                lastVisibleItemIndex >= (totalItems - 1) && totalItems > 0
+                            }
+                        }
+
+                        val lifecycleOwner = LocalLifecycleOwner.current
+                        LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState, addOnsIsLoading, viewModelC.hasMorePages) {
+                            if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !addOnsIsLoading && viewModelC.hasMorePages) {
+                                viewModelC.loadMore()
+                            }
+                        }
                     }
                 }
             }

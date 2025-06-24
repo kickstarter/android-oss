@@ -747,11 +747,7 @@ class ProjectPageActivity :
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project())
                         },
                         onDisclaimerItemClicked = { disclaimerItem ->
-                            if (::environment.isInitialized) {
-                                showDisclaimerScreen(disclaimerItem, environment)
-                            } else {
-                                showToastError()
-                            }
+                            showDisclaimerScreen(disclaimerItem, environment)
                         },
                         onAccountabilityLinkClicked = {
                             showAccountabilityPage()
@@ -792,7 +788,6 @@ class ProjectPageActivity :
     }
 
     fun showAccountabilityPage() {
-        if (::environment.isInitialized) {
             val endpoint = environment.webEndpoint()
             val trustUrl = UrlUtils.appendPath(endpoint, "trust")
             ChromeTabsHelperActivity.openCustomTab(
@@ -801,9 +796,6 @@ class ProjectPageActivity :
                 trustUrl.toUri(),
                 null
             )
-        } else {
-            showToastError()
-        }
     }
 
     /**

@@ -51,6 +51,21 @@ private fun AmountRaisedPreview() {
     }
 }
 
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun AmountRaisedSelectedPreview() {
+    KSTheme {
+        AmountRaisedSheet(
+            currentBucket = DiscoveryParams.AmountBuckets.BUCKET_3,
+            onNavigate = {},
+            onDismiss = {},
+            onApply = { bucket, applyAndDismiss ->
+            }
+        )
+    }
+}
+
 object AmountRaisedTestTags {
     const val BUCKETS_LIST = "buckets_list"
     fun bucketTag(bucket: DiscoveryParams.AmountBuckets) = "bucket_${bucket.name}"
@@ -58,7 +73,7 @@ object AmountRaisedTestTags {
 
 @Composable
 fun AmountRaisedSheet(
-    currentPercentage: DiscoveryParams.AmountBuckets? = null,
+    currentBucket: DiscoveryParams.AmountBuckets? = null,
     onDismiss: () -> Unit = {},
     onApply: (DiscoveryParams.AmountBuckets?, Boolean?) -> Unit = { a, b -> },
     onNavigate: () -> Unit = {},
@@ -66,7 +81,7 @@ fun AmountRaisedSheet(
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val selectedPercentage = remember { mutableStateOf(currentPercentage) }
+    val selectedPercentage = remember { mutableStateOf(currentBucket) }
 
     KSTheme {
         Surface(
@@ -76,7 +91,6 @@ fun AmountRaisedSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                // TODO: extract this row as a title re-usable composable can be used with Category as well same UI, just changes the title
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

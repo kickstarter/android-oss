@@ -17,7 +17,7 @@ fun PPOCardViewType.isTier2Type(): Boolean {
         PPOCardViewType.SUVERY_SUBMITTED_DIGITAL,
         PPOCardViewType.SUVERY_SUBMITTED_SHIPPABLE,
         PPOCardViewType.AWAITING_REWARD,
-        PPOCardViewType.PLEDGE_REDEMPTION,
+        PPOCardViewType.PLEDGE_MANAGEMENT,
         PPOCardViewType.REWARD_RECEIVED -> true
         else -> false
     }

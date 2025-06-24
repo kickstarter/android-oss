@@ -94,7 +94,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onRewardReceivedChanged = { backingID, checked -> },
-                onProjectPledgeSummaryClick = {},
+                onProjectPledgeSummaryClick = { url, isPledgeRedemption -> },
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
@@ -125,7 +125,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onRewardReceivedChanged = { backingID, checked -> },
-                onProjectPledgeSummaryClick = {},
+                onProjectPledgeSummaryClick = { url, isPledgeRedemption -> },
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 isErrored = true,
@@ -154,7 +154,7 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onRewardReceivedChanged = { backingID, checked -> },
-                onProjectPledgeSummaryClick = {},
+                onProjectPledgeSummaryClick = { url, isPledgeRedemption -> },
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> },
                 errorSnackBarHostState = SnackbarHostState(),
                 onSeeAllBackedProjectsClick = {}
@@ -185,7 +185,7 @@ private fun PledgedProjectsOverviewScreenV2Preview() {
                 onSecondaryActionButtonClicked = {},
                 onAddressConfirmed = { backingID, addressID -> },
                 onRewardReceivedChanged = { backingID, checked -> },
-                onProjectPledgeSummaryClick = {},
+                onProjectPledgeSummaryClick = { url, isPledgeRedemption -> },
                 onSendMessageClick = { projectName, projectID, ppoCards, totalAlertsm, creatorID -> },
                 onSeeAllBackedProjectsClick = {},
                 errorSnackBarHostState = SnackbarHostState(),
@@ -205,7 +205,7 @@ fun PledgedProjectsOverviewScreen(
     errorSnackBarHostState: SnackbarHostState,
     ppoCards: LazyPagingItems<PPOCard>,
     totalAlerts: Int = 0,
-    onProjectPledgeSummaryClick: (backingDetailsUrl: String) -> Unit,
+    onProjectPledgeSummaryClick: (url: String, isPledgeRedemption: Boolean) -> Unit,
     onSendMessageClick: (projectName: String, projectID: String, ppoCards: List<PPOCard?>, totalAlerts: Int, creatorID: String) -> Unit,
     onSeeAllBackedProjectsClick: () -> Unit,
     onPrimaryActionButtonClicked: (PPOCard) -> Unit,
@@ -337,7 +337,10 @@ fun PledgedProjectsOverviewScreen(
                                 PPOCardView(
                                     viewType = ppoData.viewType() ?: PPOCardViewType.UNKNOWN,
                                     onCardClick = { },
-                                    onProjectPledgeSummaryClick = { onProjectPledgeSummaryClick(ppoData.backingDetailsUrl() ?: "") },
+                                    onProjectPledgeSummaryClick = {
+                                        val isPledgeManagement = ppoData.viewType == PPOCardViewType.PLEDGE_MANAGEMENT
+                                        onProjectPledgeSummaryClick((if (isPledgeManagement) ppoData.webviewUrl else ppoData.backingDetailsUrl()) ?: "", isPledgeManagement)
+                                    },
                                     projectName = ppoData.projectName(),
                                     pledgeAmount = ppoData.amount?.toDoubleOrNull()?.let { amount ->
                                         RewardViewUtils.formatCurrency(amount, ppoData.currencyCode?.rawValue, ppoData.currencySymbol)

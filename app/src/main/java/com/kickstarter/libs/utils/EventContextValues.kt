@@ -39,6 +39,7 @@ class EventContextValues {
         MESSAGE_CREATOR_INITIATE("message_creator_initiate"),
         FIX_PLEDGE_INITIATE("fix_pledge_initiate"),
         SURVEY_RESPONSE_INITIATE("survey_response_initiate"),
+        FINALIZE_PLEDGE_INITIATE("finalize_pledge_initiate"),
         CONFIRM_INITIATE("confirm_initiate"),
         CONFIRM_SUBMIT("confirm_submit"),
         CAMPAIGN_DETAILS("campaign_details"),

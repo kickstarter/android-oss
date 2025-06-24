@@ -874,6 +874,8 @@ enum Feature {
   shopify_sync_integration_2025
 
   creator_tax_reporting_2025
+
+  allow_survey_response_edits_2025
 }
 
 """
@@ -1334,7 +1336,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Filter by whether the backer is a late pledge" isLatePledge: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by pledge manager backer" isPledgeManagerBacker: Boolean): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
 
   """
   Backer survey for the project
@@ -1646,6 +1648,11 @@ type Project implements Node & Commentable {
   """
   hasUnresolvedIncrementalPledges: Boolean!
 
+  """
+  Whether or not the project has upgradeable rewards configured
+  """
+  hasUpgradeableRewards: Boolean!
+
   id: ID!
 
   """
@@ -1732,6 +1739,11 @@ type Project implements Node & Commentable {
   Is the current user watching this project?
   """
   isWatched: Boolean!
+
+  """
+  Item variants associated with the project
+  """
+  itemVariants: [SkuCount!]
 
   """
   Items available through the project's backer rewards.
@@ -1904,6 +1916,16 @@ type Project implements Node & Commentable {
   pledgeOverTimeMinimumExplanation: String
 
   """
+  Warns the backer that their pledge is no longer eligible for Pledge Over Time
+  """
+  pledgeOverTimeWarning: String
+
+  """
+  Warns the backer that their pledge is no longer eligible for Pledge Over Time with detail
+  """
+  pledgeOverTimeWarningExplanation: String
+
+  """
   How much money is pledged to the project.
   """
   pledged: Money!
@@ -2059,6 +2081,11 @@ type Project implements Node & Commentable {
   Whether the project has stock locations in the UK that ship to the UK
   """
   shipsWithinUk: Boolean!
+
+  """
+  The project's pledge manager
+  """
+  shopifySkus: [String!]!
 
   """
   Whether or not to show ended to live cta
@@ -5233,6 +5260,16 @@ enum OrderStateEnum {
 An orderable included in an Order, e.g. a reward.
 """
 type OrderOrderable {
+  """
+  The price, excluding tax
+  """
+  amountExcludingTax: Int!
+
+  """
+  The formatted price, excluding tax
+  """
+  amountExcludingTaxFormatted: String!
+
   """
   The price of one unit of the reward
   """
@@ -9342,6 +9379,46 @@ enum SqlFilterOperator {
   Logical NOT
   """
   NOT
+}
+
+"""
+SKU data with count of orders with this SKU
+"""
+type SkuCount {
+  """
+  The number of orders that include this SKU
+  """
+  count: Int!
+
+  """
+  The unique identifier for the SKU
+  """
+  id: Int!
+
+  """
+  The name of the item associated with the SKU
+  """
+  itemName: String!
+
+  """
+  The name of the SKU
+  """
+  name: String!
+
+  """
+  The option values associated with this SKU
+  """
+  optionValues: [String!]!
+
+  """
+  The date and time when the survey was sent
+  """
+  sentAt: ISO8601DateTime!
+
+  """
+  The SKU value
+  """
+  sku: String!
 }
 
 """
@@ -15345,7 +15422,7 @@ input SetBackingFulfillmentStatusesInput {
 
   pledgeOverTime: [Boolean!]
 
-  isPledgeManagerBacker: Boolean
+  backerEntryPoint: [String!]
 
   """
   A unique identifier for the client performing the mutation.

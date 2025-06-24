@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -27,6 +28,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
@@ -102,9 +104,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
-                        onProjectPledgeSummaryClick = { url ->
+                        onProjectPledgeSummaryClick = { url, isPlegdgeManagement ->
                             openBackingDetailsWebView(
-                                url = url,
+                                url = if (isPlegdgeManagement) UrlUtils.appendPath(env.webEndpoint(), url) else url,
+                                toolbarTitle = if (isPlegdgeManagement) R.string.Pledge_management else R.string.Backing_details,
                                 resultLauncher = null
                             )
                         },
@@ -137,6 +140,16 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts, PPOCard.surveyID ?: "")
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
+                                        toolbarTitle = R.string.Backing_details,
+                                        resultLauncher = startForResult
+                                    )
+                                }
+
+                                PPOCardViewType.PLEDGE_MANAGEMENT -> {
+                                    env.analytics()?.trackPPOFinalizePledgeCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    openBackingDetailsWebView(
+                                        url = UrlUtils.appendPath(env.webEndpoint(), PPOCard.webviewUrl ?: "",),
+                                        toolbarTitle = R.string.Pledge_management,
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -150,6 +163,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
+                                        toolbarTitle = R.string.Backing_details,
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -195,17 +209,20 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
     private fun openBackingDetailsWebView(
         url: String,
+        toolbarTitle: Int,
         resultLauncher: ActivityResultLauncher<Intent>?
     ) {
         if (resultLauncher.isNotNull()) {
             resultLauncher?.launch(
                 Intent(this, BackingDetailsActivity::class.java)
                     .putExtra(IntentKey.URL, url)
+                    .putExtra(IntentKey.TOOLBAR_TITLE, this.getString(toolbarTitle))
             )
         } else {
             startActivity(
                 Intent(this, BackingDetailsActivity::class.java)
                     .putExtra(IntentKey.URL, url)
+                    .putExtra(IntentKey.TOOLBAR_TITLE, this.getString(toolbarTitle))
             )
         }
 

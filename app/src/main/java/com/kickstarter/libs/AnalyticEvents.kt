@@ -56,6 +56,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FINALIZE_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -325,6 +326,22 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props["survey_id"] = surveyID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
         props[CONTEXT_CTA.contextName] = SURVEY_RESPONSE_INITIATE.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when open survey is tapped on open survey ppo card
+     *
+     * @param projectID: The id of the project.
+     * @param ppoCards: The list of alerts.
+     * @param totalCount: The total number of alerts.
+     * @param surveyID: The id of the survey.
+     */
+    fun trackPPOFinalizePledgeCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
+        val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
+        props["project_pid"] = projectID
+        props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
+        props[CONTEXT_CTA.contextName] = FINALIZE_PLEDGE_INITIATE.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
 

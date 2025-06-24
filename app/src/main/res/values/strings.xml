@@ -103,7 +103,8 @@
   <string name="fpo_currently_supported" formatted="false">Currently supported:</string>
   <string name="fpo_view_and_manage_your_backings_from_our_new_backings_dashboard" formatted="false">View and manage your backings from our new Backings dashboard! More functionality will become available as our beta evolves.</string>
   <string name="fpo_introducing_the_backings_tab" formatted="false">Introducing the Backings tab</string>
-
+  <string name="fpo_finalize_pledge" formatted="false">Finalize Pledge</string>
+  <string name="fpo_this_may_involve_submitting_a_delivery_address" formatted="false">This may involve submitting a delivery address, selecting your item preferences, answering survey questions, and/or paying for shipping or taxes.</string>
 
   <string name="Amount_pledged_fpo" formatted="false">Amount Pledged</string>
   <string name="Goal_fpo" formatted="false">Goal</string>

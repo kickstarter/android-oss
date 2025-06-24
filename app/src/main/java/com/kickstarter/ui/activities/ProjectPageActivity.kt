@@ -788,14 +788,14 @@ class ProjectPageActivity :
     }
 
     fun showAccountabilityPage() {
-            val endpoint = environment.webEndpoint()
-            val trustUrl = UrlUtils.appendPath(endpoint, "trust")
-            ChromeTabsHelperActivity.openCustomTab(
-                this,
-                UrlUtils.baseCustomTabsIntent(this),
-                trustUrl.toUri(),
-                null
-            )
+        val endpoint = environment.webEndpoint()
+        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+        ChromeTabsHelperActivity.openCustomTab(
+            this,
+            UrlUtils.baseCustomTabsIntent(this),
+            trustUrl.toUri(),
+            null
+        )
     }
 
     /**

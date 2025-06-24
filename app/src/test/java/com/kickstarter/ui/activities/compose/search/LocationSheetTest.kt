@@ -3,9 +3,9 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -22,6 +22,7 @@ import com.kickstarter.models.Location
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.INPUT_BUTTON
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.INPUT_SEARCH
 import com.kickstarter.ui.activities.compose.search.LocationTestTags.SUGGESTED_LOCATIONS_LIST
+import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -190,7 +191,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `Input text contains text, cancel button will clean up and go back to default locations`() {
+    fun `default state when opening Location Sheet, when pressing default location buttons states updates`() {
 
         val env = Environment.builder().apolloClientV2(
             object : MockApolloClientV2() {
@@ -229,28 +230,32 @@ class LocationSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
+            .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name)
+            .assertIsEnabled()
+
+        composeTestRule
+            .onNodeWithTag(BottomSheetFooterTestTags.RESET.name)
+            .assertIsNotEnabled()
+
+        composeTestRule
             .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
             .performClick()
 
         composeTestRule
-            .onNodeWithTag(INPUT_SEARCH)
-            .assertTextContains(LocationFactory.vancouver().displayableName())
+            .onNodeWithTag(BottomSheetFooterTestTags.RESET.name)
+            .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
-            .isNotDisplayed() // Default locations no visible if text on input
+            .onNodeWithTag(BottomSheetFooterTestTags.RESET.name)
+            .assertIsEnabled()
 
         composeTestRule
-            .onNodeWithTag(INPUT_BUTTON)
-            .assertExists()
+            .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name)
+            .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag(INPUT_BUTTON)
-            .performClick()
-
-        composeTestRule
-            .onNodeWithTag(LocationTestTags.locationTag(LocationFactory.vancouver()))
-            .isDisplayed() // Default locations visible after input cancel button
+            .onNodeWithTag(BottomSheetFooterTestTags.SEE_RESULTS.name)
+            .assertIsEnabled()
     }
 
     @Test

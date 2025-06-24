@@ -577,4 +577,32 @@ class DiscoveryParams private constructor(
             }
         }
     }
+
+    /**
+     * Buckets of amount pledged
+     */
+    enum class AmountBuckets {
+        BUCKET_0,
+        BUCKET_1,
+        BUCKET_2,
+        BUCKET_3,
+        BUCKET_4;
+
+        override fun toString(): String {
+            return name.lowercase(Locale.getDefault())
+        }
+
+        companion object {
+            fun fromString(string: String?): AmountBuckets? {
+                return when (string) {
+                    "BUCKET_0" -> BUCKET_0
+                    "BUCKET_1" -> BUCKET_1
+                    "BUCKET_2" -> BUCKET_2
+                    "BUCKET_3" -> BUCKET_3
+                    "BUCKET_4" -> BUCKET_4
+                    else -> { null }
+                }
+            }
+        }
+    }
 }

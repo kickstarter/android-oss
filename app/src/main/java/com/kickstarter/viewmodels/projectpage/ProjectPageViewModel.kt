@@ -40,7 +40,6 @@ import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
-import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isOrderPresentAndComplete
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -58,12 +57,14 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.ManagePledgeMenuOptions
 import com.kickstarter.ui.data.MediaElement
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
+import com.kickstarter.ui.helpers.createManagePledgeMenuOptions
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
@@ -177,9 +178,6 @@ interface ProjectPageViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a menu for managing your pledge or null if there's no menu. */
-        fun managePledgeMenu(): Observable<Int>
-
         /** Emits the color resource ID for the pledge action button. */
         fun pledgeActionButtonColor(): Observable<Int>
 
@@ -287,6 +285,8 @@ interface ProjectPageViewModel {
         fun showLatePledgeFlow(): Observable<Boolean>
 
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
+
+        fun managePledgeMenuOptions(): Observable<ManagePledgeMenuOptions>
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -338,7 +338,6 @@ interface ProjectPageViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val goBack = PublishSubject.create<Unit>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val managePledgeMenu = BehaviorSubject.create<Int>()
         private val pledgeActionButtonColor = BehaviorSubject.create<Int>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeActionButtonText = BehaviorSubject.create<Int>()
@@ -383,7 +382,7 @@ interface ProjectPageViewModel {
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
         private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
-
+        private val managePledgeMenuOptions = BehaviorSubject.create<ManagePledgeMenuOptions>()
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -891,10 +890,9 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             currentProject
-                .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
-                .map { managePledgeMenu(it) }
+                .map { createManagePledgeMenuOptions(it, ffClient) }
                 .distinctUntilChanged()
-                .subscribe { this.managePledgeMenu.onNext(it) }
+                .subscribe { managePledgeMenuOptions.onNext(it) }
                 .addToDisposable(disposables)
 
             currentProjectData
@@ -1239,25 +1237,6 @@ interface ProjectPageViewModel {
                 else -> OVERVIEW.contextName
             }
 
-        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
-            val project = projectAndFragmentStackCount.first
-            val count = projectAndFragmentStackCount.second
-            val isPledgeOverTimeEnabled =
-                featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) && project.isPledgeOverTimeAllowed() == true && project.backing()?.incremental() == true
-            return when {
-                !project.isBacking() || count.isNonZero() -> 0
-                project.isLive -> when {
-                    isPledgeOverTimeEnabled -> R.menu.manage_pledge_plot_selected
-                    project.backing()
-                        ?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
-
-                    else -> R.menu.manage_pledge_live
-                }
-
-                else -> R.menu.manage_pledge_ended
-            }
-        }
-
         private fun pledgeData(
             reward: Reward,
             projectData: ProjectData,
@@ -1416,8 +1395,6 @@ interface ProjectPageViewModel {
 
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
-        override fun managePledgeMenu(): Observable<Int> = this.managePledgeMenu
-
         override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
 
         override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> =
@@ -1506,6 +1483,9 @@ interface ProjectPageViewModel {
 
         override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
             this.showPledgeRedemptionScreen
+
+        override fun managePledgeMenuOptions(): Observable<ManagePledgeMenuOptions> =
+            this.managePledgeMenuOptions
 
         override fun continuePledgeFlow(callback: () -> Unit) {
             this.continuePledgeFlow.onNext(callback)

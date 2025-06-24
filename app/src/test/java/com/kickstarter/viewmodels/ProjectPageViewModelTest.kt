@@ -125,7 +125,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.expandPledgeSheet().subscribe { this.expandPledgeSheet.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.goBack().subscribe { this.goBack.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.heartDrawableId().subscribe { this.heartDrawableId.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.managePledgeMenu().subscribe { this.managePledgeMenu.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgeActionButtonColor().subscribe { this.pledgeActionButtonColor.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgeActionButtonText().subscribe { this.pledgeActionButtonText.onNext(it) }.addToDisposable(disposables)
@@ -1707,92 +1706,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.showCancelPledgeSuccess.assertValueCount(1)
         this.projectData.assertValueCount(2)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBackedAndLive_backingIsPledged() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBackedAndLive_backingIsPreauth() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        val backing = BackingFactory.backing()
-            .toBuilder()
-            .status(Backing.STATUS_PREAUTH)
-            .build()
-        val backedProject = ProjectFactory.backedProject()
-            .toBuilder()
-            .name("eruihgfve9d7fvhuo")
-            .backing(backing)
-            .build()
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_preauth)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBackedAndNotLive() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        val successfulBackedProject = ProjectFactory.backedProject()
-            .toBuilder()
-            .state(Project.STATE_SUCCESSFUL)
-            .name("doifjvboiudhgbjnv ")
-            .build()
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, successfulBackedProject))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_ended)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectNotBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-
-        this.managePledgeMenu.assertValue(0)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBacked_Live_And_PLOTSelected() {
-        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return true
-            }
-        }
-        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a PLOT selected project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProjectWithPlotSelected()))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_plot_selected)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenManaging() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
-
-        this.vm.inputs.cancelPledgeClicked()
-        this.vm.inputs.fragmentStackCount(1)
-        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, 0)
-
-        this.vm.inputs.fragmentStackCount(0)
-        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, 0, R.menu.manage_pledge_live)
     }
 
     @Test

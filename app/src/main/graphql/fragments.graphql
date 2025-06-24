@@ -52,6 +52,9 @@ fragment projectCard on Project {
     pledgeOverTimeCollectionPlanChargeExplanation
     pledgeOverTimeCollectionPlanChargedAsNPayments
     pledgeOverTimeCollectionPlanShortPitch
+    video {
+        ...video
+    }
 }
 
 # Fragment used to load all the Project information on Project Page

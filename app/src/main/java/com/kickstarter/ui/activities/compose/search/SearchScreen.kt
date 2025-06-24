@@ -709,6 +709,9 @@ private fun onPillPressed(
                     mainFilterMenuState.show()
                 }
             }
+            FilterRowPillType.AMOUNT_RAISED -> {
+                TODO()
+            }
         }
     }
 
@@ -825,6 +828,7 @@ private fun modalBottomSheetState(
     FilterRowPillType.CATEGORY,
     FilterRowPillType.PERCENTAGE_RAISED,
     FilterRowPillType.LOCATION,
+    FilterRowPillType.AMOUNT_RAISED,
     FilterRowPillType.FILTER -> mainFilterMenuState
 
     null -> sortSheetState

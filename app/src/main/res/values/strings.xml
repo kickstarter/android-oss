@@ -105,12 +105,19 @@
   <string name="fpo_introducing_the_backings_tab" formatted="false">Introducing the Backings tab</string>
 
 
-  <string name="Amount_pledged_fpo" formatted="false">Amount Pledged</string>
   <string name="Goal_fpo" formatted="false">Goal</string>
 
-  <!-- FPO's for phase 3 -->
+  <!-- FPO's for search&filter phase 3 -->
   <string name="Location_fpo" formatted="false">Location</string>
   <string name="Location_Anywhere" formatted="false">Anywhere</string>
+
+  <!-- FPO's for search&filter phase 5 -->
+  <string name="Amount_raised_fpo" formatted="false">Amount raised</string>
+  <string name="Amount_raised_bucket_0_fpo" formatted="false">Under $1,000</string>
+  <string name="Amount_raised_bucket_1_fpo" formatted="false">$1,000 to $10,000</string>
+  <string name="Amount_raised_bucket_2_fpo" formatted="false">$10,000 to $100,000</string>
+  <string name="Amount_raised_bucket_3_fpo" formatted="false">$100,000 to $1,000,000</string>
+  <string name="Amount_raised_bucket_4_fpo" formatted="false">More than $1,000,000</string>
 
   <!-- FPO's for reward shipment tracking -->
   <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>

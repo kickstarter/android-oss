@@ -556,8 +556,7 @@ class DiscoveryParams private constructor(
             }
         }
     }
-
-    // TODO: rename to PercentageBuckets
+    
     enum class RaisedBuckets {
         BUCKET_0,
         BUCKET_1,

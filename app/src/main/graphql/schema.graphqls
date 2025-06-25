@@ -87,7 +87,7 @@ type Query {
   """
   Searches locations.
   """
-  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): LocationsConnection
+  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean, "Filter by discoverable." discoverable: Boolean): LocationsConnection
 
   """
   You.
@@ -874,6 +874,8 @@ enum Feature {
   shopify_sync_integration_2025
 
   creator_tax_reporting_2025
+
+  allow_survey_response_edits_2025
 }
 
 """
@@ -1334,7 +1336,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Filter by whether the backer is a late pledge" isLatePledge: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by pledge manager backer" isPledgeManagerBacker: Boolean): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
 
   """
   Backer survey for the project
@@ -1646,6 +1648,11 @@ type Project implements Node & Commentable {
   """
   hasUnresolvedIncrementalPledges: Boolean!
 
+  """
+  Whether or not the project has upgradeable rewards configured
+  """
+  hasUpgradeableRewards: Boolean!
+
   id: ID!
 
   """
@@ -1732,6 +1739,11 @@ type Project implements Node & Commentable {
   Is the current user watching this project?
   """
   isWatched: Boolean!
+
+  """
+  Item variants associated with the project
+  """
+  itemVariants: [SkuCount!]
 
   """
   Items available through the project's backer rewards.
@@ -1904,6 +1916,16 @@ type Project implements Node & Commentable {
   pledgeOverTimeMinimumExplanation: String
 
   """
+  Warns the backer that their pledge is no longer eligible for Pledge Over Time
+  """
+  pledgeOverTimeWarning: String
+
+  """
+  Warns the backer that their pledge is no longer eligible for Pledge Over Time with detail
+  """
+  pledgeOverTimeWarningExplanation: String
+
+  """
   How much money is pledged to the project.
   """
   pledged: Money!
@@ -2059,6 +2081,11 @@ type Project implements Node & Commentable {
   Whether the project has stock locations in the UK that ship to the UK
   """
   shipsWithinUk: Boolean!
+
+  """
+  The project's pledge manager
+  """
+  shopifySkus: [ShopifyVariant!]!
 
   """
   Whether or not to show ended to live cta
@@ -4282,6 +4309,11 @@ type OrderableConfig {
   price: Money
 
   """
+  The price formatted for display
+  """
+  priceFormatted: String
+
+  """
   How many of this reward are still available to claim during Pledge Redemption
   """
   remainingQuantity: Int
@@ -4957,6 +4989,16 @@ type Order implements Node {
   backing: Backing!
 
   """
+  The voucher amount for the base orderable, or 0 if there is no base orderable
+  """
+  baseOrderableVoucherAmount: Int!
+
+  """
+  The voucher amount for the base orderable, or 0 if there is no base orderable, formatted
+  """
+  baseOrderableVoucherAmountFormatted: String!
+
+  """
   Contains the backer's item preferences and responses to survey questions
   """
   cart: Cart
@@ -4994,7 +5036,17 @@ type Order implements Node {
   """
   Add-ons selected for this order during Pledge Redemption with quantity
   """
-  crossSellsWithQuantity: [OrderCrossSellWithQuantity!]!
+  crossSellsWithQuantity: [OrderOrderableWithQuantity!]!
+
+  """
+  Add-ons selected for this order during Crowdfunding with quantity
+  """
+  crowdfundingAddonsWithQuantity: [OrderOrderableWithQuantity!]!
+
+  """
+  The total amount for crowdfunding and upgrade rewards
+  """
+  crowdfundingAndUpgradeTotal: Int!
 
   """
   Whether the order was upgraded from a crowdfunding reward to a pledge manager-only reward
@@ -5047,6 +5099,11 @@ type Order implements Node {
   The rewards included in the order
   """
   orderOrderables: [OrderOrderable!]!
+
+  """
+  The total voucher amount for all orderables, formatted
+  """
+  orderableVoucherTotalFormatted: String!
 
   """
   Payment source used on an order.
@@ -5234,6 +5291,16 @@ An orderable included in an Order, e.g. a reward.
 """
 type OrderOrderable {
   """
+  The price, excluding tax
+  """
+  amountExcludingTax: Int!
+
+  """
+  The formatted price, excluding tax
+  """
+  amountExcludingTaxFormatted: String!
+
+  """
   The price of one unit of the reward
   """
   baseAmount: Int!
@@ -5271,9 +5338,19 @@ type OrderOrderable {
   orderable: Orderable!
 
   """
+  The amount refunded for the base amount
+  """
+  refundedBaseAmount: Int!
+
+  """
   The amount refunded for the cost
   """
   refundedCost: Int!
+
+  """
+  The remaining base amount
+  """
+  remainingBaseAmountFormatted: String!
 
   """
   The remaining cost
@@ -5289,6 +5366,11 @@ type OrderOrderable {
   The amount of the voucher
   """
   voucherAmount: Int!
+
+  """
+  The amount of the voucher
+  """
+  voucherAmountFormatted: String!
 }
 
 """
@@ -5311,31 +5393,36 @@ type OrderItem {
 union Orderable = Reward
 
 """
-An add-on reward included in an Order during Pledge Redemption as a Cross Sell.
+All rewards of a particular kind included in an Order, bundled together with their quantity and price information
 """
-type OrderCrossSellWithQuantity {
+type OrderOrderableWithQuantity {
   """
-  The orderable of the cross sell
+  The orderable of the reward
   """
   orderable: Orderable!
 
   """
-  The quantity of the add-on in the Order
+  The quantity of the reward in the Order
   """
   quantity: Int!
 
   """
-  The total price of the cross-sell
+  The total price of the reward
   """
   totalPrice: Int!
 
   """
-  The total price of the cross-sell, formatted
+  The total price of the reward, formatted
   """
   totalPriceFormatted: String!
 
   """
-  The price of one unit of the cross-sell
+  The price of one unit of the reward
+  """
+  unitPrice: Int!
+
+  """
+  The price of one unit of the reward, formatted
   """
   unitPriceFormatted: String!
 }
@@ -9345,6 +9432,46 @@ enum SqlFilterOperator {
 }
 
 """
+SKU data with count of orders with this SKU
+"""
+type SkuCount {
+  """
+  The number of orders that include this SKU
+  """
+  count: Int!
+
+  """
+  The unique identifier for the SKU
+  """
+  id: Int!
+
+  """
+  The name of the item associated with the SKU
+  """
+  itemName: String!
+
+  """
+  The name of the SKU
+  """
+  name: String!
+
+  """
+  The option values associated with this SKU
+  """
+  optionValues: [String!]!
+
+  """
+  The date and time when the survey was sent
+  """
+  sentAt: ISO8601DateTime!
+
+  """
+  The SKU value
+  """
+  sku: String!
+}
+
+"""
 Represents a project's pledge manager
 """
 type PledgeManager {
@@ -9786,6 +9913,25 @@ enum VatConfigLocationEnum {
   Sweden
   """
   SE
+}
+
+"""
+Collection of information relating to Shopify item variants
+"""
+type ShopifyVariant {
+  price: String
+
+  productHandle: String
+
+  productId: String!
+
+  productTitle: String
+
+  sku: String!
+
+  variantId: String!
+
+  variantTitle: String
 }
 
 """
@@ -12544,6 +12690,11 @@ type Mutation {
   Creates (or updates) a shipping zone with weight ranges and locations
   """
   createOrUpdateShippingZone(input: CreateOrUpdateShippingZoneInput!): CreateOrUpdateShippingZonePayload
+
+  """
+  Creates or updates a Shopify shop
+  """
+  createOrUpdateShop(input: CreateOrUpdateShopInput!): CreateOrUpdateShopPayload
 
   """
   Create or update a shipment's tracking number
@@ -15345,7 +15496,7 @@ input SetBackingFulfillmentStatusesInput {
 
   pledgeOverTime: [Boolean!]
 
-  isPledgeManagerBacker: Boolean
+  backerEntryPoint: [String!]
 
   """
   A unique identifier for the client performing the mutation.
@@ -19846,6 +19997,46 @@ input UpdateOrderAdjustmentInput {
   success: Boolean!
 
   stateReason: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateShop
+"""
+type CreateOrUpdateShopPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Project associated with the Shopify shop
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateShop
+"""
+input CreateOrUpdateShopInput {
+  """
+  The project id
+  """
+  projectId: ID!
+
+  """
+  The Shopify domain
+  """
+  shopifyDomain: String!
+
+  """
+  The Shopify access token
+  """
+  token: String!
 
   """
   A unique identifier for the client performing the mutation.

@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSDimensions
@@ -77,7 +78,8 @@ fun FilterMenuBottomSheet(
     onNavigate: (FilterType) -> Unit = {},
     selectedLocation: Location? = null,
     selectedPercentage: DiscoveryParams.RaisedBuckets? = null,
-    selectedAmount: DiscoveryParams.AmountBuckets? = null
+    selectedAmount: DiscoveryParams.AmountBuckets? = null,
+    selectedCategory: Category? = null
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -102,7 +104,8 @@ fun FilterMenuBottomSheet(
                             text = titleForFilter(filter),
                             onClickAction = { onNavigate(FilterType.CATEGORIES) },
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW)
+                            modifier = Modifier.testTag(FilterMenuTestTags.CATEGORY_ROW),
+                            subText = selectedCategory?.let { it.name() }
                         )
                         FilterType.PROJECT_STATUS -> ProjectStatusRow(
                             text = titleForFilter(filter),

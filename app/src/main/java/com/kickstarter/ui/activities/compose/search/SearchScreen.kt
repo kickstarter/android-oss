@@ -532,6 +532,7 @@ fun FilterPagerSheet(
                 selectedLocation = currentLocation,
                 selectedPercentage = currentPercentage,
                 selectedProjectStatus = projectState.value,
+                selectedCategory = currentCategory,
                 onDismiss = {
                     onDismiss.invoke()
                 },

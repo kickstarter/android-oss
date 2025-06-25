@@ -4,9 +4,12 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -168,5 +171,26 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
 
         assertNull(selected)
         assertEquals(contextFrom, false)
+    }
+
+    @Test
+    fun `category row, selected category subtext are present`() {
+        composeTestRule.setContent {
+            KSTheme {
+                FilterMenuBottomSheet(
+                    selectedCategory = CategoryFactory.CeramicsCategory(),
+                    onApply = { _, _ ->
+                    }
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText(CategoryFactory.CeramicsCategory().name())
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(CategoryFactory.CeramicsCategory().name())
+            .performScrollTo()
     }
 }

@@ -1949,7 +1949,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             useSessionLocation = if (useDefault.isTrue()) Optional.present(useDefault) else Optional.absent(),
             term = if (term.isNullOrEmpty()) Optional.absent() else Optional.present(term),
             filterByCoordinates = if (filterByCoordinates == null) Optional.absent() else Optional.present(filterByCoordinates),
-            first = if (useDefault) Optional.Present(1) else Optional.present(10),
+            first = if (useDefault) Optional.Present(5) else Optional.present(10),
             radius = if (radius == null) Optional.absent() else Optional.present(radius.toDouble()),
             long = if (long == null) Optional.absent() else Optional.present(long.toDouble()),
             lat = if (lat == null) Optional.absent() else Optional.present(lat.toDouble())

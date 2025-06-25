@@ -107,8 +107,8 @@ fun PagerPreview() {
                 currentCategory = categories[0],
                 categories = categories,
                 onDismiss = { dismissed.add(true) },
-                onApply = { state, category, bucket, location -> appliedFilters.add(Pair(state, category)) },
-                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location ->
+                onApply = { state, category, bucket, location, amountBucket -> appliedFilters.add(Pair(state, category)) },
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount ->
                     selectedCounts.add(
                         statusCount to categoryCount
                     )
@@ -226,8 +226,9 @@ fun SearchScreen(
         DiscoveryParams.Sort?,
         DiscoveryParams.State?,
         DiscoveryParams.RaisedBuckets?,
-        Location?
-    ) -> Unit = { category, sort, projectState, bucket, location ->
+        Location?,
+        DiscoveryParams.AmountBuckets?
+    ) -> Unit = { _, _, _, _, _, _ ->
     },
     shouldShowPhase: Boolean = true
 ) {
@@ -333,6 +334,7 @@ fun SearchScreen(
                         projectStatusText = projectStatusPill.value,
                         percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
                         locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location_fpo),
+                        amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised_fpo),
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
@@ -539,14 +541,16 @@ fun FilterPagerSheet(
                         // - Reset to default values
                         if (applyAndDismiss.isFalse()) {
                             category.value = null
-                            bucket.value = null
+                            percentageBucket.value = null
                             location.value = null
+                            amountRaised.value = null
                         }
                         applyUserSelection(
                             onApply = onApply,
                             projectState = projectState.value,
+                            amountRaisedBucket = amountRaised.value,
                             category = category.value,
-                            bucket = bucket.value,
+                            percentageRaisedBucket = percentageBucket.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -572,9 +576,15 @@ fun FilterPagerSheet(
                             pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
                         }
                     }
+
+                    if (filterType == FilterType.AMOUNT_RAISED) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
+                        }
+                    }
                 },
                 availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                else FilterType.values().asList().filter { it != FilterType.LOCATION }
+                else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED }
             )
             FilterPages.CATEGORIES.ordinal -> CategorySelectionSheet(
                 onNavigate = {
@@ -590,7 +600,8 @@ fun FilterPagerSheet(
                             onApply = onApply,
                             projectState = projectState.value,
                             category = category.value,
-                            bucket = bucket.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -613,7 +624,8 @@ fun FilterPagerSheet(
                             onApply = onApply,
                             projectState = projectState.value,
                             category = category.value,
-                            bucket = bucket.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -629,13 +641,37 @@ fun FilterPagerSheet(
                 },
                 onDismiss = onDismiss,
                 onApply = { selectedBucket, applyAndDismiss ->
-                    bucket.value = selectedBucket
+                    percentageBucket.value = selectedBucket
                     if (applyAndDismiss != null) {
                         applyUserSelection(
                             onApply = onApply,
                             projectState = projectState.value,
                             category = category.value,
-                            bucket = bucket.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            location = location.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
+                        )
+                    }
+                }
+            )
+            FilterPages.AMOUNT_RAISED.ordinal -> AmountRaisedSheet(
+                currentBucket = DiscoveryParams.AmountBuckets.fromString(currentAmountRaised?.name),
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { selectedBucket, applyAndDismiss ->
+                    amountRaised.value = selectedBucket
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -656,21 +692,23 @@ fun FilterPagerSheet(
  *  shouldDismiss = true -> user has pressed "See results" button on the footer. (Should dismiss bottomSheet).
  */
 private fun applyUserSelection(
-    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?, Location?) -> Unit,
+    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?) -> Unit,
     projectState: DiscoveryParams.State?,
     category: Category?,
-    bucket: DiscoveryParams.RaisedBuckets?,
+    percentageRaisedBucket: DiscoveryParams.RaisedBuckets?,
+    amountRaisedBucket: DiscoveryParams.AmountBuckets?,
     location: Location?,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?, location: Int?) -> Unit,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?, location: Int?, amountBucketCount: Int?) -> Unit,
     onDismiss: () -> Unit,
     shouldDismiss: Boolean
 ) {
-    onApply(projectState, category, bucket, location)
+    onApply(projectState, category, percentageRaisedBucket, location, amountRaisedBucket)
     updateSelectedCounts(
         if (projectState != null) 1 else 0,
         if (category != null) 1 else 0,
-        if (bucket != null) 1 else 0,
-        if (location != null) 1 else 0
+        if (percentageRaisedBucket != null) 1 else 0,
+        if (location != null) 1 else 0,
+        if (amountRaisedBucket != null) 1 else 0
     )
     if (shouldDismiss) {
         onDismiss.invoke()
@@ -719,7 +757,10 @@ private fun onPillPressed(
                 }
             }
             FilterRowPillType.AMOUNT_RAISED -> {
-                TODO()
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
+                    mainFilterMenuState.show()
+                }
             }
         }
     }
@@ -821,7 +862,7 @@ private fun sheetContent(
                     onDismiss = { sort ->
                         currentSort.value = sort
                         coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value, currentPercentage.value, currentLocation.value)
+                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value, currentPercentage.value, currentLocation.value, currentAmountRaised.value)
 
                         selectedFilterCounts[FilterRowPillType.SORT.name] =
                             if (sort == DiscoveryParams.Sort.MAGIC) 0 else 1

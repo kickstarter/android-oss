@@ -52,6 +52,7 @@ object FilterMenuTestTags {
     const val CATEGORY_ROW = "category_filter_row"
     const val PROJECT_STATUS_ROW = "project_status_row"
     const val PERCENTAGE_RAISED_ROW = "percentage_raised_row"
+    const val AMOUNT_RAISED_ROW = "amount_raised_row"
     const val LOCATION_ROW = "location_row"
     const val FOOTER = "footer"
 
@@ -62,7 +63,8 @@ enum class FilterType {
     CATEGORIES,
     PROJECT_STATUS,
     LOCATION,
-    PERCENTAGE_RAISED
+    PERCENTAGE_RAISED,
+    AMOUNT_RAISED
 }
 
 @Composable
@@ -124,6 +126,13 @@ fun FilterMenuBottomSheet(
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW),
                             subText = selectedPercentage?.let { textForBucket(it) }
+                        )
+                        FilterType.AMOUNT_RAISED -> FilterRow(
+                            text = titleForFilter(filter),
+                            onClickAction = { onNavigate(FilterType.AMOUNT_RAISED) },
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.AMOUNT_RAISED_ROW),
+                            subText = selectedAmount?.let { textForBucket(it) }
                         )
                     }
                 }
@@ -309,6 +318,7 @@ private fun titleForFilter(filter: FilterType): String {
         FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
         FilterType.LOCATION -> stringResource(R.string.Location_fpo)
         FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised)
+        FilterType.AMOUNT_RAISED -> stringResource(R.string.Amount_raised_fpo)
     }
 }
 

@@ -115,13 +115,13 @@ class SearchAndFilterActivity : ComponentActivity() {
                                     startProjectActivity(projAndRef)
                                 }
                             },
-                            onDismissBottomSheet = { category, sort, projectState, bucket, location ->
+                            onDismissBottomSheet = { category, sort, projectState, percentageBucket, location, amountRaisedBucket ->
                                 viewModel.updateParamsToSearchWith(
                                     category = category,
                                     projectSort = sort
                                         ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
                                     projectState = projectState,
-                                    raisedBucket = bucket,
+                                    percentageBucket = percentageBucket,
                                     location = location
                                 )
                             },

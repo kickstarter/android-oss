@@ -470,7 +470,7 @@ class ProjectPageActivity :
 
         this.viewModel.outputs.openPledgeManagerWebview()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startWebViewActivity(it, getString(R.string.fpo_pledge_manager)) }
+            .subscribe { startWebViewActivity(it, getString(R.string.Pledge_manager)) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.projectMedia()

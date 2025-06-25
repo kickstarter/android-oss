@@ -1,17 +1,14 @@
 package com.kickstarter.ui.activities.compose
 
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertIsToggleable
-import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.unit.dp
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardView
@@ -163,7 +160,7 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test alert notification dot not visible on incorrect card types` () {
+    fun `test alert notification dot not visible on incorrect card types`() {
         composeTestRule.setContent {
             KSTheme {
                 PPOCardView(

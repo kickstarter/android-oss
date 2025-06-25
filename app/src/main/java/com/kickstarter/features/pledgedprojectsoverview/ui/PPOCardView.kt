@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,8 +48,6 @@ import com.kickstarter.features.pledgedprojectsoverview.data.Flag
 import com.kickstarter.features.pledgedprojectsoverview.extensions.isTier1Alert
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
-import com.kickstarter.ui.compose.designsystem.KSButton
-import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton

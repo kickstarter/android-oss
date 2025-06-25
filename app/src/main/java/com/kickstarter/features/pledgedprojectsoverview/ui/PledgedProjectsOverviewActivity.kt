@@ -16,7 +16,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -28,7 +27,6 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.TransitionUtils
-import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled

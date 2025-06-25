@@ -10,20 +10,21 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
-class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
+class FilterMenuSheetTest : KSRobolectricTestCase() {
 
     @Test
-    fun `test FilterMenuBottomSheet renders all pills within ProjectStatusRow`() {
+    fun `test FilterMenuSheet renders all pills within ProjectStatusRow`() {
 
         composeTestRule.setContent {
             KSTheme {
                 Surface {
-                    FilterMenuBottomSheet()
+                    FilterMenuSheet()
                 }
             }
         }
@@ -36,35 +37,13 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOff`() {
+    fun `test FilterMenuSheet renders all available filter Rows with ffOff`() {
         val shouldShowPhase = false
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
-                    onDismiss = {},
-                    onApply = { a, b -> },
-                    onNavigate = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.CATEGORY_ROW).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PROJECT_STATUS_ROW).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertDoesNotExist()
-    }
-
-    @Test
-    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOn`() {
-        composeTestRule.setContent {
-            val shouldShowPhase = true
-            KSTheme {
-                FilterMenuBottomSheet(
-                    selectedProjectStatus = DiscoveryParams.State.LIVE,
-                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
+                    else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
                     onDismiss = {},
                     onApply = { a, b -> },
                     onNavigate = {}
@@ -81,7 +60,41 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithTag(FilterMenuTestTags.LIST)
             .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
         composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertDoesNotExist()
+    }
+
+    @Test
+    fun `test FilterMenuSheet renders all available filter Rows with ffOn`() {
+        composeTestRule.setContent {
+            val shouldShowPhase = true
+            KSTheme {
+                FilterMenuSheet(
+                    selectedProjectStatus = DiscoveryParams.State.LIVE,
+                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                    else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
+                    onDismiss = {},
+                    onApply = { a, b -> },
+                    onNavigate = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.CATEGORY_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PROJECT_STATUS_ROW).assertIsDisplayed()
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertIsDisplayed()
     }
 
     @Test
@@ -89,7 +102,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         var counter = 0
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     onApply = { publicState: DiscoveryParams.State?, from: Boolean? ->
                         counter++
                         if (counter == 1)
@@ -111,12 +124,12 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun filterMenu_onApplyCallbackReceivesSelection() {
+    fun `test FilterMenu _onApplyCallback receives projectState when pressing footer right button`() {
         var selected: DiscoveryParams.State? = null
         var contextFrom: Boolean? = null
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(onApply = { state, from ->
+                FilterMenuSheet(onApply = { state, from ->
                     selected = state
                     contextFrom = from
                 })
@@ -136,13 +149,13 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun filterMenu_resetClearsSelection() {
+    fun `test FilterMenu  _onApplyCallback clears selection when pressing footer left button`() {
         var selected: DiscoveryParams.State? = DiscoveryParams.State.LIVE
         var contextFrom: Boolean? = null
 
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     selectedProjectStatus = selected,
                     onApply = { state, from ->
                         selected = state
@@ -161,10 +174,10 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `category row, selected category subtext are present`() {
+    fun `category row, selected category subtext is present`() {
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     selectedCategory = CategoryFactory.CeramicsCategory(),
                     onApply = { _, _ ->
                     }
@@ -179,5 +192,79 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithText(CategoryFactory.CeramicsCategory().name())
             .performScrollTo()
+    }
+
+    @Test
+    fun `percentage raised row, selected percentage bucket, subtext is present`() {
+        var textForBucket: String = ""
+        composeTestRule.setContent {
+            KSTheme {
+                textForBucket = textForBucket(DiscoveryParams.RaisedBuckets.BUCKET_2)
+                FilterMenuSheet(
+                    onApply = { _, _ ->
+                    },
+                    selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
+                )
+            }
+        }
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(textForBucket)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `location row, selected location, subtext is present`() {
+        composeTestRule.setContent {
+            KSTheme {
+                FilterMenuSheet(
+                    onApply = { _, _ ->
+                    },
+                    selectedLocation = LocationFactory.vancouver()
+                )
+            }
+        }
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule
+            .onNodeWithText(LocationFactory.vancouver().displayableName())
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `amount raised row, selected amount bucket, subtext is present`() {
+        var textForBucket: String = ""
+        composeTestRule.setContent {
+            KSTheme {
+                textForBucket = textForBucket(DiscoveryParams.AmountBuckets.BUCKET_4)
+                FilterMenuSheet(
+                    onApply = { _, _ ->
+                    },
+                    selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
+                )
+            }
+        }
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule
+            .onNodeWithText(textForBucket)
+            .assertIsDisplayed()
     }
 }

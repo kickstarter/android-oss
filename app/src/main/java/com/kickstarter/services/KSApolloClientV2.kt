@@ -67,6 +67,7 @@ import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toBoolean
+import com.kickstarter.libs.utils.extensions.toPledgedBucket
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.libs.utils.extensions.toProjectState
 import com.kickstarter.libs.utils.extensions.toRaisedBucket
@@ -341,7 +342,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             searchTerm = if (discoveryParams.term() == null || discoveryParams.term().isNullOrBlank()) Optional.absent() else Optional.present(discoveryParams.term()),
             state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(discoveryParams.state()?.toProjectState()),
             raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket()),
-            location = if (discoveryParams.location() == null) Optional.absent() else Optional.present(discoveryParams.location()?.let { encodeRelayId(it) })
+            location = if (discoveryParams.location() == null) Optional.absent() else Optional.present(discoveryParams.location()?.let { encodeRelayId(it) }),
+            amountRaisedBucket = if (discoveryParams.amountBucket() == null) Optional.absent() else Optional.present(discoveryParams.amountBucket()?.toPledgedBucket())
         )
     }
 

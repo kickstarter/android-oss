@@ -40,7 +40,8 @@ class DiscoveryParams private constructor(
     private val state: State?,
     private val tagId: Int?,
     private val term: String?,
-    private val raisedbucket: RaisedBuckets?
+    private val raisedbucket: RaisedBuckets?,
+    private val amountRaisedBucket: AmountBuckets?
 ) : Parcelable {
 
     fun backed() = this.backed
@@ -61,6 +62,7 @@ class DiscoveryParams private constructor(
     fun tagId() = this.tagId
     fun term() = this.term
     fun raisedBucket() = this.raisedbucket
+    fun amountBucket() = this.amountRaisedBucket
     fun nextPage(): DiscoveryParams {
         val page = page()
         return if (page != null) toBuilder().page(page + 1).build() else this
@@ -85,7 +87,8 @@ class DiscoveryParams private constructor(
                 state() == other.state() &&
                 tagId() == other.tagId() &&
                 term() == other.term() &&
-                raisedBucket() == other.raisedBucket()
+                raisedBucket() == other.raisedBucket() &&
+                amountBucket() == other.amountBucket()
         }
         return equals
     }
@@ -109,7 +112,8 @@ class DiscoveryParams private constructor(
         private var state: State? = null,
         private var tagId: Int? = null,
         private var term: String? = null,
-        private var raisedBucket: RaisedBuckets? = null
+        private var raisedBucket: RaisedBuckets? = null,
+        private var amountBucket: AmountBuckets? = null
     ) : Parcelable {
         fun backed(backed: Int?) = apply { this.backed = backed }
         fun category(category: Category?) = apply { this.category = category }
@@ -127,6 +131,7 @@ class DiscoveryParams private constructor(
         fun similarTo(similarTo: Project?) = apply { this.similarTo = similarTo }
         fun state(state: State?) = apply { this.state = state }
         fun raisedBucket(raisedbucket: RaisedBuckets?) = apply { this.raisedBucket = raisedbucket }
+        fun amountBucket(amountRaisedBucket: AmountBuckets?) = apply { this.amountBucket = amountRaisedBucket }
         fun tagId(tagId: Int?) = apply { this.tagId = tagId }
         fun term(term: String?) = apply { this.term = term }
         fun build() = DiscoveryParams(
@@ -147,7 +152,8 @@ class DiscoveryParams private constructor(
             state = state,
             tagId = tagId,
             term = term,
-            raisedbucket = raisedBucket
+            raisedbucket = raisedBucket,
+            amountRaisedBucket = amountBucket
         )
 
         /**
@@ -227,7 +233,8 @@ class DiscoveryParams private constructor(
         state = state,
         tagId = tagId,
         term = term,
-        raisedBucket = raisedbucket
+        raisedBucket = raisedbucket,
+        amountBucket = amountRaisedBucket
     )
 
     fun queryParams(): Map<String, String> {

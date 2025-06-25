@@ -122,7 +122,8 @@ class SearchAndFilterActivity : ComponentActivity() {
                                         ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
                                     projectState = projectState,
                                     percentageBucket = percentageBucket,
-                                    location = location
+                                    location = location,
+                                    amountBucket = amountRaisedBucket
                                 )
                             },
                             shouldShowPhase = phaseff

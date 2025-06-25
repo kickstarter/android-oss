@@ -109,7 +109,8 @@ class SearchAndFilterViewModel(
         projectSort: DiscoveryParams.Sort,
         projectState: DiscoveryParams.State? = null,
         percentageBucket: DiscoveryParams.RaisedBuckets? = null,
-        location: Location? = null
+        location: Location? = null,
+        amountBucket: DiscoveryParams.AmountBuckets? = null
     ) {
         val update = params.value.toBuilder()
             .apply {
@@ -118,6 +119,7 @@ class SearchAndFilterViewModel(
                 this.state(projectState)
                 this.raisedBucket(percentageBucket)
                 this.location(location)
+                this.amountBucket(amountBucket)
             }
             .build()
 

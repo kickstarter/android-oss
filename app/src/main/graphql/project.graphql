@@ -1,28 +1,44 @@
 query FetchProjects(
-  $first: Int = 15,
-  $cursor: String,
-  $sort: ProjectSort,
-  $state: PublicProjectState,
-  $backed: Boolean,
-  $recommended: Boolean,
-  $categoryId: String,
-  $starred: Boolean,
-  $staffPicks: Boolean,
-  $searchTerm: String,
-  $raised: RaisedBuckets,
-  $location: ID) {
-  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred,  state: $state, staffPicks: $staffPicks, term: $searchTerm, raised: $raised, locationId: $location) {
-    edges {
-      cursor
-      node{
-        ... projectCard
-      }
+$first: Int = 15,
+$cursor: String,
+$sort: ProjectSort,
+$state: PublicProjectState,
+$backed: Boolean,
+$recommended: Boolean,
+$categoryId: String,
+$starred: Boolean,
+$staffPicks: Boolean,
+$searchTerm: String,
+$raised: RaisedBuckets,
+$location: ID,
+$amountRaisedBucket: PledgedBuckets
+) {
+    projects(
+      first: $first,
+      after:$cursor,
+      sort:$sort,
+      backed:$backed,
+      recommended:$recommended,
+      categoryId: $categoryId,
+      starred:$starred,
+      state: $state,
+      staffPicks: $staffPicks,
+      term: $searchTerm,
+      raised: $raised,
+      locationId: $location,
+      pledged: $amountRaisedBucket
+      ) {
+        edges {
+          cursor
+          node{
+            ... projectCard
+          }
+        }
+        pageInfo {
+          ... pageInfo
+        }
+        totalCount
     }
-    pageInfo {
-      ... pageInfo
-    }
-    totalCount
-  }
 }
 
 query FetchProject($slug: String!, $rewardImageWidth: Int = 1024) {

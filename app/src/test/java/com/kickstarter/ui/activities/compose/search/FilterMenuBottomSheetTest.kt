@@ -39,29 +39,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 FilterMenuBottomSheet(
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
-                    onDismiss = {},
-                    onApply = { a, b -> },
-                    onNavigate = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.CATEGORY_ROW).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PROJECT_STATUS_ROW).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertDoesNotExist()
-    }
-
-    @Test
-    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOn`() {
-        composeTestRule.setContent {
-            val shouldShowPhase = true
-            KSTheme {
-                FilterMenuBottomSheet(
-                    selectedProjectStatus = DiscoveryParams.State.LIVE,
-                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED },
+                    else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
                     onDismiss = {},
                     onApply = { a, b -> },
                     onNavigate = {}
@@ -78,7 +56,42 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithTag(FilterMenuTestTags.LIST)
             .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
         composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertDoesNotExist()
+    }
+
+    @Test
+    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOn`() {
+        composeTestRule.setContent {
+            val shouldShowPhase = true
+            KSTheme {
+                FilterMenuBottomSheet(
+                    selectedProjectStatus = DiscoveryParams.State.LIVE,
+                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                    else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
+                    onDismiss = {},
+                    onApply = { a, b -> },
+                    onNavigate = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.CATEGORY_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PROJECT_STATUS_ROW).assertIsDisplayed()
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertIsDisplayed()
     }
 
     @Test

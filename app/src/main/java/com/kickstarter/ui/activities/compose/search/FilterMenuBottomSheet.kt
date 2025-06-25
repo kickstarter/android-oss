@@ -344,6 +344,7 @@ private fun FilterMenuSheetPreview() {
             onDismiss = {},
             onApply = { a, b -> },
             selectedLocation = LocationFactory.vancouver(),
+            selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
         )
     }
 }

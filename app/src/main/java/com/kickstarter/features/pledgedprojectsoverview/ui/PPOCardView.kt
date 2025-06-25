@@ -298,6 +298,7 @@ fun PPOCardView(
                 when (viewType) {
                     PPOCardViewType.PLEDGE_COLLECTED_REWARD,
                     PPOCardViewType.SUVERY_SUBMITTED_DIGITAL,
+                    PPOCardViewType.SUVERY_SUBMITTED_SHIPPABLE,
                     PPOCardViewType.ADDRESS_CONFIRMED,
                     PPOCardViewType.REWARD_RECEIVED,
                     -> RewardReceivedToggleView(checked = rewardReceived, onCheckChanged = onRewardReceivedChanged)

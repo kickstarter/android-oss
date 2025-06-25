@@ -41,7 +41,7 @@ object ProjectViewUtils {
 
     fun pledgeActionButtonText(project: Project, currentUser: User?): Int {
         return if (project.acceptsNewBackersForPM()) {
-            return R.string.fpo_go_to_pledge_manager
+            return R.string.Go_to_pledge_manager
         } else if (project.creator().id() == currentUser?.id()) {
             R.string.View_your_rewards
         } else if (!project.isBacking() && project.isLive) {

@@ -44,6 +44,12 @@
   <string name="Allow_tracking" formatted="false">Allow tracking</string>
   <string name="Almost_there" formatted="false">Almost there!</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
+  <string name="Amount_raised" formatted="false">Amount raised</string>
+  <string name="Amount_raised_bucket_0" formatted="false">Under $1,000</string>
+  <string name="Amount_raised_bucket_1" formatted="false">$1,000 to $10,000</string>
+  <string name="Amount_raised_bucket_2" formatted="false">$10,000 to $100,000</string>
+  <string name="Amount_raised_bucket_3" formatted="false">$100,000 to $1,000,000</string>
+  <string name="Amount_raised_bucket_4" formatted="false">More than $1,000,000</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
   <string name="Announcements" formatted="false">Announcements</string>
@@ -427,6 +433,8 @@ with friends.</string>
   <string name="Live_with_creator_name" formatted="false">Live with &lt;b>%{creator_name}&lt;/b></string>
   <string name="Loading" formatted="false">Loading</string>
   <string name="Location" formatted="false">Location</string>
+  <string name="Location_anywhere" formatted="false">Anywhere</string>
+  <string name="Location_searchbox_placeholder" formatted="false">Search by city, state, country...</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">Log in or sign up to save this project. We’ll remind you 48 hours before it ends.</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Log in or sign up to subscribe</string>
   <string name="Log_in_to_ask_the_project_creator_directly" formatted="false">Log in to ask the project creator directly.</string>

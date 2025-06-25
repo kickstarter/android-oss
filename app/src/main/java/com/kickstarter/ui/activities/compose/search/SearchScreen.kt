@@ -528,7 +528,7 @@ fun FilterPagerSheet(
 
     ) { page ->
         when (page) {
-            FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
+            FilterPages.MAIN_FILTER.ordinal -> FilterMenuSheet(
                 selectedLocation = currentLocation,
                 selectedPercentage = currentPercentage,
                 selectedProjectStatus = projectState.value,

@@ -69,7 +69,7 @@ enum class FilterType {
 }
 
 @Composable
-fun FilterMenuBottomSheet(
+fun FilterMenuSheet(
     modifier: Modifier = Modifier,
     selectedProjectStatus: DiscoveryParams.State? = null,
     availableFilters: List<FilterType> = FilterType.values().toList(),
@@ -342,7 +342,7 @@ private fun ProjectStatusRowPreview() {
 @Composable
 private fun FilterMenuSheetPreview() {
     KSTheme {
-        FilterMenuBottomSheet(
+        FilterMenuSheet(
             selectedProjectStatus = DiscoveryParams.State.LIVE,
             onDismiss = {},
             onApply = { a, b -> },

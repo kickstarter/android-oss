@@ -16,15 +16,15 @@ import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
-class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
+class FilterMenuSheetTest : KSRobolectricTestCase() {
 
     @Test
-    fun `test FilterMenuBottomSheet renders all pills within ProjectStatusRow`() {
+    fun `test FilterMenuSheet renders all pills within ProjectStatusRow`() {
 
         composeTestRule.setContent {
             KSTheme {
                 Surface {
-                    FilterMenuBottomSheet()
+                    FilterMenuSheet()
                 }
             }
         }
@@ -37,11 +37,11 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOff`() {
+    fun `test FilterMenuSheet renders all available filter Rows with ffOff`() {
         val shouldShowPhase = false
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
                     else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
                     onDismiss = {},
@@ -67,11 +67,11 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test FilterMenuBottomSheet renders all available filter Rows with ffOn`() {
+    fun `test FilterMenuSheet renders all available filter Rows with ffOn`() {
         composeTestRule.setContent {
             val shouldShowPhase = true
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     selectedProjectStatus = DiscoveryParams.State.LIVE,
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
                     else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
@@ -102,7 +102,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         var counter = 0
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     onApply = { publicState: DiscoveryParams.State?, from: Boolean? ->
                         counter++
                         if (counter == 1)
@@ -124,12 +124,12 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun filterMenu_onApplyCallbackReceivesSelection() {
+    fun `test FilterMenu _onApplyCallback receives projectState when pressing footer right button`() {
         var selected: DiscoveryParams.State? = null
         var contextFrom: Boolean? = null
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(onApply = { state, from ->
+                FilterMenuSheet(onApply = { state, from ->
                     selected = state
                     contextFrom = from
                 })
@@ -149,13 +149,13 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun filterMenu_resetClearsSelection() {
+    fun `test FilterMenu  _onApplyCallback clears selection when pressing footer left button`() {
         var selected: DiscoveryParams.State? = DiscoveryParams.State.LIVE
         var contextFrom: Boolean? = null
 
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     selectedProjectStatus = selected,
                     onApply = { state, from ->
                         selected = state
@@ -177,7 +177,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     fun `category row, selected category subtext is present`() {
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     selectedCategory = CategoryFactory.CeramicsCategory(),
                     onApply = { _, _ ->
                     }
@@ -200,7 +200,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 textForBucket = textForBucket(DiscoveryParams.RaisedBuckets.BUCKET_2)
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     onApply = { _, _ ->
                     },
                     selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
@@ -224,7 +224,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     fun `location row, selected location, subtext is present`() {
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     onApply = { _, _ ->
                     },
                     selectedLocation = LocationFactory.vancouver()
@@ -249,7 +249,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 textForBucket = textForBucket(DiscoveryParams.AmountBuckets.BUCKET_4)
-                FilterMenuBottomSheet(
+                FilterMenuSheet(
                     onApply = { _, _ ->
                     },
                     selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4

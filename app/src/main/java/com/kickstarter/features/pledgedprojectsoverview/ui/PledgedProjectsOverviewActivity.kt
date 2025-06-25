@@ -107,7 +107,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onProjectPledgeSummaryClick = { url, isPlegdgeManagement ->
                             openBackingDetailsWebView(
                                 url = url,
-                                toolbarTitle = if (isPlegdgeManagement) R.string.Pledge_management else R.string.Backing_details,
+                                toolbarTitle = if (isPlegdgeManagement) R.string.Pledge_manager else R.string.Backing_details,
                                 resultLauncher = null
                             )
                         },
@@ -149,7 +149,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     env.analytics()?.trackPPOFinalizePledgeCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = PPOCard.webviewUrl ?: "",
-                                        toolbarTitle = R.string.Pledge_management,
+                                        toolbarTitle = R.string.Pledge_manager,
                                         resultLauncher = startForResult
                                     )
                                 }

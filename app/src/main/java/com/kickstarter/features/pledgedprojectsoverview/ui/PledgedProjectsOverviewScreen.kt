@@ -339,7 +339,7 @@ fun PledgedProjectsOverviewScreen(
                                     onCardClick = { },
                                     onProjectPledgeSummaryClick = {
                                         val isPledgeManagement = ppoData.viewType == PPOCardViewType.PLEDGE_MANAGEMENT
-                                        onProjectPledgeSummaryClick((if (isPledgeManagement) ppoData.webviewUrl else ppoData.backingDetailsUrl()) ?: "", isPledgeManagement)
+                                        onProjectPledgeSummaryClick((if (isPledgeManagement) ppoData.webviewUrl else ppoData.backingDetailsUrl) ?: "", isPledgeManagement)
                                     },
                                     projectName = ppoData.projectName(),
                                     pledgeAmount = ppoData.amount?.toDoubleOrNull()?.let { amount ->

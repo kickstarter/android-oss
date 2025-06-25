@@ -1,6 +1,7 @@
 query FetchProjects(
   $first: Int = 15,
   $cursor: String,
+  $sort: ProjectSort,
   $state: PublicProjectState,
   $backed: Boolean,
   $recommended: Boolean,
@@ -15,7 +16,7 @@ query FetchProjects(
     projects(
       first: $first,
       after:$cursor,
-      sort:$sort,
+      sort: $sort,
       backed:$backed,
       recommended:$recommended,
       categoryId: $categoryId,

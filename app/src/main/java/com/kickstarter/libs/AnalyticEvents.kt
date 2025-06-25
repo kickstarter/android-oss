@@ -330,12 +330,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Sends data to the client when open survey is tapped on open survey ppo card
+     * Sends data to the client when finalize pledge button is tapped on pledge management ppo card
      *
      * @param projectID: The id of the project.
      * @param ppoCards: The list of alerts.
      * @param totalCount: The total number of alerts.
-     * @param surveyID: The id of the survey.
      */
     fun trackPPOFinalizePledgeCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
         val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()

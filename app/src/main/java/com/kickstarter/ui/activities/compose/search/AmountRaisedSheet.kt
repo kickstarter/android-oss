@@ -28,8 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.ui.activities.compose.search.PercentageRaisedTestTags.BUCKETS_LIST
-import com.kickstarter.ui.activities.compose.search.PercentageRaisedTestTags.bucketTag
+import com.kickstarter.ui.activities.compose.search.AmountRaisedTestTags.BUCKETS_LIST
+import com.kickstarter.ui.activities.compose.search.AmountRaisedTestTags.bucketTag
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
@@ -40,9 +40,9 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun PercentageRaisedPreview() {
+private fun AmountRaisedPreview() {
     KSTheme {
-        PercentageRaisedSheet(
+        AmountRaisedSheet(
             onNavigate = {},
             onDismiss = {},
             onApply = { bucket, applyAndDismiss ->
@@ -51,22 +51,37 @@ private fun PercentageRaisedPreview() {
     }
 }
 
-object PercentageRaisedTestTags {
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun AmountRaisedSelectedPreview() {
+    KSTheme {
+        AmountRaisedSheet(
+            currentBucket = DiscoveryParams.AmountBuckets.BUCKET_3,
+            onNavigate = {},
+            onDismiss = {},
+            onApply = { bucket, applyAndDismiss ->
+            }
+        )
+    }
+}
+
+object AmountRaisedTestTags {
     const val BUCKETS_LIST = "buckets_list"
-    fun bucketTag(bucket: DiscoveryParams.RaisedBuckets) = "bucket_${bucket.name}"
+    fun bucketTag(bucket: DiscoveryParams.AmountBuckets) = "bucket_${bucket.name}"
 }
 
 @Composable
-fun PercentageRaisedSheet(
-    currentPercentage: DiscoveryParams.RaisedBuckets? = null,
+fun AmountRaisedSheet(
+    currentBucket: DiscoveryParams.AmountBuckets? = null,
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.RaisedBuckets?, Boolean?) -> Unit = { a, b -> },
+    onApply: (DiscoveryParams.AmountBuckets?, Boolean?) -> Unit = { a, b -> },
     onNavigate: () -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val selectedPercentage = remember { mutableStateOf(currentPercentage) }
+    val selectedPercentage = remember { mutableStateOf(currentBucket) }
 
     KSTheme {
         Surface(
@@ -76,7 +91,6 @@ fun PercentageRaisedSheet(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                // TODO: extract this row as a title re-usable composable can be used with Category as well same UI, just changes the title
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -102,7 +116,7 @@ fun PercentageRaisedSheet(
                     )
 
                     Text(
-                        text = stringResource(R.string.Percentage_raised),
+                        text = stringResource(R.string.Amount_raised_fpo),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
@@ -131,7 +145,7 @@ fun PercentageRaisedSheet(
                         }
                         .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
                 ) {
-                    val validBuckets = DiscoveryParams.RaisedBuckets.values()
+                    val validBuckets = DiscoveryParams.AmountBuckets.values()
                     items(validBuckets) { bucket ->
                         Row(
                             modifier = Modifier.testTag(bucketTag(bucket))
@@ -175,9 +189,10 @@ fun PercentageRaisedSheet(
 }
 
 @Composable
-fun textForBucket(bucket: DiscoveryParams.RaisedBuckets) = when (bucket) {
-    DiscoveryParams.RaisedBuckets.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
-    DiscoveryParams.RaisedBuckets.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
-    DiscoveryParams.RaisedBuckets.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)
-    else -> ""
+fun textForBucket(bucket: DiscoveryParams.AmountBuckets) = when (bucket) {
+    DiscoveryParams.AmountBuckets.BUCKET_2 -> stringResource(R.string.Amount_raised_bucket_2_fpo)
+    DiscoveryParams.AmountBuckets.BUCKET_1 -> stringResource(R.string.Amount_raised_bucket_1_fpo)
+    DiscoveryParams.AmountBuckets.BUCKET_0 -> stringResource(R.string.Amount_raised_bucket_0_fpo)
+    DiscoveryParams.AmountBuckets.BUCKET_3 -> stringResource(R.string.Amount_raised_bucket_3_fpo)
+    DiscoveryParams.AmountBuckets.BUCKET_4 -> stringResource(R.string.Amount_raised_bucket_4_fpo)
 }

@@ -87,7 +87,7 @@ type Query {
   """
   Searches locations.
   """
-  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): LocationsConnection
+  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean, "Filter by discoverable." discoverable: Boolean): LocationsConnection
 
   """
   You.
@@ -2085,7 +2085,7 @@ type Project implements Node & Commentable {
   """
   The project's pledge manager
   """
-  shopifySkus: [String!]!
+  shopifySkus: [ShopifyVariant!]!
 
   """
   Whether or not to show ended to live cta
@@ -4309,6 +4309,11 @@ type OrderableConfig {
   price: Money
 
   """
+  The price formatted for display
+  """
+  priceFormatted: String
+
+  """
   How many of this reward are still available to claim during Pledge Redemption
   """
   remainingQuantity: Int
@@ -4984,6 +4989,16 @@ type Order implements Node {
   backing: Backing!
 
   """
+  The voucher amount for the base orderable, or 0 if there is no base orderable
+  """
+  baseOrderableVoucherAmount: Int!
+
+  """
+  The voucher amount for the base orderable, or 0 if there is no base orderable, formatted
+  """
+  baseOrderableVoucherAmountFormatted: String!
+
+  """
   Contains the backer's item preferences and responses to survey questions
   """
   cart: Cart
@@ -5021,7 +5036,17 @@ type Order implements Node {
   """
   Add-ons selected for this order during Pledge Redemption with quantity
   """
-  crossSellsWithQuantity: [OrderCrossSellWithQuantity!]!
+  crossSellsWithQuantity: [OrderOrderableWithQuantity!]!
+
+  """
+  Add-ons selected for this order during Crowdfunding with quantity
+  """
+  crowdfundingAddonsWithQuantity: [OrderOrderableWithQuantity!]!
+
+  """
+  The total amount for crowdfunding and upgrade rewards
+  """
+  crowdfundingAndUpgradeTotal: Int!
 
   """
   Whether the order was upgraded from a crowdfunding reward to a pledge manager-only reward
@@ -5074,6 +5099,11 @@ type Order implements Node {
   The rewards included in the order
   """
   orderOrderables: [OrderOrderable!]!
+
+  """
+  The total voucher amount for all orderables, formatted
+  """
+  orderableVoucherTotalFormatted: String!
 
   """
   Payment source used on an order.
@@ -5308,9 +5338,19 @@ type OrderOrderable {
   orderable: Orderable!
 
   """
+  The amount refunded for the base amount
+  """
+  refundedBaseAmount: Int!
+
+  """
   The amount refunded for the cost
   """
   refundedCost: Int!
+
+  """
+  The remaining base amount
+  """
+  remainingBaseAmountFormatted: String!
 
   """
   The remaining cost
@@ -5326,6 +5366,11 @@ type OrderOrderable {
   The amount of the voucher
   """
   voucherAmount: Int!
+
+  """
+  The amount of the voucher
+  """
+  voucherAmountFormatted: String!
 }
 
 """
@@ -5348,31 +5393,36 @@ type OrderItem {
 union Orderable = Reward
 
 """
-An add-on reward included in an Order during Pledge Redemption as a Cross Sell.
+All rewards of a particular kind included in an Order, bundled together with their quantity and price information
 """
-type OrderCrossSellWithQuantity {
+type OrderOrderableWithQuantity {
   """
-  The orderable of the cross sell
+  The orderable of the reward
   """
   orderable: Orderable!
 
   """
-  The quantity of the add-on in the Order
+  The quantity of the reward in the Order
   """
   quantity: Int!
 
   """
-  The total price of the cross-sell
+  The total price of the reward
   """
   totalPrice: Int!
 
   """
-  The total price of the cross-sell, formatted
+  The total price of the reward, formatted
   """
   totalPriceFormatted: String!
 
   """
-  The price of one unit of the cross-sell
+  The price of one unit of the reward
+  """
+  unitPrice: Int!
+
+  """
+  The price of one unit of the reward, formatted
   """
   unitPriceFormatted: String!
 }
@@ -9866,6 +9916,25 @@ enum VatConfigLocationEnum {
 }
 
 """
+Collection of information relating to Shopify item variants
+"""
+type ShopifyVariant {
+  price: String
+
+  productHandle: String
+
+  productId: String!
+
+  productTitle: String
+
+  sku: String!
+
+  variantId: String!
+
+  variantTitle: String
+}
+
+"""
 The connection type for Backing.
 """
 type UserBackingsConnection {
@@ -12621,6 +12690,11 @@ type Mutation {
   Creates (or updates) a shipping zone with weight ranges and locations
   """
   createOrUpdateShippingZone(input: CreateOrUpdateShippingZoneInput!): CreateOrUpdateShippingZonePayload
+
+  """
+  Creates or updates a Shopify shop
+  """
+  createOrUpdateShop(input: CreateOrUpdateShopInput!): CreateOrUpdateShopPayload
 
   """
   Create or update a shipment's tracking number
@@ -19923,6 +19997,46 @@ input UpdateOrderAdjustmentInput {
   success: Boolean!
 
   stateReason: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateShop
+"""
+type CreateOrUpdateShopPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Project associated with the Shopify shop
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateShop
+"""
+input CreateOrUpdateShopInput {
+  """
+  The project id
+  """
+  projectId: ID!
+
+  """
+  The Shopify domain
+  """
+  shopifyDomain: String!
+
+  """
+  The Shopify access token
+  """
+  token: String!
 
   """
   A unique identifier for the client performing the mutation.

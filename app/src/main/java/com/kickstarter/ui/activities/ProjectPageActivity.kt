@@ -9,7 +9,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.util.Pair
 import android.view.MotionEvent
@@ -20,7 +19,6 @@ import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
@@ -53,6 +52,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
+import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -72,6 +72,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.data.ManagePledgeMenuOptions
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -155,6 +156,9 @@ class ProjectPageActivity :
     private val animDuration = 200L
     private lateinit var binding: ActivityProjectPageBinding
 
+    private lateinit var environment: Environment
+    private lateinit var ffClient: FeatureFlagClientType
+
     private var disposables = CompositeDisposable()
 
     private val pagerAdapterList = mutableListOf(
@@ -185,7 +189,13 @@ class ProjectPageActivity :
         setContentView(binding.root)
         setUpConnectivityStatusCheck(lifecycle)
 
-        val environment = this.getEnvironment()?.let { env ->
+        val toolbar = binding.pledgeContainerLayout.pledgeToolbar
+
+        toolbar.inflateMenu(R.menu.manage_pledge)
+
+        this.getEnvironment()?.let { env ->
+            environment = env
+            ffClient = requireNotNull(env.featureFlagClient())
             viewModelFactory = ProjectPageViewModel.Factory(env)
             checkoutViewModelFactory = CheckoutFlowViewModel.Factory(env)
             rewardsSelectionViewModelFactory = RewardsSelectionViewModel.Factory(env)
@@ -193,10 +203,8 @@ class ProjectPageActivity :
             latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
             similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
             stripe = requireNotNull(env.stripe())
-            env
         }
 
-        val ffClient = requireNotNull(environment?.featureFlagClient())
         ffClient.activate(this)
 
         flowController = PaymentSheet.FlowController.create(
@@ -204,7 +212,7 @@ class ProjectPageActivity :
             paymentOptionCallback = ::onPaymentOption,
             paymentResultCallback = ::onPaymentSheetResult
         )
-        this.ksString = requireNotNull(environment?.ksString())
+        this.ksString = requireNotNull(environment.ksString())
 
         viewModel.configureWith(intent)
 
@@ -301,9 +309,9 @@ class ProjectPageActivity :
             .subscribe { binding.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
             .addToDisposable(disposables)
 
-        this.viewModel.outputs.managePledgeMenu()
+        viewModel.managePledgeMenuOptions()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { updateManagePledgeMenu(it) }
+            .subscribe { updateManagePledgeMenuVisibility(it) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.pledgeActionButtonColor()
@@ -537,7 +545,7 @@ class ProjectPageActivity :
         }
 
         binding.backIcon.setOnClickListener {
-            if (binding.pledgeContainerLayout.pledgeContainerRoot.visibility == View.GONE) {
+            if (binding.pledgeContainerLayout.pledgeContainerRoot.isGone) {
                 onBackPressedDispatcher.onBackPressed()
             } else {
                 handleNativeCheckoutBackPress()
@@ -699,7 +707,7 @@ class ProjectPageActivity :
                         },
                         currentShippingRule = currentUserShippingRule,
                         shippingRules = shippingRules,
-                        environment = getEnvironment(),
+                        environment = environment,
                         initialRewardCarouselPosition = indexOfBackedReward,
                         rewardsList = rewardsList,
                         addOns = addOns,
@@ -739,11 +747,7 @@ class ProjectPageActivity :
                             latePledgeCheckoutViewModel.onAddNewCardClicked(project = projectData.project())
                         },
                         onDisclaimerItemClicked = { disclaimerItem ->
-                            getEnvironment()?.let { environment ->
-                                showDisclaimerScreen(disclaimerItem, environment)
-                            } ?: run {
-                                showToastError()
-                            }
+                            showDisclaimerScreen(disclaimerItem, environment)
                         },
                         onAccountabilityLinkClicked = {
                             showAccountabilityPage()
@@ -784,17 +788,14 @@ class ProjectPageActivity :
     }
 
     fun showAccountabilityPage() {
-        getEnvironment()?.webEndpoint()?.let { endpoint ->
-            val trustUrl = UrlUtils.appendPath(endpoint, "trust")
-            ChromeTabsHelperActivity.openCustomTab(
-                this,
-                UrlUtils.baseCustomTabsIntent(this),
-                Uri.parse(trustUrl),
-                null
-            )
-        } ?: run {
-            showToastError()
-        }
+        val endpoint = environment.webEndpoint()
+        val trustUrl = UrlUtils.appendPath(endpoint, "trust")
+        ChromeTabsHelperActivity.openCustomTab(
+            this,
+            UrlUtils.baseCustomTabsIntent(this),
+            trustUrl.toUri(),
+            null
+        )
     }
 
     /**
@@ -1062,7 +1063,7 @@ class ProjectPageActivity :
     private fun renderProject(
         backingFragment: BackingFragment,
         rewardsFragment: RewardsFragment,
-        projectData: ProjectData
+        projectData: ProjectData,
     ) {
         rewardsFragment.configureWith(projectData)
         backingFragment.configureWith(projectData)
@@ -1105,7 +1106,9 @@ class ProjectPageActivity :
 
         binding.pledgeContainerLayout.pledgeToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.rewards -> {
+                R.id.rewards,
+                R.id.edit_pledge,
+                R.id.choose_another_reward -> {
                     this.viewModel.inputs.viewRewardsClicked()
                     true
                 }
@@ -1186,7 +1189,7 @@ class ProjectPageActivity :
             .show()
     }
     private fun showPledgeFragment(
-        pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>
+        pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>,
     ) {
         val pledgeFragment = this.selectPledgeFragment(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = pledgeFragment::class.java.simpleName
@@ -1413,12 +1416,13 @@ class ProjectPageActivity :
         super.onDestroy()
     }
 
-    private fun updateManagePledgeMenu(@MenuRes menu: Int) {
-        if (menu != 0) {
-            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
-            binding.pledgeContainerLayout.pledgeToolbar.inflateMenu(menu)
-        } else run {
-            binding.pledgeContainerLayout.pledgeToolbar.menu.clear()
-        }
+    private fun updateManagePledgeMenuVisibility(options: ManagePledgeMenuOptions) {
+        val menu = binding.pledgeContainerLayout.pledgeToolbar.menu
+
+        menu.findItem(R.id.edit_pledge)?.isVisible = options.showEditPledge
+        menu.findItem(R.id.update_payment)?.isVisible = options.showUpdatePayment
+        menu.findItem(R.id.rewards)?.isVisible = options.showSeeRewards
+        menu.findItem(R.id.cancel_pledge)?.isVisible = options.showCancelPledge
+        menu.findItem(R.id.contact_creator)?.isVisible = options.showContactCreator
     }
 }

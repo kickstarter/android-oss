@@ -618,6 +618,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .rewards("$url/rewards")
         .build()
     val urls = Urls.builder().web(urlsWeb).build()
+    val video = videoTransformer(projectFragment?.video?.video)
     val displayPrelaunch = (projectFragment?.isLaunched ?: false).negate()
     val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
     val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled ?: false
@@ -654,6 +655,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .urls(urls)
         .stateChangedAt(stateChangedAt)
         .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
+        .video(video)
         .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
         .build()
 }

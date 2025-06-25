@@ -109,7 +109,6 @@
 
   <!-- FPO's for search&filter phase 3 -->
   <string name="Location_fpo" formatted="false">Location</string>
-  <string name="Location_searchbox_placeholder" formatted="false">Search by city, state, country...</string>
   <string name="Location_Anywhere" formatted="false">Anywhere</string>
 
   <!-- FPO's for search&filter phase 5 -->

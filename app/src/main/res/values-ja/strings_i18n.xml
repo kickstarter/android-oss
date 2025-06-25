@@ -44,6 +44,12 @@
   <string name="Allow_tracking" formatted="false">追跡を許可</string>
   <string name="Almost_there" formatted="false">もう少しです!</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
+  <string name="Amount_raised" formatted="false">達成額</string>
+  <string name="Amount_raised_bucket_0" formatted="false">Under $1,000</string>
+  <string name="Amount_raised_bucket_1" formatted="false">$1,000 to $10,000</string>
+  <string name="Amount_raised_bucket_2" formatted="false">$10,000 to $100,000</string>
+  <string name="Amount_raised_bucket_3" formatted="false">$100,000 to $1,000,000</string>
+  <string name="Amount_raised_bucket_4" formatted="false">More than $1,000,000</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
   <string name="Amounts_shown" formatted="false">表示されている金額は、おおよその換算金額ですのでご注意ください。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められ、その換算額も表示されます。</string>
   <string name="Announcements" formatted="false">お知らせ</string>
@@ -84,7 +90,7 @@
   <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">ものバッカーが Kickstarter クリエイター達のアイデア実現を支援すべく Kickstarter にサインアップしています。</string>
   <string name="Backing_details" formatted="false">バック (支援) 詳細</string>
   <string name="Backing_means_supporting" formatted="false">「バックすること」とは、クリエイティブなプロジェクトを、その結果に関係なく支援することを意味します。</string>
-  <string name="Backings" formatted="false">Backings</string>
+  <string name="Backings" formatted="false">バッキング</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">コメントを残すためにバッカーになる。</string>
   <string name="Beta" formatted="false">ベータ</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Kickstarter に関するビッグニュースやお近くのイベントについて、年に数回お届け。</string>
@@ -144,7 +150,7 @@
   <string name="Collection_plan" formatted="false">集金プラン</string>
   <string name="Collections" formatted="false">コレクション</string>
   <string name="Coming_soon" formatted="false">近日公開</string>
-  <string name="Coming_soon_with_colon" formatted="false">Coming soon:</string>
+  <string name="Coming_soon_with_colon" formatted="false">近日公開:</string>
   <string name="Comment_reply_digest" formatted="false">コメント返信のダイジェスト</string>
   <string name="Complete_payment" formatted="false">支払いを完了</string>
   <string name="Confirm" formatted="false">確定する</string>
@@ -231,7 +237,7 @@
   <string name="Download_your_personal_data" formatted="false">自分の個人データをダウンロード</string>
   <string name="Earth" formatted="false">全世界</string>
   <string name="Edit" formatted="false">編集</string>
-  <string name="Edit_pledge" formatted="false">Edit pledge</string>
+  <string name="Edit_pledge" formatted="false">プレッジを編集する</string>
   <string name="Edit_profile" formatted="false">プロフィールを編集</string>
   <string name="Edit_reward" formatted="false">リワードを編集する</string>
   <string name="Either_the_pledge_or_the_project_was_canceled" formatted="false">プレッジもプロジェクトも期限前にキャンセル済</string>
@@ -362,7 +368,7 @@
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、バッカーは %{project_deadline} に請求されます。</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、%{project_deadline} にバッカーへ %{total} が請求されます。</string>
   <string name="Ill_do_this_later" formatted="false">後でする</string>
-  <string name="Important_project_alerts" formatted="false">Important project alerts</string>
+  <string name="Important_project_alerts" formatted="false">プロジェクトに関する重要なアラート</string>
   <string name="Include_ended_projects" formatted="false">終了済みのプロジェクトを含む</string>
   <string name="Increase_pledge" formatted="false">プレッジ額を上げる</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
@@ -370,7 +376,7 @@
   <string name="Intellectual_property_violation" formatted="false">知的財産権の侵害</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="Introducing_Lights_On" formatted="false">新企画「Lights On」</string>
-  <string name="Introducing_the_backings_tab" formatted="false">Introducing the Backings tab</string>
+  <string name="Introducing_the_backings_tab" formatted="false">「バッキング」タブのご紹介</string>
   <string name="It_looks" formatted="false">このプロジェクトは既に報告済みです。 Kickstarter の「トラスト＆セーフティ」チームが&lt;a href="%{our_rules}"> Kickstarter のルール&lt;/a>と&lt;a href="%{community_guidelines}">コミュニティガイドライン&lt;/a>に基づいてご報告内容を確認いたします。貴重なご意見をいただきありがとうございます。</string>
   <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
@@ -424,6 +430,8 @@
   <string name="Live_with_creator_name" formatted="false">&lt;b>%{creator_name}&lt;/b>のライブ配信</string>
   <string name="Loading" formatted="false">読み込み中</string>
   <string name="Location" formatted="false">地域</string>
+  <string name="Location_anywhere" formatted="false">すべての場所</string>
+  <string name="Location_searchbox_placeholder" formatted="false">都市、州、国で検索…</string>
   <string name="Log_in_or_sign_up_to_save_this_project_and_we_ll_remind_you" formatted="false">ログインかサインインしてこのプロジェクトを保存してください。終了４８時間前にリマインドします。</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">ログインまたはサインアップしてください</string>
   <string name="Log_in_to_ask_the_project_creator_directly" formatted="false">ログインしてプロジェクトのクリエイターに直接お問い合わせください。</string>
@@ -792,7 +800,7 @@
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">このホリデーシーズンはぜひ、リワード無しでも「支援したい！」と思わせてくれるような、あなたの心に訴えかけるプロジェクトをサポートしてみませんか？</string>
   <string name="This_is_meant_to_give_you" formatted="false">この合計額は送料のおおよその金額を見積もったものです。クリエイター側でリワードの配送準備が整った際に、こちらに戻り送料と適用される税金をお支払いいただきます。</string>
-  <string name="This_may_involve_submitting_a_delivery_address" formatted="false">This may involve submitting a delivery address, selecting your item preferences, answering survey questions, and/or paying for shipping or taxes.</string>
+  <string name="This_may_involve_submitting_a_delivery_address" formatted="false">これには、配送先の入力、アイテムの選択、サーベイへの回答、そして送料や税金の支払いが含まれる場合があります。</string>
   <string name="This_person_canceled_their_pledge" formatted="false">このユーザーはプレッジをキャンセルしました。</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">支払関連のエラーにより、このプレッジは取り消されました。</string>
   <string name="This_post_is_for_backers_only" formatted="false">この投稿はバッカー向けです</string>
@@ -817,7 +825,7 @@
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
   <string name="Total_plus" formatted="false">%{total}以上</string>
   <string name="Track_shipment" formatted="false">配送状況を追跡</string>
-  <string name="Track_your_backings" formatted="false">バックしたプロジェクトを追跡</string>
+  <string name="Track_your_backings" formatted="false">バッキングを追跡</string>
   <string name="Tracking_number" formatted="false">追跡番号：%{number}</string>
   <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
@@ -842,7 +850,7 @@
   <string name="Verify_your_email_address" formatted="false">メールアドレスを認証してください</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
-  <string name="View_and_manage_your_backings_from_our_new_backings_dashboard" formatted="false">View and manage your backings from our new Backings dashboard! More functionality will become available as our beta evolves.</string>
+  <string name="View_and_manage_your_backings_from_our_new_backings_dashboard" formatted="false">新しい「バッキングダッシュボード」から、自分のバックした内容を確認し管理できます！ベータ版の進展に伴い、さらに多くの機能が追加される予定です。</string>
   <string name="View_dashboard" formatted="false">ダッシュボードを表示</string>
   <string name="View_more_replies" formatted="false">他の返信を表示</string>
   <string name="View_profile" formatted="false">プロフィールを表示</string>
@@ -1980,7 +1988,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">アクティビティ</string>
-  <string name="tabbar_backings" formatted="false">バック済み</string>
+  <string name="tabbar_backings" formatted="false">バッキング</string>
   <string name="tabbar_dashboard" formatted="false">ダッシュボード</string>
   <string name="tabbar_discover" formatted="false">さがす</string>
   <string name="tabbar_login" formatted="false">ログイン</string>

@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -92,7 +93,6 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
             .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
 
         composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertIsDisplayed()
     }
@@ -174,7 +174,7 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `category row, selected category subtext are present`() {
+    fun `category row, selected category subtext is present`() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuBottomSheet(
@@ -192,5 +192,79 @@ class FilterMenuBottomSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithText(CategoryFactory.CeramicsCategory().name())
             .performScrollTo()
+    }
+
+    @Test
+    fun `percentage raised row, selected percentage bucket, subtext is present`() {
+        var textForBucket: String = ""
+        composeTestRule.setContent {
+            KSTheme {
+                textForBucket = textForBucket(DiscoveryParams.RaisedBuckets.BUCKET_2)
+                FilterMenuBottomSheet(
+                    onApply = { _, _ ->
+                    },
+                    selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
+                )
+            }
+        }
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(textForBucket)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `location row, selected location, subtext is present`() {
+        composeTestRule.setContent {
+            KSTheme {
+                FilterMenuBottomSheet(
+                    onApply = { _, _ ->
+                    },
+                    selectedLocation = LocationFactory.vancouver()
+                )
+            }
+        }
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule
+            .onNodeWithText(LocationFactory.vancouver().displayableName())
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `amount raised row, selected amount bucket, subtext is present`() {
+        var textForBucket: String = ""
+        composeTestRule.setContent {
+            KSTheme {
+                textForBucket = textForBucket(DiscoveryParams.AmountBuckets.BUCKET_4)
+                FilterMenuBottomSheet(
+                    onApply = { _, _ ->
+                    },
+                    selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
+                )
+            }
+        }
+
+        // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
+        // - perform a scroll on the list, to reach the desired not, once scroll performed THEN the element will be composed and added to the semantic tree
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
+
+        composeTestRule
+            .onNodeWithText(textForBucket)
+            .assertIsDisplayed()
     }
 }

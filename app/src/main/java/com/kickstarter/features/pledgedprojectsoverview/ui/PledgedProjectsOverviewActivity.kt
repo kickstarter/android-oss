@@ -102,10 +102,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
-                        onProjectPledgeSummaryClick = { url, isPlegdgeManagement ->
+                        onProjectPledgeSummaryClick = { url, isPledgeManagement ->
                             openBackingDetailsWebView(
                                 url = url,
-                                toolbarTitle = if (isPlegdgeManagement) R.string.Pledge_manager else R.string.Backing_details,
+                                toolbarTitle = if (isPledgeManagement) R.string.Pledge_manager else R.string.Backing_details,
                                 resultLauncher = null
                             )
                         },

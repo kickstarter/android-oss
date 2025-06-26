@@ -1110,7 +1110,7 @@ class ProjectPageActivity :
         binding.pledgeContainerLayout.pledgeToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.rewards,
-                R.id.edit_pledge-> {
+                R.id.edit_pledge -> {
                     this.viewModel.inputs.viewRewardsClicked()
                     true
                 }

@@ -12,7 +12,7 @@ data class UpdateBackingData(
     val rewardsIds: List<Reward>? = null,
     val paymentSourceId: String? = null,
     val intentClientSecret: String? = null,
-    val incremental : Boolean? = null
+    val incremental: Boolean? = null
 )
 
 /**

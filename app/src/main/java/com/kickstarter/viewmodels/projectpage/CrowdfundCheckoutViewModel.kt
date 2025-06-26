@@ -405,7 +405,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     /**
      * Called when user hits pledge button
      */
-    fun       pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean = false) {
+    fun pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean = false) {
         selectedCard?.let {
             selectedPaymentMethod = it
         }

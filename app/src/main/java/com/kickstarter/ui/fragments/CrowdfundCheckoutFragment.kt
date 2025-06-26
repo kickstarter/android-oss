@@ -1,12 +1,12 @@
 package com.kickstarter.ui.fragments
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,7 +39,6 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.PaymentSheetResultCallback
 import timber.log.Timber
-import androidx.core.net.toUri
 
 class CrowdfundCheckoutFragment : Fragment() {
 
@@ -138,8 +137,8 @@ class CrowdfundCheckoutFragment : Fragment() {
                     }
 
                     val plotIsVisible = showPlotWidget &&
-                            environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false &&
-                            pledgeReason in listOf(PledgeReason.PLEDGE, PledgeReason.UPDATE_REWARD) && project.isPledgeOverTimeAllowed() == true
+                        environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false &&
+                        pledgeReason in listOf(PledgeReason.PLEDGE, PledgeReason.UPDATE_REWARD) && project.isPledgeOverTimeAllowed() == true
 
                     val isPostCampaignPhase = project.isInPostCampaignPledgingPhase() == true
                     val emailForCheckout = if (isPostCampaignPhase) email else null

@@ -122,7 +122,7 @@ fun CheckoutScreenPreview() {
             email = "example@example.com",
             pledgeReason = PledgeReason.PLEDGE,
             rewardsHaveShippables = true,
-            onPledgeCtaClicked = {_, _, -> },
+            onPledgeCtaClicked = { _, _, -> },
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
@@ -415,7 +415,7 @@ fun CheckoutScreen(
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
                 }
 
-                if(showPaymentMethodSelection) {
+                if (showPaymentMethodSelection) {
                     Text(
                         modifier = Modifier.padding(
                             start = dimensions.paddingMediumLarge,
@@ -520,7 +520,6 @@ fun CheckoutScreen(
 
                     Spacer(modifier = Modifier.height(dimensions.paddingLarge))
                 }
-
 
                 Card(
                     modifier = Modifier.padding(

@@ -60,7 +60,7 @@ class PledgeRedemptionActivity : ComponentActivity() {
                         email = "example@example.com",
                         pledgeReason = pledgeReason,
                         rewardsHaveShippables = true,
-                        onPledgeCtaClicked = {_, _ ->},
+                        onPledgeCtaClicked = { _, _ -> },
                         newPaymentMethodClicked = { },
                         onDisclaimerItemClicked = {},
                         onAccountabilityLinkClicked = {},

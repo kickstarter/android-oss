@@ -261,8 +261,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
 
         backgroundScope.launch(dispatcher) {
             viewModel.collectionPlanSelected(CollectionOptions.PLEDGE_OVER_TIME)
-            viewModel.pledgeOrUpdatePledge()
-
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
 
@@ -359,8 +361,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         viewModel.userChangedPaymentMethodSelected(cards.first())
         backgroundScope.launch(dispatcher) {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
-            viewModel.pledgeOrUpdatePledge()
-
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
             viewModel.checkoutResultState.toList(checkoutState)
         }
         advanceUntilIdle()
@@ -788,7 +792,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.last())
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
         advanceUntilIdle()
@@ -902,7 +909,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.first())
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
 
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
@@ -1023,7 +1033,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.first())
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
 
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
@@ -1145,7 +1158,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.first())
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
 
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
@@ -1266,7 +1282,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.first())
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
             viewModel.checkoutResultState.toList(checkout)
         }
         advanceUntilIdle()
@@ -1493,7 +1512,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         }
         advanceUntilIdle()
         backgroundScope.launch(dispatcher) {
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
         }
         advanceUntilIdle()
         backgroundScope.launch(dispatcher) {
@@ -1566,7 +1588,10 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
             viewModel.userChangedPaymentMethodSelected(cards.first())
-            viewModel.pledgeOrUpdatePledge()
+            viewModel.pledgeOrUpdatePledge(
+                selectedCard = null,
+                isIncremental = true
+            )
         }
 
         advanceUntilIdle()

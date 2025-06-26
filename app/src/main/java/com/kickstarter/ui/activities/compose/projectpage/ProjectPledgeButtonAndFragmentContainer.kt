@@ -108,7 +108,7 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             userEmail = "test@test.test",
             shippingAmount = 0.0,
             checkoutTotal = 20.0,
-            onPledgeCtaClicked = {_, _ -> },
+            onPledgeCtaClicked = { _, _ -> },
             onAddPaymentMethodClicked = {},
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {}

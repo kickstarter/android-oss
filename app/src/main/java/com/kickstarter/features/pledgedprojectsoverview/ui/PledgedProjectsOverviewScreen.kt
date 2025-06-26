@@ -431,7 +431,7 @@ fun PPOScreenEmptyState(
     ) {
         Text(
             color = colors.textPrimary,
-            text = if (v2Enabled) stringResource(id = R.string.fpo_no_funded_backings) else stringResource(id = R.string.Youre_all_caught_up),
+            text = if (v2Enabled) stringResource(id = R.string.No_funded_backings) else stringResource(id = R.string.Youre_all_caught_up),
             style = typographyV2.headingXL,
         )
 

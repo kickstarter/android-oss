@@ -31,6 +31,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.EDIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FINALIZE_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
@@ -1555,6 +1556,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(10, expectedProperties["notification_count_total"])
     }
 
@@ -1588,6 +1590,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1620,6 +1623,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1653,7 +1657,41 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test ppo finalize pledge click event`() {
+        val user = user()
+        val client = client(user)
+
+        val ppoCards = listOf(PPOCardFactory.pledgeManagementCard(), PPOCardFactory.pledgeManagementCard(), PPOCardFactory.fixPaymentCard())
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackPPOFinalizePledgeCTAClicked("123123", ppoCards, 12)
+
+        val properties = this.propertiesTest.value ?: mapOf()
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(PROJECT_ALERTS.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(FINALIZE_PLEDGE_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("123123", expectedProperties["project_pid"])
+        assertEquals(0, expectedProperties["notification_count_address_locks_soon"])
+        assertEquals(1, expectedProperties["notification_count_payment_failed"])
+        assertEquals(0, expectedProperties["notification_count_card_auth_required"])
+        assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(2, expectedProperties["notification_count_pledge_management"])
+        assertEquals(12, expectedProperties["notification_count_total"])
     }
 
     @Test
@@ -1686,6 +1724,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1719,6 +1758,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1752,6 +1792,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 

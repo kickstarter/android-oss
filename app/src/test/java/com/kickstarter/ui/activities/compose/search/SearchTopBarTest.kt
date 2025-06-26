@@ -22,7 +22,8 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.CATEGORY.name to 0,
                         FilterRowPillType.PROJECT_STATUS.name to 0,
                         FilterRowPillType.PERCENTAGE_RAISED.name to 0,
-                        FilterRowPillType.LOCATION.name to 0
+                        FilterRowPillType.LOCATION.name to 0,
+                        FilterRowPillType.AMOUNT_RAISED.name to 0,
                     ),
                     onPillPressed = {},
                     shouldShowPhase = false
@@ -35,6 +36,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertDoesNotExist()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
     }
 
@@ -50,7 +52,8 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.CATEGORY.name to 0,
                         FilterRowPillType.PROJECT_STATUS.name to 0,
                         FilterRowPillType.PERCENTAGE_RAISED.name to 0,
-                        FilterRowPillType.LOCATION.name to 0
+                        FilterRowPillType.LOCATION.name to 0,
+                        FilterRowPillType.AMOUNT_RAISED.name to 0,
                     ),
                     onPillPressed = {},
                     shouldShowPhase = true
@@ -61,8 +64,9 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertExists() // Requires scroll is wanna check isDisplayed
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertExists() // exists instead of display to avoid having to scroll
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists() // exists instead of display to avoid having to scroll
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
     }
 
@@ -80,7 +84,8 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.CATEGORY.name to 1,
                         FilterRowPillType.FILTER.name to 1,
                         FilterRowPillType.PROJECT_STATUS.name to 1,
-                        FilterRowPillType.PERCENTAGE_RAISED.name to 1
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 1,
+                        FilterRowPillType.AMOUNT_RAISED.name to 1,
                     ),
                     onPillPressed = {},
                     shouldShowPhase = true
@@ -92,10 +97,12 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
 
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
-            .assertTextEquals("3")
+            .assertTextEquals("4")
     }
 
     @Test
@@ -183,6 +190,38 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
+
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
+            .assertTextEquals("1")
+    }
+
+    @Test
+    fun `SearchTopBar pillBar AmountRaised filter active`() {
+        composeTestRule.setContent {
+            KSTheme {
+                SearchTopBar(
+                    onBackPressed = {},
+                    onValueChanged = {},
+                    projectStatusText = "Live",
+                    selectedFilterCounts = mapOf(
+                        FilterRowPillType.SORT.name to 0,
+                        FilterRowPillType.CATEGORY.name to 0,
+                        FilterRowPillType.FILTER.name to 1,
+                        FilterRowPillType.PROJECT_STATUS.name to 0,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                        FilterRowPillType.AMOUNT_RAISED.name to 1,
+                    ),
+                    onPillPressed = {},
+                    shouldShowPhase = true
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
 
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))

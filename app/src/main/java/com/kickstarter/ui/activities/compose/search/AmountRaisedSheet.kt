@@ -81,7 +81,7 @@ fun AmountRaisedSheet(
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val selectedPercentage = remember { mutableStateOf(currentBucket) }
+    val selectedBucket = remember { mutableStateOf(currentBucket) }
 
     KSTheme {
         Surface(
@@ -151,14 +151,14 @@ fun AmountRaisedSheet(
                             modifier = Modifier.testTag(bucketTag(bucket))
                                 .padding(top = dimensions.paddingMediumSmall, bottom = dimensions.paddingMediumSmall)
                                 .clickable {
-                                    selectedPercentage.value = bucket
-                                    onApply(selectedPercentage.value, null)
+                                    selectedBucket.value = bucket
+                                    onApply(selectedBucket.value, null)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
                         ) {
                             RadioButton(
-                                selected = selectedPercentage.value == bucket,
+                                selected = selectedBucket.value == bucket,
                                 onClick = null,
                                 colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
                             )
@@ -174,13 +174,13 @@ fun AmountRaisedSheet(
                 }
 
                 KSSearchBottomSheetFooter(
-                    leftButtonIsEnabled = selectedPercentage.value != null,
+                    leftButtonIsEnabled = selectedBucket.value != null,
                     leftButtonClickAction = {
-                        selectedPercentage.value = null
-                        onApply(selectedPercentage.value, false)
+                        selectedBucket.value = null
+                        onApply(selectedBucket.value, false)
                     },
                     rightButtonOnClickAction = {
-                        onApply(selectedPercentage.value, true)
+                        onApply(selectedBucket.value, true)
                     }
                 )
             }

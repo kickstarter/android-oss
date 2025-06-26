@@ -1556,6 +1556,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(10, expectedProperties["notification_count_total"])
     }
 
@@ -1589,6 +1590,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1621,6 +1623,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1654,6 +1657,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1720,6 +1724,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1753,6 +1758,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 
@@ -1786,6 +1792,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(1, expectedProperties["notification_count_payment_failed"])
         assertEquals(0, expectedProperties["notification_count_card_auth_required"])
         assertEquals(0, expectedProperties["notification_count_survey_available"])
+        assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
     }
 

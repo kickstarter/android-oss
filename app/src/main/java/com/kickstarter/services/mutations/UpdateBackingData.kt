@@ -11,7 +11,8 @@ data class UpdateBackingData(
     val locationId: String? = null,
     val rewardsIds: List<Reward>? = null,
     val paymentSourceId: String? = null,
-    val intentClientSecret: String? = null
+    val intentClientSecret: String? = null,
+    val incremental : Boolean? = null
 )
 
 /**
@@ -25,7 +26,8 @@ fun getUpdateBackingData(
     amount: String? = null,
     locationId: String? = null,
     rewardsList: List<Reward>? = null,
-    pMethod: StoredCard? = null
+    pMethod: StoredCard? = null,
+    incremental: Boolean? = null
 ): UpdateBackingData {
     return pMethod?.let { card ->
         // - Updating the payment method, a new one from PaymentSheet or already existing one
@@ -41,13 +43,15 @@ fun getUpdateBackingData(
             amount,
             locationId,
             rewardsList,
-            paymentSourceId = card.id()
+            paymentSourceId = card.id(),
+            incremental = incremental
         )
         // - Updating amount, location or rewards
     } ?: UpdateBackingData(
         backing,
         amount,
         locationId,
-        rewardsList
+        rewardsList,
+        incremental = incremental
     )
 }

@@ -39,6 +39,7 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.PaymentSheetResultCallback
 import timber.log.Timber
+import androidx.core.net.toUri
 
 class CrowdfundCheckoutFragment : Fragment() {
 
@@ -54,7 +55,7 @@ class CrowdfundCheckoutFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentCrowdfundCheckoutBinding.inflate(inflater, container, false)
@@ -136,8 +137,14 @@ class CrowdfundCheckoutFragment : Fragment() {
                         }
                     }
 
-                    val plotIsVisible = showPlotWidget && environment?.featureFlagClient()
-                        ?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false && pledgeReason == PledgeReason.PLEDGE
+                    val plotIsVisible = showPlotWidget &&
+                            environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false &&
+                            pledgeReason in listOf(PledgeReason.PLEDGE, PledgeReason.UPDATE_REWARD) && project.isPledgeOverTimeAllowed() == true
+
+                    val isPostCampaignPhase = project.isInPostCampaignPledgingPhase() == true
+                    val emailForCheckout = if (isPostCampaignPhase) email else null
+
+                    val showPaymentMethodSelection = pledgeReason in listOf(PledgeReason.PLEDGE, PledgeReason.LATE_PLEDGE, PledgeReason.UPDATE_PAYMENT)
 
                     KSTheme {
                         CheckoutScreen(
@@ -151,13 +158,13 @@ class CrowdfundCheckoutFragment : Fragment() {
                             totalBonusSupport = bonus,
                             storedCards = storedCards,
                             project = project,
-                            email = email,
+                            email = emailForCheckout,
                             pledgeReason = pledgeReason,
                             rewardsHaveShippables = rwList.any {
                                 RewardUtils.isShippable(it)
                             },
-                            onPledgeCtaClicked = {
-                                viewModel.pledgeOrUpdatePledge()
+                            onPledgeCtaClicked = { selectedCard, isIncremental ->
+                                viewModel.pledgeOrUpdatePledge(selectedCard, isIncremental)
                             },
                             isLoading = isLoading,
                             newPaymentMethodClicked = {
@@ -180,7 +187,8 @@ class CrowdfundCheckoutFragment : Fragment() {
                             onCollectionPlanSelected = {
                                     collectionOptions ->
                                 viewModel.collectionPlanSelected(collectionOptions)
-                            }
+                            },
+                            showPaymentMethodSelection = showPaymentMethodSelection,
                         )
                     }
                 }
@@ -245,7 +253,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                         ChromeTabsHelperActivity.openCustomTab(
                             activity,
                             UrlUtils.baseCustomTabsIntent(context),
-                            Uri.parse(trustUrl),
+                            trustUrl.toUri(),
                             null
                         )
                     }

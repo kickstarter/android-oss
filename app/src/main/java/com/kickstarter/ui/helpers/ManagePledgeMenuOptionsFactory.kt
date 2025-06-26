@@ -22,13 +22,10 @@ fun createManagePledgeMenuOptions(
 
     val isBackingStatusPreAuth = backing?.status() == Backing.STATUS_PREAUTH
 
-    val isEditPledgeAllowed = ffClient.getBoolean(FlagKey.ANDROID_PLOT_EDIT_PLEDGE) &&
-        project.isPledgeOverTimeAllowed() == true
-
+    val isEditPledgeAllowed = ffClient.getBoolean(FlagKey.ANDROID_PLOT_EDIT_PLEDGE)
     return ManagePledgeMenuOptions(
         showEditPledge = project.isLive && !isBackingStatusPreAuth && isEditPledgeAllowed,
         showUpdatePayment = project.isLive && !isBackingStatusPreAuth,
-        showChooseAnotherReward = project.isLive && !isBackingStatusPreAuth && !isEditPledgeAllowed,
         showSeeRewards = !project.isLive,
         showCancelPledge = project.isLive && !isBackingStatusPreAuth,
         showContactCreator = true

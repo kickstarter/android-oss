@@ -889,7 +889,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 if (updateBackingData.rewardsIds.isNotNull()) Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                 else Optional.absent(),
                 paymentSourceId = if (updateBackingData.paymentSourceId.isNotNull()) Optional.present(updateBackingData.paymentSourceId) else Optional.absent(),
-                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent()
+                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent(),
+                incremental = if (updateBackingData.incremental.isNotNull()) Optional.present(updateBackingData.incremental) else Optional.absent()
             )
             val ps = PublishSubject.create<Checkout>()
             service

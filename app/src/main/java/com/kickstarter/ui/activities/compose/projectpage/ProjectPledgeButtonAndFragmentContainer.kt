@@ -108,7 +108,7 @@ private fun ProjectPledgeButtonAndContainerPreview() {
             userEmail = "test@test.test",
             shippingAmount = 0.0,
             checkoutTotal = 20.0,
-            onPledgeCtaClicked = {},
+            onPledgeCtaClicked = {_, _ -> },
             onAddPaymentMethodClicked = {},
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {}
@@ -145,7 +145,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     userEmail: String,
     shippingAmount: Double,
     checkoutTotal: Double,
-    onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
+    onPledgeCtaClicked: (selectedCard: StoredCard?, isIncrementalPledge: Boolean) -> Unit,
     onAddPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,

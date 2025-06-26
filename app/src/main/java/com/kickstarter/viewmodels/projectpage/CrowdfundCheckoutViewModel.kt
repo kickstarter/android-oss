@@ -405,7 +405,11 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     /**
      * Called when user hits pledge button
      */
-    fun pledgeOrUpdatePledge() {
+    fun       pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean = false) {
+        selectedCard?.let {
+            selectedPaymentMethod = it
+        }
+        incrementalPledge = isIncremental
         scope.launch(dispatcher) {
             when (pledgeReason) {
                 PledgeReason.PLEDGE -> createBacking()
@@ -505,7 +509,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         pledgeData?.checkoutTotalAmount().toString(),
                         locationId = locationIdOrNull,
                         rwListOrEmpty,
-                        selectedPaymentMethod
+                        selectedPaymentMethod,
+                        incremental = incrementalPledge
                     )
                 }
                 PledgeReason.FIX_PLEDGE -> {

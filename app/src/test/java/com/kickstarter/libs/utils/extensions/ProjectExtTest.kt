@@ -481,7 +481,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertTrue(project.acceptsNewBackersForPM())
+        assertTrue(project.pledgeManagementAvailable())
     }
 
     @Test
@@ -496,7 +496,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertFalse(project.acceptsNewBackersForPM())
+        assertFalse(project.pledgeManagementAvailable())
     }
 
     @Test
@@ -511,7 +511,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertFalse(project.acceptsNewBackersForPM())
+        assertFalse(project.pledgeManagementAvailable())
     }
 
     @Test
@@ -526,6 +526,6 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertFalse(project.acceptsNewBackersForPM())
+        assertFalse(project.pledgeManagementAvailable())
     }
 }

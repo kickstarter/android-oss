@@ -34,7 +34,7 @@ import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
-import com.kickstarter.libs.utils.extensions.acceptsNewBackersForPM
+import com.kickstarter.libs.utils.extensions.pledgeManagementAvailable
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
@@ -822,7 +822,7 @@ interface ProjectPageViewModel {
                         project.backing()?.backingDetailsPageRoute()?.let {
                             openBackingDetailsWebview.onNext(it)
                         }
-                    } else if (project.acceptsNewBackersForPM() && goToPMWebviewFeatureFlag) {
+                    } else if (project.pledgeManagementAvailable() && goToPMWebviewFeatureFlag) {
                         project.redemptionPageUrl()?.let { path ->
                             val redemptionPageUrl = UrlUtils.appendPath(environment.webEndpoint(), path)
                             openPledgeManagerWebview.onNext(redemptionPageUrl)

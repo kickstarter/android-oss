@@ -144,7 +144,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.PLEDGE_MANAGEMENT -> {
-                                    env.analytics()?.trackPPOFinalizePledgeCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    viewModel.sendFinalizePledgeCTAEvent(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = PPOCard.webviewUrl ?: "",
                                         toolbarTitle = R.string.Pledge_manager,

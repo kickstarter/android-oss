@@ -253,6 +253,14 @@ class PledgedProjectsOverviewViewModel(
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name, duration)
     }
 
+    fun sendFinalizePledgeCTAEvent(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
+        this@PledgedProjectsOverviewViewModel.analyticEvents.trackPPOFinalizePledgeCTAClicked(
+            projectID = projectID,
+            ppoCards = ppoCards,
+            totalCount = totalCount
+        )
+    }
+
     class Factory(
         private val environment: Environment,
         private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,

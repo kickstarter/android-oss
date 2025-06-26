@@ -28,6 +28,7 @@ class PPOCard private constructor(
     val surveyID: String?,
     val viewType: PPOCardViewType?,
     val reward: Reward?,
+    val webviewUrl: String?,
 
 ) : Parcelable {
 
@@ -51,6 +52,7 @@ class PPOCard private constructor(
     fun timeNumberForAction() = this.timeNumberForAction
     fun viewType() = this.viewType
     fun reward() = this.reward
+    fun webviewUrl() = this.webviewUrl
 
     @Parcelize
     data class Builder(
@@ -74,6 +76,7 @@ class PPOCard private constructor(
         var timeNumberForAction: Int = 0,
         var viewType: PPOCardViewType? = null,
         var reward: Reward? = null,
+        var webviewUrl: String? = null,
     ) : Parcelable {
 
         fun deliveryAddress(deliveryAddress: DeliveryAddress?) = apply { this.deliveryAddress = deliveryAddress }
@@ -96,6 +99,7 @@ class PPOCard private constructor(
         fun timeNumberForAction(timeNumberForAction: Int) = apply { this.timeNumberForAction = timeNumberForAction }
         fun viewType(viewType: PPOCardViewType?) = apply { this.viewType = viewType }
         fun reward(reward: Reward?) = apply { this.reward = reward }
+        fun webviewUrl(webviewUrl: String?) = apply { this.webviewUrl = webviewUrl }
 
         fun build() = PPOCard(
             deliveryAddress = deliveryAddress,
@@ -118,6 +122,7 @@ class PPOCard private constructor(
             timeNumberForAction = timeNumberForAction,
             viewType = viewType,
             reward = reward,
+            webviewUrl = webviewUrl,
         )
     }
 
@@ -142,6 +147,7 @@ class PPOCard private constructor(
         timeNumberForAction = timeNumberForAction,
         viewType = viewType,
         reward = reward,
+        webviewUrl = webviewUrl,
     )
 
     companion object {

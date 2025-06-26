@@ -9,6 +9,6 @@ enum class PledgeTierType(val tierType: String) {
     SUVERY_SUBMITTED("SurveySubmitted"),
     ADDRESS_CONFIRMED("AddressConfirmed"),
     AWAITING_REWARD("AwaitingReward"),
-    PLEDGE_REDEMPTION("PledgeRedemption"),
+    PLEDGE_MANAGEMENT("PledgeManagement"),
     REWARD_RECEIVED("RewardReceived")
 }

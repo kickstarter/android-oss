@@ -26,6 +26,8 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(PPOCardViewTestTag.FlAG_LIST_VIEW.name, true)
     private val rewardReceivedSwitch =
         composeTestRule.onNodeWithTag(PPOCardViewTestTag.REWARD_RECEIVED_SWITCH.name, true)
+    private val alertNotificationDot =
+        composeTestRule.onNodeWithTag(PPOCardViewTestTag.ALERT_NOTIFICATION_DOT.name, true)
 
     @Test
     fun testConfirmAddressView() {
@@ -49,6 +51,8 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         shippingAddressView.assertIsDisplayed()
         // CTA
         confirmAddressButtonsView.assertIsDisplayed()
+
+        alertNotificationDot.assertIsDisplayed()
     }
 
     @Test
@@ -73,6 +77,8 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         shippingAddressView.assertIsNotDisplayed()
         // CTA
         composeTestRule.onAllNodesWithText("Fix Payment")[0].assertIsDisplayed()
+
+        alertNotificationDot.assertIsDisplayed()
     }
 
     @Test
@@ -97,6 +103,8 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         shippingAddressView.assertIsNotDisplayed()
         // CTA
         composeTestRule.onAllNodesWithText("Authenticate Card")[0].assertIsDisplayed()
+
+        alertNotificationDot.assertIsDisplayed()
     }
 
     @Test
@@ -121,6 +129,55 @@ class PPOCardViewKtTest : KSRobolectricTestCase() {
         shippingAddressView.assertIsNotDisplayed()
         // CTA
         composeTestRule.onAllNodesWithText("Take Survey")[0].assertIsDisplayed()
+
+        alertNotificationDot.assertIsDisplayed()
+    }
+
+    @Test
+    fun testPledgeManagementView() {
+        composeTestRule.setContent {
+            KSTheme {
+                PPOCardView(
+                    viewType = PPOCardViewType.PLEDGE_MANAGEMENT,
+                    onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                )
+            }
+        }
+
+        // Shipping address hidden
+        shippingAddressView.assertIsNotDisplayed()
+        // CTA
+        composeTestRule.onAllNodesWithText("Finalize Pledge")[0].assertIsDisplayed()
+
+        alertNotificationDot.assertIsDisplayed()
+    }
+
+    @Test
+    fun `test alert notification dot not visible on incorrect card types`() {
+        composeTestRule.setContent {
+            KSTheme {
+                PPOCardView(
+                    viewType = PPOCardViewType.PLEDGE_COLLECTED_REWARD,
+                    onCardClick = {},
+                    onProjectPledgeSummaryClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                )
+            }
+        }
+
+        alertNotificationDot.assertIsNotDisplayed()
     }
 
     @Test

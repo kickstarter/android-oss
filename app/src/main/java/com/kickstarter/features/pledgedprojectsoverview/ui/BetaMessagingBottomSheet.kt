@@ -61,7 +61,7 @@ fun BetaMessagingBottomSheet(
             )
         }
         Text(
-            text = stringResource(id = R.string.fpo_introducing_the_backings_tab),
+            text = stringResource(id = R.string.Introducing_the_backings_tab),
             style = typographyV2.headingXL,
             color = colors.textPrimary
         )
@@ -69,14 +69,14 @@ fun BetaMessagingBottomSheet(
         Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
         Text(
-            text = stringResource(id = R.string.fpo_view_and_manage_your_backings_from_our_new_backings_dashboard),
+            text = stringResource(id = R.string.View_and_manage_your_backings_from_our_new_backings_dashboard),
             style = typographyV2.bodyLG,
             color = colors.textPrimary
         )
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
         Text(
-            text = stringResource(id = R.string.fpo_currently_supported),
+            text = stringResource(id = R.string.Currently_supported),
             style = typographyV2.subHeadlineMedium,
             color = colors.textSecondary
         )
@@ -88,7 +88,7 @@ fun BetaMessagingBottomSheet(
         ) {
             TextWithStartIcon(
                 modifier = Modifier,
-                text = stringResource(id = R.string.fpo_successfully_funded_backings),
+                text = stringResource(id = R.string.Successfully_funded_backings),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_rounded),
                 style = typographyV2.body,
                 textColor = colors.textPrimary,
@@ -96,26 +96,17 @@ fun BetaMessagingBottomSheet(
 
             TextWithStartIcon(
                 modifier = Modifier,
-                text = stringResource(id = R.string.fpo_important_project_alerts),
+                text = stringResource(id = R.string.Important_project_alerts),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_rounded),
                 style = typographyV2.body,
                 textColor = colors.textPrimary,
-            )
-
-            TextWithStartIcon(
-                modifier = Modifier,
-                text = stringResource(id = R.string.fpo_sorting_and_filtering),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_rounded),
-                style = typographyV2.body,
-                textColor = colors.textPrimary,
-
             )
         }
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
         Text(
-            text = stringResource(id = R.string.fpo_coming_soon),
+            text = stringResource(id = R.string.Coming_soon),
             style = typographyV2.subHeadlineMedium,
             color = colors.textSecondary
         )
@@ -125,6 +116,14 @@ fun BetaMessagingBottomSheet(
         Column(
             verticalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
         ) {
+            TextWithStartIcon(
+                modifier = Modifier,
+                text = stringResource(id = R.string.Sorting_and_filtering),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_task_to_do),
+                style = typographyV2.body,
+                textColor = colors.textPrimary,
+            )
+            
             TextWithStartIcon(
                 modifier = Modifier,
                 text = stringResource(id = R.string.tabbar_search),
@@ -136,7 +135,7 @@ fun BetaMessagingBottomSheet(
 
             TextWithStartIcon(
                 modifier = Modifier,
-                text = stringResource(id = R.string.fpo_live_backings),
+                text = stringResource(id = R.string.Live_backings),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_task_to_do),
                 style = typographyV2.body,
                 textColor = colors.textPrimary,
@@ -145,16 +144,15 @@ fun BetaMessagingBottomSheet(
 
             TextWithStartIcon(
                 modifier = Modifier,
-                text = stringResource(id = R.string.fpo_unsuccessful_and_canceled_backings),
+                text = stringResource(id = R.string.Unsuccessful_and_canceled_backings),
                 imageVector = ImageVector.vectorResource(id = R.drawable.ic_task_to_do),
                 style = typographyV2.body,
                 textColor = colors.textPrimary,
-
             )
         }
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
         Text(
-            text = stringResource(id = R.string.fpo_live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab),
+            text = stringResource(id = R.string.Live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab),
             style = typographyV2.bodyLG,
             color = colors.textPrimary
         )

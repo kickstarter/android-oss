@@ -141,7 +141,7 @@
         style="@style/DrawerTextViewWithCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fpo_backings"
+        android:text="@string/Backings"
         app:drawableStartCompat="@drawable/ic_rectangle_stack" />
 
     <TextView

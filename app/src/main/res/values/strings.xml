@@ -90,20 +90,10 @@
   <!-- TODO: Get translations for this and put it in i18n, then remove  -->
   <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
 
-  <string name="fpo_no_funded_backings" formatted="false">No funded backings</string>
-  <string name="fpo_backings" formatted="false">Backings</string>
-  <string name="fpo_when_projects_youve_backed_have_successfully_funded" formatted="false">When projects you\'ve backed have successfully funded, you\'ll see them here.</string>
-  <string name="fpo_live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab" formatted="false">Live and unsuccessful backings can currently be viewed in the Profile tab.</string>
-  <string name="fpo_unsuccessful_and_canceled_backings" formatted="false">Unsuccessful and canceled backings</string>
-  <string name="fpo_live_backings" formatted="false">Live backings</string>
-  <string name="fpo_coming_soon" formatted="false">Coming soon:</string>
-  <string name="fpo_sorting_and_filtering" formatted="false">Sorting and filtering</string>
-  <string name="fpo_important_project_alerts" formatted="false">Important project alerts</string>
-  <string name="fpo_successfully_funded_backings" formatted="false">Successfully funded backings</string>
-  <string name="fpo_currently_supported" formatted="false">Currently supported:</string>
-  <string name="fpo_view_and_manage_your_backings_from_our_new_backings_dashboard" formatted="false">View and manage your backings from our new Backings dashboard! More functionality will become available as our beta evolves.</string>
-  <string name="fpo_introducing_the_backings_tab" formatted="false">Introducing the Backings tab</string>
-
+  <!-- FPO backings dash -->
+  //spanish translation missing//<string name="fpo_live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab" formatted="false">Live and unsuccessful backings can currently be viewed in the Profile tab.</string>
+  //spanish translation missing//<string name="fpo_unsuccessful_and_canceled_backings" formatted="false">Unsuccessful and canceled backings</string>
+  //spanish translation missing//<string name="fpo_live_backings" formatted="false">Live backings</string>
 
   <string name="Goal_fpo" formatted="false">Goal</string>
 
@@ -123,9 +113,5 @@
   <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
   <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
   <string name="fpo_track_shipment" formatted="false">Track shipment</string>
-
-  <!-- FPO net new backer -->
-  <string name="fpo_pledge_manager" formatted="false">Pledge Manager</string>
-  <string name="fpo_go_to_pledge_manager" formatted="false">Go to Pledge Manager</string>
 
 </resources>

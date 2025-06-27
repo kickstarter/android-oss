@@ -363,7 +363,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
             viewModel.checkoutResultState.toList(checkoutState)
         }
@@ -794,7 +794,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.userChangedPaymentMethodSelected(cards.last())
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
@@ -911,7 +911,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.userChangedPaymentMethodSelected(cards.first())
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
 
             viewModel.crowdfundCheckoutUIState.toList(uiState)
@@ -1035,7 +1035,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.userChangedPaymentMethodSelected(cards.first())
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
 
             viewModel.crowdfundCheckoutUIState.toList(uiState)
@@ -1160,7 +1160,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.userChangedPaymentMethodSelected(cards.first())
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
 
             viewModel.crowdfundCheckoutUIState.toList(uiState)
@@ -1284,7 +1284,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.userChangedPaymentMethodSelected(cards.first())
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
             viewModel.checkoutResultState.toList(checkout)
         }
@@ -1514,7 +1514,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch(dispatcher) {
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
         }
         advanceUntilIdle()
@@ -1590,7 +1590,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.userChangedPaymentMethodSelected(cards.first())
             viewModel.pledgeOrUpdatePledge(
                 selectedCard = null,
-                isIncremental = true
+                isIncremental = null
             )
         }
 
@@ -1601,5 +1601,59 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertNull(updateData.amount)
         assertNull(updateData.locationId)
         assertNull(updateData.rewardsIds)
+    }
+
+    @Test
+    fun `test change PLOT to pay in full on edit backing`() = runTest {
+        val cards = listOf(StoredCardFactory.visa())
+        val backing = BackingFactory.backing(RewardFactory.reward())
+            .toBuilder()
+            .paymentSource(PaymentSourceFactory.visa())
+            .incremental(true)
+            .build()
+
+        var dataCaptured: UpdateBackingData? = null
+
+        val projectPlot = ProjectFactory.project()
+            .toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .isPledgeOverTimeAllowed(true)
+            .state(Project.STATE_LIVE)
+            .build()
+        val envPlot = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun getStoredCards(): Observable<List<StoredCard>> = Observable.just(cards)
+                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                    dataCaptured = updateBackingData
+                    return Observable.just(Checkout.builder().id(100L).backing(Checkout.Backing.builder().build()).build())
+                }
+            })
+            .currentUserV2(MockCurrentUserV2(initialUser = UserFactory.user()))
+            .build()
+
+        setUpEnvironment(envPlot)
+        val projectDataPlot = ProjectDataFactory.project(projectPlot)
+        val bundlePlot = Bundle().apply {
+            putParcelable(
+                ArgumentsKey.PLEDGE_PLEDGE_DATA,
+                PledgeData.with(
+                    PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_PLEDGE),
+                    projectDataPlot,
+                    RewardFactory.reward()
+                )
+            )
+            putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
+        }
+
+        viewModel.provideBundle(bundlePlot)
+        viewModel.userChangedPaymentMethodSelected(null)
+
+        backgroundScope.launch {
+            viewModel.pledgeOrUpdatePledge(selectedCard = null, isIncremental = false)
+        }
+        advanceUntilIdle()
+
+        assertTrue(dataCaptured?.incremental == false)
     }
 }

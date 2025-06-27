@@ -65,7 +65,7 @@ data class CheckoutUIState(
     val shippingRule: ShippingRule? = null,
     val showPlotWidget: Boolean = false,
     val plotEligible: Boolean = false,
-    val isIncrementalPledge: Boolean = false,
+    val isIncrementalPledge: Boolean? = null,
     val paymentIncrements: List<PaymentIncrement>? = null
 )
 
@@ -93,7 +93,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     private var totalAmount = 0.0
     private var bonusAmount = 0.0
     private var thirdPartyEventSent = Pair(false, "")
-    private var incrementalPledge = false
+    private var incrementalPledge: Boolean? = null
     private var showPlotWidget: Boolean = false
     private var plotEligible: Boolean = false
     private var paymentIncrements: List<PaymentIncrement>? = null
@@ -405,11 +405,15 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     /**
      * Called when user hits pledge button
      */
-    fun pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean = false) {
+    fun pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean?) {
         selectedCard?.let {
             selectedPaymentMethod = it
         }
-        incrementalPledge = isIncremental
+        incrementalPledge = if (project.isPledgeOverTimeAllowed() == true) {
+            isIncremental
+        } else {
+            null
+        }
         scope.launch(dispatcher) {
             when (pledgeReason) {
                 PledgeReason.PLEDGE -> createBacking()

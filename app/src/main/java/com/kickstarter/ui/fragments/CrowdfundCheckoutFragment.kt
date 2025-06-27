@@ -182,7 +182,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                             isPlotEnabled = plotIsVisible,
                             isPlotEligible = plotEligible,
                             paymentIncrements = paymentIncrements,
-                            isIncrementalPledge = isIncrementalPledge,
+                            isIncrementalPledge = isIncrementalPledge == true,
                             onCollectionPlanSelected = {
                                     collectionOptions ->
                                 viewModel.collectionPlanSelected(collectionOptions)

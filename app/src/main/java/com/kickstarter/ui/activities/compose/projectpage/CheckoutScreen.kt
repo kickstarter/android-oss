@@ -122,12 +122,13 @@ fun CheckoutScreenPreview() {
             email = "example@example.com",
             pledgeReason = PledgeReason.PLEDGE,
             rewardsHaveShippables = true,
-            onPledgeCtaClicked = { },
+            onPledgeCtaClicked = { _, _, -> },
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            isPlotEnabled = false
+            isPlotEnabled = false,
+            showPaymentMethodSelection = true,
         )
     }
 }
@@ -166,12 +167,13 @@ fun CheckoutScreenIsPlotEnabledPreview() {
             email = "example@example.com",
             pledgeReason = PledgeReason.PLEDGE,
             rewardsHaveShippables = true,
-            onPledgeCtaClicked = { },
+            onPledgeCtaClicked = { _, _, -> },
             newPaymentMethodClicked = { },
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            isPlotEnabled = true
+            isPlotEnabled = true,
+            showPaymentMethodSelection = true,
         )
     }
 }
@@ -193,7 +195,7 @@ fun CheckoutScreen(
     totalBonusSupport: Double = 0.0,
     rewardsHaveShippables: Boolean,
     isLoading: Boolean = false,
-    onPledgeCtaClicked: (selectedCard: StoredCard?) -> Unit,
+    onPledgeCtaClicked: (selectedCard: StoredCard?, isIncrementalPledge: Boolean) -> Unit,
     newPaymentMethodClicked: () -> Unit,
     onDisclaimerItemClicked: (disclaimerItem: DisclaimerItems) -> Unit,
     onAccountabilityLinkClicked: () -> Unit,
@@ -203,7 +205,8 @@ fun CheckoutScreen(
     isPlotEligible: Boolean = false,
     isIncrementalPledge: Boolean = false,
     paymentIncrements: List<PaymentIncrement>? = null,
-    isPledgeButtonEnabled: Boolean = true
+    isPledgeButtonEnabled: Boolean = true,
+    showPaymentMethodSelection: Boolean = true
 ) {
     val selectedOption = remember {
         mutableStateOf(
@@ -269,7 +272,7 @@ fun CheckoutScreen(
                                 modifier = Modifier
                                     .padding(bottom = dimensions.paddingMediumSmall)
                                     .fillMaxWidth(),
-                                onClickAction = { onPledgeCtaClicked(selectedOption.value) },
+                                onClickAction = { onPledgeCtaClicked(selectedOption.value, isIncrementalPledge) },
                                 isEnabled = (project.acceptedCardType(selectedOption.value?.type()) || selectedOption.value?.isFromPaymentSheet() ?: false) && isPledgeButtonEnabled,
                                 text = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.LATE_PLEDGE) stringResource(
                                     id = R.string.Pledge
@@ -410,6 +413,9 @@ fun CheckoutScreen(
                         pledgeOverTimeShortPitch = project.pledgeOverTimeCollectionPlanShortPitch(),
                     )
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
+                }
+
+                if (showPaymentMethodSelection) {
                     Text(
                         modifier = Modifier.padding(
                             start = dimensions.paddingMediumLarge,
@@ -419,99 +425,101 @@ fun CheckoutScreen(
                         style = typographyV2.headLine,
                         color = colors.kds_black,
                     )
+
                     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-                }
-                storedCards.forEachIndexed { index, card ->
-                    val isAvailable =
-                        project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
+
+                    storedCards.forEachIndexed { index, card ->
+                        val isAvailable =
+                            project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
+                        Card(
+                            backgroundColor = colors.kds_white,
+                            modifier = Modifier
+                                .padding(
+                                    start = dimensions.paddingMedium,
+                                    end = dimensions.paddingMedium
+                                )
+                                .fillMaxWidth()
+                                .selectableGroup()
+                                .selectable(
+                                    enabled = isAvailable,
+                                    selected = if (index == 0) true else false,
+                                    onClick = {
+                                        onOptionSelected(card)
+                                    }
+                                )
+                        ) {
+                            Column {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .padding(
+                                            top = dimensions.paddingSmall,
+                                            bottom = dimensions.paddingSmall
+                                        )
+                                ) {
+
+                                    KSRadioButton(
+                                        selected = card == selectedOption.value,
+                                        onClick = { onOptionSelected(card) },
+                                        enabled = isAvailable
+                                    )
+
+                                    KSCardElement(card = card, environment.ksString(), isAvailable)
+                                }
+
+                                if (!isAvailable) {
+                                    Text(
+                                        modifier = Modifier.padding(
+                                            start = dimensions.paddingDoubleLarge,
+                                            end = dimensions.paddingMediumLarge,
+                                            bottom = dimensions.paddingSmall
+                                        ),
+                                        style = typographyV2.headingSM,
+                                        color = colors.kds_alert,
+                                        text = stringResource(id = R.string.This_project_has_a_set_currency_that_cant_process_this_option)
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+                    }
+
                     Card(
                         backgroundColor = colors.kds_white,
                         modifier = Modifier
-                            .padding(
-                                start = dimensions.paddingMedium,
-                                end = dimensions.paddingMedium
-                            )
+                            .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
+                            .clickable { newPaymentMethodClicked.invoke() }
                             .fillMaxWidth()
-                            .selectableGroup()
-                            .selectable(
-                                enabled = isAvailable,
-                                selected = if (index == 0) true else false,
-                                onClick = {
-                                    onOptionSelected(card)
-                                }
-                            )
                     ) {
-                        Column {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(
-                                        top = dimensions.paddingSmall,
-                                        bottom = dimensions.paddingSmall
-                                    )
-                            ) {
-
-                                KSRadioButton(
-                                    selected = card == selectedOption.value,
-                                    onClick = { onOptionSelected(card) },
-                                    enabled = isAvailable
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(
+                                top = dimensions.paddingMedium,
+                                bottom = dimensions.paddingMedium
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_add_rounded),
+                                contentDescription = "",
+                                tint = colors.textAccentGreen,
+                                modifier = Modifier.background(
+                                    color = colors.kds_create_700.copy(alpha = 0.2f),
+                                    CircleShape
                                 )
+                            )
 
-                                KSCardElement(card = card, environment.ksString(), isAvailable)
-                            }
-
-                            if (!isAvailable) {
-                                Text(
-                                    modifier = Modifier.padding(
-                                        start = dimensions.paddingDoubleLarge,
-                                        end = dimensions.paddingMediumLarge,
-                                        bottom = dimensions.paddingSmall
-                                    ),
-                                    style = typographyV2.headingSM,
-                                    color = colors.kds_alert,
-                                    text = stringResource(id = R.string.This_project_has_a_set_currency_that_cant_process_this_option)
-                                )
-                            }
+                            Text(
+                                modifier = Modifier.padding(start = dimensions.paddingSmall),
+                                color = colors.textAccentGreen,
+                                style = typographyV2.subHeadlineMedium,
+                                text = stringResource(id = R.string.New_payment_method)
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+
+                    Spacer(modifier = Modifier.height(dimensions.paddingLarge))
                 }
-
-                Card(
-                    backgroundColor = colors.kds_white,
-                    modifier = Modifier
-                        .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
-                        .clickable { newPaymentMethodClicked.invoke() }
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(
-                            top = dimensions.paddingMedium,
-                            bottom = dimensions.paddingMedium
-                        )
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_add_rounded),
-                            contentDescription = "",
-                            tint = colors.textAccentGreen,
-                            modifier = Modifier.background(
-                                color = colors.kds_create_700.copy(alpha = 0.2f),
-                                CircleShape
-                            )
-                        )
-
-                        Text(
-                            modifier = Modifier.padding(start = dimensions.paddingSmall),
-                            color = colors.textAccentGreen,
-                            style = typographyV2.subHeadlineMedium,
-                            text = stringResource(id = R.string.New_payment_method)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
                 Card(
                     modifier = Modifier.padding(

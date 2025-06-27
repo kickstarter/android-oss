@@ -7,9 +7,6 @@
   <item android:id="@+id/update_payment"
     android:title="@string/Change_payment_method"
     app:showAsAction="never"/>
-  <item android:id="@+id/choose_another_reward"
-      android:title="@string/Choose_another_reward"
-      app:showAsAction="never"/>
   <item android:id="@+id/cancel_pledge"
     android:title="@string/Cancel_pledge"
     app:showAsAction="never"/>

@@ -423,7 +423,7 @@ Cliquez pour réessayer.</string>
   <string name="Live" formatted="false">En direct</string>
   <string name="Live_Stream" formatted="false">Diffusion en direct</string>
   <string name="Live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab" formatted="false">Les engagements en cours et non financés sont visibles actuellement visibles dans l\'onglet Profil.</string>
-  <string name="Live_backings" formatted="false">Live backings</string>
+  <string name="Live_backings" formatted="false">Engagements en cours</string>
   <string name="Live_now" formatted="false">En direct en ce moment</string>
   <string name="Live_now_live_stream_event_name_by_creator_name" formatted="false">En direct : %{live_stream_event_name} par %{creator_name}</string>
   <string name="Live_stream_countdown" formatted="false">Compte à rebours de la diffusion en direct</string>
@@ -837,7 +837,7 @@ n\'ont rien soutenu.</string>
   <string name="Unsaves_project" formatted="false">Annule l\'enregistrement du projet.</string>
   <string name="Unsubscribe" formatted="false">Se désabonner</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Désabonnement des diffusions en direct à venir.</string>
-  <string name="Unsuccessful_and_canceled_backings" formatted="false">Unsuccessful and canceled backings</string>
+  <string name="Unsuccessful_and_canceled_backings" formatted="false">Projets non financés ou annulés</string>
   <string name="Unsuccessfully_Funded" formatted="false">Non financé.</string>
   <string name="Unsupported_card_type" formatted="false">Ce type n\'est pas accepté. Veuillez réessayer avec une autre carte.</string>
   <string name="Upcoming_live_stream" formatted="false">Diffusion en direct à venir</string>

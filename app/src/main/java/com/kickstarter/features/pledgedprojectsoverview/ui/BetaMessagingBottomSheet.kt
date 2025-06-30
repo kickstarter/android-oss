@@ -123,7 +123,7 @@ fun BetaMessagingBottomSheet(
                 style = typographyV2.body,
                 textColor = colors.textPrimary,
             )
-            
+
             TextWithStartIcon(
                 modifier = Modifier,
                 text = stringResource(id = R.string.tabbar_search),

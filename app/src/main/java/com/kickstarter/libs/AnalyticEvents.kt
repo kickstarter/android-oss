@@ -42,6 +42,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.EDIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FINALIZE_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
@@ -325,6 +326,21 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props["survey_id"] = surveyID
         props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
         props[CONTEXT_CTA.contextName] = SURVEY_RESPONSE_INITIATE.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when finalize pledge button is tapped on pledge management ppo card
+     *
+     * @param projectID: The id of the project.
+     * @param ppoCards: The list of alerts.
+     * @param totalCount: The total number of alerts.
+     */
+    fun trackPPOFinalizePledgeCTAClicked(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
+        val props = AnalyticEventsUtils.notificationProperties(ppoCards, totalCount).toMutableMap()
+        props["project_pid"] = projectID
+        props[CONTEXT_PAGE.contextName] = PROJECT_ALERTS.contextName
+        props[CONTEXT_CTA.contextName] = FINALIZE_PLEDGE_INITIATE.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
 

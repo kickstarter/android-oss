@@ -481,7 +481,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertTrue(project.acceptsNewBackersForPM())
+        assertTrue(project.pledgeManagementAvailable())
     }
 
     @Test
@@ -496,7 +496,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertFalse(project.acceptsNewBackersForPM())
+        assertFalse(project.pledgeManagementAvailable())
     }
 
     @Test
@@ -511,7 +511,7 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertFalse(project.acceptsNewBackersForPM())
+        assertFalse(project.pledgeManagementAvailable())
     }
 
     @Test
@@ -526,6 +526,24 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .isBacking(false)
             .build()
 
-        assertFalse(project.acceptsNewBackersForPM())
+        assertFalse(project.pledgeManagementAvailable())
+    }
+
+    @Test
+    fun `test that pledge management is available when pm window is open and user is backer`() {
+        val pledgeManager = PledgeManagerFactory.pledgeManagerInNonApprovedState()
+            .toBuilder()
+            .acceptsNewBackers(false)
+            .build()
+        val lastWave = CheckoutWaveFactory.checkoutWaveInactive()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .pledgeManager(pledgeManager)
+            .lastWave(lastWave)
+            .isBacking(true)
+            .build()
+
+        assertFalse(project.pledgeManagementAvailable())
     }
 }

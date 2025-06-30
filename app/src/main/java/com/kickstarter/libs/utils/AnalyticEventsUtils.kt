@@ -332,6 +332,7 @@ object AnalyticEventsUtils {
             put("survey_available", 0)
             put("card_auth_required", 0)
             put("payment_failed", 0)
+            put("pledge_management", 0)
             put("total", totalCount)
         }
 
@@ -341,6 +342,7 @@ object AnalyticEventsUtils {
                 PPOCardViewType.AUTHENTICATE_CARD -> props["card_auth_required"] = (props["card_auth_required"] ?: 0).plus(1)
                 PPOCardViewType.OPEN_SURVEY -> props["survey_available"] = (props["survey_available"] ?: 0).plus(1)
                 PPOCardViewType.CONFIRM_ADDRESS -> props["address_locks_soon"] = (props["address_locks_soon"] ?: 0).plus(1)
+                PPOCardViewType.PLEDGE_MANAGEMENT -> props["pledge_management"] = (props["pledge_management"] ?: 0).plus(1)
                 else -> {}
             }
         }

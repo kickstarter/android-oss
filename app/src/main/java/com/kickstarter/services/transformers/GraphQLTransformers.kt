@@ -1151,6 +1151,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .flags(flags)
                 .reward(reward)
                 .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress))
+                .webviewUrl(it?.node?.webviewUrl)
                 .build()
         }
 
@@ -1234,7 +1235,7 @@ fun getTierType(tierType: String?, reward: Reward) =
         }
         PledgeTierType.ADDRESS_CONFIRMED.tierType -> PPOCardViewType.ADDRESS_CONFIRMED
         PledgeTierType.AWAITING_REWARD.tierType -> PPOCardViewType.AWAITING_REWARD
-        PledgeTierType.PLEDGE_REDEMPTION.tierType -> PPOCardViewType.PLEDGE_REDEMPTION
+        PledgeTierType.PLEDGE_MANAGEMENT.tierType -> PPOCardViewType.PLEDGE_MANAGEMENT
         PledgeTierType.REWARD_RECEIVED.tierType -> PPOCardViewType.REWARD_RECEIVED
         else -> PPOCardViewType.UNKNOWN
     }

@@ -402,6 +402,22 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
         }
     }
 
+    @Test
+    fun `track finalize pledge cta click analytic event sent from viemwodel when button tapped`() {
+        runTest {
+
+            var viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment()
+            )
+                .create(PledgedProjectsOverviewViewModel::class.java)
+
+            viewModel.sendFinalizePledgeCTAEvent("1234", listOf(PPOCardFactory.pledgeManagementCard()), 12)
+
+            segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        }
+    }
+
 // TODO will add tests back after spike MBL-1638 completed
 //    @Test
 //    fun `emits_error_state_when_errored`() =

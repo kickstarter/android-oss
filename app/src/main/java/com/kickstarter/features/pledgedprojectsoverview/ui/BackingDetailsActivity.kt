@@ -35,6 +35,9 @@ class BackingDetailsActivity : AppCompatActivity() {
         binding = ActivityBackingDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val toolbarTitle = intent.getStringExtra(IntentKey.TOOLBAR_TITLE)
+        toolbarTitle?.let { binding.titleTextView.text = it }
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {

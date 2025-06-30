@@ -423,8 +423,8 @@ Toca para intentar de nuevo.</string>
   <string name="Limited_shipping" formatted="false">Envíos limitados</string>
   <string name="Live" formatted="false">En vivo</string>
   <string name="Live_Stream" formatted="false">Live Streaming</string>
-  <string name="Live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab" formatted="false">Live and unsuccessful backings can currently be viewed in the Profile tab.</string>
-  <string name="Live_backings" formatted="false">Live backings</string>
+  <string name="Live_and_unsuccessful_backings_can_currently_be_viewed_in_the_profile_tab" formatted="false">Las contribuciones a proyectos activos y no financiados aparecen actualmente en la pestaña Perfil.</string>
+  <string name="Live_backings" formatted="false">Contribuciones a proyectos activos</string>
   <string name="Live_now" formatted="false">En vivo</string>
   <string name="Live_now_live_stream_event_name_by_creator_name" formatted="false">Ahora en vivo: %{live_stream_event_name} de %{creator_name}</string>
   <string name="Live_stream_countdown" formatted="false">Live Stream - Cuenta atrás</string>
@@ -476,7 +476,7 @@ Toca para intentar de nuevo.</string>
   <string name="Newsletters" formatted="false">Boletines informativos</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
-  <string name="No_funded_backings" formatted="false">No funded backings</string>
+  <string name="No_funded_backings" formatted="false">No hay contribuciones a proyectos financiados</string>
   <string name="No_go_back" formatted="false">No, regresar</string>
   <string name="No_longer_available" formatted="false">Ya no está disponible</string>
   <string name="No_messages" formatted="false">No hay mensajes</string>
@@ -837,7 +837,7 @@ Toca para intentar de nuevo.</string>
   <string name="Unsaves_project" formatted="false">Deshacer "guardar proyecto".</string>
   <string name="Unsubscribe" formatted="false">Anular suscripción</string>
   <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Desactiva subscripción a futuros Live-Streams.</string>
-  <string name="Unsuccessful_and_canceled_backings" formatted="false">Unsuccessful and canceled backings</string>
+  <string name="Unsuccessful_and_canceled_backings" formatted="false">Contribuciones a proyectos no financiados o cancelados</string>
   <string name="Unsuccessfully_Funded" formatted="false">Financiación falló.</string>
   <string name="Unsupported_card_type" formatted="false">No aceptamos este tipo de tarjeta. Intenta de nuevo con otra.</string>
   <string name="Upcoming_live_stream" formatted="false">Futuro Live-Stream</string>

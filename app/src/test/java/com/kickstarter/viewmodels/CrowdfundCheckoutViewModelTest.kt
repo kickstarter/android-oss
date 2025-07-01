@@ -618,7 +618,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
                     PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00"),
                     PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00")
 
-        )
+                )
             )
         // - Network mocks
         val environment = environment().toBuilder()
@@ -1605,5 +1605,4 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertNull(updateData.locationId)
         assertNull(updateData.rewardsIds)
     }
-
 }

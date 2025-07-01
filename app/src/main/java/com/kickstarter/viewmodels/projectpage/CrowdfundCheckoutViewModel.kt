@@ -422,6 +422,17 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     /**
      * Called when the user hits the pledge button.
+     *
+     * This function updates the selected payment method and incremental pledge status
+     * based on the provided parameters. It then emits the current state of the UI.
+     *
+     * Finally, it triggers either `createBacking()` or `updateBacking()` based on the
+     * `pledgeReason`.
+     *
+     * @param selectedCard The card selected by the user for payment. Can be null if no card is selected.
+     * @param isIncremental A boolean indicating whether the pledge is incremental.
+     *                      This is only considered if the project allows incremental pledges.
+     *                      Can be null.
      */
     fun pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean?) {
         selectedCard?.let {
@@ -515,8 +526,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                             amount = null,
                             locationId = locationId,
                             rwl,
-                            pMethod = selectedPaymentMethod
-
+                            pMethod = selectedPaymentMethod,
+                            incremental = null
                         )
                     }
                 }

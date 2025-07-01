@@ -225,7 +225,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.collect()
     }
 
-    fun onPledgeButtonClicked(selectedCard: StoredCard?, isIncremental: Boolean = false) {
+    fun onPledgeButtonClicked(selectedCard: StoredCard?) {
         // - Avoid launching any other coroutine call while previous coroutine active
         if (pledgeButtonClickedJob?.isActive.isTrue()) return
 

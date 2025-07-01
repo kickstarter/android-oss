@@ -16,10 +16,22 @@ data class UpdateBackingData(
 )
 
 /**
- * Obtain the data model input that will be send to UpdateBacking mutation
- * - When updating payment method with a new payment method using payment sheet
- * - When updating payment method with a previously existing payment source
- * - Updating any other parameter like location, amount or rewards
+ * Constructs an [UpdateBackingData] object with the provided parameters.
+ *
+ * This function handles different scenarios for updating a backing:
+ * - When updating the payment method with a new payment method using PaymentSheet.
+ * - When updating the payment method with a previously existing payment source.
+ * - When updating other parameters like location, amount, or rewards.
+ *
+ * @param backing The current [Backing] object to be updated.
+ * @param amount The new pledge amount (optional).
+ * @param locationId The new location ID (optional).
+ * @param rewardsList The list of new [Reward] objects (optional).
+ * @param pMethod The new [StoredCard] to use as the payment method (optional).
+ *                If provided, it determines whether to use `intentClientSecret` (for new cards via PaymentSheet)
+ *                or `paymentSourceId` (for existing cards).
+ * @param incremental Indicates if the update is for an incremental change (optional).
+ * @return An [UpdateBackingData] object configured with the provided parameters.
  */
 fun getUpdateBackingData(
     backing: Backing,
@@ -36,7 +48,8 @@ fun getUpdateBackingData(
             amount,
             locationId,
             rewardsList,
-            intentClientSecret = card.clientSetupId()
+            intentClientSecret = card.clientSetupId(),
+            incremental = null
         )
         else UpdateBackingData(
             backing,
@@ -44,9 +57,9 @@ fun getUpdateBackingData(
             locationId,
             rewardsList,
             paymentSourceId = card.id(),
-            incremental = incremental
+            incremental = null
         )
-        // - Updating amount, location or rewards
+        // - Updating amount, location, rewards or incremental
     } ?: UpdateBackingData(
         backing,
         amount,

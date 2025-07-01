@@ -101,7 +101,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val showPlotWidget = checkoutStates.showPlotWidget
                     val plotEligible = checkoutStates.plotEligible
                     val paymentIncrements = checkoutStates.paymentIncrements
-                    val isIncrementalPledge = checkoutStates.isIncrementalPledge
+                    val isIncremental = checkoutStates.isIncrementalPledge
 
                     val pledgeData = viewModel.getPledgeData()
                     val pledgeReason = viewModel.getPledgeReason() ?: PledgeReason.PLEDGE
@@ -182,7 +182,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                             isPlotEnabled = plotIsVisible,
                             isPlotEligible = plotEligible,
                             paymentIncrements = paymentIncrements,
-                            isIncrementalPledge = isIncrementalPledge == true,
+                            isIncrementalPledge = isIncremental == true,
                             onCollectionPlanSelected = {
                                     collectionOptions ->
                                 viewModel.collectionPlanSelected(collectionOptions)

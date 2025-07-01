@@ -742,7 +742,6 @@ class ProjectPageActivity :
                                 latePledgeCheckoutViewModel.sendSubmitCTAEvent()
                                 latePledgeCheckoutViewModel.onPledgeButtonClicked(
                                     selectedCard = selectedCard,
-                                    isIncremental = isIncremental
                                 )
                             }
                         },

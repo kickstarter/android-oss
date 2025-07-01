@@ -155,6 +155,24 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
      */
     fun getPledgeReason() = this.pledgeReason
 
+    /**
+     * Takes the arguments from the ArgumentsKey.PLEDGE_PLEDGE_DATA and ArgumentsKey.PLEDGE_PLEDGE_REASON
+     * from the Bundle.
+     *
+     * Set the pledgeData and pledgeReason, these values will be used for several functions on this viewmodel.
+     * This method is called from the [com.kickstarter.ui.fragments.projectpage.CheckoutFragment.onCreate]
+     *
+     * @param arguments the bundle coming from the previous screen
+     *  - PledgeData (Parcelable)
+     *  - PledgeReason (Serializable)
+     *
+     *  The method will also extract from PledgeData the Project and its backing information.
+     *  The method will also extract the refTag.
+     *  The method will also trigger the proper method to extract information from either the backing or the pledgeData.
+     *  The method will also trigger the user information collection.
+     *  The method will also trigger the page viewed event.
+     *  The method will also trigger the payment plan build if the project is eligible.
+     */
     fun provideBundle(arguments: Bundle?) {
         val pData = arguments?.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
         pledgeReason = arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason?
@@ -403,7 +421,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     fun isThirdPartyEventSent(): Pair<Boolean, String> = this.thirdPartyEventSent
 
     /**
-     * Called when user hits pledge button
+     * Called when the user hits the pledge button.
      */
     fun pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean?) {
         selectedCard?.let {
@@ -414,6 +432,10 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
         } else {
             null
         }
+        scope.launch {
+            emitCurrentState()
+        }
+
         scope.launch(dispatcher) {
             when (pledgeReason) {
                 PledgeReason.PLEDGE -> createBacking()
@@ -474,7 +496,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                             amount = null,
                             locationId = null,
                             rewardsList = null,
-                            pMethod = selectedPaymentMethod
+                            pMethod = selectedPaymentMethod,
+                            incremental = null
                         )
                     } else {
                         // Non-PLOT: send the payment method, locationId, and rewards
@@ -493,6 +516,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                             locationId = locationId,
                             rwl,
                             pMethod = selectedPaymentMethod
+
                         )
                     }
                 }

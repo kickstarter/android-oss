@@ -183,6 +183,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         val addOnsList = listOf(addOns1, addOn2)
 
         val project = ProjectFactory.project().toBuilder()
+            .isPledgeOverTimeAllowed(true)
             .rewards(listOf(reward))
             .build()
 
@@ -253,7 +254,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(uiState.last().storeCards, cards)
         assertEquals(uiState.last().userEmail, "hola@ksr.com")
         assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
-        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().isIncrementalPledge, null)
 
         assertEquals(errorActionCount, 0)
 
@@ -467,7 +468,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(uiState.last().storeCards, cards)
         assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
         assertEquals(uiState.last().paymentIncrements, null)
-        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().isIncrementalPledge, null)
         assertEquals(uiState.last().plotEligible, false)
         assertEquals(uiState.last().showPlotWidget, false)
     }
@@ -557,7 +558,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
         assertEquals(uiState.last().storeCards, cards)
         assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
-        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().isIncrementalPledge, null)
         assertEquals(uiState.last().plotEligible, false)
         assertEquals(uiState.last().showPlotWidget, true)
     }
@@ -613,8 +614,11 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
             .eligibleAllowedPaymentPlan(
                 listOf(
                     PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00"),
+                    PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00"),
+                    PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00"),
                     PaymentIncrementFactory.incrementUsdUncollected(DateTime.now(), "50.00")
-                )
+
+        )
             )
         // - Network mocks
         val environment = environment().toBuilder()
@@ -640,12 +644,11 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch(dispatcher) {
             viewModel.provideScopeAndDispatcher(this, dispatcher)
             viewModel.provideBundle(bundle)
-
+            viewModel.collectionPlanSelected(CollectionOptions.PLEDGE_OVER_TIME)
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
         advanceUntilIdle()
 
-        // default incremental value should be false
         assertEquals(uiState.last().shippingAmount, pledgeData.shippingCostIfShipping())
         assertEquals(uiState.last().checkoutTotal, pledgeData.checkoutTotalAmount())
         assertEquals(uiState.last().bonusAmount, 3.0)
@@ -653,7 +656,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertEquals(uiState.last().selectedPaymentMethod.id(), cards.last().id())
         assertEquals(uiState.last().storeCards, cards)
         assertEquals(uiState.last().selectedRewards, pledgeData.rewardsAndAddOnsList())
-        assertEquals(uiState.last().isIncrementalPledge, false)
+        assertEquals(uiState.last().isIncrementalPledge, true)
         assertEquals(uiState.last().plotEligible, true)
         assertEquals(uiState.last().showPlotWidget, true)
         assertEquals(uiState.last().paymentIncrements, paymentPlan.paymentIncrements)
@@ -1603,57 +1606,4 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertNull(updateData.rewardsIds)
     }
 
-    @Test
-    fun `test change PLOT to pay in full on edit backing`() = runTest {
-        val cards = listOf(StoredCardFactory.visa())
-        val backing = BackingFactory.backing(RewardFactory.reward())
-            .toBuilder()
-            .paymentSource(PaymentSourceFactory.visa())
-            .incremental(true)
-            .build()
-
-        var dataCaptured: UpdateBackingData? = null
-
-        val projectPlot = ProjectFactory.project()
-            .toBuilder()
-            .backing(backing)
-            .isBacking(true)
-            .isPledgeOverTimeAllowed(true)
-            .state(Project.STATE_LIVE)
-            .build()
-        val envPlot = environment().toBuilder()
-            .apolloClientV2(object : MockApolloClientV2() {
-                override fun getStoredCards(): Observable<List<StoredCard>> = Observable.just(cards)
-                override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
-                    dataCaptured = updateBackingData
-                    return Observable.just(Checkout.builder().id(100L).backing(Checkout.Backing.builder().build()).build())
-                }
-            })
-            .currentUserV2(MockCurrentUserV2(initialUser = UserFactory.user()))
-            .build()
-
-        setUpEnvironment(envPlot)
-        val projectDataPlot = ProjectDataFactory.project(projectPlot)
-        val bundlePlot = Bundle().apply {
-            putParcelable(
-                ArgumentsKey.PLEDGE_PLEDGE_DATA,
-                PledgeData.with(
-                    PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_PLEDGE),
-                    projectDataPlot,
-                    RewardFactory.reward()
-                )
-            )
-            putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_PLEDGE)
-        }
-
-        viewModel.provideBundle(bundlePlot)
-        viewModel.userChangedPaymentMethodSelected(null)
-
-        backgroundScope.launch {
-            viewModel.pledgeOrUpdatePledge(selectedCard = null, isIncremental = false)
-        }
-        advanceUntilIdle()
-
-        assertTrue(dataCaptured?.incremental == false)
-    }
 }

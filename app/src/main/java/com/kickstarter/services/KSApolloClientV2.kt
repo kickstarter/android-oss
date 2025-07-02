@@ -1952,7 +1952,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             first = if (useDefault) Optional.Present(5) else Optional.present(10),
             radius = if (radius == null) Optional.absent() else Optional.present(radius.toDouble()),
             long = if (long == null) Optional.absent() else Optional.present(long.toDouble()),
-            lat = if (lat == null) Optional.absent() else Optional.present(lat.toDouble())
+            lat = if (lat == null) Optional.absent() else Optional.present(lat.toDouble()),
+            discoverable = if (useDefault.isTrue()) Optional.present(true) else Optional.absent()
         )
 
         val response = this.service.query(query).execute()

@@ -548,7 +548,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         pledgeData?.checkoutTotalAmount().toString(),
                         locationId = locationIdOrNull,
                         rwListOrEmpty,
-                        selectedPaymentMethod,
+                        null,
                         incremental = incrementalPledge
                     )
                 }

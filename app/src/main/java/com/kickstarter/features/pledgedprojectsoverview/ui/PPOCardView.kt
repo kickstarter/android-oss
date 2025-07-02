@@ -118,7 +118,7 @@ fun PPOCardPreview() {
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
                     flags = listOf(Flag.builder().message("Survey Submitted Shippable type").type("info").icon(null).build()),
-                    )
+                )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
             }
@@ -360,7 +360,7 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
-                when(viewType) {
+                when (viewType) {
                     PPOCardViewType.CONFIRM_ADDRESS,
                     PPOCardViewType.ADDRESS_CONFIRMED,
                     PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE, -> {
@@ -374,7 +374,7 @@ fun PPOCardView(
                     else -> {}
                 }
 
-                if(viewType == PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE) {
+                if (viewType == PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE) {
                     KSDividerLineGrey()
                 }
 
@@ -561,7 +561,6 @@ fun ShippingAddressView(
     }
 
     Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
-
 }
 
 @OptIn(ExperimentalLayoutApi::class)

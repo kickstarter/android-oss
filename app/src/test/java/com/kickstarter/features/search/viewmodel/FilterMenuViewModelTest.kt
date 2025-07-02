@@ -2,6 +2,8 @@ package com.kickstarter.features.search.viewmodel
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isFalse
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -91,6 +93,8 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
         val searched = listOf(LocationFactory.vancouver())
         val default = listOf(LocationFactory.unitedStates())
 
+        var useDefaultParam = mutableListOf<Boolean>()
+        var termParam = mutableListOf<String?>()
         var timesCalled = 0
         val environment = environment()
             .toBuilder()
@@ -104,6 +108,8 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
                         radius: Float?,
                         filterByCoordinates: Boolean?
                     ): Result<List<Location>> {
+                        termParam.add(term)
+                        useDefaultParam.add(useDefault)
                         timesCalled++
                         return if (!useDefault && term == "Vancouver") {
                             Result.success(searched)
@@ -116,14 +122,16 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
         val state = mutableListOf<LocationsUIState>()
         backgroundScope.launch(dispatcher) {
             setUpEnvironment(environment, dispatcher)
-
             viewModel.updateQuery("Vancouver")
-
             viewModel.locationsUIState.toList(state)
         }
         advanceUntilIdle()
 
         assertEquals(timesCalled, 2)
+        assertNull(termParam.first()) // - Default locations = null term
+        assertEquals(termParam.last(), "Vancouver")
+        assertTrue(useDefaultParam.first().isTrue())
+        assertTrue(useDefaultParam.last().isFalse())
         assertEquals(state.size, 3)
         assertEquals(state.last().nearLocations.last(), default.last())
         assertEquals(state.last().searchedLocations.last(), searched.last())

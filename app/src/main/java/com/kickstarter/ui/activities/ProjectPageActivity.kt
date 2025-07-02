@@ -737,10 +737,12 @@ class ProjectPageActivity :
                         userEmail = userEmail,
                         shippingAmount = shippingAmount,
                         checkoutTotal = checkoutTotal,
-                        onPledgeCtaClicked = { selectedCard ->
+                        onPledgeCtaClicked = { selectedCard, isIncremental ->
                             selectedCard?.apply {
                                 latePledgeCheckoutViewModel.sendSubmitCTAEvent()
-                                latePledgeCheckoutViewModel.onPledgeButtonClicked(selectedCard = selectedCard)
+                                latePledgeCheckoutViewModel.onPledgeButtonClicked(
+                                    selectedCard = selectedCard,
+                                )
                             }
                         },
                         onAddPaymentMethodClicked = {
@@ -1107,8 +1109,7 @@ class ProjectPageActivity :
         binding.pledgeContainerLayout.pledgeToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.rewards,
-                R.id.edit_pledge,
-                R.id.choose_another_reward -> {
+                R.id.edit_pledge -> {
                     this.viewModel.inputs.viewRewardsClicked()
                     true
                 }

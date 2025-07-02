@@ -559,7 +559,7 @@ fun FinalizePledgeButtonView(onFinalizePledgeButtonClick: () -> Unit) {
             top = dimensions.paddingMediumSmall,
         ),
         onClickAction = { onFinalizePledgeButtonClick.invoke() },
-        text = stringResource(id = R.string.fpo_finalize_pledge),
+        text = stringResource(id = R.string.Finalize_pledge),
         isEnabled = true,
         textStyle = typographyV2.buttonLabel
     )
@@ -571,7 +571,7 @@ fun FinalizePledgeButtonView(onFinalizePledgeButtonClick: () -> Unit) {
             end = dimensions.paddingMediumSmall,
             bottom = dimensions.paddingMediumSmall,
         ),
-        text = stringResource(id = R.string.fpo_this_may_involve_submitting_a_delivery_address),
+        text = stringResource(id = R.string.This_may_involve_submitting_a_delivery_address),
         style = typographyV2.bodyXS,
         color = colors.textSecondary
     )

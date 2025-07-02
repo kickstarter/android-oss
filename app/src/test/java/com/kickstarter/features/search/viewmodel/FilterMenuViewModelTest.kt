@@ -131,7 +131,7 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
         assertNull(termParam.first()) // - Default locations = null term
         assertEquals(termParam.last(), "Vancouver")
         assertTrue(useDefaultParam.first().isTrue())
-        //assertFalse(useDefaultParam.last().isFalse())
+        assertTrue(useDefaultParam.last().isFalse())
         assertEquals(state.size, 3)
         assertEquals(state.last().nearLocations.last(), default.last())
         assertEquals(state.last().searchedLocations.last(), searched.last())

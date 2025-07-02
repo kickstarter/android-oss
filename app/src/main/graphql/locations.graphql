@@ -1,6 +1,6 @@
 
-query GetLocations($useSessionLocation: Boolean, $term: String, $lat: Float, $long: Float, $radius: Float, $filterByCoordinates: Boolean, $first: Int) {
-    locations(useSessionLocation: $useSessionLocation, term: $term, lat: $lat, long: $long, radius: $radius, filterByCoordinates: $filterByCoordinates, discoverable: true, assignable: true, first: $first){
+query GetLocations($useSessionLocation: Boolean, $term: String, $lat: Float, $long: Float, $radius: Float, $filterByCoordinates: Boolean, $first: Int, $discoverable: Boolean) {
+    locations(useSessionLocation: $useSessionLocation, term: $term, lat: $lat, long: $long, radius: $radius, filterByCoordinates: $filterByCoordinates, discoverable: $discoverable, assignable: true, first: $first){
         nodes {
             latitude
             longitude

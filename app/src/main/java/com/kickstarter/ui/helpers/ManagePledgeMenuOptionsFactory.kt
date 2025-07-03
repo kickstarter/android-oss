@@ -30,8 +30,8 @@ fun createManagePledgeMenuOptions(
     }
 
     val showChooseAnotherReward = when {
-        !isFeatureFlagOn -> !isPledgeOverTime || !isPlotProject
-        isFeatureFlagOn -> !(isPlotProject || isPledgeOverTime)
+        !isFeatureFlagOn -> !isPledgeOverTime
+        isFeatureFlagOn -> !isPlotProject
         else -> false
     }
 

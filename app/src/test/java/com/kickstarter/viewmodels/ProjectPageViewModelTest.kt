@@ -2529,6 +2529,55 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         assertFalse(options.showEditPledge)
     }
 
+    @Test
+    fun `choose another reward is shown when feature flag for edit pledge is off and standard pledge`() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(false)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLEDGE_OVER_TIME -> true
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> false
+                    else -> false
+                }
+            }
+        }
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertFalse(options.showEditPledge)
+        assertTrue(options.showChooseAnotherReward)
+    }
+
+    @Test
+    fun `choose another reward is hidden and edit pledge is shown when feature flag is on and project is pledge over time`() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(true)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> true
+                    else -> false
+                }
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertTrue(options.showEditPledge)
+        assertFalse(options.showChooseAnotherReward)
+    }
+
     private fun deepLinkIntent(): Intent {
         val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
         return Intent(Intent.ACTION_VIEW, uri)

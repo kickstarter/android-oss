@@ -25,13 +25,13 @@ fun createManagePledgeMenuOptions(
     val isPlotProject = project.isPledgeOverTimeAllowed() == true // If the project allows pledge over time, it is considered a plot project.
     val isPledgeOverTime = !backing?.paymentIncrements.isNullOrEmpty() // If the backing has payment increments, it is considered a pledge over time.
     val showEditPledge = when {
-        isFeatureFlagOn && (isPlotProject || isPledgeOverTime) -> project.isLive && !isBackingStatusPreAuth
+        isFeatureFlagOn && isPlotProject -> project.isLive && !isBackingStatusPreAuth
         else -> false
     }
 
     val showChooseAnotherReward = when {
-        !isFeatureFlagOn -> !isPledgeOverTime || !isPlotProject
-        isFeatureFlagOn -> !(isPlotProject || isPledgeOverTime)
+        !isFeatureFlagOn -> !isPledgeOverTime
+        isFeatureFlagOn -> !isPlotProject
         else -> false
     }
 

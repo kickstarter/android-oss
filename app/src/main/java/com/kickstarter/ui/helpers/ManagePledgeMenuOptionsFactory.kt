@@ -1,5 +1,7 @@
 package com.kickstarter.ui.helpers
 
+import android.annotation.SuppressLint
+import android.util.Log
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.models.Backing
@@ -14,17 +16,32 @@ import com.kickstarter.ui.data.ManagePledgeMenuOptions
  * @param ffClient The feature flag client used to check feature flag s statuses.
  * @return A [ManagePledgeMenuOptions] instance with the appropriate visibility settings for each menu item.
  */
+@SuppressLint("LogNotTimber")
 fun createManagePledgeMenuOptions(
     project: Project,
     ffClient: FeatureFlagClientType
 ): ManagePledgeMenuOptions {
     val backing = project.backing()
-
     val isBackingStatusPreAuth = backing?.status() == Backing.STATUS_PREAUTH
 
-    val isEditPledgeAllowed = ffClient.getBoolean(FlagKey.ANDROID_PLOT_EDIT_PLEDGE)
+    val isFeatureFlagOn = ffClient.getBoolean(FlagKey.ANDROID_PLOT_EDIT_PLEDGE)
+    val isPlotProject = project.isPledgeOverTimeAllowed() == true // If the project allows pledge over time, it is considered a plot project.
+    val isPledgeOverTime = !backing?.paymentIncrements.isNullOrEmpty() // If the backing has payment increments, it is considered a pledge over time.
+Log.d("ManagePledgeMenuOptions", "isFeatureFlagOn: $isFeatureFlagOn, isPlotProject: $isPlotProject, isPledgeOverTime: $isPledgeOverTime")
+    val showEditPledge = when {
+        isFeatureFlagOn && (isPlotProject || isPledgeOverTime) -> project.isLive && !isBackingStatusPreAuth
+        else -> false
+    }
+
+    val showChooseAnotherReward = when {
+        !isFeatureFlagOn -> !isPledgeOverTime || !isPlotProject
+        isFeatureFlagOn -> !(isPlotProject || isPledgeOverTime)
+        else -> false
+    }
+
     return ManagePledgeMenuOptions(
-        showEditPledge = project.isLive && !isBackingStatusPreAuth && isEditPledgeAllowed,
+        showEditPledge = showEditPledge,
+        showChooseAnotherReward = showChooseAnotherReward,
         showUpdatePayment = project.isLive && !isBackingStatusPreAuth,
         showSeeRewards = !project.isLive,
         showCancelPledge = project.isLive && !isBackingStatusPreAuth,

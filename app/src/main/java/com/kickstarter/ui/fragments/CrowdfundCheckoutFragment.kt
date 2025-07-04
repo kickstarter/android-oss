@@ -135,10 +135,13 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated()
                         }
                     }
+                    val isEditPledgeFeatureFlagOn = environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLOT_EDIT_PLEDGE) == true
 
-                    val plotIsVisible = showPlotWidget &&
-                        environment?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) ?: false &&
-                        pledgeReason in listOf(PledgeReason.PLEDGE, PledgeReason.UPDATE_REWARD) && project.isPledgeOverTimeAllowed() == true
+                    val plotIsVisible = when {
+                        pledgeReason == PledgeReason.PLEDGE -> showPlotWidget
+                        pledgeReason == PledgeReason.UPDATE_REWARD -> isEditPledgeFeatureFlagOn && showPlotWidget
+                        else -> false
+                    }
 
                     val isPostCampaignPhase = project.isInPostCampaignPledgingPhase() == true
                     val emailForCheckout = if (isPostCampaignPhase) email else null
@@ -179,7 +182,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                                 viewModel.userChangedPaymentMethodSelected(paymentMethodSelected)
                             },
                             ksCurrency = environment.ksCurrency(),
-                            isPlotEnabled = plotIsVisible,
+                            plotIsVisible = plotIsVisible,
                             isPlotEligible = plotEligible,
                             paymentIncrements = paymentIncrements,
                             isIncrementalPledge = isIncremental == true,

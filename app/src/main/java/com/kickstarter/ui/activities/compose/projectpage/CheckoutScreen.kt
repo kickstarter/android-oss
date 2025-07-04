@@ -127,7 +127,7 @@ fun CheckoutScreenPreview() {
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            isPlotEnabled = false,
+            plotIsVisible = false,
             showPaymentMethodSelection = true,
         )
     }
@@ -172,7 +172,7 @@ fun CheckoutScreenIsPlotEnabledPreview() {
             onDisclaimerItemClicked = {},
             onAccountabilityLinkClicked = {},
             onChangedPaymentMethod = {},
-            isPlotEnabled = true,
+            plotIsVisible = true,
             showPaymentMethodSelection = true,
         )
     }
@@ -201,7 +201,7 @@ fun CheckoutScreen(
     onAccountabilityLinkClicked: () -> Unit,
     onChangedPaymentMethod: (StoredCard?) -> Unit = {},
     onCollectionPlanSelected: (CollectionOptions) -> Unit = {},
-    isPlotEnabled: Boolean = false,
+    plotIsVisible: Boolean = false,
     isPlotEligible: Boolean = false,
     isIncrementalPledge: Boolean = false,
     paymentIncrements: List<PaymentIncrement>? = null,
@@ -388,7 +388,7 @@ fun CheckoutScreen(
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                if (isPlotEnabled) {
+                if (plotIsVisible) {
                     Text(
                         modifier = Modifier.padding(
                             start = dimensions.paddingMediumLarge,

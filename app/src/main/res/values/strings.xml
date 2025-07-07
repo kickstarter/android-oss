@@ -104,6 +104,13 @@
   <string name="Amount_raised_bucket_3_fpo" formatted="false">$100,000 to $1,000,000</string>
   <string name="Amount_raised_bucket_4_fpo" formatted="false">More than $1,000,000</string>
 
+  <!-- FPO's for search&filter phase 7 -->
+  <string name="Show_only_fpo" formatted="false">Show only</string>
+  <string name="Recommended_fpo" formatted="false">Recommended for you</string>
+  <string name="Projects_We_Love_fpo" formatted="false">Projects We Love</string>
+  <string name="Saved_projects_fpo" formatted="false">Saved projects</string>
+  <string name="Following_fpo" formatted="false">Following</string>
+
   <!-- FPO's for reward shipment tracking -->
   <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
   <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>

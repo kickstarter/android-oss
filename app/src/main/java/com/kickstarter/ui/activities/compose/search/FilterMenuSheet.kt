@@ -39,6 +39,8 @@ import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.OTHERS_ROW
+import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.switchTag
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
@@ -57,9 +59,11 @@ object FilterMenuTestTags {
     const val PERCENTAGE_RAISED_ROW = "percentage_raised_row"
     const val AMOUNT_RAISED_ROW = "amount_raised_row"
     const val LOCATION_ROW = "location_row"
+    const val OTHERS_ROW = "others_row"
     const val FOOTER = "footer"
 
     fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
+    fun switchTag(param: String) = "switch_$param"
 }
 
 enum class FilterType {
@@ -175,10 +179,6 @@ private fun OtherFiltersRow(
     selectedRecommended: MutableState<Boolean> = mutableStateOf(false),
     callbackRecommended: (Boolean?) -> Unit = {},
 ) {
-    // private val staffPicks: Boolean?, -> Projects we love
-    // private val starred: Int?, -> Saved projects
-    // private val social: Int?, -> following
-    // private val recommended: Boolean?, -> recommended for you
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
@@ -205,7 +205,9 @@ private fun OtherFiltersRow(
                 end = dimensions.paddingMediumSmall
             )
     ) {
-        Column {
+        Column(
+            modifier = Modifier.testTag(OTHERS_ROW)
+        ) {
             Text(
                 text = text,
                 style = typographyV2.headingLG,
@@ -213,7 +215,7 @@ private fun OtherFiltersRow(
             )
 
             Row(
-                modifier = Modifier.testTag("TODO_TAG"),
+                modifier = Modifier.testTag(DiscoveryParams::recommended.name),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
             ) {
@@ -226,6 +228,7 @@ private fun OtherFiltersRow(
                 )
 
                 KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::recommended.name)),
                     checked = currentRecommended.value,
                     onCheckChanged = {
                         currentRecommended.value = it
@@ -234,9 +237,7 @@ private fun OtherFiltersRow(
                 )
             }
             Row(
-                modifier = Modifier.testTag("TODO_TAG")
-                    .clickable {
-                    },
+                modifier = Modifier.testTag(DiscoveryParams::staffPicks.name),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
             ) {
@@ -249,6 +250,7 @@ private fun OtherFiltersRow(
                 )
 
                 KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::staffPicks.name)),
                     checked = currentStaffPicked.value.isTrue(),
                     onCheckChanged = {
                         currentStaffPicked.value = it
@@ -257,7 +259,7 @@ private fun OtherFiltersRow(
                 )
             }
             Row(
-                modifier = Modifier.testTag("TODO_TAG"),
+                modifier = Modifier.testTag(DiscoveryParams::starred.name),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
             ) {
@@ -270,6 +272,7 @@ private fun OtherFiltersRow(
                 )
 
                 KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::starred.name)),
                     checked = currentStarred.value,
                     onCheckChanged = {
                         currentStarred.value = it
@@ -278,7 +281,7 @@ private fun OtherFiltersRow(
                 )
             }
             Row(
-                modifier = Modifier.testTag("TODO_TAG"),
+                modifier = Modifier.testTag(DiscoveryParams::social.name),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
             ) {
@@ -291,6 +294,7 @@ private fun OtherFiltersRow(
                 )
 
                 KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::social.name)),
                     checked = currentSocial.value.isTrue(),
                     onCheckChanged = {
                         currentSocial.value = it
@@ -479,6 +483,18 @@ private fun ProjectStatusRowPreview() {
         ProjectStatusRow(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
             text = titleForFilter(FilterType.PROJECT_STATUS)
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun OthersRowPreview() {
+    KSTheme {
+        OtherFiltersRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            text = titleForFilter(FilterType.OTHERS)
         )
     }
 }

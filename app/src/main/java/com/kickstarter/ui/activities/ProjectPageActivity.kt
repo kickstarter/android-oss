@@ -1109,26 +1109,23 @@ class ProjectPageActivity :
         binding.pledgeContainerLayout.pledgeToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.rewards,
-                R.id.edit_pledge -> {
+                R.id.edit_pledge,
+                R.id.choose_another_reward -> {
                     this.viewModel.inputs.viewRewardsClicked()
                     true
                 }
-
                 R.id.update_payment -> {
                     this.viewModel.inputs.updatePaymentClicked()
                     true
                 }
-
                 R.id.cancel_pledge -> {
                     this.viewModel.inputs.cancelPledgeClicked()
                     true
                 }
-
                 R.id.contact_creator -> {
                     this.viewModel.inputs.contactCreatorClicked()
                     true
                 }
-
                 else -> false
             }
         }
@@ -1417,12 +1414,17 @@ class ProjectPageActivity :
         super.onDestroy()
     }
 
+    /**
+     * Updates the visibility of the items in the Manage Pledge menu based on the provided options.
+     *
+     * @param options The options for managing the pledge.
+     */
     private fun updateManagePledgeMenuVisibility(options: ManagePledgeMenuOptions) {
         val menu = binding.pledgeContainerLayout.pledgeToolbar.menu
-
         menu.findItem(R.id.edit_pledge)?.isVisible = options.showEditPledge
-        menu.findItem(R.id.update_payment)?.isVisible = options.showUpdatePayment
+        menu.findItem(R.id.choose_another_reward)?.isVisible = options.showChooseAnotherReward
         menu.findItem(R.id.rewards)?.isVisible = options.showSeeRewards
+        menu.findItem(R.id.update_payment)?.isVisible = options.showUpdatePayment
         menu.findItem(R.id.cancel_pledge)?.isVisible = options.showCancelPledge
         menu.findItem(R.id.contact_creator)?.isVisible = options.showContactCreator
     }

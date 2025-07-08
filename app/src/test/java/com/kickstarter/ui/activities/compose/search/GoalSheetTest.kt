@@ -40,12 +40,12 @@ class GoalSheetTest : KSRobolectricTestCase() {
             composeTestRule
                 .onNodeWithText(
                     context.resources.getString(
-                    context.resources.getIdentifier(
-                        "Bucket_${bucket.name.last().digitToInt()}_fpo",
-                        "string",
-                        context.packageName
+                        context.resources.getIdentifier(
+                            "Bucket_${bucket.name.last().digitToInt()}_fpo",
+                            "string",
+                            context.packageName
+                        )
                     )
-                )
                 )
                 .isDisplayed()
         }

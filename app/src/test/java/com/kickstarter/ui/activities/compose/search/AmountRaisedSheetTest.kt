@@ -40,7 +40,7 @@ class AmountRaisedSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Amount_raised_bucket_0_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Bucket_0_fpo))
             .isDisplayed()
 
         composeTestRule
@@ -50,7 +50,7 @@ class AmountRaisedSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Amount_raised_bucket_1_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Bucket_1_fpo))
             .isDisplayed()
 
         composeTestRule
@@ -60,7 +60,7 @@ class AmountRaisedSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Amount_raised_bucket_2_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Bucket_2_fpo))
             .isDisplayed()
 
         composeTestRule
@@ -70,7 +70,7 @@ class AmountRaisedSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Amount_raised_bucket_3_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Bucket_3_fpo))
             .isDisplayed()
 
         composeTestRule
@@ -80,7 +80,7 @@ class AmountRaisedSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Amount_raised_bucket_4_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Bucket_4_fpo))
             .isDisplayed()
     }
 

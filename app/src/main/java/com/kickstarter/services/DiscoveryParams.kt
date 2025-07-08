@@ -41,7 +41,8 @@ class DiscoveryParams private constructor(
     private val tagId: Int?,
     private val term: String?,
     private val raisedbucket: RaisedBuckets?,
-    private val amountRaisedBucket: AmountBuckets?
+    private val amountRaisedBucket: AmountBuckets?,
+    private val goalBucket: GoalBuckets?
 ) : Parcelable {
 
     fun backed() = this.backed
@@ -63,6 +64,7 @@ class DiscoveryParams private constructor(
     fun term() = this.term
     fun raisedBucket() = this.raisedbucket
     fun amountBucket() = this.amountRaisedBucket
+    fun goalBucket() = this.goalBucket
     fun nextPage(): DiscoveryParams {
         val page = page()
         return if (page != null) toBuilder().page(page + 1).build() else this
@@ -88,7 +90,8 @@ class DiscoveryParams private constructor(
                 tagId() == other.tagId() &&
                 term() == other.term() &&
                 raisedBucket() == other.raisedBucket() &&
-                amountBucket() == other.amountBucket()
+                amountBucket() == other.amountBucket() &&
+                goalBucket() == other.goalBucket()
         }
         return equals
     }
@@ -113,7 +116,8 @@ class DiscoveryParams private constructor(
         private var tagId: Int? = null,
         private var term: String? = null,
         private var raisedBucket: RaisedBuckets? = null,
-        private var amountBucket: AmountBuckets? = null
+        private var amountBucket: AmountBuckets? = null,
+        private var goalBucket: GoalBuckets? = null
     ) : Parcelable {
         fun backed(backed: Int?) = apply { this.backed = backed }
         fun category(category: Category?) = apply { this.category = category }
@@ -132,6 +136,7 @@ class DiscoveryParams private constructor(
         fun state(state: State?) = apply { this.state = state }
         fun raisedBucket(raisedbucket: RaisedBuckets?) = apply { this.raisedBucket = raisedbucket }
         fun amountBucket(amountRaisedBucket: AmountBuckets?) = apply { this.amountBucket = amountRaisedBucket }
+        fun goalBucket(goalBucket: GoalBuckets?) = apply { this.goalBucket = goalBucket }
         fun tagId(tagId: Int?) = apply { this.tagId = tagId }
         fun term(term: String?) = apply { this.term = term }
         fun build() = DiscoveryParams(
@@ -153,7 +158,8 @@ class DiscoveryParams private constructor(
             tagId = tagId,
             term = term,
             raisedbucket = raisedBucket,
-            amountRaisedBucket = amountBucket
+            amountRaisedBucket = amountBucket,
+            goalBucket = goalBucket
         )
 
         /**
@@ -234,7 +240,8 @@ class DiscoveryParams private constructor(
         tagId = tagId,
         term = term,
         raisedBucket = raisedbucket,
-        amountBucket = amountRaisedBucket
+        amountBucket = amountRaisedBucket,
+        goalBucket = goalBucket
     )
 
     fun queryParams(): Map<String, String> {
@@ -608,6 +615,33 @@ class DiscoveryParams private constructor(
                     "BUCKET_3" -> BUCKET_3
                     "BUCKET_4" -> BUCKET_4
                     else -> { null }
+                }
+            }
+        }
+    }
+    /**
+     * Buckets of goals
+     */
+    enum class GoalBuckets {
+        BUCKET_0,
+        BUCKET_1,
+        BUCKET_2,
+        BUCKET_3,
+        BUCKET_4;
+
+        override fun toString(): String {
+            return name.lowercase(Locale.getDefault())
+        }
+
+        companion object {
+            fun fromString(string: String?): GoalBuckets? {
+                return when (string) {
+                    "BUCKET_0" -> BUCKET_0
+                    "BUCKET_1" -> BUCKET_1
+                    "BUCKET_2" -> BUCKET_2
+                    "BUCKET_3" -> BUCKET_3
+                    "BUCKET_4" -> BUCKET_4
+                    else -> null
                 }
             }
         }

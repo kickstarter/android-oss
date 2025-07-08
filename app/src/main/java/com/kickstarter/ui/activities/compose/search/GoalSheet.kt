@@ -28,8 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.ui.activities.compose.search.AmountRaisedTestTags.BUCKETS_LIST
-import com.kickstarter.ui.activities.compose.search.AmountRaisedTestTags.bucketTag
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
@@ -40,9 +38,9 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun AmountRaisedPreview() {
+private fun GoalSheetPreview() {
     KSTheme {
-        AmountRaisedSheet(
+        GoalSheet(
             onNavigate = {},
             onDismiss = {},
             onApply = { bucket, applyAndDismiss ->
@@ -54,10 +52,10 @@ private fun AmountRaisedPreview() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun AmountRaisedSelectedPreview() {
+private fun GoalSelectedPreview() {
     KSTheme {
-        AmountRaisedSheet(
-            currentBucket = DiscoveryParams.AmountBuckets.BUCKET_3,
+        GoalSheet(
+            currentGoalBucket = DiscoveryParams.GoalBuckets.BUCKET_2,
             onNavigate = {},
             onDismiss = {},
             onApply = { bucket, applyAndDismiss ->
@@ -66,31 +64,26 @@ private fun AmountRaisedSelectedPreview() {
     }
 }
 
-object AmountRaisedTestTags {
-    const val BUCKETS_LIST = "buckets_list"
-    fun bucketTag(bucket: DiscoveryParams.AmountBuckets) = "bucket_${bucket.name}"
+object GoalTestTags {
+    const val BUCKETS_LIST = "goal_buckets_list"
+    fun bucketTag(bucket: DiscoveryParams.GoalBuckets) = "bucket_${bucket.name}"
 }
 
 @Composable
-fun AmountRaisedSheet(
-    currentBucket: DiscoveryParams.AmountBuckets? = null,
+fun GoalSheet(
+    currentGoalBucket: DiscoveryParams.GoalBuckets? = null,
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.AmountBuckets?, Boolean?) -> Unit = { a, b -> },
-    onNavigate: () -> Unit = {},
+    onApply: (DiscoveryParams.GoalBuckets?, Boolean?) -> Unit = { _, _ -> },
+    onNavigate: () -> Unit = {}
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val selectedBucket = remember { mutableStateOf(currentBucket) }
+    val selectedGoalBucket = remember { mutableStateOf(currentGoalBucket) }
 
     KSTheme {
-        Surface(
-            color = colors.backgroundSurfacePrimary
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+        Surface(color = colors.backgroundSurfacePrimary) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -103,27 +96,24 @@ fun AmountRaisedSheet(
                             )
                         }
                         .padding(top = dimensions.paddingLarge, bottom = dimensions.paddingLarge, end = dimensions.paddingMediumSmall),
-
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     KSIconButton(
                         modifier = Modifier
-                            .padding(start = dimensions.paddingSmall)
-                            .testTag(SearchScreenTestTag.BACK_BUTTON.name),
+                            .padding(start = dimensions.paddingSmall),
                         onClick = onNavigate,
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = R.string.Back)
                     )
 
                     Text(
-                        text = stringResource(R.string.Amount_raised_fpo),
+                        text = stringResource(R.string.Goal_fpo),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
                     )
 
                     KSIconButton(
-                        modifier = Modifier.testTag(CategorySelectionSheetTestTag.DISMISS_BUTTON.name),
                         onClick = onDismiss,
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close)
@@ -132,7 +122,7 @@ fun AmountRaisedSheet(
 
                 LazyColumn(
                     modifier = Modifier
-                        .testTag(BUCKETS_LIST)
+                        .testTag(GoalTestTags.BUCKETS_LIST)
                         .fillMaxWidth()
                         .weight(1f)
                         .drawBehind {
@@ -143,28 +133,31 @@ fun AmountRaisedSheet(
                                 strokeWidth = dimensions.dividerThickness.toPx()
                             )
                         }
-                        .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
+                        .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium)
                 ) {
-                    val validBuckets = DiscoveryParams.AmountBuckets.values()
+                    val validBuckets = DiscoveryParams.GoalBuckets.values()
                     items(validBuckets) { bucket ->
                         Row(
-                            modifier = Modifier.testTag(bucketTag(bucket))
+                            modifier = Modifier
+                                .testTag(GoalTestTags.bucketTag(bucket))
                                 .padding(top = dimensions.paddingMediumSmall, bottom = dimensions.paddingMediumSmall)
                                 .clickable {
-                                    selectedBucket.value = bucket
-                                    onApply(selectedBucket.value, null)
+                                    selectedGoalBucket.value = bucket
+                                    onApply(selectedGoalBucket.value, null)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                            horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
                         ) {
                             RadioButton(
-                                selected = selectedBucket.value == bucket,
+                                selected = selectedGoalBucket.value == bucket,
                                 onClick = null,
-                                colors = RadioButtonDefaults.colors(unselectedColor = colors.backgroundSelected, selectedColor = colors.backgroundSelected)
+                                colors = RadioButtonDefaults.colors(
+                                    unselectedColor = colors.backgroundSelected,
+                                    selectedColor = colors.backgroundSelected
+                                )
                             )
                             Text(
-                                modifier = Modifier
-                                    .weight(1f),
+                                modifier = Modifier.weight(1f),
                                 color = colors.textPrimary,
                                 text = textForBucket(bucket),
                                 style = typographyV2.headingLG
@@ -174,13 +167,13 @@ fun AmountRaisedSheet(
                 }
 
                 KSSearchBottomSheetFooter(
-                    leftButtonIsEnabled = selectedBucket.value != null,
+                    leftButtonIsEnabled = selectedGoalBucket.value != null,
                     leftButtonClickAction = {
-                        selectedBucket.value = null
-                        onApply(selectedBucket.value, false)
+                        selectedGoalBucket.value = null
+                        onApply(null, false)
                     },
                     rightButtonOnClickAction = {
-                        onApply(selectedBucket.value, true)
+                        onApply(selectedGoalBucket.value, true)
                     }
                 )
             }
@@ -189,10 +182,10 @@ fun AmountRaisedSheet(
 }
 
 @Composable
-fun textForBucket(bucket: DiscoveryParams.AmountBuckets) = when (bucket) {
-    DiscoveryParams.AmountBuckets.BUCKET_2 -> stringResource(R.string.Bucket_2_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_1 -> stringResource(R.string.Bucket_1_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_0 -> stringResource(R.string.Bucket_0_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_3 -> stringResource(R.string.Bucket_3_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_4 -> stringResource(R.string.Bucket_4_fpo)
+fun textForBucket(bucket: DiscoveryParams.GoalBuckets): String = when (bucket) {
+    DiscoveryParams.GoalBuckets.BUCKET_0 -> stringResource(R.string.Bucket_0_fpo)
+    DiscoveryParams.GoalBuckets.BUCKET_1 -> stringResource(R.string.Bucket_1_fpo)
+    DiscoveryParams.GoalBuckets.BUCKET_2 -> stringResource(R.string.Bucket_2_fpo)
+    DiscoveryParams.GoalBuckets.BUCKET_3 -> stringResource(R.string.Bucket_3_fpo)
+    DiscoveryParams.GoalBuckets.BUCKET_4 -> stringResource(R.string.Bucket_4_fpo)
 }

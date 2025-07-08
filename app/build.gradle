@@ -300,6 +300,10 @@ dependencies {
     implementation "androidx.paging:paging-compose:3.3.0"
     implementation "androidx.paging:paging-testing:3.3.0"
 
+    // Lottie animations
+    implementation 'com.airbnb.android:lottie:6.6.6'
+    implementation "com.airbnb.android:lottie-compose:6.6.6"
+
     // Testing
     testImplementation "junit:junit:4.13.2"
     testImplementation 'org.mockito:mockito-core:4.5.1'

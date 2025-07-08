@@ -11,7 +11,8 @@ query FetchProjects(
   $searchTerm: String,
   $raised: RaisedBuckets,
   $location: ID,
-  $amountRaisedBucket: PledgedBuckets
+  $amountRaisedBucket: PledgedBuckets,
+  $goalBucket: GoalBuckets
 ) {
     projects(
       first: $first,
@@ -26,7 +27,8 @@ query FetchProjects(
       term: $searchTerm,
       raised: $raised,
       locationId: $location,
-      pledged: $amountRaisedBucket
+      pledged: $amountRaisedBucket,
+      goal: $goalBucket
       ) {
         edges {
           cursor

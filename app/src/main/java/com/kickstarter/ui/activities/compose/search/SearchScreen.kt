@@ -586,7 +586,7 @@ fun FilterPagerSheet(
                     }
                 },
                 availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED }
+                else FilterType.values().asList().filter { it != FilterType.OTHERS }
             )
             FilterPages.CATEGORIES.ordinal -> CategorySelectionSheet(
                 onNavigate = {

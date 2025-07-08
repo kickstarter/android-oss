@@ -34,14 +34,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.OTHERS_ROW
+import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.switchTag
 import com.kickstarter.ui.compose.designsystem.KSDimensions
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
+import com.kickstarter.ui.compose.designsystem.KSSwitch
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
@@ -55,9 +59,11 @@ object FilterMenuTestTags {
     const val PERCENTAGE_RAISED_ROW = "percentage_raised_row"
     const val AMOUNT_RAISED_ROW = "amount_raised_row"
     const val LOCATION_ROW = "location_row"
+    const val OTHERS_ROW = "others_row"
     const val FOOTER = "footer"
 
     fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
+    fun switchTag(param: String) = "switch_$param"
 }
 
 enum class FilterType {
@@ -65,7 +71,8 @@ enum class FilterType {
     PROJECT_STATUS,
     LOCATION,
     PERCENTAGE_RAISED,
-    AMOUNT_RAISED
+    AMOUNT_RAISED,
+    OTHERS
 }
 
 @Composable
@@ -137,6 +144,7 @@ fun FilterMenuSheet(
                             modifier = Modifier.testTag(FilterMenuTestTags.AMOUNT_RAISED_ROW),
                             subText = selectedAmount?.let { textForBucket(it) }
                         )
+                        FilterType.OTHERS -> OtherFiltersRow()
                     }
                 }
             }
@@ -153,6 +161,147 @@ fun FilterMenuSheet(
                 },
                 leftButtonText = stringResource(R.string.Reset_all_filters)
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun OtherFiltersRow(
+    modifier: Modifier = Modifier,
+    text: String = stringResource(R.string.Show_only_fpo),
+    selectedStaffPicked: MutableState<Boolean> = mutableStateOf(false),
+    callbackStaffPicked: (Boolean?) -> Unit = {},
+    selectedStarred: MutableState<Boolean> = mutableStateOf(false),
+    callbackStarred: (Boolean?) -> Unit = {},
+    selectedSocial: MutableState<Boolean> = mutableStateOf(false),
+    callbackSocial: (Boolean?) -> Unit = {},
+    selectedRecommended: MutableState<Boolean> = mutableStateOf(false),
+    callbackRecommended: (Boolean?) -> Unit = {},
+) {
+    val backgroundDisabledColor = colors.backgroundDisabled
+    val dimensions: KSDimensions = KSTheme.dimensions
+
+    val currentStaffPicked = remember { selectedStaffPicked }
+    val currentStarred = remember { selectedStarred }
+    val currentSocial = remember { selectedSocial }
+    val currentRecommended = remember { selectedRecommended }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .drawBehind {
+                drawLine(
+                    color = backgroundDisabledColor,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = dimensions.dividerThickness.toPx()
+                )
+            }
+            .padding(
+                start = dimensions.paddingLarge,
+                top = dimensions.paddingLarge,
+                bottom = dimensions.paddingLarge,
+                end = dimensions.paddingMediumSmall
+            )
+    ) {
+        Column(
+            modifier = Modifier.testTag(OTHERS_ROW)
+        ) {
+            Text(
+                text = text,
+                style = typographyV2.headingLG,
+                color = colors.textPrimary
+            )
+
+            Row(
+                modifier = Modifier.testTag(DiscoveryParams::recommended.name),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(1f),
+                    text = stringResource(R.string.Recommended_fpo),
+                    style = typographyV2.bodyMD,
+                    color = colors.textSecondary
+                )
+
+                KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::recommended.name)),
+                    checked = currentRecommended.value,
+                    onCheckChanged = {
+                        currentRecommended.value = it
+                        callbackRecommended(it)
+                    }
+                )
+            }
+            Row(
+                modifier = Modifier.testTag(DiscoveryParams::staffPicks.name),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(1f),
+                    text = stringResource(R.string.Projects_We_Love_fpo),
+                    style = typographyV2.bodyMD,
+                    color = colors.textSecondary
+                )
+
+                KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::staffPicks.name)),
+                    checked = currentStaffPicked.value.isTrue(),
+                    onCheckChanged = {
+                        currentStaffPicked.value = it
+                        callbackStaffPicked(it)
+                    }
+                )
+            }
+            Row(
+                modifier = Modifier.testTag(DiscoveryParams::starred.name),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(1f),
+                    text = stringResource(R.string.Saved_projects_fpo),
+                    style = typographyV2.bodyMD,
+                    color = colors.textSecondary
+                )
+
+                KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::starred.name)),
+                    checked = currentStarred.value,
+                    onCheckChanged = {
+                        currentStarred.value = it
+                        callbackStarred(it)
+                    }
+                )
+            }
+            Row(
+                modifier = Modifier.testTag(DiscoveryParams::social.name),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(1f),
+                    text = stringResource(R.string.Following_fpo),
+                    style = typographyV2.bodyMD,
+                    color = colors.textSecondary
+                )
+
+                KSSwitch(
+                    modifier = Modifier.testTag(switchTag(DiscoveryParams::social.name)),
+                    checked = currentSocial.value.isTrue(),
+                    onCheckChanged = {
+                        currentSocial.value = it
+                        callbackSocial(it)
+                    }
+                )
+            }
         }
     }
 }
@@ -322,6 +471,7 @@ private fun titleForFilter(filter: FilterType): String {
         FilterType.LOCATION -> stringResource(R.string.Location_fpo)
         FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised)
         FilterType.AMOUNT_RAISED -> stringResource(R.string.Amount_raised_fpo)
+        FilterType.OTHERS -> stringResource(R.string.Show_only_fpo)
     }
 }
 
@@ -333,6 +483,18 @@ private fun ProjectStatusRowPreview() {
         ProjectStatusRow(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
             text = titleForFilter(FilterType.PROJECT_STATUS)
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun OthersRowPreview() {
+    KSTheme {
+        OtherFiltersRow(
+            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+            text = titleForFilter(FilterType.OTHERS)
         )
     }
 }

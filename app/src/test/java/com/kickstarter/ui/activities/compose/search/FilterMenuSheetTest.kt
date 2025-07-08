@@ -1,14 +1,18 @@
 package com.kickstarter.ui.activities.compose.search
 
+import android.content.Context
 import androidx.compose.material.Surface
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
+import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.services.DiscoveryParams
@@ -17,6 +21,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
 class FilterMenuSheetTest : KSRobolectricTestCase() {
+    val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
     fun `test FilterMenuSheet renders all pills within ProjectStatusRow`() {
@@ -37,13 +42,50 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test FilterMenuSheet renders all options within OthersRow`() {
+
+        composeTestRule.setContent {
+            KSTheme {
+                Surface {
+                    FilterMenuSheet()
+                }
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.OTHERS_ROW))
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Show_only_fpo)).assertIsDisplayed()
+
+        // Recommended
+        composeTestRule.onNodeWithTag(DiscoveryParams::recommended.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Recommended_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::recommended.name)).assertIsOff()
+
+        // Projects we love
+        composeTestRule.onNodeWithTag(DiscoveryParams::staffPicks.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Projects_We_Love_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::staffPicks.name)).assertIsOff()
+
+        // Saved
+        composeTestRule.onNodeWithTag(DiscoveryParams::starred.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Saved_projects_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::starred.name)).assertIsOff()
+
+        // Social
+        composeTestRule.onNodeWithTag(DiscoveryParams::social.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Following_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::social.name)).assertIsOff()
+    }
+
+    @Test
     fun `test FilterMenuSheet renders all available filter Rows with ffOff`() {
         val shouldShowPhase = false
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuSheet(
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
+                    else FilterType.values().asList().filter { it != FilterType.OTHERS },
                     onDismiss = {},
                     onApply = { a, b -> },
                     onNavigate = {}
@@ -62,8 +104,9 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             .performScrollToNode(hasTestTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW))
 
         composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertDoesNotExist()
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.OTHERS_ROW).assertDoesNotExist()
     }
 
     @Test
@@ -74,7 +117,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
                 FilterMenuSheet(
                     selectedProjectStatus = DiscoveryParams.State.LIVE,
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.LOCATION && it != FilterType.AMOUNT_RAISED },
+                    else FilterType.values().asList().filter { it != FilterType.OTHERS },
                     onDismiss = {},
                     onApply = { a, b -> },
                     onNavigate = {}
@@ -95,6 +138,11 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.AMOUNT_RAISED_ROW).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.LOCATION_ROW).assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.OTHERS_ROW))
+        composeTestRule.onNodeWithTag(FilterMenuTestTags.OTHERS_ROW).assertIsDisplayed()
     }
 
     @Test

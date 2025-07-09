@@ -7,7 +7,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -105,10 +104,11 @@ fun OnboardingScreen() {
 
     var currentPage by remember { mutableStateOf(0) }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(colors.borderAccentGreenSubtle)
-        .navigationBarsPadding() // fix bottom nav bar overlap
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.borderAccentGreenSubtle)
+            .navigationBarsPadding() // fix bottom nav bar overlap
     ) {
         Image(
             painter = painterResource(id = R.drawable.bg_squiggle),
@@ -139,7 +139,6 @@ fun OnboardingScreen() {
                         .height(dimensions.paddingSmall)
                 )
                 KSIconButton(onClick = {}, imageVector = Icons.Filled.Close)
-
             }
 
             // Animated content spans the page
@@ -227,8 +226,9 @@ fun OnboardingPageAnimation(modifier: Modifier, pageData: OnboardingPageData) {
         AnimatedContent(
             targetState = pageData,
             transitionSpec = {
-                fadeIn(tween(2000)) + slideInHorizontally(initialOffsetX = { it }) with
-                        fadeOut(tween(2000)) + slideOutHorizontally(targetOffsetX = { -it })
+                (fadeIn(tween(2000)) + slideInHorizontally(initialOffsetX = { it })).togetherWith(
+                    fadeOut(tween(2000)) + slideOutHorizontally(targetOffsetX = { -it })
+                )
             },
             label = "ImageTransition"
         ) { targetPage ->

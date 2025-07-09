@@ -160,7 +160,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 PPOCardViewType.CONFIRM_ADDRESS,
                                 PPOCardViewType.ADDRESS_CONFIRMED,
                                 PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
-                                    -> {
+                                -> {
                                     env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",

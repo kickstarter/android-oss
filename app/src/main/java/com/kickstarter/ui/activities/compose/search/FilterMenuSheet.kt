@@ -90,6 +90,11 @@ fun FilterMenuSheet(
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
+    val currentStaffPicked = remember { mutableStateOf(false) }
+    val currentStarred = remember { mutableStateOf(false) }
+    val currentSocial = remember { mutableStateOf(false) }
+    val currentRecommended = remember { mutableStateOf(false) }
+
     Surface(
         modifier = modifier
             .testTag(FilterMenuTestTags.SHEET),
@@ -144,7 +149,20 @@ fun FilterMenuSheet(
                             modifier = Modifier.testTag(FilterMenuTestTags.AMOUNT_RAISED_ROW),
                             subText = selectedAmount?.let { textForBucket(it) }
                         )
-                        FilterType.OTHERS -> OtherFiltersRow()
+                        FilterType.OTHERS -> OtherFiltersRow(
+                            callbackRecommended = { recommended ->
+                                currentRecommended.value = recommended!!
+                            },
+                            callbackStarred = { starred ->
+                                currentStarred.value = starred!!
+                            },
+                            callbackStaffPicked = { staffPicked ->
+                                currentStaffPicked.value = staffPicked!!
+                            },
+                            callbackSocial = { social ->
+                                currentSocial.value = social!!
+                            }
+                        )
                     }
                 }
             }

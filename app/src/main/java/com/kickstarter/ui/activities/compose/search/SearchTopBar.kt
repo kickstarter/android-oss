@@ -60,6 +60,10 @@ fun SearchTopBarLocationActiveFilterPreview() {
                 FilterRowPillType.PERCENTAGE_RAISED.name to 0,
                 FilterRowPillType.LOCATION.name to 1,
                 FilterRowPillType.AMOUNT_RAISED.name to 0,
+                FilterRowPillType.RECOMMENDED.name to 0,
+                FilterRowPillType.PROJECTS_LOVED.name to 0,
+                FilterRowPillType.SAVED.name to 0,
+                FilterRowPillType.FOLLOWING.name to 0,
             ),
             onPillPressed = {},
             shouldShowPhase = true
@@ -82,6 +86,10 @@ fun SearchTopBarAmountRaisedActiveFilterPreview() {
                 FilterRowPillType.FILTER.name to 1,
                 FilterRowPillType.PERCENTAGE_RAISED.name to 0,
                 FilterRowPillType.AMOUNT_RAISED.name to 1,
+                FilterRowPillType.RECOMMENDED.name to 0,
+                FilterRowPillType.PROJECTS_LOVED.name to 0,
+                FilterRowPillType.SAVED.name to 0,
+                FilterRowPillType.FOLLOWING.name to 0,
             ),
             onPillPressed = {},
             shouldShowPhase = true
@@ -103,6 +111,10 @@ fun SearchTopBarPercentageRaisedActiveFilterPreview() {
                 FilterRowPillType.PROJECT_STATUS.name to 0,
                 FilterRowPillType.FILTER.name to 1,
                 FilterRowPillType.PERCENTAGE_RAISED.name to 1,
+                FilterRowPillType.RECOMMENDED.name to 0,
+                FilterRowPillType.PROJECTS_LOVED.name to 0,
+                FilterRowPillType.SAVED.name to 0,
+                FilterRowPillType.FOLLOWING.name to 0,
             ),
             onPillPressed = {},
             shouldShowPhase = true
@@ -125,6 +137,10 @@ fun SearchTopBarProjectStatusActiveFilterPreview() {
                 FilterRowPillType.CATEGORY.name to 0,
                 FilterRowPillType.PROJECT_STATUS.name to 1,
                 FilterRowPillType.FILTER.name to 1,
+                FilterRowPillType.RECOMMENDED.name to 0,
+                FilterRowPillType.PROJECTS_LOVED.name to 0,
+                FilterRowPillType.SAVED.name to 0,
+                FilterRowPillType.FOLLOWING.name to 0,
             ),
             onPillPressed = {},
             shouldShowPhase = true
@@ -172,6 +188,10 @@ fun SearchTopBarAllActiveFiltersPreview() {
                 FilterRowPillType.PERCENTAGE_RAISED.name to 1,
                 FilterRowPillType.LOCATION.name to 1,
                 FilterRowPillType.AMOUNT_RAISED.name to 1,
+                FilterRowPillType.RECOMMENDED.name to 1,
+                FilterRowPillType.PROJECTS_LOVED.name to 1,
+                FilterRowPillType.SAVED.name to 1,
+                FilterRowPillType.FOLLOWING.name to 1,
             ),
             onPillPressed = {},
             shouldShowPhase = true
@@ -188,6 +208,10 @@ fun SearchTopBar(
     percentageRaisedText: String = stringResource(R.string.Percentage_raised),
     locationText: String = stringResource(R.string.Location_fpo),
     amountRaisedText: String = stringResource(R.string.Amount_raised_fpo),
+    recommendedText: String = stringResource(R.string.Recommended_fpo),
+    projectsLovedText: String = stringResource(R.string.Projects_We_Love_fpo),
+    savedProjectsText: String = stringResource(R.string.Saved_projects_fpo),
+    followingText: String = stringResource(R.string.Following),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -286,6 +310,10 @@ fun SearchTopBar(
             amountRaisedText = amountRaisedText,
             percentageRaisedText = percentageRaisedText,
             locationText = locationText,
+            recommendedText = recommendedText,
+            projectsLovedText = projectsLovedText,
+            savedProjectsText = savedProjectsText,
+            followingText = followingText,
             selectedFilterCounts = selectedFilterCounts,
             onPillPressed = onPillPressed,
             shouldShowPhase = shouldShowPhase,
@@ -305,6 +333,10 @@ fun PillBar(
     percentageRaisedText: String = stringResource(R.string.Percentage_raised),
     locationText: String = stringResource(R.string.Location_fpo),
     amountRaisedText: String = stringResource(R.string.Amount_raised_fpo),
+    recommendedText: String = stringResource(R.string.Recommended_fpo),
+    projectsLovedText: String = stringResource(R.string.Projects_We_Love_fpo),
+    savedProjectsText: String = stringResource(R.string.Saved_projects_fpo),
+    followingText: String = stringResource(R.string.Following),
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase: Boolean = true
@@ -334,7 +366,11 @@ fun PillBar(
                 selectedFilterCounts.getOrDefault(FilterRowPillType.CATEGORY.name, 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.PERCENTAGE_RAISED.name, 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.LOCATION.name, 0) +
-                selectedFilterCounts.getOrDefault(FilterRowPillType.AMOUNT_RAISED.name, 0)
+                selectedFilterCounts.getOrDefault(FilterRowPillType.AMOUNT_RAISED.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.RECOMMENDED.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECTS_LOVED.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.SAVED.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.FOLLOWING.name, 0)
 
         KSIconPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),
@@ -366,23 +402,20 @@ fun PillBar(
             count = selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECT_STATUS.name, 0),
             onClick = { onPillPressed(FilterRowPillType.PROJECT_STATUS) }
         )
-        if (shouldShowPhase) {
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.LOCATION)),
-                countApiIsReady = countApiIsReady,
-                text = locationText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.LOCATION.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.LOCATION.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.LOCATION) }
-            )
-        }
-
+        KSPillButton(
+            modifier = Modifier.testTag(pillTag(FilterRowPillType.LOCATION)),
+            countApiIsReady = countApiIsReady,
+            text = locationText,
+            isSelected = selectedFilterCounts.getOrDefault(
+                FilterRowPillType.LOCATION.name,
+                0
+            ) > 0,
+            count = selectedFilterCounts.getOrDefault(
+                FilterRowPillType.LOCATION.name,
+                0
+            ),
+            onClick = { onPillPressed(FilterRowPillType.LOCATION) }
+        )
         KSPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)),
             countApiIsReady = countApiIsReady,
@@ -398,20 +431,73 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.PERCENTAGE_RAISED) }
         )
 
+        KSPillButton(
+            modifier = Modifier.testTag(pillTag(FilterRowPillType.AMOUNT_RAISED)),
+            countApiIsReady = countApiIsReady,
+            text = amountRaisedText,
+            isSelected = selectedFilterCounts.getOrDefault(
+                FilterRowPillType.AMOUNT_RAISED.name,
+                0
+            ) > 0,
+            count = selectedFilterCounts.getOrDefault(
+                FilterRowPillType.AMOUNT_RAISED.name,
+                0
+            ),
+            onClick = { onPillPressed(FilterRowPillType.AMOUNT_RAISED) }
+        )
+
         if (shouldShowPhase) {
             KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.AMOUNT_RAISED)),
-                countApiIsReady = countApiIsReady,
-                text = amountRaisedText,
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.RECOMMENDED)),
+                text = recommendedText,
                 isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.AMOUNT_RAISED.name,
+                    FilterRowPillType.RECOMMENDED.name,
                     0
                 ) > 0,
                 count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.AMOUNT_RAISED.name,
+                    FilterRowPillType.RECOMMENDED.name,
                     0
                 ),
-                onClick = { onPillPressed(FilterRowPillType.AMOUNT_RAISED) }
+                onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
+            )
+            KSPillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
+                text = projectsLovedText,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.PROJECTS_LOVED.name,
+                    0
+                ) > 0,
+                count = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.PROJECTS_LOVED.name,
+                    0
+                ),
+                onClick = { onPillPressed(FilterRowPillType.PROJECTS_LOVED) }
+            )
+            KSPillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.SAVED)),
+                text = savedProjectsText,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.SAVED.name,
+                    0
+                ) > 0,
+                count = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.SAVED.name,
+                    0
+                ),
+                onClick = { onPillPressed(FilterRowPillType.SAVED) }
+            )
+            KSPillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.FOLLOWING)),
+                text = followingText,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.FOLLOWING.name,
+                    0
+                ) > 0,
+                count = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.FOLLOWING.name,
+                    0
+                ),
+                onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
             )
         }
     }
@@ -424,5 +510,9 @@ enum class FilterRowPillType {
     PROJECT_STATUS,
     PERCENTAGE_RAISED,
     LOCATION,
-    AMOUNT_RAISED
+    AMOUNT_RAISED,
+    RECOMMENDED,
+    PROJECTS_LOVED,
+    SAVED,
+    FOLLOWING
 }

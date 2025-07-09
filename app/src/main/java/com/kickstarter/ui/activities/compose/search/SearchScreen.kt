@@ -734,7 +734,11 @@ private fun onPillPressed(
             }
 
             FilterRowPillType.FILTER,
-            FilterRowPillType.PROJECT_STATUS -> {
+            FilterRowPillType.PROJECT_STATUS,
+            FilterRowPillType.RECOMMENDED,
+            FilterRowPillType.PROJECTS_LOVED,
+            FilterRowPillType.SAVED,
+            FilterRowPillType.FOLLOWING -> {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal)
                     mainFilterMenuState.show()
@@ -889,6 +893,10 @@ private fun modalBottomSheetState(
     FilterRowPillType.PERCENTAGE_RAISED,
     FilterRowPillType.LOCATION,
     FilterRowPillType.AMOUNT_RAISED,
+    FilterRowPillType.RECOMMENDED,
+    FilterRowPillType.PROJECTS_LOVED,
+    FilterRowPillType.SAVED,
+    FilterRowPillType.FOLLOWING,
     FilterRowPillType.FILTER -> mainFilterMenuState
 
     null -> sortSheetState

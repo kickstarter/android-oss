@@ -78,6 +78,10 @@ class InternalToolsActivity : AppCompatActivity() {
             playgroundButtonClicked()
         }
 
+        binding.onboardingFlowButton.setOnClickListener {
+            onboardingFlowButtonClicked()
+        }
+
         binding.pushNotificationsButton.setOnClickListener {
             pushNotificationsButtonClick()
         }
@@ -130,6 +134,11 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun playgroundButtonClicked() {
         val intent = Intent(this, PlaygroundActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onboardingFlowButtonClicked() {
+        val intent = Intent(this, OnboardingFlowActivity::class.java)
         startActivity(intent)
     }
 

@@ -187,6 +187,14 @@
         android:text="@string/internal_tools_playground" />
 
       <Button
+        android:id="@+id/onboarding_flow_button"
+        style="@style/SecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/internal_tools_onboarding_flow" />
+
+      <Button
         android:id="@+id/push_notifications_button"
         style="@style/SecondaryButton"
         android:layout_width="match_parent"

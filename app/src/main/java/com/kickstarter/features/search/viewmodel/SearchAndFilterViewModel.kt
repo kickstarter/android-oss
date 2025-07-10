@@ -111,7 +111,11 @@ class SearchAndFilterViewModel(
         percentageBucket: DiscoveryParams.RaisedBuckets? = null,
         location: Location? = null,
         amountBucket: DiscoveryParams.AmountBuckets? = null,
-        goalBucket: DiscoveryParams.GoalBuckets? = null
+        goalBucket: DiscoveryParams.GoalBuckets? = null,
+        recommended: Boolean = false,
+        projectsLoved: Boolean = false,
+        savedProjects: Boolean = false,
+        social: Boolean = false
     ) {
         val update = params.value.toBuilder()
             .apply {
@@ -122,6 +126,10 @@ class SearchAndFilterViewModel(
                 this.location(location)
                 this.amountBucket(amountBucket)
                 this.goalBucket(goalBucket)
+                this.recommended( if (recommended) true else null)
+                this.staffPicks( if (projectsLoved) true else null)
+                this.starred(if (savedProjects) 1 else null)
+                this.social(if (social) 1 else null)
             }
             .build()
 

@@ -124,7 +124,11 @@ class SearchAndFilterActivity : ComponentActivity() {
                                     percentageBucket = percentageBucket,
                                     location = location,
                                     amountBucket = amountRaisedBucket,
-                                    goalBucket = goalBucket
+                                    goalBucket = goalBucket,
+                                    recommended = recomended,
+                                    projectsLoved = projectsLoved,
+                                    savedProjects = saved,
+                                    social = social
                                 )
                             },
                             shouldShowPhase = phaseff

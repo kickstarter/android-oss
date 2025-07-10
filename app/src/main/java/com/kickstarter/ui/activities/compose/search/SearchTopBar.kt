@@ -412,6 +412,7 @@ fun PillBar(
         )
 
         KSPillButton(
+            shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.CATEGORY)),
             countApiIsReady = countApiIsReady,
             text = categoryPillText,
@@ -420,6 +421,7 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.CATEGORY) }
         )
         KSPillButton(
+            shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECT_STATUS)),
             countApiIsReady = countApiIsReady,
             text = projectStatusText,
@@ -431,6 +433,7 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.PROJECT_STATUS) }
         )
         KSPillButton(
+            shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.LOCATION)),
             countApiIsReady = countApiIsReady,
             text = locationText,
@@ -445,6 +448,7 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.LOCATION) }
         )
         KSPillButton(
+            shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)),
             countApiIsReady = countApiIsReady,
             text = percentageRaisedText,
@@ -460,6 +464,7 @@ fun PillBar(
         )
 
         KSPillButton(
+            shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.AMOUNT_RAISED)),
             countApiIsReady = countApiIsReady,
             text = amountRaisedText,
@@ -489,6 +494,7 @@ fun PillBar(
                 onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
             )
             KSPillButton(
+                shouldShowLeadingIcon = true,
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
                 text = projectsLovedText,
                 isSelected = selectedFilterCounts.getOrDefault(
@@ -528,6 +534,7 @@ fun PillBar(
                 onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
             )
             KSPillButton(
+                shouldShowTrailingIcon = true,
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.GOAL)),
                 countApiIsReady = countApiIsReady,
                 text = goalText,

@@ -295,7 +295,6 @@ fun CategoryItemRow(
             ) {
                 KSPillButton(
                     text = stringResource(R.string.Project_status_all),
-                    shouldShowIcon = false,
                     isSelected = selectedCategory?.isRoot == true,
                     modifier = Modifier.testTag(CategoryItemRowTestTags.pillTag(category)),
                     onClick = {
@@ -305,7 +304,6 @@ fun CategoryItemRow(
                 subcategories.map { subcategory ->
                     KSPillButton(
                         text = subcategory.name(),
-                        shouldShowIcon = false,
                         isSelected = selectedCategory?.id() == subcategory.id(),
                         modifier = Modifier.testTag(CategoryItemRowTestTags.pillTag(subcategory)),
                         onClick = {

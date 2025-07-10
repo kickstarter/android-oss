@@ -398,7 +398,6 @@ private fun ProjectStatusRow(
                 pillOptions.forEach { (state, label) ->
                     KSPillButton(
                         text = label,
-                        shouldShowIcon = false,
                         isSelected = selectedStatus.value == state,
                         modifier = Modifier.testTag(FilterMenuTestTags.pillTag(state)),
                         onClick = {

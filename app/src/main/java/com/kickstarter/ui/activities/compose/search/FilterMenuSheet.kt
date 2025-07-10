@@ -60,6 +60,7 @@ object FilterMenuTestTags {
     const val AMOUNT_RAISED_ROW = "amount_raised_row"
     const val LOCATION_ROW = "location_row"
     const val OTHERS_ROW = "others_row"
+    const val GOAL_ROW = "goal_row"
     const val FOOTER = "footer"
 
     fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
@@ -72,6 +73,7 @@ enum class FilterType {
     LOCATION,
     PERCENTAGE_RAISED,
     AMOUNT_RAISED,
+    GOAL,
     OTHERS
 }
 
@@ -90,7 +92,8 @@ fun FilterMenuSheet(
     selectedCurrent: Boolean = false,
     selectedProjectsLoved: Boolean = false,
     selectedSaved: Boolean = false,
-    selectedSocial: Boolean = false
+    selectedSocial: Boolean = false,
+    selectedGoal: DiscoveryParams.GoalBuckets? = null
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -174,6 +177,13 @@ fun FilterMenuSheet(
                                 currentSocial.value = social ?: false
                                 onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             }
+                        )
+                        FilterType.GOAL -> FilterRow(
+                            text = titleForFilter(filter),
+                            onClickAction = { onNavigate(FilterType.GOAL) },
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.GOAL_ROW),
+                            subText = selectedGoal?.let { textForBucket(it) }
                         )
                     }
                 }
@@ -500,6 +510,7 @@ private fun titleForFilter(filter: FilterType): String {
         FilterType.LOCATION -> stringResource(R.string.Location_fpo)
         FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised)
         FilterType.AMOUNT_RAISED -> stringResource(R.string.Amount_raised_fpo)
+        FilterType.GOAL -> stringResource(R.string.Goal_fpo)
         FilterType.OTHERS -> stringResource(R.string.Show_only_fpo)
     }
 }

@@ -123,7 +123,7 @@ fun FilterMenuSheet(
                             text = titleForFilter(filter),
                             callback = { status ->
                                 projStatus.value = status
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, null)
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
@@ -156,19 +156,19 @@ fun FilterMenuSheet(
                             selectedSocial = currentSocial,
                             callbackRecommended = { recommended ->
                                 currentRecommended.value = recommended ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, null)
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             },
                             callbackStarred = { starred ->
                                 currentStarred.value = starred ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, null)
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             },
                             callbackStaffPicked = { staffPicked ->
                                 currentStaffPicked.value = staffPicked ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, null)
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             },
                             callbackSocial = { social ->
                                 currentSocial.value = social ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, null)
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             }
                         )
                     }
@@ -180,10 +180,10 @@ fun FilterMenuSheet(
                 leftButtonIsEnabled = true,
                 leftButtonClickAction = {
                     projStatus.value = null
-                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, false)
+                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, false)
                 },
                 rightButtonOnClickAction = {
-                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStaffPicked.value, currentSocial.value, true)
+                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, true)
                 },
                 leftButtonText = stringResource(R.string.Reset_all_filters)
             )

@@ -227,4 +227,38 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
             .assertTextEquals("1")
     }
+
+    @Test
+    fun `SearchTopBar pillBar Goal filter active`() {
+        composeTestRule.setContent {
+            KSTheme {
+                SearchTopBar(
+                    onBackPressed = {},
+                    onValueChanged = {},
+                    projectStatusText = "Live",
+                    selectedFilterCounts = mapOf(
+                        FilterRowPillType.SORT.name to 0,
+                        FilterRowPillType.CATEGORY.name to 0,
+                        FilterRowPillType.FILTER.name to 1,
+                        FilterRowPillType.PROJECT_STATUS.name to 0,
+                        FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                        FilterRowPillType.AMOUNT_RAISED.name to 0,
+                        FilterRowPillType.GOAL.name to 1,
+                    ),
+                    onPillPressed = {},
+                    shouldShowPhase = true
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.GOAL)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
+
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
+            .assertTextEquals("1")
+    }
 }

@@ -83,15 +83,24 @@ fun FilterMenuSheet(
     selectedProjectStatus: DiscoveryParams.State? = null,
     availableFilters: List<FilterType> = FilterType.values().toList(),
     onDismiss: () -> Unit = {},
-    onApply: (DiscoveryParams.State?, Boolean?) -> Unit = { a, b -> },
+    onApply: (DiscoveryParams.State?, Boolean, Boolean, Boolean, Boolean, Boolean?) -> Unit = { a, b, c, d, e, f -> },
     onNavigate: (FilterType) -> Unit = {},
     selectedLocation: Location? = null,
     selectedPercentage: DiscoveryParams.RaisedBuckets? = null,
     selectedAmount: DiscoveryParams.AmountBuckets? = null,
     selectedCategory: Category? = null,
+    selectedCurrent: Boolean = false,
+    selectedProjectsLoved: Boolean = false,
+    selectedSaved: Boolean = false,
+    selectedSocial: Boolean = false,
     selectedGoal: DiscoveryParams.GoalBuckets? = null
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
+
+    val currentStaffPicked = remember { mutableStateOf(selectedProjectsLoved) }
+    val currentStarred = remember { mutableStateOf(selectedSaved) }
+    val currentSocial = remember { mutableStateOf(selectedSocial) }
+    val currentRecommended = remember { mutableStateOf(selectedCurrent) }
 
     Surface(
         modifier = modifier
@@ -121,7 +130,7 @@ fun FilterMenuSheet(
                             text = titleForFilter(filter),
                             callback = { status ->
                                 projStatus.value = status
-                                onApply(projStatus.value, null)
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
                             },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
@@ -147,6 +156,28 @@ fun FilterMenuSheet(
                             modifier = Modifier.testTag(FilterMenuTestTags.AMOUNT_RAISED_ROW),
                             subText = selectedAmount?.let { textForBucket(it) }
                         )
+                        FilterType.OTHERS -> OtherFiltersRow(
+                            selectedStaffPicked = currentStaffPicked,
+                            selectedRecommended = currentRecommended,
+                            selectedStarred = currentStarred,
+                            selectedSocial = currentSocial,
+                            callbackRecommended = { recommended ->
+                                currentRecommended.value = recommended ?: false
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                            },
+                            callbackStarred = { starred ->
+                                currentStarred.value = starred ?: false
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                            },
+                            callbackStaffPicked = { staffPicked ->
+                                currentStaffPicked.value = staffPicked ?: false
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                            },
+                            callbackSocial = { social ->
+                                currentSocial.value = social ?: false
+                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                            }
+                        )
                         FilterType.GOAL -> FilterRow(
                             text = titleForFilter(filter),
                             onClickAction = { onNavigate(FilterType.GOAL) },
@@ -154,7 +185,6 @@ fun FilterMenuSheet(
                             modifier = Modifier.testTag(FilterMenuTestTags.GOAL_ROW),
                             subText = selectedGoal?.let { textForBucket(it) }
                         )
-                        FilterType.OTHERS -> OtherFiltersRow()
                     }
                 }
             }
@@ -164,10 +194,14 @@ fun FilterMenuSheet(
                 leftButtonIsEnabled = true,
                 leftButtonClickAction = {
                     projStatus.value = null
-                    onApply(projStatus.value, false)
+                    currentRecommended.value = false
+                    currentStaffPicked.value = false
+                    currentStarred.value = false
+                    currentSocial.value = false
+                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, false)
                 },
                 rightButtonOnClickAction = {
-                    onApply(projStatus.value, true)
+                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, true)
                 },
                 leftButtonText = stringResource(R.string.Reset_all_filters)
             )
@@ -175,27 +209,21 @@ fun FilterMenuSheet(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun OtherFiltersRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Show_only_fpo),
     selectedStaffPicked: MutableState<Boolean> = mutableStateOf(false),
-    callbackStaffPicked: (Boolean?) -> Unit = {},
+    callbackStaffPicked: (Boolean) -> Unit = {},
     selectedStarred: MutableState<Boolean> = mutableStateOf(false),
-    callbackStarred: (Boolean?) -> Unit = {},
+    callbackStarred: (Boolean) -> Unit = {},
     selectedSocial: MutableState<Boolean> = mutableStateOf(false),
-    callbackSocial: (Boolean?) -> Unit = {},
+    callbackSocial: (Boolean) -> Unit = {},
     selectedRecommended: MutableState<Boolean> = mutableStateOf(false),
-    callbackRecommended: (Boolean?) -> Unit = {},
+    callbackRecommended: (Boolean) -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
-
-    val currentStaffPicked = remember { selectedStaffPicked }
-    val currentStarred = remember { selectedStarred }
-    val currentSocial = remember { selectedSocial }
-    val currentRecommended = remember { selectedRecommended }
 
     Row(
         modifier = modifier
@@ -239,10 +267,11 @@ private fun OtherFiltersRow(
 
                 KSSwitch(
                     modifier = Modifier.testTag(switchTag(DiscoveryParams::recommended.name)),
-                    checked = currentRecommended.value,
+                    checked = selectedRecommended.value,
                     onCheckChanged = {
-                        currentRecommended.value = it
-                        callbackRecommended(it)
+                        selectedRecommended.value = it
+                        if (it)
+                            callbackRecommended(it)
                     }
                 )
             }
@@ -261,9 +290,9 @@ private fun OtherFiltersRow(
 
                 KSSwitch(
                     modifier = Modifier.testTag(switchTag(DiscoveryParams::staffPicks.name)),
-                    checked = currentStaffPicked.value.isTrue(),
+                    checked = selectedStaffPicked.value.isTrue(),
                     onCheckChanged = {
-                        currentStaffPicked.value = it
+                        selectedStaffPicked.value = it
                         callbackStaffPicked(it)
                     }
                 )
@@ -283,9 +312,9 @@ private fun OtherFiltersRow(
 
                 KSSwitch(
                     modifier = Modifier.testTag(switchTag(DiscoveryParams::starred.name)),
-                    checked = currentStarred.value,
+                    checked = selectedStarred.value,
                     onCheckChanged = {
-                        currentStarred.value = it
+                        selectedStarred.value = it
                         callbackStarred(it)
                     }
                 )
@@ -305,9 +334,9 @@ private fun OtherFiltersRow(
 
                 KSSwitch(
                     modifier = Modifier.testTag(switchTag(DiscoveryParams::social.name)),
-                    checked = currentSocial.value.isTrue(),
+                    checked = selectedSocial.value.isTrue(),
                     onCheckChanged = {
-                        currentSocial.value = it
+                        selectedSocial.value = it
                         callbackSocial(it)
                     }
                 )
@@ -369,7 +398,6 @@ private fun ProjectStatusRow(
                 pillOptions.forEach { (state, label) ->
                     KSPillButton(
                         text = label,
-                        shouldShowIcon = false,
                         isSelected = selectedStatus.value == state,
                         modifier = Modifier.testTag(FilterMenuTestTags.pillTag(state)),
                         onClick = {
@@ -518,7 +546,7 @@ private fun FilterMenuSheetPreview() {
         FilterMenuSheet(
             selectedProjectStatus = DiscoveryParams.State.LIVE,
             onDismiss = {},
-            onApply = { a, b -> },
+            onApply = { a, b, c, d, e, f -> },
             selectedLocation = LocationFactory.vancouver(),
             selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
         )

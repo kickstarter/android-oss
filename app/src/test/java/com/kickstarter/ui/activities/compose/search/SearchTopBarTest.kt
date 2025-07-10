@@ -11,7 +11,7 @@ import org.junit.Test
 class SearchTopBarTest : KSRobolectricTestCase() {
 
     @Test
-    fun `SearchTopBar when phase 3 feature flag is off`() {
+    fun `SearchTopBar when phase 6-7 feature flag is off`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -24,6 +24,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.PERCENTAGE_RAISED.name to 0,
                         FilterRowPillType.LOCATION.name to 0,
                         FilterRowPillType.AMOUNT_RAISED.name to 0,
+                        FilterRowPillType.RECOMMENDED.name to 0,
+                        FilterRowPillType.PROJECTS_LOVED.name to 0,
+                        FilterRowPillType.SAVED.name to 0,
+                        FilterRowPillType.FOLLOWING.name to 0,
+                        FilterRowPillType.GOAL.name to 0,
                     ),
                     onPillPressed = {},
                     shouldShowPhase = false
@@ -34,14 +39,19 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(SearchScreenTestTag.BACK_BUTTON.name).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECT_STATUS)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.CATEGORY)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertDoesNotExist()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.RECOMMENDED)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECTS_LOVED)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.GOAL)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.SAVED)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FOLLOWING)).assertDoesNotExist()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
     }
 
     @Test
-    fun `SearchTopBar when phase 3 feature flag is on`() {
+    fun `SearchTopBar when phase 6-7 feature flag is on`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -54,6 +64,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.PERCENTAGE_RAISED.name to 0,
                         FilterRowPillType.LOCATION.name to 0,
                         FilterRowPillType.AMOUNT_RAISED.name to 0,
+                        FilterRowPillType.RECOMMENDED.name to 0,
+                        FilterRowPillType.PROJECTS_LOVED.name to 0,
+                        FilterRowPillType.SAVED.name to 0,
+                        FilterRowPillType.FOLLOWING.name to 0,
+                        FilterRowPillType.GOAL.name to 0,
                     ),
                     onPillPressed = {},
                     shouldShowPhase = true
@@ -68,10 +83,14 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists() // exists instead of display to avoid having to scroll
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.RECOMMENDED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECTS_LOVED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.SAVED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FOLLOWING)).assertExists()
     }
 
     @Test
-    fun `SearchTopBar pillBar 3 filters active`() {
+    fun `SearchTopBar pillBar all filters active`() {
         composeTestRule.setContent {
             KSTheme {
                 SearchTopBar(
@@ -86,6 +105,12 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                         FilterRowPillType.PROJECT_STATUS.name to 1,
                         FilterRowPillType.PERCENTAGE_RAISED.name to 1,
                         FilterRowPillType.AMOUNT_RAISED.name to 1,
+                        FilterRowPillType.LOCATION.name to 1,
+                        FilterRowPillType.GOAL.name to 1,
+                        FilterRowPillType.RECOMMENDED.name to 1,
+                        FilterRowPillType.PROJECTS_LOVED.name to 1,
+                        FilterRowPillType.SAVED.name to 1,
+                        FilterRowPillType.FOLLOWING.name to 1,
                     ),
                     onPillPressed = {},
                     shouldShowPhase = true
@@ -100,9 +125,14 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.LOCATION)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.RECOMMENDED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECTS_LOVED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.SAVED)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FOLLOWING)).assertExists()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.GOAL)).assertExists()
 
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
-            .assertTextEquals("4")
+            .assertTextEquals("10")
     }
 
     @Test

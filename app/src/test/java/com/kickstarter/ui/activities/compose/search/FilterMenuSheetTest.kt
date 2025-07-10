@@ -87,7 +87,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
                     else FilterType.values().asList().filter { it != FilterType.OTHERS },
                     onDismiss = {},
-                    onApply = { a, b -> },
+                    onApply = { a, b, c, d, e, f -> },
                     onNavigate = {}
                 )
             }
@@ -119,7 +119,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
                     availableFilters = if (shouldShowPhase) FilterType.values().asList()
                     else FilterType.values().asList().filter { it != FilterType.OTHERS },
                     onDismiss = {},
-                    onApply = { a, b -> },
+                    onApply = { a, b, c, d, e, f -> },
                     onNavigate = {}
                 )
             }
@@ -151,7 +151,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuSheet(
-                    onApply = { publicState: DiscoveryParams.State?, from: Boolean? ->
+                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
                         counter++
                         if (counter == 1)
                             assertEquals(publicState, DiscoveryParams.State.LIVE)
@@ -177,8 +177,8 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         var contextFrom: Boolean? = null
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(onApply = { state, from ->
-                    selected = state
+                FilterMenuSheet(onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                    selected = publicState
                     contextFrom = from
                 })
             }
@@ -205,8 +205,8 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 FilterMenuSheet(
                     selectedProjectStatus = selected,
-                    onApply = { state, from ->
-                        selected = state
+                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        selected = publicState
                         contextFrom = from
                     }
                 )
@@ -227,7 +227,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 FilterMenuSheet(
                     selectedCategory = CategoryFactory.CeramicsCategory(),
-                    onApply = { _, _ ->
+                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
                     }
                 )
             }
@@ -249,7 +249,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 textForBucket = textForBucket(DiscoveryParams.RaisedBuckets.BUCKET_2)
                 FilterMenuSheet(
-                    onApply = { _, _ ->
+                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
                     },
                     selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
                 )
@@ -273,7 +273,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 FilterMenuSheet(
-                    onApply = { _, _ ->
+                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
                     },
                     selectedLocation = LocationFactory.vancouver()
                 )
@@ -298,7 +298,7 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             KSTheme {
                 textForBucket = textForBucket(DiscoveryParams.AmountBuckets.BUCKET_4)
                 FilterMenuSheet(
-                    onApply = { _, _ ->
+                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
                     },
                     selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
                 )

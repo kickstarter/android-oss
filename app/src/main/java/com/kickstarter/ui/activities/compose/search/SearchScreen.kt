@@ -498,10 +498,10 @@ fun FilterPagerSheet(
     currentLocation: Location? = null,
     currentAmountRaised: DiscoveryParams.AmountBuckets? = null,
     onDismiss: () -> Unit,
-    currentRecommended: MutableState<Boolean> = mutableStateOf(false),
-    currentProjectsLoved: MutableState<Boolean> = mutableStateOf(false),
-    currentSavedProjects: MutableState<Boolean> = mutableStateOf(false),
-    currentFollowing: MutableState<Boolean> = mutableStateOf(false),
+    currentRecommended: Boolean = false,
+    currentProjectsLoved: Boolean = false,
+    currentSavedProjects: Boolean = false,
+    currentFollowing: Boolean = false,
     onApply: (
         DiscoveryParams.State?,
         Category?,
@@ -535,6 +535,11 @@ fun FilterPagerSheet(
     val location = remember { mutableStateOf(currentLocation) }
     val amountRaised = remember { mutableStateOf(currentAmountRaised) }
 
+    val recommended = remember { mutableStateOf(currentRecommended) }
+    val projectsLoved = remember { mutableStateOf(currentProjectsLoved) }
+    val savedProjects = remember { mutableStateOf(currentSavedProjects) }
+    val following = remember { mutableStateOf(currentFollowing) }
+
     // - In case de bottomSheet is dismissed without the user pressing
     // - see results button, should return to default states
     LaunchedEffect(!sheetState.isVisible) {
@@ -558,6 +563,22 @@ fun FilterPagerSheet(
             if (currentAmountRaised != amountRaised.value) {
                 amountRaised.value = currentAmountRaised
             }
+
+            if (currentRecommended != recommended.value) {
+                recommended.value = currentRecommended
+            }
+
+            if (currentProjectsLoved != projectsLoved.value) {
+                projectsLoved.value = currentProjectsLoved
+            }
+
+            if (currentSavedProjects != savedProjects.value) {
+                savedProjects.value = currentSavedProjects
+            }
+
+            if (currentFollowing != following.value) {
+                following.value = currentFollowing
+            }
         }
     }
 
@@ -576,15 +597,19 @@ fun FilterPagerSheet(
                 selectedProjectStatus = projectState.value,
                 selectedAmount = currentAmountRaised,
                 selectedCategory = currentCategory,
+                selectedCurrent = currentRecommended,
+                selectedProjectsLoved = currentProjectsLoved,
+                selectedSaved = currentSavedProjects,
+                selectedSocial = currentFollowing,
                 onDismiss = {
                     onDismiss.invoke()
                 },
-                onApply = { selectedProjectState, recomended, projectsLoved, saved, social, applyAndDismiss ->
+                onApply = { selectedProjectState, selectedRecommended, selectedProjectsLoved, selectedSaved, selectedSocial, applyAndDismiss ->
                     projectState.value = selectedProjectState
-                    currentRecommended.value = recomended
-                    currentProjectsLoved.value = projectsLoved
-                    currentSavedProjects.value = saved
-                    currentFollowing.value = social
+                    recommended.value = selectedRecommended
+                    projectsLoved.value = selectedProjectsLoved
+                    savedProjects.value = selectedSaved
+                    following.value = selectedSocial
 
                     if (applyAndDismiss != null) {
                         // - Reset to default values
@@ -604,10 +629,10 @@ fun FilterPagerSheet(
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss,
-                            recommended = currentRecommended.value,
-                            projectsLoved = currentProjectsLoved.value,
-                            savedProjects = currentSavedProjects.value,
-                            social = currentFollowing.value
+                            recommended = recommended.value,
+                            projectsLoved = projectsLoved.value,
+                            savedProjects = savedProjects.value,
+                            social = following.value
                         )
                     }
                 },
@@ -656,10 +681,10 @@ fun FilterPagerSheet(
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
                             location = location.value,
-                            recommended = currentRecommended.value,
-                            projectsLoved = currentProjectsLoved.value,
-                            savedProjects = currentSavedProjects.value,
-                            social = currentFollowing.value,
+                            recommended = recommended.value,
+                            projectsLoved = projectsLoved.value,
+                            savedProjects = savedProjects.value,
+                            social = following.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -684,10 +709,10 @@ fun FilterPagerSheet(
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
                             location = location.value,
-                            recommended = currentRecommended.value,
-                            projectsLoved = currentProjectsLoved.value,
-                            savedProjects = currentSavedProjects.value,
-                            social = currentFollowing.value,
+                            recommended = recommended.value,
+                            projectsLoved = projectsLoved.value,
+                            savedProjects = savedProjects.value,
+                            social = following.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -711,10 +736,10 @@ fun FilterPagerSheet(
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
                             location = location.value,
-                            recommended = currentRecommended.value,
-                            projectsLoved = currentProjectsLoved.value,
-                            savedProjects = currentSavedProjects.value,
-                            social = currentFollowing.value,
+                            recommended = recommended.value,
+                            projectsLoved = projectsLoved.value,
+                            savedProjects = savedProjects.value,
+                            social = following.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -738,10 +763,10 @@ fun FilterPagerSheet(
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
                             location = location.value,
-                            recommended = currentRecommended.value,
-                            projectsLoved = currentProjectsLoved.value,
-                            savedProjects = currentSavedProjects.value,
-                            social = currentFollowing.value,
+                            recommended = recommended.value,
+                            projectsLoved = projectsLoved.value,
+                            savedProjects = savedProjects.value,
+                            social = following.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -928,6 +953,10 @@ private fun sheetContent(
                     currentPercentage = currentPercentage.value,
                     currentLocation = currentLocation.value,
                     currentAmountRaised = currentAmountRaised.value,
+                    currentRecommended = currentRecommended.value,
+                    currentProjectsLoved = currentProjectsLoved.value,
+                    currentSavedProjects = currentSavedProjects.value,
+                    currentFollowing = currentFollowing.value,
                     categories = categories,
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }

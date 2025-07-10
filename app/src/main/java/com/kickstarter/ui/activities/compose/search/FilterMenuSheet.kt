@@ -86,14 +86,18 @@ fun FilterMenuSheet(
     selectedLocation: Location? = null,
     selectedPercentage: DiscoveryParams.RaisedBuckets? = null,
     selectedAmount: DiscoveryParams.AmountBuckets? = null,
-    selectedCategory: Category? = null
+    selectedCategory: Category? = null,
+    selectedCurrent: Boolean = false,
+    selectedProjectsLoved: Boolean = false,
+    selectedSaved: Boolean = false,
+    selectedSocial: Boolean = false
 ) {
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
-    val currentStaffPicked = remember { mutableStateOf(false) }
-    val currentStarred = remember { mutableStateOf(false) }
-    val currentSocial = remember { mutableStateOf(false) }
-    val currentRecommended = remember { mutableStateOf(false) }
+    val currentStaffPicked = remember { mutableStateOf(selectedProjectsLoved) }
+    val currentStarred = remember { mutableStateOf(selectedSaved) }
+    val currentSocial = remember { mutableStateOf(selectedSocial) }
+    val currentRecommended = remember { mutableStateOf(selectedCurrent) }
 
     Surface(
         modifier = modifier
@@ -196,13 +200,13 @@ private fun OtherFiltersRow(
     modifier: Modifier = Modifier,
     text: String = stringResource(R.string.Show_only_fpo),
     selectedStaffPicked: MutableState<Boolean> = mutableStateOf(false),
-    callbackStaffPicked: (Boolean?) -> Unit = {},
+    callbackStaffPicked: (Boolean) -> Unit = {},
     selectedStarred: MutableState<Boolean> = mutableStateOf(false),
-    callbackStarred: (Boolean?) -> Unit = {},
+    callbackStarred: (Boolean) -> Unit = {},
     selectedSocial: MutableState<Boolean> = mutableStateOf(false),
-    callbackSocial: (Boolean?) -> Unit = {},
+    callbackSocial: (Boolean) -> Unit = {},
     selectedRecommended: MutableState<Boolean> = mutableStateOf(false),
-    callbackRecommended: (Boolean?) -> Unit = {},
+    callbackRecommended: (Boolean) -> Unit = {},
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -252,7 +256,8 @@ private fun OtherFiltersRow(
                     checked = selectedRecommended.value,
                     onCheckChanged = {
                         selectedRecommended.value = it
-                        callbackRecommended(it)
+                        if (it)
+                            callbackRecommended(it)
                     }
                 )
             }

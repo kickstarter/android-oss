@@ -6,6 +6,7 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.Category
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.type.GoalBuckets
 import com.kickstarter.type.PledgedBuckets
 import com.kickstarter.type.ProjectSort
 import com.kickstarter.type.PublicProjectState
@@ -281,5 +282,15 @@ fun DiscoveryParams.AmountBuckets.toPledgedBucket(): PledgedBuckets {
         DiscoveryParams.AmountBuckets.BUCKET_3 -> PledgedBuckets.BUCKET_3
         DiscoveryParams.AmountBuckets.BUCKET_4 -> PledgedBuckets.BUCKET_4
         DiscoveryParams.AmountBuckets.BUCKET_0 -> PledgedBuckets.BUCKET_0
+    }
+}
+
+fun DiscoveryParams.GoalBuckets.toGoalBucket(): GoalBuckets {
+    return when (this) {
+        DiscoveryParams.GoalBuckets.BUCKET_1 -> GoalBuckets.BUCKET_1
+        DiscoveryParams.GoalBuckets.BUCKET_2 -> GoalBuckets.BUCKET_2
+        DiscoveryParams.GoalBuckets.BUCKET_3 -> GoalBuckets.BUCKET_3
+        DiscoveryParams.GoalBuckets.BUCKET_4 -> GoalBuckets.BUCKET_4
+        DiscoveryParams.GoalBuckets.BUCKET_0 -> GoalBuckets.BUCKET_0
     }
 }

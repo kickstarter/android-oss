@@ -272,7 +272,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, no amount raised`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, no amount raised, no goal`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -308,10 +308,11 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.raisedBucket(), null)
         assertEquals(params?.amountBucket(), null)
         assertEquals(params?.location(), null)
+        assertEquals(params?.goalBucket(), null)
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, no amount raised, load two pages`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, no amount raised, no goal, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val secondPageList = listOf(ProjectFactory.caProject(), ProjectFactory.mxProject())
@@ -353,6 +354,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.state(), null)
         assertEquals(params?.raisedBucket(), null)
         assertEquals(params?.amountBucket(), null)
+        assertEquals(params?.goalBucket(), null)
+        assertEquals(params?.location(), null)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
 
@@ -360,7 +363,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching a tem with category, sorting, projectStatus, percentage raised, amount raised, and location, load two pages`() = runTest {
+    fun `test for searching a tem with category, sorting, projectStatus, percentage raised, amount raised, goal, and location, load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
 
@@ -397,7 +400,8 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                 DiscoveryParams.State.LIVE,
                 DiscoveryParams.RaisedBuckets.BUCKET_2,
                 LocationFactory.vancouver(),
-                DiscoveryParams.AmountBuckets.BUCKET_4
+                DiscoveryParams.AmountBuckets.BUCKET_4,
+                DiscoveryParams.GoalBuckets.BUCKET_2
             )
             viewModel.updateSearchTerm("cats")
             viewModel.loadMore()
@@ -412,6 +416,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.raisedBucket(), DiscoveryParams.RaisedBuckets.BUCKET_2)
         assertEquals(params?.location(), LocationFactory.vancouver())
         assertEquals(params?.amountBucket(), DiscoveryParams.AmountBuckets.BUCKET_4)
+        assertEquals(params?.goalBucket(), DiscoveryParams.GoalBuckets.BUCKET_2)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
         assertEquals(errorNumber, 0)

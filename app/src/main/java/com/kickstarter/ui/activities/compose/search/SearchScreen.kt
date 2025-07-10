@@ -107,8 +107,8 @@ fun PagerPreview() {
                 currentCategory = categories[0],
                 categories = categories,
                 onDismiss = { dismissed.add(true) },
-                onApply = { state, category, bucket, location, amountBucket -> appliedFilters.add(Pair(state, category)) },
-                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount ->
+                onApply = { state, category, bucket, location, amountBucket, goalBucket -> appliedFilters.add(Pair(state, category)) },
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount, goalBucketCount ->
                     selectedCounts.add(
                         statusCount to categoryCount
                     )
@@ -227,8 +227,9 @@ fun SearchScreen(
         DiscoveryParams.State?,
         DiscoveryParams.RaisedBuckets?,
         Location?,
-        DiscoveryParams.AmountBuckets?
-    ) -> Unit = { _, _, _, _, _, _ ->
+        DiscoveryParams.AmountBuckets?,
+        DiscoveryParams.GoalBuckets?
+    ) -> Unit = { _, _, _, _, _, _, _ ->
     },
     shouldShowPhase: Boolean = true
 ) {
@@ -246,7 +247,8 @@ fun SearchScreen(
             FilterRowPillType.PROJECT_STATUS.name to 0,
             FilterRowPillType.PERCENTAGE_RAISED.name to 0,
             FilterRowPillType.LOCATION.name to 0,
-            FilterRowPillType.AMOUNT_RAISED.name to 0
+            FilterRowPillType.AMOUNT_RAISED.name to 0,
+            FilterRowPillType.GOAL.name to 0
         )
     }
     val initialCategoryPillText = stringResource(R.string.Category)
@@ -262,7 +264,7 @@ fun SearchScreen(
     val currentPercentage = remember { mutableStateOf<DiscoveryParams.RaisedBuckets?>(null) }
     val currentAmountRaised = remember { mutableStateOf<DiscoveryParams.AmountBuckets?>(null) }
     val currentLocation = remember { mutableStateOf<Location?>(null) }
-
+    val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
 
     val activeBottomSheet = remember {
@@ -304,6 +306,7 @@ fun SearchScreen(
             currentPercentage = currentPercentage,
             currentLocation = currentLocation,
             currentAmountRaised = currentAmountRaised,
+            currentGoal = currentGoal,
             shouldShowPhase = shouldShowPhase
         ),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -467,7 +470,8 @@ enum class FilterPages {
     CATEGORIES,
     PERCENTAGE_RAISED,
     LOCATION,
-    AMOUNT_RAISED
+    AMOUNT_RAISED,
+    GOAL
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -479,9 +483,10 @@ fun FilterPagerSheet(
     currentPercentage: DiscoveryParams.RaisedBuckets? = null,
     currentLocation: Location? = null,
     currentAmountRaised: DiscoveryParams.AmountBuckets? = null,
+    currentGoal: DiscoveryParams.GoalBuckets? = null,
     onDismiss: () -> Unit,
-    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?) -> Unit,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?, location: Int?, amountBucket: Int?) -> Unit,
+    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?, DiscoveryParams.GoalBuckets?) -> Unit,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?, location: Int?, amountBucket: Int?, goalBucket: Int?) -> Unit,
     pagerState: PagerState,
     sheetState: ModalBottomSheetState,
     shouldShowPhase: Boolean
@@ -492,6 +497,7 @@ fun FilterPagerSheet(
     val percentageBucket = remember { mutableStateOf(currentPercentage) }
     val location = remember { mutableStateOf(currentLocation) }
     val amountRaised = remember { mutableStateOf(currentAmountRaised) }
+    val goal = remember { mutableStateOf(currentGoal) }
 
     // - In case de bottomSheet is dismissed without the user pressing
     // - see results button, should return to default states
@@ -515,6 +521,10 @@ fun FilterPagerSheet(
 
             if (currentAmountRaised != amountRaised.value) {
                 amountRaised.value = currentAmountRaised
+            }
+
+            if (currentGoal != goal.value) {
+                goal.value = currentGoal
             }
         }
     }
@@ -546,11 +556,13 @@ fun FilterPagerSheet(
                             percentageBucket.value = null
                             location.value = null
                             amountRaised.value = null
+                            goal.value = null
                         }
                         applyUserSelection(
                             onApply = onApply,
                             projectState = projectState.value,
                             amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
                             category = category.value,
                             percentageRaisedBucket = percentageBucket.value,
                             location = location.value,
@@ -584,6 +596,11 @@ fun FilterPagerSheet(
                             pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
                         }
                     }
+                    if (filterType == FilterType.GOAL) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
+                        }
+                    }
                 },
                 availableFilters = if (shouldShowPhase) FilterType.values().asList()
                 else FilterType.values().asList().filter { it != FilterType.OTHERS }
@@ -604,6 +621,7 @@ fun FilterPagerSheet(
                             category = category.value,
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -628,6 +646,7 @@ fun FilterPagerSheet(
                             category = category.value,
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -651,6 +670,7 @@ fun FilterPagerSheet(
                             category = category.value,
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -674,6 +694,31 @@ fun FilterPagerSheet(
                             category = category.value,
                             percentageRaisedBucket = percentageBucket.value,
                             amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
+                        )
+                    }
+                }
+            )
+            FilterPages.GOAL.ordinal -> GoalSheet(
+                currentGoalBucket = DiscoveryParams.GoalBuckets.fromString(currentGoal?.name),
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { selectedBucket, applyAndDismiss ->
+                    goal.value = selectedBucket
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
                             location = location.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
@@ -694,23 +739,25 @@ fun FilterPagerSheet(
  *  shouldDismiss = true -> user has pressed "See results" button on the footer. (Should dismiss bottomSheet).
  */
 private fun applyUserSelection(
-    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?) -> Unit,
+    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?, DiscoveryParams.GoalBuckets?) -> Unit,
     projectState: DiscoveryParams.State?,
     category: Category?,
     percentageRaisedBucket: DiscoveryParams.RaisedBuckets?,
     amountRaisedBucket: DiscoveryParams.AmountBuckets?,
+    goalBucket: DiscoveryParams.GoalBuckets?,
     location: Location?,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?, location: Int?, amountBucketCount: Int?) -> Unit,
+    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?, location: Int?, amountBucketCount: Int?, goalBucketCount: Int?) -> Unit,
     onDismiss: () -> Unit,
     shouldDismiss: Boolean
 ) {
-    onApply(projectState, category, percentageRaisedBucket, location, amountRaisedBucket)
+    onApply(projectState, category, percentageRaisedBucket, location, amountRaisedBucket, goalBucket)
     updateSelectedCounts(
         if (projectState != null) 1 else 0,
         if (category != null) 1 else 0,
         if (percentageRaisedBucket != null) 1 else 0,
         if (location != null) 1 else 0,
-        if (amountRaisedBucket != null) 1 else 0
+        if (amountRaisedBucket != null) 1 else 0,
+        if (goalBucket != null) 1 else 0
     )
     if (shouldDismiss) {
         onDismiss.invoke()
@@ -764,6 +811,12 @@ private fun onPillPressed(
                     mainFilterMenuState.show()
                 }
             }
+            FilterRowPillType.GOAL -> {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
+                    mainFilterMenuState.show()
+                }
+            }
         }
     }
 
@@ -773,7 +826,7 @@ private fun sheetContent(
     activeBottomSheet: MutableState<FilterRowPillType?>,
     coroutineScope: CoroutineScope,
     currentCategory: MutableState<Category?>,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?) -> Unit,
+    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?, DiscoveryParams.RaisedBuckets?, Location?, DiscoveryParams.AmountBuckets?, DiscoveryParams.GoalBuckets?) -> Unit,
     currentSort: MutableState<DiscoveryParams.Sort>,
     currentProjectState: MutableState<DiscoveryParams.State?>,
     categories: List<Category>,
@@ -787,6 +840,7 @@ private fun sheetContent(
     pagerState: PagerState,
     currentPercentage: MutableState<DiscoveryParams.RaisedBuckets?>,
     currentAmountRaised: MutableState<DiscoveryParams.AmountBuckets?>,
+    currentGoal: MutableState<DiscoveryParams.GoalBuckets?>,
     currentLocation: MutableState<Location?> = mutableStateOf(null),
     shouldShowPhase: Boolean = true
 ): @Composable() (ColumnScope.() -> Unit) {
@@ -803,6 +857,7 @@ private fun sheetContent(
             FilterRowPillType.PERCENTAGE_RAISED,
             FilterRowPillType.LOCATION,
             FilterRowPillType.AMOUNT_RAISED,
+            FilterRowPillType.GOAL,
             FilterRowPillType.FILTER, -> {
                 FilterPagerSheet(
                     sheetState = menuSheetState,
@@ -812,16 +867,18 @@ private fun sheetContent(
                     currentPercentage = currentPercentage.value,
                     currentLocation = currentLocation.value,
                     currentAmountRaised = currentAmountRaised.value,
+                    currentGoal = currentGoal.value,
                     categories = categories,
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }
                     },
-                    onApply = { project, category, percentageBucket, location, amountRaisedBucket ->
+                    onApply = { project, category, percentageBucket, location, amountRaisedBucket, goalBucket ->
                         currentProjectState.value = project
                         currentCategory.value = category
                         currentPercentage.value = percentageBucket
                         currentLocation.value = location
                         currentAmountRaised.value = amountRaisedBucket
+                        currentGoal.value = goalBucket
                         projectStatusPillText.value = when (project) {
                             DiscoveryParams.State.LIVE -> liveString
                             DiscoveryParams.State.SUCCESSFUL -> successfulString
@@ -830,12 +887,12 @@ private fun sheetContent(
                             else -> defaultString
                         }
                         categoryPillText.value = category?.name() ?: initialCategoryPillText
-                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value, currentPercentage.value, currentLocation.value, currentAmountRaised.value)
+                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value, currentPercentage.value, currentLocation.value, currentAmountRaised.value, currentGoal.value)
                     },
-                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket ->
+                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket, goalBucket ->
 
                         selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0) +
-                            (location ?: 0) + (amountBucket ?: 0)
+                            (location ?: 0) + (amountBucket ?: 0) + (goalBucket ?: 0)
 
                         statusCount?.let {
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
@@ -852,6 +909,9 @@ private fun sheetContent(
                         amountBucket?.let {
                             selectedFilterCounts[FilterRowPillType.AMOUNT_RAISED.name] = it
                         }
+                        goalBucket?.let {
+                            selectedFilterCounts[FilterRowPillType.GOAL.name] = it
+                        }
                     },
                     shouldShowPhase = shouldShowPhase
                 )
@@ -864,7 +924,7 @@ private fun sheetContent(
                     onDismiss = { sort ->
                         currentSort.value = sort
                         coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value, currentPercentage.value, currentLocation.value, currentAmountRaised.value)
+                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value, currentPercentage.value, currentLocation.value, currentAmountRaised.value, currentGoal.value)
 
                         selectedFilterCounts[FilterRowPillType.SORT.name] =
                             if (sort == DiscoveryParams.Sort.MAGIC) 0 else 1
@@ -889,6 +949,7 @@ private fun modalBottomSheetState(
     FilterRowPillType.PERCENTAGE_RAISED,
     FilterRowPillType.LOCATION,
     FilterRowPillType.AMOUNT_RAISED,
+    FilterRowPillType.GOAL,
     FilterRowPillType.FILTER -> mainFilterMenuState
 
     null -> sortSheetState

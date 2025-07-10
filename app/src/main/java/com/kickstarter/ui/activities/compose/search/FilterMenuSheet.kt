@@ -184,6 +184,10 @@ fun FilterMenuSheet(
                 leftButtonIsEnabled = true,
                 leftButtonClickAction = {
                     projStatus.value = null
+                    currentRecommended.value = false
+                    currentStaffPicked.value = false
+                    currentStarred.value = false
+                    currentSocial.value = false
                     onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, false)
                 },
                 rightButtonOnClickAction = {

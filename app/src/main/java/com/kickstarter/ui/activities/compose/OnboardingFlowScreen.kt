@@ -1,5 +1,4 @@
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -177,7 +176,6 @@ fun OnboardingScreen() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun OnboardingPageAnimation(modifier: Modifier, pageData: OnboardingPageData) {
     Column(

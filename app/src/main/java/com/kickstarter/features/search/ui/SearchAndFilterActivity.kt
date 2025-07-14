@@ -115,7 +115,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                     startProjectActivity(projAndRef)
                                 }
                             },
-                            onDismissBottomSheet = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, goalBucket ->
+                            onDismissBottomSheet = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
                                 viewModel.updateParamsToSearchWith(
                                     category = category,
                                     projectSort = sort
@@ -124,7 +124,11 @@ class SearchAndFilterActivity : ComponentActivity() {
                                     percentageBucket = percentageBucket,
                                     location = location,
                                     amountBucket = amountRaisedBucket,
-                                    goalBucket = goalBucket
+                                    goalBucket = goalBucket,
+                                    recommended = recomended,
+                                    projectsLoved = projectsLoved,
+                                    savedProjects = saved,
+                                    social = social
                                 )
                             },
                             shouldShowPhase = phaseff

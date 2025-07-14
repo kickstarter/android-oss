@@ -272,7 +272,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, no amount raised, no goal`() = runTest {
+    fun `test for searching with clean user selection no category, no sorting, no term options, no projectStatus, no percentage raised, no location, no amount raised, no goal, no other toggles`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -309,6 +309,10 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.amountBucket(), null)
         assertEquals(params?.location(), null)
         assertEquals(params?.goalBucket(), null)
+        assertEquals(params?.recommended(), null)
+        assertEquals(params?.staffPicks(), null)
+        assertEquals(params?.starred(), null)
+        assertEquals(params?.social(), null)
     }
 
     @Test
@@ -356,6 +360,10 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.amountBucket(), null)
         assertEquals(params?.goalBucket(), null)
         assertEquals(params?.location(), null)
+        assertEquals(params?.recommended(), null)
+        assertEquals(params?.staffPicks(), null)
+        assertEquals(params?.starred(), null)
+        assertEquals(params?.social(), null)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
 
@@ -363,7 +371,7 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test for searching a tem with category, sorting, projectStatus, percentage raised, amount raised, goal, and location, load two pages`() = runTest {
+    fun `test for searching a tem with category, sorting, projectStatus, percentage raised, amount raised, goal, and location, other toggles load two pages`() = runTest {
         var params: DiscoveryParams? = null
         val projectList = listOf(ProjectFactory.project(), ProjectFactory.prelaunchProject(""))
 
@@ -401,7 +409,11 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                 DiscoveryParams.RaisedBuckets.BUCKET_2,
                 LocationFactory.vancouver(),
                 DiscoveryParams.AmountBuckets.BUCKET_4,
-                DiscoveryParams.GoalBuckets.BUCKET_2
+                DiscoveryParams.GoalBuckets.BUCKET_2,
+                recommended = true,
+                projectsLoved = true,
+                savedProjects = true,
+                social = true
             )
             viewModel.updateSearchTerm("cats")
             viewModel.loadMore()
@@ -417,6 +429,10 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         assertEquals(params?.location(), LocationFactory.vancouver())
         assertEquals(params?.amountBucket(), DiscoveryParams.AmountBuckets.BUCKET_4)
         assertEquals(params?.goalBucket(), DiscoveryParams.GoalBuckets.BUCKET_2)
+        assertEquals(params?.recommended(), true)
+        assertEquals(params?.staffPicks(), true)
+        assertEquals(params?.starred(), 1)
+        assertEquals(params?.social(), 1)
         assertEquals(searchState.size, 3)
         assertEquals(pageCounter, 2)
         assertEquals(errorNumber, 0)

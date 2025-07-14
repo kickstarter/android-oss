@@ -106,6 +106,8 @@ type Query {
 
   photoForEditor(id: ID!): Photo
 
+  pledgeManagerOptOutReasons: [OptOutReason!]!
+
   """
   Provides an overview of pledge projects
   """
@@ -124,7 +126,7 @@ type Query {
   """
   Get some projects
   """
-  projects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Get projects backed by the current user." backed: Boolean, "Get projects where the current user is a collaborator." collaborated: Boolean, "Get projects in only this category." categoryId: String, "Get projects created by the current user." created: Boolean, "Get projects with a USD goal amount in this bucket." goal: GoalBuckets, "Get projects from this location." locationId: ID, "Get projects with a USD pledged amount in this bucket." pledged: PledgedBuckets, "Get projects with a raised percent in this bucket." raised: RaisedBuckets, "Get projects recommended for the current user." recommended: Boolean, "The recommendations models to use" recommendationsModels: [RecommendationsModel!], "The source for recommendations." recommendationsSource: [RecommendationsSource!], "Seed for ordering the projects" seed: Int, "Find projects similar to the given project by pid." similarToPid: String, "Find projects similar to the given project term." similarTo: String, "The sort order for returned projects." sort: ProjectSort, "Get project selected as staff picks." staffPicks: Boolean, "Get projects starred by the current user." starred: Boolean, "Get projects with this state." state: PublicProjectState, "Get projects with this tag." tagId: Int, "Project search term." term: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Get projects with deadlines after this date" deadlineAfter: DateTime, "Get projects with deadlines before this date" deadlineBefore: DateTime, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): ProjectsConnectionWithTotalCount
+  projects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Get projects backed by the current user." backed: Boolean, "Get projects where the current user is a collaborator." collaborated: Boolean, "Get projects in only this category." categoryId: String, "Get projects created by the current user." created: Boolean, "social (backed by people I'm following)." following: Boolean, "Get projects with a USD goal amount in this bucket." goal: GoalBuckets, "Get projects from this location." locationId: ID, "Get projects with a USD pledged amount in this bucket." pledged: PledgedBuckets, "Get projects with a raised percent in this bucket." raised: RaisedBuckets, "Get projects recommended for the current user." recommended: Boolean, "The recommendations models to use" recommendationsModels: [RecommendationsModel!], "The source for recommendations." recommendationsSource: [RecommendationsSource!], "Seed for ordering the projects" seed: Int, "Find projects similar to the given project by pid." similarToPid: String, "Find projects similar to the given project term." similarTo: String, "The sort order for returned projects." sort: ProjectSort, "Get project selected as staff picks." staffPicks: Boolean, "Get projects starred by the current user." starred: Boolean, "Get projects with this state." state: PublicProjectState, "Get projects with this tag." tagId: Int, "Project search term." term: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Get projects with deadlines after this date" deadlineAfter: DateTime, "Get projects with deadlines before this date" deadlineBefore: DateTime, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): ProjectsConnectionWithTotalCount
 
   """
   Editorialized quiz projects for the taste profile quiz.
@@ -761,6 +763,8 @@ enum Feature {
 
   pl_usd_currency_2025
 
+  sg_usd_currency_2025
+
   se_currency_selector
 
   datalake_fe_events
@@ -867,8 +871,6 @@ enum Feature {
 
   pledge_over_time_edit_pledge_2025
 
-  gate_pm_for_plot_2025
-
   eufymake_backer_report
 
   multi_vat_ids_2025
@@ -878,6 +880,12 @@ enum Feature {
   creator_tax_reporting_2025
 
   allow_survey_response_edits_2025
+
+  shopify_kickoff_sync_job_2025
+
+  tax_category_improvements
+
+  creator_opt_out_feedback_2025
 }
 
 """
@@ -1301,6 +1309,11 @@ type Project implements Node & Commentable {
   aiDisclosure: AiDisclosure
 
   """
+  When all orders were last synced with Shopify
+  """
+  allOrdersSyncedWithShopifyAt: DateTime
+
+  """
   The total amount collected for add-ons, upgrades, and new backers in the pledge manager
   """
   amountCollectedForAddonsUpgradesAndNewBackers: String!
@@ -1358,7 +1371,7 @@ type Project implements Node & Commentable {
   """
   Total backers for the project
   """
-  backersCount: Int!
+  backersCount("Whether or not to considere new pm backers in the final count." withNewPmBackers: Boolean): Int!
 
   """
   The number of original backers who have yet to go through the pledge manager
@@ -1384,6 +1397,11 @@ type Project implements Node & Commentable {
   True if the current user can comment (does not consider restrictions)
   """
   canCommentSansRestrictions: Boolean!
+
+  """
+  Can new user enter pledge manager checkout?
+  """
+  canNewUserEnterPm: Boolean!
 
   """
   Whether or not the project can be opted into pledge manager
@@ -1551,6 +1569,11 @@ type Project implements Node & Commentable {
   environmentalCommitments: [EnvironmentalCommitment]
 
   """
+  The number of orders that errored during sync
+  """
+  erroredOrdersCount: Int!
+
+  """
   List of FAQs of a project
   """
   faqs("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): ProjectFaqConnection
@@ -1656,11 +1679,6 @@ type Project implements Node & Commentable {
   hasUnresolvedBackings: Boolean!
 
   """
-  Whether the project has incremental pledges enabled
-  """
-  hasUnresolvedIncrementalPledges: Boolean!
-
-  """
   Whether or not the project has upgradeable rewards configured
   """
   hasUpgradeableRewards: Boolean!
@@ -1676,6 +1694,11 @@ type Project implements Node & Commentable {
   A read-only representation of the image (complete with fallback default image)
   """
   imageUrl("Whether or not to blur the image." blur: Boolean, "The width of the image in pixels." width: Int!): String!
+
+  """
+  The countries that the project ships to in the EU
+  """
+  importIntoEuRequiredCountriesForVatIds: [Location!]
 
   """
   Whether the project has stock locations outside the EU that ship to the EU
@@ -1736,6 +1759,11 @@ type Project implements Node & Commentable {
   Whether the project is sharing it's budgeting information with the everyone
   """
   isSharingProjectBudget: Boolean!
+
+  """
+  Whether the Shopify shop is actively syncing
+  """
+  isShopifyShopSyncing: Boolean!
 
   """
   Whether current user is creator of current project
@@ -1846,6 +1874,11 @@ type Project implements Node & Commentable {
   The min pledge amount for a single reward tier.
   """
   minPledge: Int!
+
+  """
+  When the most recent sync with Shopify occurred
+  """
+  mostRecentShopifySyncAt: DateTime
 
   """
   The project's name.
@@ -2037,7 +2070,7 @@ type Project implements Node & Commentable {
   """
   Project rewards.
   """
-  rewards("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filters available rewards by pledge redemption only" pledgeManagementOnly: Boolean, "Filters by active backings" withActiveBackings: Boolean, "Sort the rewards by availability and cost" sort: Boolean): ProjectRewardConnection
+  rewards("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filters available rewards by pledge redemption only" pledgeManagementOnly: Boolean, "Filters by active backings" withActiveBackings: Boolean, "Retrieves rewards considering if the project is currently in PM" withNewPmBackers: Boolean, "Sort the rewards by availability and cost" sort: Boolean): ProjectRewardConnection
 
   """
   Risk questions for the project plan.
@@ -2068,6 +2101,11 @@ type Project implements Node & Commentable {
   Is this project configured for third party analytics events?
   """
   sendThirdPartyEvents: Boolean!
+
+  """
+  The EU countries that require a VAT ID for the project to collect VAT
+  """
+  shipWithinEuRequiredCountriesForVatIds: [Location!]
 
   """
   Shipping destination countries on all rewards on the project
@@ -2168,6 +2206,11 @@ type Project implements Node & Commentable {
   A project submission.
   """
   submission: Submission
+
+  """
+  The number of orders synced with Shopify
+  """
+  syncedOrdersCount: Int!
 
   """
   Tags project has been tagged with
@@ -2612,6 +2655,11 @@ type Backing implements Node {
   latestSetupIntent: SetupIntent
 
   """
+  Whether or not the backing is missing a legacy survey response
+  """
+  legacySurveyResponseMissing: Boolean!
+
+  """
   The backing location.
   """
   location: Location
@@ -2726,7 +2774,7 @@ type Backing implements Node {
   """
   All of the backer's saved addresses that match the backing country
   """
-  usableBackerAddresses: [Address!]
+  usableBackerAddresses: [Address!]!
 }
 
 enum Route {
@@ -3491,7 +3539,7 @@ type LineItem {
   """
   The answers associated with the line item
   """
-  answers: [Answer!]
+  answers: [Answer!]!
 
   id: ID!
 
@@ -3535,7 +3583,7 @@ type ItemVariant {
   """
   The option values associated with this variant
   """
-  optionValues: [OptionValue!]
+  optionValues: [OptionValue!]!
 
   """
   The sku value (e.g. 'Hoodie-Small-Blue-Checkered')
@@ -3723,8 +3771,12 @@ type Reward implements Node {
   backersCount("Filters out backings in an inactive state" excludeInactive: Boolean): Int
 
   """
-  Amount for claiming this reward, in the current user's chosen
-                                                       currency
+  count of backers for this reward after launching pledge manager
+  """
+  backersCountWithNewPmBackers: Int
+
+  """
+  Amount for claiming this reward, in the current user's chosen currency
   """
   convertedAmount: Money!
 
@@ -3734,8 +3786,7 @@ type Reward implements Node {
   description: String!
 
   """
-  A reward's title plus the amount, or a default title (the reward amount) if it doesn't
-                                   have a title.
+  A reward's title plus the amount, or a default title (the reward amount) if it doesn't have a title.
   """
   displayName: String!
 
@@ -3745,8 +3796,7 @@ type Reward implements Node {
   displayableAddons("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): RewardConnection!
 
   """
-  For post-campaign enabled rewards, the conditions under which to
-                                     stop offering the reward.
+  For post-campaign enabled rewards, the conditions under which to stop offering the reward.
   """
   endCondition: Int
 
@@ -3766,7 +3816,7 @@ type Reward implements Node {
   featured: Boolean!
 
   """
-  Whether any has pledged for this reward during the late pledges period
+  Whether any one has pledged for this reward during the late pledges period
   """
   hasLatePledgeBackers: Boolean
 
@@ -3808,14 +3858,12 @@ type Reward implements Node {
   limitPerBacker("Returns system wide limit per backer if not set by creator." withFallback: Boolean): Int
 
   """
-  Where the reward can be locally received if local receipt
-                                                               is selected as the shipping preference
+  Where the reward can be locally received if local receipt is selected as the shipping preference
   """
   localReceiptLocation: Location
 
   """
-  The maximum amount of this add-on in a single pledge selected by any
-                                                     pledged backer.
+  The maximum amount of this add-on in a single pledge selected by any pledged backer.
   """
   maxPledgedInSingleBacking: Int!
 
@@ -3885,20 +3933,17 @@ type Reward implements Node {
   shippingRates: [ShippingRate!]!
 
   """
-  Whether the shipping rates are filled out and
-                                                                           not missing fields
+  Whether the shipping rates are filled out and not missing fields
   """
   shippingRatesCompletion: PrereqCompletionStatus!
 
   """
-  Shipping rates for all shippable countries,
-                                                                      including those that are children of superregions
+  Shipping rates for all shippable countries, including those that are children of superregions
   """
   shippingRatesExpanded: [ShippingRate!]!
 
   """
-  Shipping rules defined by the creator for
-                                                                             this reward
+  Shipping rules defined by the creator for this reward
   """
   shippingRules: [ShippingRule]!
 
@@ -3918,10 +3963,7 @@ type Reward implements Node {
   shippingSummarySentence: String
 
   """
-  Simple shipping rules
-                                                                                                   expanded as a faster alternative to
-                                                                                                   shippingRulesExpanded since connection
-                                                                                                   type is slow
+  Simple shipping rules expanded as a faster alternative to shippingRulesExpanded since connection type is slow
   """
   simpleShippingRulesExpanded: [SimpleShippingRule]!
 
@@ -3931,8 +3973,7 @@ type Reward implements Node {
   soldOut: Boolean!
 
   """
-  For post-campaign enabled rewards, the conditions under which to
-                                       start offering the reward.
+  For post-campaign enabled rewards, the conditions under which to start offering the reward.
   """
   startCondition: Int
 
@@ -4324,6 +4365,11 @@ type OrderableConfig {
   The price charged for an orderable
   """
   price: Money
+
+  """
+  The price formatted for display in the user's chosen currency
+  """
+  priceConvertedToCurrencyFormatted: String
 
   """
   The price formatted for display
@@ -4812,7 +4858,7 @@ type SurveyAnswer {
   """
   The ID of the answer.
   """
-  id: String
+  id: String!
 
   """
   The question prompt or template name.
@@ -5006,6 +5052,11 @@ type Order implements Node {
   backing: Backing!
 
   """
+  The base reward on the order. Could be base reward from original backing or one from reward upgrade.
+  """
+  baseOrderOrderable: OrderOrderable
+
+  """
   The voucher amount for the base orderable, or 0 if there is no base orderable
   """
   baseOrderableVoucherAmount: Int!
@@ -5034,6 +5085,11 @@ type Order implements Node {
   Whether or not the order would be auto-exemptable if the order had no cross-sells.
   """
   checkoutVoucherOrBaseAutoCompletable: Boolean!
+
+  """
+  Order amounts converted to a backer's chosen currency
+  """
+  convertedCurrencyAmounts: ConvertedOrderAmounts
 
   """
   Add-ons selected for this order during Pledge Redemption
@@ -5309,6 +5365,25 @@ enum OrderStateEnum {
 }
 
 """
+Order amounts converted to a user's chosen currency
+"""
+type ConvertedOrderAmounts {
+  baseOrderableVoucherAmount: String!
+
+  orderableVoucherTotal: String!
+
+  shippingBaseAmount: String
+
+  shippingVoucherAmount: String!
+
+  surchargeAmount: String
+
+  total: String
+
+  totalTax: String
+}
+
+"""
 An orderable included in an Order, e.g. a reward.
 """
 type OrderOrderable {
@@ -5535,6 +5610,11 @@ enum PaymentIncrementState {
   Backer issued a dispute and we (kickstarter) lost the dispute
   """
   CHARGEBACK_LOST
+
+  """
+  Payment increment has been refunded
+  """
+  REFUNDED
 }
 
 enum PaymentIncrementStateReason {
@@ -12526,6 +12606,30 @@ enum BackgroundJobProgressStatusEnum {
 }
 
 """
+Information about why creators would opt out of using our pledge manager
+"""
+type OptOutReason {
+  description: String
+
+  """
+  A follow-up question for the selected reason
+  """
+  followUpQuestion: String
+
+  key: String!
+
+  """
+  The options associated with the follow-up question
+  """
+  options: [String!]!
+
+  """
+  Whether or not the reason has a prompt
+  """
+  prompt: Boolean!
+}
+
+"""
 The mutation root of the Kickstarter GraphQL interface
 """
 type Mutation {
@@ -12928,6 +13032,11 @@ type Mutation {
   deleteUserUrl(input: DeleteUserUrlsInput!): DeleteUserUrlsPayload
 
   """
+  Deletes all variant mappings for a shopify shop, refreshing its state
+  """
+  deleteVariantMappings(input: DeleteVariantMappingsInput!): DeleteVariantMappingsPayload
+
+  """
   Delete a video track (caption) from a video
   """
   deleteVideoTrack(input: DeleteVideoTrackInput!): DeleteVideoTrackPayload
@@ -13182,6 +13291,11 @@ type Mutation {
   Enable & disable the preview url for a Kickstarter project.
   """
   toggleProjectPreview(input: ToggleProjectPreviewInput!): ToggleProjectPreviewPayload
+
+  """
+  Toggles the syncing state for a Shopify shop
+  """
+  toggleSyncingForShop(input: ToggleSyncingForShopInput!): ToggleSyncingForShopPayload
 
   """
   Toggle whether a project can set up and collect tariff surcharges
@@ -14772,6 +14886,8 @@ type ReportSpamPayload {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+
+  message: Message!
 
   spam: Boolean!
 }
@@ -18624,7 +18740,7 @@ input CreateOrUpdateItemTaxConfigInput {
   """
   If the item is taxable
   """
-  itemIsTaxExempt: Boolean!
+  itemIsTaxExempt: Boolean
 
   """
   The market value of the item
@@ -20145,6 +20261,60 @@ input VariantMappingInput {
   itemVariantId: ID!
 
   shopifyVariantId: String!
+}
+
+"""
+Autogenerated return type of ToggleSyncingForShop
+"""
+type ToggleSyncingForShopPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project
+}
+
+"""
+Autogenerated input type of ToggleSyncingForShop
+"""
+input ToggleSyncingForShopInput {
+  """
+  The project id
+  """
+  projectId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteVariantMappings
+"""
+type DeleteVariantMappingsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project
+}
+
+"""
+Autogenerated input type of DeleteVariantMappings
+"""
+input DeleteVariantMappingsInput {
+  """
+  The project id
+  """
+  projectId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 }
 
 """

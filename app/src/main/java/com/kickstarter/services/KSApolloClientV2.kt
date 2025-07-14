@@ -345,7 +345,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket()),
             location = if (discoveryParams.location() == null) Optional.absent() else Optional.present(discoveryParams.location()?.let { encodeRelayId(it) }),
             amountRaisedBucket = if (discoveryParams.amountBucket() == null) Optional.absent() else Optional.present(discoveryParams.amountBucket()?.toPledgedBucket()),
-            goalBucket = if (discoveryParams.goalBucket() == null) Optional.absent() else Optional.present(discoveryParams.goalBucket()?.toGoalBucket())
+            goalBucket = if (discoveryParams.goalBucket() == null) Optional.absent() else Optional.present(discoveryParams.goalBucket()?.toGoalBucket()),
+            following = if (discoveryParams.social() == null) Optional.absent() else Optional.present(discoveryParams.social().toBoolean()),
+            staffPicks = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.staffPicks())
         )
     }
 

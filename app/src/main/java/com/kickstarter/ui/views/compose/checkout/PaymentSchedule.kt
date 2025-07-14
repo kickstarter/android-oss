@@ -390,5 +390,6 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
         }
         PaymentIncrementState.UNKNOWN__ -> {}
         PaymentIncrementState.CHARGEBACK_LOST -> {}
+        PaymentIncrementState.REFUNDED -> {}
     }
 }

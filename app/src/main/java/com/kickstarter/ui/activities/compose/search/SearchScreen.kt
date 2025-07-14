@@ -357,6 +357,7 @@ fun SearchScreen(
                         percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
                         locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location_fpo),
                         amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised_fpo),
+                        goalText = currentGoal.value?.let { textForBucket(it) } ?: stringResource(R.string.Goal_fpo),
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it

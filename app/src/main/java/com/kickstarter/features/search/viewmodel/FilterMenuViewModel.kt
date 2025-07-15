@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.rx2.asFlow
 import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -59,6 +61,15 @@ open class FilterMenuViewModel(
             initialValue = LocationsUIState()
         )
 
+    private val _loggedInUser = MutableStateFlow(false)
+    val loggedInUser = _loggedInUser
+        .asStateFlow()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = false
+        )
+
     private var categoriesList = emptyList<Category>()
 
     private val _searchQuery = MutableStateFlow("")
@@ -67,6 +78,13 @@ open class FilterMenuViewModel(
 
     init {
         scope.launch {
+            environment.currentUserV2()?.observable()?.asFlow()
+                ?.collectLatest { user ->
+                    user.getValue()?.let {
+                        _loggedInUser.emit(it.isNotNull())
+                    } ?: _loggedInUser.emit(false)
+                }
+
             getLocations(default = true)
 
             _searchQuery

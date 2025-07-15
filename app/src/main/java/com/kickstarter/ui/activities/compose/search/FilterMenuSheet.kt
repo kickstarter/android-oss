@@ -33,7 +33,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.models.Category
@@ -73,8 +75,8 @@ enum class FilterType {
     LOCATION,
     PERCENTAGE_RAISED,
     AMOUNT_RAISED,
+    OTHERS,
     GOAL,
-    OTHERS
 }
 
 @Composable
@@ -95,6 +97,10 @@ fun FilterMenuSheet(
     selectedSocial: Boolean = false,
     selectedGoal: DiscoveryParams.GoalBuckets? = null
 ) {
+    val viewModel = LocalFilterMenuViewModel.current
+    val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
+    val filteredFilters = if (loggedInUser) availableFilters else availableFilters.filter { it != FilterType.OTHERS }
+
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
     val currentStaffPicked = remember { mutableStateOf(selectedProjectsLoved) }
@@ -117,7 +123,7 @@ fun FilterMenuSheet(
             )
 
             LazyColumn(modifier = Modifier.weight(1f).testTag(FilterMenuTestTags.LIST)) {
-                items(availableFilters) { filter ->
+                items(filteredFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),

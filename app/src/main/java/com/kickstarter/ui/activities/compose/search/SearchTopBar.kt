@@ -36,7 +36,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
 import com.kickstarter.ui.compose.designsystem.KSIconPillButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
@@ -368,6 +370,9 @@ fun PillBar(
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase: Boolean = true
 ) {
+    val viewModel = LocalFilterMenuViewModel.current
+    val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
+
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -447,6 +452,22 @@ fun PillBar(
             ),
             onClick = { onPillPressed(FilterRowPillType.LOCATION) }
         )
+        if (shouldShowPhase && loggedInUser) {
+            KSPillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.RECOMMENDED)),
+                text = recommendedText,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.RECOMMENDED.name,
+                    0
+                ) > 0,
+                count = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.RECOMMENDED.name,
+                    0
+                ),
+                onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
+            )
+        }
+
         KSPillButton(
             shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)),
@@ -480,59 +501,22 @@ fun PillBar(
         )
 
         if (shouldShowPhase) {
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.RECOMMENDED)),
-                text = recommendedText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.RECOMMENDED.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.RECOMMENDED.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
-            )
-            KSPillButton(
-                shouldShowLeadingIcon = true,
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
-                text = projectsLovedText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.PROJECTS_LOVED.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.PROJECTS_LOVED.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.PROJECTS_LOVED) }
-            )
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.SAVED)),
-                text = savedProjectsText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.SAVED.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.SAVED.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.SAVED) }
-            )
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.FOLLOWING)),
-                text = followingText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.FOLLOWING.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.FOLLOWING.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
-            )
+            if (loggedInUser) {
+                KSPillButton(
+                    shouldShowLeadingIcon = true,
+                    modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
+                    text = projectsLovedText,
+                    isSelected = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.PROJECTS_LOVED.name,
+                        0
+                    ) > 0,
+                    count = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.PROJECTS_LOVED.name,
+                        0
+                    ),
+                    onClick = { onPillPressed(FilterRowPillType.PROJECTS_LOVED) }
+                )
+            }
             KSPillButton(
                 shouldShowTrailingIcon = true,
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.GOAL)),
@@ -548,6 +532,35 @@ fun PillBar(
                 ),
                 onClick = { onPillPressed(FilterRowPillType.GOAL) }
             )
+
+            if (loggedInUser) {
+                KSPillButton(
+                    modifier = Modifier.testTag(pillTag(FilterRowPillType.SAVED)),
+                    text = savedProjectsText,
+                    isSelected = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.SAVED.name,
+                        0
+                    ) > 0,
+                    count = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.SAVED.name,
+                        0
+                    ),
+                    onClick = { onPillPressed(FilterRowPillType.SAVED) }
+                )
+                KSPillButton(
+                    modifier = Modifier.testTag(pillTag(FilterRowPillType.FOLLOWING)),
+                    text = followingText,
+                    isSelected = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.FOLLOWING.name,
+                        0
+                    ) > 0,
+                    count = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.FOLLOWING.name,
+                        0
+                    ),
+                    onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
+                )
+            }
         }
     }
 }

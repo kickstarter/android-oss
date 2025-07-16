@@ -1105,13 +1105,11 @@ private fun sheetContent(
 
                         selectedFilterCounts[FilterRowPillType.FILTER.name] =
                             (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0) +
-                            (location ?: 0) + (amountBucket ?: 0) + (
-                            recommended
-                                ?: 0
-                            ) + (projectsLoved ?: 0) + (savedProjects ?: 0) + (
-                            following
-                                ?: 0
-                            ) +
+                            (location ?: 0) + (amountBucket ?: 0) +
+                            (if (currentRecommended.value.isTrue()) 1 else 0) +
+                            (if (currentProjectsLoved.value.isTrue()) 1 else 0) +
+                            (if (currentSavedProjects.value.isTrue()) 1 else 0) +
+                            (if (currentFollowing.value.isTrue()) 1 else 0) +
                             (goalBucket ?: 0)
 
                         statusCount?.let {
@@ -1130,16 +1128,20 @@ private fun sheetContent(
                             selectedFilterCounts[FilterRowPillType.AMOUNT_RAISED.name] = it
                         }
                         recommended?.let {
-                            selectedFilterCounts[FilterRowPillType.RECOMMENDED.name] = it
+                            selectedFilterCounts[FilterRowPillType.RECOMMENDED.name] =
+                                if (currentRecommended.value.isTrue()) 1 else 0
                         }
                         projectsLoved?.let {
-                            selectedFilterCounts[FilterRowPillType.PROJECTS_LOVED.name] = it
+                            selectedFilterCounts[FilterRowPillType.PROJECTS_LOVED.name] =
+                                if (currentProjectsLoved.value.isTrue()) 1 else 0
                         }
                         savedProjects?.let {
-                            selectedFilterCounts[FilterRowPillType.SAVED.name] = it
+                            selectedFilterCounts[FilterRowPillType.SAVED.name] =
+                                if (currentSavedProjects.value.isTrue()) 1 else 0
                         }
                         following?.let {
-                            selectedFilterCounts[FilterRowPillType.FOLLOWING.name] = it
+                            selectedFilterCounts[FilterRowPillType.FOLLOWING.name] =
+                                if (currentFollowing.value.isTrue()) 1 else 0
                         }
                         goalBucket?.let {
                             selectedFilterCounts[FilterRowPillType.GOAL.name] = it

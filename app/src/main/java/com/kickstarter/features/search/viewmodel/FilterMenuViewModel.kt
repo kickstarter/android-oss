@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,6 +41,7 @@ open class FilterMenuViewModel(
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val currentUserObservable = requireNotNull(environment.currentUserV2())
     private var errorAction: (message: String?) -> Unit = {}
 
     private val _filterMenu = MutableStateFlow(FilterMenuUIState())
@@ -77,14 +79,21 @@ open class FilterMenuViewModel(
     private var suggestedLocations = emptyList<Location>()
 
     init {
+        // - User check launched in it's own coroutine, as currentUserObservable.observable() is long-lived,
+        // collectLatest will suspend forever and the coroutine won’t proceed past it.
         scope.launch {
-            environment.currentUserV2()?.observable()?.asFlow()
-                ?.collectLatest { user ->
+            currentUserObservable.observable().asFlow()
+                .catch {
+                    errorAction.invoke(null)
+                }
+                .collectLatest { user ->
                     user.getValue()?.let {
                         _loggedInUser.emit(it.isNotNull())
                     } ?: _loggedInUser.emit(false)
                 }
+        }
 
+        scope.launch {
             getLocations(default = true)
 
             _searchQuery

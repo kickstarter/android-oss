@@ -16,13 +16,10 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.services.MockApolloClientV2
-import com.kickstarter.models.Location
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -141,18 +138,18 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             .build()
         val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
-                KSTheme {
-                    CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
-                        FilterMenuSheet(
-                            selectedProjectStatus = DiscoveryParams.State.LIVE,
-                            availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                            else FilterType.values().asList().filter { it != FilterType.OTHERS },
-                            onDismiss = {},
-                            onApply = { a, b, c, d, e, f -> },
-                            onNavigate = {}
-                        )
-                    }
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        selectedProjectStatus = DiscoveryParams.State.LIVE,
+                        availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                        else FilterType.values().asList().filter { it != FilterType.OTHERS },
+                        onDismiss = {},
+                        onApply = { a, b, c, d, e, f -> },
+                        onNavigate = {}
+                    )
                 }
+            }
         }
 
         composeTestRule.onNodeWithTag(FilterMenuTestTags.SHEET).assertIsDisplayed()
@@ -303,7 +300,6 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
                         selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
                     )
                 }
-
             }
         }
 
@@ -326,13 +322,13 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
-                        FilterMenuSheet(
-                            onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                            },
-                            selectedLocation = LocationFactory.vancouver()
-                        )
-                    }
+                    FilterMenuSheet(
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        },
+                        selectedLocation = LocationFactory.vancouver()
+                    )
                 }
+            }
         }
 
         // - As working with LazyColumns, not all elements of the list are composed until the elements is visible
@@ -374,5 +370,4 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
             .onNodeWithText(textForBucket)
             .assertIsDisplayed()
     }
-
 }

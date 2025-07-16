@@ -1,6 +1,8 @@
 package com.kickstarter.ui.activities.compose.search
 
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
@@ -41,7 +43,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.FOLLOWING.name to 0,
                             FilterRowPillType.GOAL.name to 0,
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = false
                     )
                 }
@@ -88,7 +90,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.FOLLOWING.name to 0,
                             FilterRowPillType.GOAL.name to 0,
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }
@@ -131,7 +133,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.FOLLOWING.name to 0,
                             FilterRowPillType.GOAL.name to 0,
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }
@@ -174,14 +176,16 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 1,
                             FilterRowPillType.AMOUNT_RAISED.name to 1,
                             FilterRowPillType.LOCATION.name to 1,
-                            FilterRowPillType.GOAL.name to 1,
-                            FilterRowPillType.RECOMMENDED.name to 1,
-                            FilterRowPillType.PROJECTS_LOVED.name to 1,
-                            FilterRowPillType.SAVED.name to 1,
-                            FilterRowPillType.FOLLOWING.name to 1,
+                            FilterRowPillType.GOAL.name to 1
                         ),
-                        onPillPressed = {},
-                        shouldShowPhase = true
+                        onPillPressedOpensBottomSheet = {},
+                        shouldShowPhase = true,
+                        recommendedStatus = remember { mutableStateOf(true) },
+                        projectsLovedStatus = remember { mutableStateOf(true) },
+                        savedProjects = remember { mutableStateOf(true) },
+                        following = remember { mutableStateOf(true) },
+                        onPillPressedShowOnlyToggles = { type, value ->
+                        }
                     )
                 }
             }
@@ -226,7 +230,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PROJECT_STATUS.name to 0,
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }
@@ -263,7 +267,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PROJECT_STATUS.name to 1,
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }
@@ -300,7 +304,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PROJECT_STATUS.name to 0,
                             FilterRowPillType.PERCENTAGE_RAISED.name to 1
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }
@@ -338,7 +342,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0,
                             FilterRowPillType.AMOUNT_RAISED.name to 1,
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }
@@ -378,7 +382,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.AMOUNT_RAISED.name to 0,
                             FilterRowPillType.GOAL.name to 1,
                         ),
-                        onPillPressed = {},
+                        onPillPressedOpensBottomSheet = {},
                         shouldShowPhase = true
                     )
                 }

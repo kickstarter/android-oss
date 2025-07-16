@@ -46,6 +46,7 @@ import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.KsOptional
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
@@ -85,7 +86,7 @@ fun SearchTopBarLocationActiveFilterPreview() {
                     FilterRowPillType.FOLLOWING.name to 0,
                     FilterRowPillType.GOAL.name to 0
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -118,7 +119,7 @@ fun SearchTopBarAmountRaisedActiveFilterPreview() {
                     FilterRowPillType.SAVED.name to 0,
                     FilterRowPillType.FOLLOWING.name to 0,
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -147,7 +148,7 @@ fun SearchTopBarGoalActiveFilterPreview() {
                     FilterRowPillType.PERCENTAGE_RAISED.name to 0,
                     FilterRowPillType.GOAL.name to 1,
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -179,7 +180,7 @@ fun SearchTopBarPercentageRaisedActiveFilterPreview() {
                     FilterRowPillType.SAVED.name to 0,
                     FilterRowPillType.FOLLOWING.name to 0,
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -212,7 +213,7 @@ fun SearchTopBarProjectStatusActiveFilterPreview() {
                     FilterRowPillType.SAVED.name to 0,
                     FilterRowPillType.FOLLOWING.name to 0,
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -241,7 +242,7 @@ fun SearchTopBarCategoryActiveFilterPreview() {
                     FilterRowPillType.PROJECT_STATUS.name to 0,
                     FilterRowPillType.FILTER.name to 1,
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -278,7 +279,7 @@ fun SearchTopBarAllActiveFiltersPreviewLoggedOutUser() {
                     FilterRowPillType.FOLLOWING.name to 1,
                     FilterRowPillType.GOAL.name to 1
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -343,7 +344,7 @@ fun SearchTopBarAllActiveFiltersPreviewLoggedInUser() {
                     FilterRowPillType.FOLLOWING.name to 1,
                     FilterRowPillType.GOAL.name to 1
                 ),
-                onPillPressed = {},
+                onPillPressedOpensBottomSheet = {},
                 shouldShowPhase = true
             )
         }
@@ -367,7 +368,7 @@ fun SearchTopBar(
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
-    onPillPressed: (FilterRowPillType) -> Unit = {},
+    onPillPressedOpensBottomSheet: (FilterRowPillType) -> Unit = {},
     shouldShowPhase: Boolean = true,
     onPillPressedShowOnlyToggles: (FilterRowPillType, Boolean) -> Unit = { a, b -> },
     recommendedStatus: MutableState<Boolean> = remember { mutableStateOf(false) },
@@ -473,7 +474,7 @@ fun SearchTopBar(
             followingText = followingText,
             goalText = goalText,
             selectedFilterCounts = selectedFilterCounts,
-            onPillPressed = onPillPressed,
+            onPillPressed = onPillPressedOpensBottomSheet,
             shouldShowPhase = shouldShowPhase,
             onPillPressedShowOnlyToggles = onPillPressedShowOnlyToggles,
             recommendedStatus = recommendedStatus,
@@ -539,10 +540,10 @@ fun PillBar(
                 selectedFilterCounts.getOrDefault(FilterRowPillType.PERCENTAGE_RAISED.name, 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.LOCATION.name, 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.AMOUNT_RAISED.name, 0) +
-                selectedFilterCounts.getOrDefault(FilterRowPillType.RECOMMENDED.name, 0) +
-                selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECTS_LOVED.name, 0) +
-                selectedFilterCounts.getOrDefault(FilterRowPillType.SAVED.name, 0) +
-                selectedFilterCounts.getOrDefault(FilterRowPillType.FOLLOWING.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.RECOMMENDED.name, if (recommendedStatus.value.isTrue()) 1 else 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECTS_LOVED.name, if (projectsLovedStatus.value.isTrue()) 1 else 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.SAVED.name, if (savedProjects.value.isTrue()) 1 else 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.FOLLOWING.name, if (following.value.isTrue()) 1 else 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.GOAL.name, 0)
 
         KSIconPillButton(

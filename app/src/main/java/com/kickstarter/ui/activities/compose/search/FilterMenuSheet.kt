@@ -100,10 +100,10 @@ fun FilterMenuSheet(
     selectedPercentage: DiscoveryParams.RaisedBuckets? = null,
     selectedAmount: DiscoveryParams.AmountBuckets? = null,
     selectedCategory: Category? = null,
-    selectedCurrent: Boolean = false,
-    selectedProjectsLoved: Boolean = false,
-    selectedSaved: Boolean = false,
-    selectedSocial: Boolean = false,
+    selectedRecommended: MutableState<Boolean> = mutableStateOf(false),
+    selectedProjectsLoved: MutableState<Boolean> = mutableStateOf(false),
+    selectedSaved: MutableState<Boolean> = mutableStateOf(false),
+    selectedSocial: MutableState<Boolean> = mutableStateOf(false),
     selectedGoal: DiscoveryParams.GoalBuckets? = null
 ) {
     val viewModel = LocalFilterMenuViewModel.current
@@ -111,11 +111,6 @@ fun FilterMenuSheet(
     val filteredFilters = if (loggedInUser) availableFilters else availableFilters.filter { it != FilterType.OTHERS }
 
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
-
-    val currentStaffPicked = remember { mutableStateOf(selectedProjectsLoved) }
-    val currentStarred = remember { mutableStateOf(selectedSaved) }
-    val currentSocial = remember { mutableStateOf(selectedSocial) }
-    val currentRecommended = remember { mutableStateOf(selectedCurrent) }
 
     Surface(
         modifier = modifier
@@ -145,7 +140,7 @@ fun FilterMenuSheet(
                             text = titleForFilter(filter),
                             callback = { status ->
                                 projStatus.value = status
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                                onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             selectedStatus = projStatus,
                             modifier = Modifier.testTag(FilterMenuTestTags.PROJECT_STATUS_ROW)
@@ -172,25 +167,25 @@ fun FilterMenuSheet(
                             subText = selectedAmount?.let { textForBucket(it) }
                         )
                         FilterType.OTHERS -> OtherFiltersRow(
-                            selectedStaffPicked = currentStaffPicked,
-                            selectedRecommended = currentRecommended,
-                            selectedStarred = currentStarred,
-                            selectedSocial = currentSocial,
+                            selectedStaffPicked = selectedProjectsLoved,
+                            selectedRecommended = selectedRecommended,
+                            selectedStarred = selectedSaved,
+                            selectedSocial = selectedSocial,
                             callbackRecommended = { recommended ->
-                                currentRecommended.value = recommended ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                                selectedSocial.value = recommended ?: false
+                                onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             callbackStarred = { starred ->
-                                currentStarred.value = starred ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                                selectedSaved.value = starred ?: false
+                                onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             callbackStaffPicked = { staffPicked ->
-                                currentStaffPicked.value = staffPicked ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                                selectedProjectsLoved.value = staffPicked ?: false
+                                onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             callbackSocial = { social ->
-                                currentSocial.value = social ?: false
-                                onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, null)
+                                selectedSocial.value = social ?: false
+                                onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             }
                         )
                         FilterType.GOAL -> FilterRow(
@@ -209,14 +204,14 @@ fun FilterMenuSheet(
                 leftButtonIsEnabled = true,
                 leftButtonClickAction = {
                     projStatus.value = null
-                    currentRecommended.value = false
-                    currentStaffPicked.value = false
-                    currentStarred.value = false
-                    currentSocial.value = false
-                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, false)
+                    selectedRecommended.value = false
+                    selectedProjectsLoved.value = false
+                    selectedSaved.value = false
+                    selectedSocial.value = false
+                    onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, false)
                 },
                 rightButtonOnClickAction = {
-                    onApply(projStatus.value, currentRecommended.value, currentStaffPicked.value, currentStarred.value, currentSocial.value, true)
+                    onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, true)
                 },
                 leftButtonText = stringResource(R.string.Reset_all_filters)
             )
@@ -557,8 +552,34 @@ private fun OthersRowPreview() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun FilterMenuSheetPreview_UserLoggedOut() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
     val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {

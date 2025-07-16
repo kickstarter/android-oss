@@ -42,11 +42,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 0,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = false,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = false
                     )
                 }
             }
@@ -93,11 +89,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 0,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -140,11 +132,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 0,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -193,11 +181,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.FOLLOWING.name to 1,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -243,11 +227,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -284,11 +264,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -325,11 +301,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 1
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -367,11 +339,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.AMOUNT_RAISED.name to 1,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }
@@ -411,11 +379,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 1,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true,
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial
+                        shouldShowPhase = true
                     )
                 }
             }

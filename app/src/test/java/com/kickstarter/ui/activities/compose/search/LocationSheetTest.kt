@@ -16,6 +16,7 @@ import com.kickstarter.R
 import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Location
@@ -49,7 +50,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
-        ).build()
+        )
+            .currentUserV2(MockCurrentUserV2())
+            .build()
         val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
@@ -101,7 +104,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
-        ).build()
+        )
+            .currentUserV2(MockCurrentUserV2())
+            .build()
         val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
@@ -154,7 +159,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                         }
                     }
                 }
-            ).build()
+            )
+                .currentUserV2(MockCurrentUserV2())
+                .build()
 
             val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
@@ -206,7 +213,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
-        ).build()
+        )
+            .currentUserV2(MockCurrentUserV2())
+            .build()
         val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
@@ -277,7 +286,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     }
                 }
             }
-        ).build()
+        )
+            .currentUserV2(MockCurrentUserV2())
+            .build()
         val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
         composeTestRule.setContent {
@@ -320,7 +331,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     return Result.success(emptyList())
                 }
             }
-        ).build()
+        )
+            .currentUserV2(MockCurrentUserV2())
+            .build()
         val fakeViewModel = FilterMenuViewModel(env, testDispatcher = UnconfinedTestDispatcher(testScheduler))
 
         composeTestRule.setContent {
@@ -358,7 +371,9 @@ class LocationSheetTest : KSRobolectricTestCase() {
                     return Result.success(listOf(LocationFactory.vancouver()))
                 }
             }
-        ).build()
+        )
+            .currentUserV2(MockCurrentUserV2())
+            .build()
         val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {

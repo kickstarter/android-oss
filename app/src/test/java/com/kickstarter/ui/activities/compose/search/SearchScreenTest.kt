@@ -48,17 +48,21 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testEmptyComponentsVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = true,
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = true,
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -75,26 +79,30 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testPopularListComponentsVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = true,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = true,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -122,26 +130,30 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testSearchedListComponentsVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = false,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = false,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -166,17 +178,21 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testLoadingComponentsEmptyListVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = true,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = true,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 

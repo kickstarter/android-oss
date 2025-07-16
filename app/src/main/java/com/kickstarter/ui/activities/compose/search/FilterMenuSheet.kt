@@ -172,19 +172,19 @@ fun FilterMenuSheet(
                             selectedStarred = selectedSaved,
                             selectedSocial = selectedSocial,
                             callbackRecommended = { recommended ->
-                                selectedSocial.value = recommended ?: false
+                                selectedRecommended.value = recommended
                                 onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             callbackStarred = { starred ->
-                                selectedSaved.value = starred ?: false
+                                selectedSaved.value = starred
                                 onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             callbackStaffPicked = { staffPicked ->
-                                selectedProjectsLoved.value = staffPicked ?: false
+                                selectedProjectsLoved.value = staffPicked
                                 onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             },
                             callbackSocial = { social ->
-                                selectedSocial.value = social ?: false
+                                selectedSocial.value = social
                                 onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
                             }
                         )

@@ -25,8 +25,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -196,10 +198,10 @@ fun SearchTopBarProjectStatusActiveFilterPreview() {
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
             SearchTopBar(
-                onBackPressed = {},
-                onValueChanged = {},
                 categoryPillText = "Art",
                 projectStatusText = "Live",
+                onBackPressed = {},
+                onValueChanged = {},
                 selectedFilterCounts = mapOf(
                     FilterRowPillType.SORT.name to 0,
                     FilterRowPillType.CATEGORY.name to 0,
@@ -229,10 +231,10 @@ fun SearchTopBarCategoryActiveFilterPreview() {
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
             SearchTopBar(
-                onBackPressed = {},
-                onValueChanged = {},
                 categoryPillText = "Art",
                 projectStatusText = "Live",
+                onBackPressed = {},
+                onValueChanged = {},
                 selectedFilterCounts = mapOf(
                     FilterRowPillType.SORT.name to 0,
                     FilterRowPillType.CATEGORY.name to 1,
@@ -258,10 +260,10 @@ fun SearchTopBarAllActiveFiltersPreviewLoggedOutUser() {
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
             SearchTopBar(
-                onBackPressed = {},
-                onValueChanged = {},
                 categoryPillText = "Art",
                 projectStatusText = "Live",
+                onBackPressed = {},
+                onValueChanged = {},
                 selectedFilterCounts = mapOf(
                     FilterRowPillType.SORT.name to 0,
                     FilterRowPillType.CATEGORY.name to 1,
@@ -323,10 +325,10 @@ fun SearchTopBarAllActiveFiltersPreviewLoggedInUser() {
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
             SearchTopBar(
-                onBackPressed = {},
-                onValueChanged = {},
                 categoryPillText = "Art",
                 projectStatusText = "Live",
+                onBackPressed = {},
+                onValueChanged = {},
                 selectedFilterCounts = mapOf(
                     FilterRowPillType.SORT.name to 0,
                     FilterRowPillType.CATEGORY.name to 1,
@@ -366,7 +368,12 @@ fun SearchTopBar(
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit = {},
-    shouldShowPhase: Boolean = true
+    shouldShowPhase: Boolean = true,
+    onPillPressedShowOnlyToggles: (FilterRowPillType, Boolean) -> Unit = { a, b -> },
+    recommendedStatus: MutableState<Boolean> = remember { mutableStateOf(false) },
+    projectsLovedStatus: MutableState<Boolean> = remember { mutableStateOf(false) },
+    savedProjects: MutableState<Boolean> = remember { mutableStateOf(false) },
+    following: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
 
     var value by rememberSaveable { mutableStateOf("") }
@@ -468,6 +475,11 @@ fun SearchTopBar(
             selectedFilterCounts = selectedFilterCounts,
             onPillPressed = onPillPressed,
             shouldShowPhase = shouldShowPhase,
+            onPillPressedShowOnlyToggles = onPillPressedShowOnlyToggles,
+            recommendedStatus = recommendedStatus,
+            projectsLovedStatus = projectsLovedStatus,
+            savedProjects = savedProjects,
+            following = following
         )
     }
 }
@@ -491,7 +503,12 @@ fun PillBar(
     goalText: String = stringResource(R.string.Goal_fpo),
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit,
-    shouldShowPhase: Boolean = true
+    shouldShowPhase: Boolean = true,
+    onPillPressedShowOnlyToggles: (FilterRowPillType, Boolean) -> Unit = { a, b -> },
+    recommendedStatus: MutableState<Boolean> = remember { mutableStateOf(false) },
+    projectsLovedStatus: MutableState<Boolean> = remember { mutableStateOf(false) },
+    savedProjects: MutableState<Boolean> = remember { mutableStateOf(false) },
+    following: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
     val viewModel = LocalFilterMenuViewModel.current
     val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
@@ -579,15 +596,18 @@ fun PillBar(
             KSPillButton(
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.RECOMMENDED)),
                 text = recommendedText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.RECOMMENDED.name,
-                    0
-                ) > 0,
+                isSelected = recommendedStatus.value,
                 count = selectedFilterCounts.getOrDefault(
                     FilterRowPillType.RECOMMENDED.name,
                     0
                 ),
-                onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
+                onClick = {
+                    recommendedStatus.value = !recommendedStatus.value
+                    onPillPressedShowOnlyToggles(
+                        FilterRowPillType.RECOMMENDED,
+                        recommendedStatus.value
+                    )
+                }
             )
         }
 
@@ -629,15 +649,18 @@ fun PillBar(
                     shouldShowLeadingIcon = true,
                     modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
                     text = projectsLovedText,
-                    isSelected = selectedFilterCounts.getOrDefault(
-                        FilterRowPillType.PROJECTS_LOVED.name,
-                        0
-                    ) > 0,
+                    isSelected = projectsLovedStatus.value,
                     count = selectedFilterCounts.getOrDefault(
                         FilterRowPillType.PROJECTS_LOVED.name,
                         0
                     ),
-                    onClick = { onPillPressed(FilterRowPillType.PROJECTS_LOVED) }
+                    onClick = {
+                        projectsLovedStatus.value = !projectsLovedStatus.value
+                        onPillPressedShowOnlyToggles(
+                            FilterRowPillType.PROJECTS_LOVED,
+                            projectsLovedStatus.value
+                        )
+                    }
                 )
             }
             KSPillButton(
@@ -660,28 +683,34 @@ fun PillBar(
                 KSPillButton(
                     modifier = Modifier.testTag(pillTag(FilterRowPillType.SAVED)),
                     text = savedProjectsText,
-                    isSelected = selectedFilterCounts.getOrDefault(
-                        FilterRowPillType.SAVED.name,
-                        0
-                    ) > 0,
+                    isSelected = savedProjects.value,
                     count = selectedFilterCounts.getOrDefault(
                         FilterRowPillType.SAVED.name,
                         0
                     ),
-                    onClick = { onPillPressed(FilterRowPillType.SAVED) }
+                    onClick = {
+                        savedProjects.value = !savedProjects.value
+                        onPillPressedShowOnlyToggles(
+                            FilterRowPillType.SAVED,
+                            savedProjects.value,
+                        )
+                    }
                 )
                 KSPillButton(
                     modifier = Modifier.testTag(pillTag(FilterRowPillType.FOLLOWING)),
                     text = followingText,
-                    isSelected = selectedFilterCounts.getOrDefault(
-                        FilterRowPillType.FOLLOWING.name,
-                        0
-                    ) > 0,
+                    isSelected = following.value,
                     count = selectedFilterCounts.getOrDefault(
                         FilterRowPillType.FOLLOWING.name,
                         0
                     ),
-                    onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
+                    onClick = {
+                        following.value = !following.value
+                        onPillPressedShowOnlyToggles(
+                            FilterRowPillType.FOLLOWING,
+                            following.value
+                        )
+                    }
                 )
             }
         }

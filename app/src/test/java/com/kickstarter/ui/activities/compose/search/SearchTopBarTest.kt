@@ -42,7 +42,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 0,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = false
+                        shouldShowPhase = false,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -89,7 +93,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 0,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -132,7 +140,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 0,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -162,10 +174,10 @@ class SearchTopBarTest : KSRobolectricTestCase() {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchTopBar(
-                        onBackPressed = {},
-                        onValueChanged = {},
                         categoryPillText = "Art",
                         projectStatusText = "Live",
+                        onBackPressed = {},
+                        onValueChanged = {},
                         selectedFilterCounts = mapOf(
                             FilterRowPillType.SORT.name to 0,
                             FilterRowPillType.CATEGORY.name to 1,
@@ -181,7 +193,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.FOLLOWING.name to 1,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -215,10 +231,10 @@ class SearchTopBarTest : KSRobolectricTestCase() {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchTopBar(
-                        onBackPressed = {},
-                        onValueChanged = {},
                         categoryPillText = "Art",
                         projectStatusText = "Project Status",
+                        onBackPressed = {},
+                        onValueChanged = {},
                         selectedFilterCounts = mapOf(
                             FilterRowPillType.SORT.name to 0,
                             FilterRowPillType.CATEGORY.name to 1,
@@ -227,7 +243,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -253,9 +273,9 @@ class SearchTopBarTest : KSRobolectricTestCase() {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchTopBar(
+                        projectStatusText = "Live",
                         onBackPressed = {},
                         onValueChanged = {},
-                        projectStatusText = "Live",
                         selectedFilterCounts = mapOf(
                             FilterRowPillType.SORT.name to 0,
                             FilterRowPillType.CATEGORY.name to 0,
@@ -264,7 +284,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 0
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -290,9 +314,9 @@ class SearchTopBarTest : KSRobolectricTestCase() {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchTopBar(
+                        projectStatusText = "Live",
                         onBackPressed = {},
                         onValueChanged = {},
-                        projectStatusText = "Live",
                         selectedFilterCounts = mapOf(
                             FilterRowPillType.SORT.name to 0,
                             FilterRowPillType.CATEGORY.name to 0,
@@ -301,7 +325,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.PERCENTAGE_RAISED.name to 1
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -327,9 +355,9 @@ class SearchTopBarTest : KSRobolectricTestCase() {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchTopBar(
+                        projectStatusText = "Live",
                         onBackPressed = {},
                         onValueChanged = {},
-                        projectStatusText = "Live",
                         selectedFilterCounts = mapOf(
                             FilterRowPillType.SORT.name to 0,
                             FilterRowPillType.CATEGORY.name to 0,
@@ -339,7 +367,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.AMOUNT_RAISED.name to 1,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }
@@ -366,9 +398,9 @@ class SearchTopBarTest : KSRobolectricTestCase() {
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchTopBar(
+                        projectStatusText = "Live",
                         onBackPressed = {},
                         onValueChanged = {},
-                        projectStatusText = "Live",
                         selectedFilterCounts = mapOf(
                             FilterRowPillType.SORT.name to 0,
                             FilterRowPillType.CATEGORY.name to 0,
@@ -379,7 +411,11 @@ class SearchTopBarTest : KSRobolectricTestCase() {
                             FilterRowPillType.GOAL.name to 1,
                         ),
                         onPillPressed = {},
-                        shouldShowPhase = true
+                        shouldShowPhase = true,
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial
                     )
                 }
             }

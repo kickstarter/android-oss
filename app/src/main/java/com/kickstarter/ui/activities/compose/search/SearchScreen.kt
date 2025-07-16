@@ -358,6 +358,10 @@ fun SearchScreen(
                         locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location_fpo),
                         amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised_fpo),
                         goalText = currentGoal.value?.let { textForBucket(it) } ?: stringResource(R.string.Goal_fpo),
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial,
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
@@ -370,6 +374,25 @@ fun SearchScreen(
                             mainFilterMenuState,
                             pagerState
                         ),
+                        onPillPressedShowOnlyToggles = { rowPillType, value ->
+                            selectedFilterCounts[rowPillType.name] = if (value) 1 else 0
+                            val total = selectedFilterCounts[FilterRowPillType.FILTER.name] ?: 0
+                            selectedFilterCounts[FilterRowPillType.FILTER.name] = if (value) total + 1 else total - 1
+
+                            onDismissBottomSheet(
+                                currentCategory.value,
+                                currentSort.value,
+                                currentProjectState.value,
+                                currentPercentage.value,
+                                currentLocation.value,
+                                currentAmountRaised.value,
+                                currentRecommended.value,
+                                currentStaffPicked.value,
+                                currentStarred.value,
+                                currentSocial.value,
+                                currentGoal.value
+                            )
+                        },
                         shouldShowPhase = shouldShowPhase
                     )
                 }
@@ -930,13 +953,8 @@ private fun onPillPressed(
             FilterRowPillType.SORT -> coroutineScope.launch {
                 sortSheetState.show()
             }
-
             FilterRowPillType.FILTER,
-            FilterRowPillType.PROJECT_STATUS,
-            FilterRowPillType.SAVED,
-            FilterRowPillType.PROJECTS_LOVED,
-            FilterRowPillType.FOLLOWING,
-            FilterRowPillType.RECOMMENDED -> {
+            FilterRowPillType.PROJECT_STATUS -> {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal)
                     mainFilterMenuState.show()
@@ -976,6 +994,12 @@ private fun onPillPressed(
                     pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
                     mainFilterMenuState.show()
                 }
+            }
+            FilterRowPillType.SAVED,
+            FilterRowPillType.PROJECTS_LOVED,
+            FilterRowPillType.FOLLOWING,
+            FilterRowPillType.RECOMMENDED -> {
+                // Dealt in another callback, this ones do not open BottomSheet
             }
         }
     }

@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.Context
 import androidx.compose.material.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.hasTestTag
@@ -13,8 +14,12 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -27,9 +32,13 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     fun `test FilterMenuSheet renders all pills within ProjectStatusRow`() {
 
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                Surface {
-                    FilterMenuSheet()
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    Surface {
+                        FilterMenuSheet()
+                    }
                 }
             }
         }
@@ -42,12 +51,19 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test FilterMenuSheet renders all options within OthersRow`() {
+    fun `test FilterMenuSheet renders all options within OthersRow when logged in user`() {
 
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                Surface {
-                    FilterMenuSheet()
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    Surface {
+                        FilterMenuSheet()
+                    }
                 }
             }
         }
@@ -81,15 +97,19 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     @Test
     fun `test FilterMenuSheet renders all available filter Rows with ffOff`() {
         val shouldShowPhase = false
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(
-                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.OTHERS },
-                    onDismiss = {},
-                    onApply = { a, b, c, d, e, f -> },
-                    onNavigate = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                        else FilterType.values().asList().filter { it != FilterType.OTHERS },
+                        onDismiss = {},
+                        onApply = { a, b, c, d, e, f -> },
+                        onNavigate = {}
+                    )
+                }
             }
         }
 
@@ -111,17 +131,24 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `test FilterMenuSheet renders all available filter Rows with ffOn`() {
+        val shouldShowPhase = true
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
-            val shouldShowPhase = true
             KSTheme {
-                FilterMenuSheet(
-                    selectedProjectStatus = DiscoveryParams.State.LIVE,
-                    availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                    else FilterType.values().asList().filter { it != FilterType.OTHERS },
-                    onDismiss = {},
-                    onApply = { a, b, c, d, e, f -> },
-                    onNavigate = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        selectedProjectStatus = DiscoveryParams.State.LIVE,
+                        availableFilters = if (shouldShowPhase) FilterType.values().asList()
+                        else FilterType.values().asList().filter { it != FilterType.OTHERS },
+                        onDismiss = {},
+                        onApply = { a, b, c, d, e, f -> },
+                        onNavigate = {}
+                    )
+                }
             }
         }
 
@@ -148,20 +175,24 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     @Test
     fun `test selected and unselected status for live pill`() {
         var counter = 0
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(
-                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                        counter++
-                        if (counter == 1)
-                            assertEquals(publicState, DiscoveryParams.State.LIVE)
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                            counter++
+                            if (counter == 1)
+                                assertEquals(publicState, DiscoveryParams.State.LIVE)
 
-                        if (counter == 2)
-                            assertEquals(publicState, null)
+                            if (counter == 2)
+                                assertEquals(publicState, null)
 
-                        assertNull(from)
-                    }
-                )
+                            assertNull(from)
+                        }
+                    )
+                }
             }
         }
 
@@ -175,12 +206,16 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     fun `test FilterMenu _onApplyCallback receives projectState when pressing footer right button`() {
         var selected: DiscoveryParams.State? = null
         var contextFrom: Boolean? = null
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                    selected = publicState
-                    contextFrom = from
-                })
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        selected = publicState
+                        contextFrom = from
+                    })
+                }
             }
         }
 
@@ -201,15 +236,19 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         var selected: DiscoveryParams.State? = DiscoveryParams.State.LIVE
         var contextFrom: Boolean? = null
 
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(
-                    selectedProjectStatus = selected,
-                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                        selected = publicState
-                        contextFrom = from
-                    }
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        selectedProjectStatus = selected,
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                            selected = publicState
+                            contextFrom = from
+                        }
+                    )
+                }
             }
         }
 
@@ -223,13 +262,17 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `category row, selected category subtext is present`() {
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(
-                    selectedCategory = CategoryFactory.CeramicsCategory(),
-                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                    }
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        selectedCategory = CategoryFactory.CeramicsCategory(),
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        }
+                    )
+                }
             }
         }
 
@@ -245,14 +288,18 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     @Test
     fun `percentage raised row, selected percentage bucket, subtext is present`() {
         var textForBucket: String = ""
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                textForBucket = textForBucket(DiscoveryParams.RaisedBuckets.BUCKET_2)
-                FilterMenuSheet(
-                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                    },
-                    selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    textForBucket = textForBucket(DiscoveryParams.RaisedBuckets.BUCKET_2)
+                    FilterMenuSheet(
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        },
+                        selectedPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2
+                    )
+                }
             }
         }
 
@@ -270,13 +317,17 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `location row, selected location, subtext is present`() {
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                FilterMenuSheet(
-                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                    },
-                    selectedLocation = LocationFactory.vancouver()
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterMenuSheet(
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        },
+                        selectedLocation = LocationFactory.vancouver()
+                    )
+                }
             }
         }
 
@@ -294,14 +345,18 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     @Test
     fun `amount raised row, selected amount bucket, subtext is present`() {
         var textForBucket: String = ""
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
         composeTestRule.setContent {
             KSTheme {
-                textForBucket = textForBucket(DiscoveryParams.AmountBuckets.BUCKET_4)
-                FilterMenuSheet(
-                    onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
-                    },
-                    selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    textForBucket = textForBucket(DiscoveryParams.AmountBuckets.BUCKET_4)
+                    FilterMenuSheet(
+                        onApply = { publicState: DiscoveryParams.State?, recommended: Boolean, projectsLoved: Boolean, saved: Boolean, social: Boolean, from: Boolean? ->
+                        },
+                        selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
+                    )
+                }
             }
         }
 

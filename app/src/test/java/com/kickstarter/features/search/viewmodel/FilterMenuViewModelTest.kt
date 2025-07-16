@@ -2,10 +2,12 @@ package com.kickstarter.features.search.viewmodel
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
@@ -26,6 +28,55 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher) {
         viewModel = FilterMenuViewModel.Factory(environment, dispatcher)
             .create(FilterMenuViewModel::class.java)
+    }
+
+    @Test
+    fun `test user is Logged in`() = runTest {
+        val user = UserFactory.user()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(user))
+            .apolloClientV2(MockApolloClientV2())
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorCounter = 0
+        val state = mutableListOf<Boolean>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorCounter++ }
+            viewModel.loggedInUser.toList(state)
+        }
+
+        advanceUntilIdle()
+        assertEquals(errorCounter, 0)
+        assertEquals(state.size, 2)
+        assertTrue(state.last())
+    }
+
+    @Test
+    fun `test user is Logged Out`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2())
+            .apolloClientV2(MockApolloClientV2())
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorCounter = 0
+        val state = mutableListOf<Boolean>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorCounter++ }
+            viewModel.loggedInUser.toList(state)
+        }
+
+        advanceUntilIdle()
+        assertEquals(errorCounter, 0)
+        assertEquals(state.size, 1)
+        assertFalse(state.last())
     }
 
     @Test

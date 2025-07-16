@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,11 +34,20 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.libs.CurrentUserTypeV2
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
+import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.OTHERS_ROW
 import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.switchTag
@@ -49,6 +59,7 @@ import com.kickstarter.ui.compose.designsystem.KSSwitch
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import io.reactivex.Observable
 
 object FilterMenuTestTags {
     const val SHEET = "filter_menu_sheet"
@@ -73,8 +84,8 @@ enum class FilterType {
     LOCATION,
     PERCENTAGE_RAISED,
     AMOUNT_RAISED,
+    OTHERS,
     GOAL,
-    OTHERS
 }
 
 @Composable
@@ -95,6 +106,10 @@ fun FilterMenuSheet(
     selectedSocial: Boolean = false,
     selectedGoal: DiscoveryParams.GoalBuckets? = null
 ) {
+    val viewModel = LocalFilterMenuViewModel.current
+    val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
+    val filteredFilters = if (loggedInUser) availableFilters else availableFilters.filter { it != FilterType.OTHERS }
+
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
     val currentStaffPicked = remember { mutableStateOf(selectedProjectsLoved) }
@@ -117,7 +132,7 @@ fun FilterMenuSheet(
             )
 
             LazyColumn(modifier = Modifier.weight(1f).testTag(FilterMenuTestTags.LIST)) {
-                items(availableFilters) { filter ->
+                items(filteredFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
@@ -541,14 +556,72 @@ private fun OthersRowPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun FilterMenuSheetPreview() {
+private fun FilterMenuSheetPreview_UserLoggedOut() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        FilterMenuSheet(
-            selectedProjectStatus = DiscoveryParams.State.LIVE,
-            onDismiss = {},
-            onApply = { a, b, c, d, e, f -> },
-            selectedLocation = LocationFactory.vancouver(),
-            selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            FilterMenuSheet(
+                selectedProjectStatus = DiscoveryParams.State.LIVE,
+                onDismiss = {},
+                onApply = { a, b, c, d, e, f -> },
+                selectedLocation = LocationFactory.vancouver(),
+                selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
+            )
+        }
+    }
+}
+
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FilterMenuSheetPreview_UserLoggedIn() {
+
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        private var user = UserFactory.user()
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = "Token"
+
+        override fun refresh(freshUser: User) {
+            user = freshUser
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.of(user))
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
+
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
+    KSTheme {
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            FilterMenuSheet(
+                selectedProjectStatus = DiscoveryParams.State.LIVE,
+                onDismiss = {},
+                onApply = { a, b, c, d, e, f -> },
+                selectedLocation = LocationFactory.vancouver(),
+                selectedAmount = DiscoveryParams.AmountBuckets.BUCKET_4
+            )
+        }
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,39 +37,56 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.libs.CurrentUserTypeV2
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.KsOptional
+import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.User
 import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
 import com.kickstarter.ui.compose.designsystem.KSIconPillButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import io.reactivex.Observable
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarLocationActiveFilterPreview() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 0,
-                FilterRowPillType.PROJECT_STATUS.name to 0,
-                FilterRowPillType.FILTER.name to 1,
-                FilterRowPillType.PERCENTAGE_RAISED.name to 0,
-                FilterRowPillType.LOCATION.name to 1,
-                FilterRowPillType.AMOUNT_RAISED.name to 0,
-                FilterRowPillType.RECOMMENDED.name to 0,
-                FilterRowPillType.PROJECTS_LOVED.name to 0,
-                FilterRowPillType.SAVED.name to 0,
-                FilterRowPillType.FOLLOWING.name to 0,
-                FilterRowPillType.GOAL.name to 0
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 0,
+                    FilterRowPillType.PROJECT_STATUS.name to 0,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                    FilterRowPillType.LOCATION.name to 1,
+                    FilterRowPillType.AMOUNT_RAISED.name to 0,
+                    FilterRowPillType.RECOMMENDED.name to 0,
+                    FilterRowPillType.PROJECTS_LOVED.name to 0,
+                    FilterRowPillType.SAVED.name to 0,
+                    FilterRowPillType.FOLLOWING.name to 0,
+                    FilterRowPillType.GOAL.name to 0
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
@@ -76,25 +94,32 @@ fun SearchTopBarLocationActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarAmountRaisedActiveFilterPreview() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 0,
-                FilterRowPillType.PROJECT_STATUS.name to 0,
-                FilterRowPillType.FILTER.name to 1,
-                FilterRowPillType.PERCENTAGE_RAISED.name to 0,
-                FilterRowPillType.AMOUNT_RAISED.name to 1,
-                FilterRowPillType.RECOMMENDED.name to 0,
-                FilterRowPillType.PROJECTS_LOVED.name to 0,
-                FilterRowPillType.SAVED.name to 0,
-                FilterRowPillType.FOLLOWING.name to 0,
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 0,
+                    FilterRowPillType.PROJECT_STATUS.name to 0,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                    FilterRowPillType.AMOUNT_RAISED.name to 1,
+                    FilterRowPillType.RECOMMENDED.name to 0,
+                    FilterRowPillType.PROJECTS_LOVED.name to 0,
+                    FilterRowPillType.SAVED.name to 0,
+                    FilterRowPillType.FOLLOWING.name to 0,
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
@@ -102,21 +127,28 @@ fun SearchTopBarAmountRaisedActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarGoalActiveFilterPreview() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 0,
-                FilterRowPillType.PROJECT_STATUS.name to 0,
-                FilterRowPillType.FILTER.name to 1,
-                FilterRowPillType.PERCENTAGE_RAISED.name to 0,
-                FilterRowPillType.GOAL.name to 1,
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 0,
+                    FilterRowPillType.PROJECT_STATUS.name to 0,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+                    FilterRowPillType.GOAL.name to 1,
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
@@ -124,24 +156,31 @@ fun SearchTopBarGoalActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarPercentageRaisedActiveFilterPreview() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 0,
-                FilterRowPillType.PROJECT_STATUS.name to 0,
-                FilterRowPillType.FILTER.name to 1,
-                FilterRowPillType.PERCENTAGE_RAISED.name to 1,
-                FilterRowPillType.RECOMMENDED.name to 0,
-                FilterRowPillType.PROJECTS_LOVED.name to 0,
-                FilterRowPillType.SAVED.name to 0,
-                FilterRowPillType.FOLLOWING.name to 0,
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 0,
+                    FilterRowPillType.PROJECT_STATUS.name to 0,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.PERCENTAGE_RAISED.name to 1,
+                    FilterRowPillType.RECOMMENDED.name to 0,
+                    FilterRowPillType.PROJECTS_LOVED.name to 0,
+                    FilterRowPillType.SAVED.name to 0,
+                    FilterRowPillType.FOLLOWING.name to 0,
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
@@ -149,25 +188,32 @@ fun SearchTopBarPercentageRaisedActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarProjectStatusActiveFilterPreview() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            categoryPillText = "Art",
-            projectStatusText = "Live",
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 0,
-                FilterRowPillType.PROJECT_STATUS.name to 1,
-                FilterRowPillType.FILTER.name to 1,
-                FilterRowPillType.RECOMMENDED.name to 0,
-                FilterRowPillType.PROJECTS_LOVED.name to 0,
-                FilterRowPillType.SAVED.name to 0,
-                FilterRowPillType.FOLLOWING.name to 0,
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                categoryPillText = "Art",
+                projectStatusText = "Live",
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 0,
+                    FilterRowPillType.PROJECT_STATUS.name to 1,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.RECOMMENDED.name to 0,
+                    FilterRowPillType.PROJECTS_LOVED.name to 0,
+                    FilterRowPillType.SAVED.name to 0,
+                    FilterRowPillType.FOLLOWING.name to 0,
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
@@ -175,51 +221,130 @@ fun SearchTopBarProjectStatusActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarCategoryActiveFilterPreview() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            categoryPillText = "Art",
-            projectStatusText = "Live",
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 1,
-                FilterRowPillType.PROJECT_STATUS.name to 0,
-                FilterRowPillType.FILTER.name to 1,
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                categoryPillText = "Art",
+                projectStatusText = "Live",
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 1,
+                    FilterRowPillType.PROJECT_STATUS.name to 0,
+                    FilterRowPillType.FILTER.name to 1,
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun SearchTopBarAllActiveFiltersPreview() {
+fun SearchTopBarAllActiveFiltersPreviewLoggedOutUser() {
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
     KSTheme {
-        SearchTopBar(
-            onBackPressed = {},
-            onValueChanged = {},
-            categoryPillText = "Art",
-            projectStatusText = "Live",
-            selectedFilterCounts = mapOf(
-                FilterRowPillType.SORT.name to 0,
-                FilterRowPillType.CATEGORY.name to 1,
-                FilterRowPillType.PROJECT_STATUS.name to 1,
-                FilterRowPillType.FILTER.name to 1,
-                FilterRowPillType.PERCENTAGE_RAISED.name to 1,
-                FilterRowPillType.LOCATION.name to 1,
-                FilterRowPillType.AMOUNT_RAISED.name to 1,
-                FilterRowPillType.RECOMMENDED.name to 1,
-                FilterRowPillType.PROJECTS_LOVED.name to 1,
-                FilterRowPillType.SAVED.name to 1,
-                FilterRowPillType.FOLLOWING.name to 1,
-                FilterRowPillType.GOAL.name to 1
-            ),
-            onPillPressed = {},
-            shouldShowPhase = true
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                categoryPillText = "Art",
+                projectStatusText = "Live",
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 1,
+                    FilterRowPillType.PROJECT_STATUS.name to 1,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.PERCENTAGE_RAISED.name to 1,
+                    FilterRowPillType.LOCATION.name to 1,
+                    FilterRowPillType.AMOUNT_RAISED.name to 1,
+                    FilterRowPillType.RECOMMENDED.name to 1,
+                    FilterRowPillType.PROJECTS_LOVED.name to 1,
+                    FilterRowPillType.SAVED.name to 1,
+                    FilterRowPillType.FOLLOWING.name to 1,
+                    FilterRowPillType.GOAL.name to 1
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchTopBarAllActiveFiltersPreviewLoggedInUser() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        private var user = UserFactory.user()
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = "Token"
+
+        override fun refresh(freshUser: User) {
+            user = freshUser
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.of(user))
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
+        .build()
+
+    val fakeViewModel = FilterMenuViewModel(environment = env)
+    KSTheme {
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchTopBar(
+                onBackPressed = {},
+                onValueChanged = {},
+                categoryPillText = "Art",
+                projectStatusText = "Live",
+                selectedFilterCounts = mapOf(
+                    FilterRowPillType.SORT.name to 0,
+                    FilterRowPillType.CATEGORY.name to 1,
+                    FilterRowPillType.PROJECT_STATUS.name to 1,
+                    FilterRowPillType.FILTER.name to 1,
+                    FilterRowPillType.PERCENTAGE_RAISED.name to 1,
+                    FilterRowPillType.LOCATION.name to 1,
+                    FilterRowPillType.AMOUNT_RAISED.name to 1,
+                    FilterRowPillType.RECOMMENDED.name to 1,
+                    FilterRowPillType.PROJECTS_LOVED.name to 1,
+                    FilterRowPillType.SAVED.name to 1,
+                    FilterRowPillType.FOLLOWING.name to 1,
+                    FilterRowPillType.GOAL.name to 1
+                ),
+                onPillPressed = {},
+                shouldShowPhase = true
+            )
+        }
     }
 }
 
@@ -368,6 +493,9 @@ fun PillBar(
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase: Boolean = true
 ) {
+    val viewModel = LocalFilterMenuViewModel.current
+    val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
+
     val scrollState = rememberScrollState()
     Row(
         modifier = Modifier
@@ -447,6 +575,22 @@ fun PillBar(
             ),
             onClick = { onPillPressed(FilterRowPillType.LOCATION) }
         )
+        if (shouldShowPhase && loggedInUser) {
+            KSPillButton(
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.RECOMMENDED)),
+                text = recommendedText,
+                isSelected = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.RECOMMENDED.name,
+                    0
+                ) > 0,
+                count = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.RECOMMENDED.name,
+                    0
+                ),
+                onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
+            )
+        }
+
         KSPillButton(
             shouldShowTrailingIcon = true,
             modifier = Modifier.testTag(pillTag(FilterRowPillType.PERCENTAGE_RAISED)),
@@ -480,59 +624,22 @@ fun PillBar(
         )
 
         if (shouldShowPhase) {
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.RECOMMENDED)),
-                text = recommendedText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.RECOMMENDED.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.RECOMMENDED.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.RECOMMENDED) }
-            )
-            KSPillButton(
-                shouldShowLeadingIcon = true,
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
-                text = projectsLovedText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.PROJECTS_LOVED.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.PROJECTS_LOVED.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.PROJECTS_LOVED) }
-            )
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.SAVED)),
-                text = savedProjectsText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.SAVED.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.SAVED.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.SAVED) }
-            )
-            KSPillButton(
-                modifier = Modifier.testTag(pillTag(FilterRowPillType.FOLLOWING)),
-                text = followingText,
-                isSelected = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.FOLLOWING.name,
-                    0
-                ) > 0,
-                count = selectedFilterCounts.getOrDefault(
-                    FilterRowPillType.FOLLOWING.name,
-                    0
-                ),
-                onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
-            )
+            if (loggedInUser) {
+                KSPillButton(
+                    shouldShowLeadingIcon = true,
+                    modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
+                    text = projectsLovedText,
+                    isSelected = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.PROJECTS_LOVED.name,
+                        0
+                    ) > 0,
+                    count = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.PROJECTS_LOVED.name,
+                        0
+                    ),
+                    onClick = { onPillPressed(FilterRowPillType.PROJECTS_LOVED) }
+                )
+            }
             KSPillButton(
                 shouldShowTrailingIcon = true,
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.GOAL)),
@@ -548,6 +655,35 @@ fun PillBar(
                 ),
                 onClick = { onPillPressed(FilterRowPillType.GOAL) }
             )
+
+            if (loggedInUser) {
+                KSPillButton(
+                    modifier = Modifier.testTag(pillTag(FilterRowPillType.SAVED)),
+                    text = savedProjectsText,
+                    isSelected = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.SAVED.name,
+                        0
+                    ) > 0,
+                    count = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.SAVED.name,
+                        0
+                    ),
+                    onClick = { onPillPressed(FilterRowPillType.SAVED) }
+                )
+                KSPillButton(
+                    modifier = Modifier.testTag(pillTag(FilterRowPillType.FOLLOWING)),
+                    text = followingText,
+                    isSelected = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.FOLLOWING.name,
+                        0
+                    ) > 0,
+                    count = selectedFilterCounts.getOrDefault(
+                        FilterRowPillType.FOLLOWING.name,
+                        0
+                    ),
+                    onClick = { onPillPressed(FilterRowPillType.FOLLOWING) }
+                )
+            }
         }
     }
 }

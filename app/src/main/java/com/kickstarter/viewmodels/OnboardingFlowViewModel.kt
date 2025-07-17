@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,9 +22,12 @@ class OnboardingFlowViewModel(
     val ffClient = requireNotNull(environment.featureFlagClient())
 
     private var isUserLoggedIn = false
+    private var deviceNeedsNotificationPermissions = false
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
 
     init {
+        deviceNeedsNotificationPermissions = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+
         scope.launch {
             currentUser.observable().asFlow()
                 .collectLatest {
@@ -32,7 +36,9 @@ class OnboardingFlowViewModel(
         }
     }
 
+
     fun isUserLoggedIn(): Boolean = isUserLoggedIn
+    fun deviceNeedsNotificationPermissions(): Boolean = deviceNeedsNotificationPermissions
 
     fun hasSeenNotificationsPermission(hasSeen: Boolean) {
         sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, hasSeen).apply()

@@ -55,7 +55,7 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     private val loginOrSignupPageSecondaryButtonText by lazy { context.getString(R.string.Explore_the_app) }
 
 
-    private fun setupOnboardingScreen(isUserLoggedIn: Boolean = false) {
+    private fun setupOnboardingScreen(isUserLoggedIn: Boolean = false, deviceNeedsNotificationPermissions: Boolean = true) {
         onboardingCompletedCalled = false
         onboardingCancelledCalled = false
         turnOnNotificationsCalled = false
@@ -64,15 +64,13 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             KSTheme {
-                // Assuming OnboardingScreen is in the same package or imported
                 OnboardingScreen(
                     isUserLoggedIn = isUserLoggedIn,
+                    deviceNeedsNotificationPermissions = deviceNeedsNotificationPermissions,
                     onboardingCompleted = { onboardingCompletedCalled = true },
                     onboardingCancelled = { onboardingCancelledCalled = true },
-                    turnOnNotifications = {
-                        turnOnNotificationsCalled = true /* Simplified for this style */
-                    },
-                    allowTracking = { allowTrackingCalled = true /* Simplified */ },
+                    turnOnNotifications = { turnOnNotificationsCalled = true },
+                    allowTracking = { allowTrackingCalled = true },
                     signupOrLogin = { signupOrLoginCalled = true }
                 )
             }
@@ -117,6 +115,24 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen()
         closeButton.performClick()
         assertTrue(onboardingCancelledCalled)
+    }
+
+    @Test
+    fun `Test save projects page next button click skips notifications page if device doesn't need notification permissions`() {
+        setupOnboardingScreen(deviceNeedsNotificationPermissions = false)
+
+        primaryButton.performClick() // Welcome -> Save
+        composeTestRule.waitForIdle()
+        primaryButton.performClick() // Save -> Activity Tracking
+
+        pageTitle.assertIsDisplayed()
+        pageTitle.assertTextEquals(activityTrackingPageTitleText)
+        pageDescription.assertIsDisplayed()
+        pageDescription.assertTextEquals(activityTrackingPageDescriptionText)
+        composeTestRule.onNodeWithText(activityTrackingPageButtonText)
+            .assertExists()
+        composeTestRule.onNodeWithText(activityTrackingPageSecondaryButtonText)
+            .assertExists()
     }
 
     @Test

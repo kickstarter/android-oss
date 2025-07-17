@@ -46,6 +46,7 @@ class OnboardingFlowActivity : AppCompatActivity() {
                 KickstarterApp(useDarkTheme = false) { // Fix colors to light theme because our assets are only light themed
                     OnboardingScreen(
                         isUserLoggedIn = viewModel.isUserLoggedIn(),
+                        deviceNeedsNotificationPermissions = viewModel.deviceNeedsNotificationPermissions(),
                         onboardingCompleted = { onboardingCompleted() },
                         onboardingCancelled = { onboardingCancelled() },
                         turnOnNotifications = { permissionLauncher ->  turnOnNotifications(permissionLauncher) },

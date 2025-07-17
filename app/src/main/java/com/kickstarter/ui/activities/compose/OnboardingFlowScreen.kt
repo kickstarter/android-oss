@@ -22,14 +22,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,7 +49,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.kickstarter.R
-import com.kickstarter.ui.activities.compose.search.SearchScreenTestTag
 import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSIconButton
@@ -60,7 +57,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
-import kotlin.math.absoluteValue
 
 enum class OnboardingPage {
     WELCOME,
@@ -98,6 +94,7 @@ fun OnboardingScreenPreview() {
 @Composable
 fun OnboardingScreen(
     isUserLoggedIn: Boolean = false,
+    deviceNeedsNotificationPermissions: Boolean = false,
     onboardingCompleted: () -> Unit = {},
     onboardingCancelled: () -> Unit = {},
     turnOnNotifications: (permissionLauncher: ActivityResultLauncher<String>) -> Unit = {},
@@ -243,7 +240,14 @@ fun OnboardingScreen(
                     onClickAction = {
                         when (pages[currentPage].page) {
                             OnboardingPage.WELCOME -> currentPage++
-                            OnboardingPage.SAVE_PROJECTS -> currentPage++
+                            OnboardingPage.SAVE_PROJECTS -> {
+                                if (deviceNeedsNotificationPermissions) {
+                                    currentPage++ // Go to notifications page
+                                } else {
+                                    currentPage++
+                                    currentPage++ // Skip notifications page and go to activity tracking
+                                }
+                            }
                             OnboardingPage.ENABLE_NOTIFICATIONS -> {
                                 activity?.let { turnOnNotifications(permissionLauncher) }
                             }

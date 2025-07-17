@@ -25,6 +25,7 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE
 import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS
+import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_ONBOARDING
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.adapters.data.NavigationDrawerData
@@ -47,6 +48,9 @@ interface DiscoveryViewModel {
 
         /** Call when the user has seen the notifications permission request.  */
         fun hasSeenNotificationsPermission(hasShown: Boolean)
+
+        /** Call when the user has seen the onboarding flow.  */
+        fun hasSeenOnboarding(hasSeen: Boolean)
     }
 
     interface Outputs {
@@ -104,6 +108,9 @@ interface DiscoveryViewModel {
         /** Emits if the user should be shown the consent management dialog  */
         fun showConsentManagementDialog(): Observable<Unit>
 
+        /** Emits if the user should be shown the native onboarding flow  */
+        fun showOnboardingFlow(): Observable<Unit>
+
         /** Emits the error message from verify endpoint  */
         fun showErrorMessage(): Observable<String>
     }
@@ -157,10 +164,12 @@ interface DiscoveryViewModel {
         private val profileClick = PublishSubject.create<Unit>()
         private val showNotifPermissionRequest = BehaviorSubject.create<Unit>()
         private val showConsentManagementDialog = BehaviorSubject.create<Unit>()
+        private val showOnboardingFlow = PublishSubject.create<Unit>()
         private val settingsClick = PublishSubject.create<Unit>()
         private val pledgedProjectsClick = PublishSubject.create<Unit>()
         private val sortClicked = PublishSubject.create<Int>()
         private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
+        private val hasSeenOnboarding = PublishSubject.create<Boolean>()
         private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val clearPages = BehaviorSubject.create<List<Int>>()
         private val drawerMenuIcon = BehaviorSubject.create<Int>()
@@ -259,23 +268,7 @@ interface DiscoveryViewModel {
                 .subscribe { messageError.onNext(it) }
                 .addToDisposable(disposables)
 
-            currentUserType.isLoggedIn
-                .filter { it }
-                .distinctUntilChanged()
-                .take(1)
-                .filter { !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false) }
-                .subscribe { showNotifPermissionRequest.onNext(Unit) }
-                .addToDisposable(disposables)
-
-            hasSeenNotificationsPermission
-                .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it).apply() }
-                .addToDisposable(disposables)
-
-            Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
-                .filter { !it }
-                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
-                .subscribe { showConsentManagementDialog.onNext(Unit) }
-                .addToDisposable(disposables)
+            setupUserOnboarding()
 
             val pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged()
 
@@ -423,6 +416,45 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
         }
 
+        private fun setupUserOnboarding() {
+            // Show the new native onboarding if feature switch is true, and the user is a "new user"
+            // New user heuristic: user has not seen consent management or notifications permission dialog
+            Observable.just(ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW))
+                .filter { it }
+                .filter { !sharedPreferences.getBoolean(HAS_SEEN_ONBOARDING, false) }
+                .filter { // Filter out existing users
+                    !sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) ||
+                            !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
+                }
+                .subscribe { showOnboardingFlow.onNext(Unit) }
+                .addToDisposable(disposables)
+
+            hasSeenOnboarding
+                .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_ONBOARDING, it).apply() }
+                .addToDisposable(disposables)
+
+            // If native onboarding feature switch is false, show the existing alert dialogs
+            currentUserType.isLoggedIn
+                .filter { it }
+                .distinctUntilChanged()
+                .take(1)
+                .filter { !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false) }
+                .filter { ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) == false } // Check Onboarding FF
+                .subscribe { showNotifPermissionRequest.onNext(Unit) }
+                .addToDisposable(disposables)
+
+            hasSeenNotificationsPermission
+                .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it).apply() }
+                .addToDisposable(disposables)
+
+            Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
+                .filter { !it }
+                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
+                .filter { ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) == false } // Check Onboarding FF
+                .subscribe { showConsentManagementDialog.onNext(Unit) }
+                .addToDisposable(disposables)
+        }
+
         override fun childFilterViewHolderRowClick(viewHolder: ChildFilterViewHolder, row: NavigationDrawerData.Section.Row) {
             childFilterRowClick.onNext(row)
         }
@@ -450,6 +482,7 @@ interface DiscoveryViewModel {
         }
         override fun sortClicked(sortPosition: Int) { sortClicked.onNext(sortPosition) }
         override fun hasSeenNotificationsPermission(hasShown: Boolean) { hasSeenNotificationsPermission.onNext(hasShown) }
+        override fun hasSeenOnboarding(hasSeen: Boolean) { hasSeenOnboarding.onNext(hasSeen) }
 
         // - Outputs
         override fun clearPages(): Observable<List<Int>> { return clearPages }
@@ -471,6 +504,8 @@ interface DiscoveryViewModel {
         override fun showErrorMessage(): Observable<String> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Unit> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Unit> { return showConsentManagementDialog }
+        override fun showOnboardingFlow(): Observable<Unit> { return showOnboardingFlow }
+
         override fun darkThemeEnabled(): Observable<Boolean> { return darkThemeEnabled }
         fun closeDrawer(): Observable<Unit> { return closeDrawer }
 

@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.activities.compose.search.FilterRowPillType
@@ -733,6 +734,11 @@ fun KSButton(
     textColor: Color,
     shape: RoundedCornerShape? = null,
 ) {
+    val safeShape = try {
+        shape ?: shapes.medium
+    } catch (e: IllegalArgumentException) {
+        shapes.medium
+    }
     Button(
         modifier = modifier
             .fillMaxWidth()
@@ -744,7 +750,7 @@ fun KSButton(
         onClick = { onClickAction.invoke() },
         elevation = ButtonDefaults.elevation(),
         enabled = isEnabled,
-        shape = shape ?: shapes.medium
+        shape = RoundedCornerShape(4.dp)
     ) {
         leadingIcon()
 

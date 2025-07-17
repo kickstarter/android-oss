@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -732,10 +733,13 @@ fun KSButton(
     textStyle: TextStyle = typographyV2.body,
     textColor: Color,
     shape: RoundedCornerShape? = null,
+    shouldWrapContentWidth: Boolean = true
 ) {
+    val mod = if (shouldWrapContentWidth)
+        modifier.wrapContentWidth()
+    else modifier.fillMaxWidth()
     Button(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = mod
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,

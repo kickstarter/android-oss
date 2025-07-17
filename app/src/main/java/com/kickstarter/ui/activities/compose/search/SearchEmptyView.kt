@@ -6,18 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -36,8 +35,16 @@ fun SearchEmptyViewPreview() {
 fun SearchEmptyView(
     modifier: Modifier = Modifier,
     environment: Environment? = null,
-    currentSearchTerm: String = ""
+    currentSearchTerm: String = "",
+    onClick: () -> Unit = {}
 ) {
+
+    val title = environment?.ksString()?.format(
+        stringResource(id = R.string.No_results_for_fpo),
+        "search_term",
+        currentSearchTerm
+    ) ?: stringResource(id = R.string.No_Results)
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -48,27 +55,32 @@ fun SearchEmptyView(
         Spacer(modifier = Modifier.height(dimensions.paddingTripleLarge))
 
         Text(
-            text = stringResource(id = R.string.No_Results),
-            style = typographyV2.body,
-            color = colors.textSecondary
+            text = title,
+            style = typographyV2.headingXL,
+            color = colors.textPrimary
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-        environment?.ksString()?.let { ksString ->
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = dimensions.paddingLarge, end = dimensions.paddingLarge),
-                textAlign = TextAlign.Center,
-                text = ksString.format(
-                    stringResource(id = R.string.We_couldnt_find_anything_for_search_term),
-                    "search_term",
-                    currentSearchTerm
-                ),
-                style = typographyV2.bodyMD,
-                color = colors.textSecondary
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.Try_rephrasing_your_fpo),
+            style = typographyV2.body,
+            color = colors.textPrimary
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+        KSButton(
+            backgroundColor = colors.kds_black,
+            textColor = colors.kds_white,
+            onClickAction = {
+                onClick()
+            },
+            shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
+            text = stringResource(id = R.string.Remove_all_filters_fpo),
+            textStyle = typographyV2.buttonLabel,
+            isEnabled = true,
+            shouldWrapContentWidth = true
+        )
     }
 }

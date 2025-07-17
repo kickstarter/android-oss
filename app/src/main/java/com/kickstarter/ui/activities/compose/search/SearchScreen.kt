@@ -414,7 +414,32 @@ fun SearchScreen(
                         .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
                         .background(colors.backgroundSurfaceSecondary),
                     environment = environment,
-                    currentSearchTerm = currentSearchTerm
+                    currentSearchTerm = currentSearchTerm,
+                    onClick = {
+                        currentCategory.value = null
+                        currentProjectState.value = null
+                        currentPercentage.value = null
+                        currentLocation.value = null
+                        currentAmountRaised.value = null
+                        currentRecommended.value = false
+                        currentStaffPicked.value = false
+                        currentStarred.value = false
+                        currentSocial.value = false
+                        currentGoal.value = null
+                        onApplySearchWithParams(
+                            currentCategory.value,
+                            currentSort.value,
+                            currentProjectState.value,
+                            currentPercentage.value,
+                            currentLocation.value,
+                            currentAmountRaised.value,
+                            currentRecommended.value,
+                            currentStaffPicked.value,
+                            currentStarred.value,
+                            currentSocial.value,
+                            currentGoal.value
+                        )
+                    }
                 )
             } else {
                 LazyColumn(

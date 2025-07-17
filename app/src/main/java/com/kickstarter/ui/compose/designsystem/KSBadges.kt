@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -72,12 +74,15 @@ fun KSBadgesPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSecretRewardBadge()
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSFilterCountBadge()
         }
     }
 }
 
 @Composable
-fun KSGreenBadge(
+fun KSGreenBadgeSmall(
     modifier: Modifier = Modifier,
     text: String,
     leadingIcon: (@Composable (iconTint: Color) -> Unit)? = null,
@@ -92,10 +97,39 @@ fun KSGreenBadge(
                 shape = shapes.small
             )
             .padding(
-                start = dimensions.paddingMediumSmall,
-                top = dimensions.paddingSmall,
-                bottom = dimensions.paddingSmall,
-                end = dimensions.paddingMediumSmall
+                horizontal = dimensions.paddingXSmall,
+                vertical = dimensions.paddingXSmall
+            )
+    ) {
+        leadingIcon?.invoke(iconTint)
+        Text(
+            text = text,
+            color = textColor,
+            style = textStyle
+        )
+    }
+}
+
+@Composable
+fun KSGreenBadge(
+    modifier: Modifier = Modifier,
+    text: String,
+    leadingIcon: (@Composable (iconTint: Color) -> Unit)? = null,
+    iconTint: Color = colors.textAccentGreen,
+    textColor: Color = colors.textAccentGreen,
+    textStyle: TextStyle = typographyV2.footNoteMedium,
+    paddingHorizontal: Dp = dimensions.paddingMediumSmall,
+    paddingVertical: Dp = dimensions.paddingSmall
+) {
+    Row(
+        modifier
+            .background(
+                color = colors.backgroundAccentGreenSubtle,
+                shape = shapes.small
+            )
+            .padding(
+                horizontal = paddingHorizontal,
+                vertical = paddingVertical
             )
     ) {
         leadingIcon?.invoke(iconTint)
@@ -245,6 +279,33 @@ fun KSCountBadge(
     ) {
         Text(text = count.toString(), color = colors.textAccentGrey, fontSize = 12.sp)
     }
+}
+
+@Composable
+fun KSFilterCountBadge(
+    modifier: Modifier = Modifier,
+    iconTint: Color = colors.textAccentGreenBold,
+    filterCount: String = "1"
+) {
+    KSGreenBadge(
+        modifier = modifier,
+        text = filterCount,
+        textColor = colors.textAccentGreenBold,
+        iconTint = iconTint,
+        leadingIcon = { tint ->
+            Image(
+                modifier = Modifier
+                    .padding(end = dimensions.paddingXSmall)
+                    .size(dimensions.alertIconSize),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_filter),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(tint)
+            )
+        },
+        textStyle = typographyV2.headingSM,
+        paddingHorizontal = dimensions.paddingXSmall,
+        paddingVertical = dimensions.paddingXSmall
+    )
 }
 
 @Composable

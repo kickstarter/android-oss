@@ -151,7 +151,6 @@ data class KSCustomColors(
     val textAccentYellow: Color = Color.Unspecified,
     val textAccentYellowBold: Color = Color.Unspecified,
 
-    // Add these two new purples
     val purple_03: Color = Color.Unspecified,
     val purple_08: Color = Color.Unspecified,
     val yellow_03: Color = Color.Unspecified,
@@ -285,7 +284,6 @@ val KSLightCustomColors = KSCustomColors(
     textAccentYellow = yellow_06,
     textAccentYellowBold = yellow_08,
 
-    // Add new purples
     purple_03 = purple_03,
     purple_08 = purple_08,
     yellow_03 = yellow_03,
@@ -416,7 +414,6 @@ val KSDarkCustomColors = KSCustomColors(
     textAccentYellow = yellow_05,
     textAccentYellowBold = yellow_02,
 
-    // Add new purples
     purple_03 = purple_03,
     purple_08 = purple_08,
     yellow_03 = yellow_03,

@@ -417,8 +417,14 @@ interface DiscoveryViewModel {
         }
 
         private fun setupUserOnboarding() {
-            // Show the new native onboarding if feature switch is true, and the user is a "new user"
-            // New user heuristic: user has not seen consent management or notifications permission dialog
+        /*
+         Show the new native onboarding if:
+            - the feature switch is true,
+            - the onboarding screen hasn't been shown already,
+            - and the user is a "new user",
+        New user heuristic: user has not seen consent management or notifications permission dialog
+         */
+
             Observable.just(ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW))
                 .filter { it }
                 .filter { !sharedPreferences.getBoolean(HAS_SEEN_ONBOARDING, false) }

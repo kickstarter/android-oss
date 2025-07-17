@@ -66,20 +66,13 @@ class OnboardingFlowActivity : AppCompatActivity() {
     }
 
     fun turnOnNotifications(permissionLauncher: ActivityResultLauncher<String>) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED
             ) {
                 // Permission is not granted — launch the request
                 permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                // Permission is already granted
-                Toast.makeText(this, "Notification permission already granted", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            // Permission not required on Android versions < 13
-            Toast.makeText(this, "Notification permission not required on this version", Toast.LENGTH_SHORT).show()
         }
 
         viewModel.hasSeenNotificationsPermission(true)

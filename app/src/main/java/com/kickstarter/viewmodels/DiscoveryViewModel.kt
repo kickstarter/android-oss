@@ -424,7 +424,7 @@ interface DiscoveryViewModel {
                 .filter { !sharedPreferences.getBoolean(HAS_SEEN_ONBOARDING, false) }
                 .filter { // Filter out existing users
                     !sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) ||
-                            !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
+                        !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
                 }
                 .subscribe { showOnboardingFlow.onNext(Unit) }
                 .addToDisposable(disposables)

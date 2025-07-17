@@ -219,7 +219,8 @@ fun OnboardingScreen(
                         .testTag(OnboardingScreenTestTags.CLOSE_BUTTON),
                     onClick = { onboardingCancelled() },
                     contentDescription = stringResource(R.string.Close),
-                    imageVector = Icons.Filled.Close)
+                    imageVector = Icons.Filled.Close
+                )
             }
 
             // Animated content spans the page

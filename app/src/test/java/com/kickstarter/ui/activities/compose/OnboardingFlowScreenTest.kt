@@ -54,7 +54,6 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     private val loginOrSignupPageButtonText by lazy { context.getString(R.string.Sign_up_or_log_in) }
     private val loginOrSignupPageSecondaryButtonText by lazy { context.getString(R.string.Explore_the_app) }
 
-
     private fun setupOnboardingScreen(isUserLoggedIn: Boolean = false, deviceNeedsNotificationPermissions: Boolean = true) {
         onboardingCompletedCalled = false
         onboardingCancelledCalled = false
@@ -225,5 +224,4 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         // Assert that onboardingCompleted callback was called
         assertTrue("onboardingCompleted callback should have been called", onboardingCompletedCalled)
     }
-
 }

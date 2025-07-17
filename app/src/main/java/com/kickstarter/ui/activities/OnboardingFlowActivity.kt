@@ -12,7 +12,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -49,8 +48,8 @@ class OnboardingFlowActivity : AppCompatActivity() {
                         deviceNeedsNotificationPermissions = viewModel.deviceNeedsNotificationPermissions(),
                         onboardingCompleted = { onboardingCompleted() },
                         onboardingCancelled = { onboardingCancelled() },
-                        turnOnNotifications = { permissionLauncher ->  turnOnNotifications(permissionLauncher) },
-                        allowTracking = { fragmentManager ->  allowTracking(fragmentManager) },
+                        turnOnNotifications = { permissionLauncher -> turnOnNotifications(permissionLauncher) },
+                        allowTracking = { fragmentManager -> allowTracking(fragmentManager) },
                         signupOrLogin = { signupOrLogin() }
                     )
                 }

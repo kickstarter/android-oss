@@ -36,14 +36,12 @@ class OnboardingFlowViewModel(
         }
     }
 
-
     fun isUserLoggedIn(): Boolean = isUserLoggedIn
     fun deviceNeedsNotificationPermissions(): Boolean = deviceNeedsNotificationPermissions
 
     fun hasSeenNotificationsPermission(hasSeen: Boolean) {
         sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, hasSeen).apply()
     }
-
 
     class Factory(
         private val environment: Environment,

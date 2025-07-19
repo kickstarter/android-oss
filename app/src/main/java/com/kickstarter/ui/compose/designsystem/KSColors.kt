@@ -128,6 +128,8 @@ val blue_08 = Color(0xFF0F0FBD)
 val blue_09 = Color(0xFF0B0B89)
 val blue_10 = Color(0xFF050543)
 
+val red_light = Color(0xFFF5E8E9)
+
 @Immutable
 data class KSCustomColors(
     // NEW COLORS
@@ -148,6 +150,11 @@ data class KSCustomColors(
     val textAccentPurpleBold: Color = Color.Unspecified,
     val textAccentYellow: Color = Color.Unspecified,
     val textAccentYellowBold: Color = Color.Unspecified,
+
+    val purple_03: Color = Color.Unspecified,
+    val purple_08: Color = Color.Unspecified,
+    val yellow_03: Color = Color.Unspecified,
+    val yellow_08: Color = Color.Unspecified,
 
     // Background Colors
     val backgroundSurfacePrimary: Color = Color.Unspecified,
@@ -240,6 +247,17 @@ data class KSCustomColors(
     val kds_warn: Color = Color.Unspecified,
     val kds_inform: Color = Color.Unspecified,
     val facebook_blue: Color = Color.Unspecified,
+    val red_light: Color = Color.Unspecified,
+    val red_03: Color = Color.Unspecified,
+    val red_07: Color = Color.Unspecified,
+    val grey_03: Color = Color.Unspecified,
+    val grey_05: Color = Color.Unspecified,
+    val grey_10: Color = Color.Unspecified,
+    val blue_03: Color = Color.Unspecified,
+    val blue_09: Color = Color.Unspecified,
+    val green_02: Color = Color.Unspecified,
+    val green_07: Color = Color.Unspecified,
+    val green_06: Color = Color.Unspecified,
 )
 
 val LocalKSCustomColors = staticCompositionLocalOf {
@@ -265,6 +283,11 @@ val KSLightCustomColors = KSCustomColors(
     textAccentPurpleBold = purple_08,
     textAccentYellow = yellow_06,
     textAccentYellowBold = yellow_08,
+
+    purple_03 = purple_03,
+    purple_08 = purple_08,
+    yellow_03 = yellow_03,
+    yellow_08 = yellow_08,
 
     // Background Colors
     backgroundSurfacePrimary = white,
@@ -357,6 +380,17 @@ val KSLightCustomColors = KSCustomColors(
     kds_warn = kds_warn,
     kds_inform = kds_inform,
     facebook_blue = facebook_blue,
+    red_light = red_light,
+    red_03 = red_03,
+    red_07 = red_07,
+    grey_03 = grey_03,
+    grey_05 = grey_05,
+    grey_10 = grey_10,
+    blue_03 = blue_03,
+    blue_09 = blue_09,
+    green_02 = green_02,
+    green_07 = green_07,
+    green_06 = green_06,
 )
 
 // TODO: Change colors to reflect actual dark theme when available
@@ -379,6 +413,11 @@ val KSDarkCustomColors = KSCustomColors(
     textAccentPurpleBold = purple_02,
     textAccentYellow = yellow_05,
     textAccentYellowBold = yellow_02,
+
+    purple_03 = purple_03,
+    purple_08 = purple_08,
+    yellow_03 = yellow_03,
+    yellow_08 = yellow_08,
 
     // Background Colors
     backgroundSurfacePrimary = grey_10,
@@ -471,4 +510,15 @@ val KSDarkCustomColors = KSCustomColors(
     kds_warn = kds_warn,
     kds_inform = kds_inform,
     facebook_blue = facebook_blue,
+    red_light = red_light,
+    red_03 = red_03,
+    red_07 = red_07,
+    grey_03 = grey_03,
+    grey_05 = grey_05,
+    grey_10 = grey_10,
+    blue_03 = blue_03,
+    blue_09 = blue_09,
+    green_02 = green_02,
+    green_07 = green_07,
+    green_06 = green_06,
 )

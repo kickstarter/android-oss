@@ -733,7 +733,7 @@ fun KSButton(
     textStyle: TextStyle = typographyV2.body,
     textColor: Color,
     shape: RoundedCornerShape? = null,
-    shouldWrapContentWidth: Boolean = true
+    shouldWrapContentWidth: Boolean = false
 ) {
     val mod = if (shouldWrapContentWidth)
         modifier.wrapContentWidth()

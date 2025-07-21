@@ -27,11 +27,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +52,6 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.OTHERS_ROW
 import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.switchTag
 import com.kickstarter.ui.compose.designsystem.KSDimensions
-import com.kickstarter.ui.compose.designsystem.KSFilterCountBadge
 import com.kickstarter.ui.compose.designsystem.KSIconButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
 import com.kickstarter.ui.compose.designsystem.KSSearchBottomSheetFooter
@@ -238,13 +235,6 @@ private fun OtherFiltersRow(
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
 
-    val totalActive = listOf(
-        selectedRecommended.value,
-        selectedStaffPicked.value,
-        selectedStarred.value,
-        selectedSocial.value
-    ).count { it.isTrue() }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -266,24 +256,11 @@ private fun OtherFiltersRow(
         Column(
             modifier = Modifier.testTag(OTHERS_ROW)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = text,
-                    style = typographyV2.headingLG,
-                    color = colors.textPrimary,
-                    modifier = Modifier.alignBy(LastBaseline)
-                )
-
-                KSFilterCountBadge(
-                    modifier = Modifier
-                        .alpha(if (totalActive > 0) 1f else 0f)
-                        .alignBy(LastBaseline),
-                    filterCount = totalActive.toString(),
-                )
-            }
+            Text(
+                text = text,
+                style = typographyV2.headingLG,
+                color = colors.textPrimary
+            )
 
             Row(
                 modifier = Modifier.testTag(DiscoveryParams::recommended.name),
@@ -303,7 +280,8 @@ private fun OtherFiltersRow(
                     checked = selectedRecommended.value,
                     onCheckChanged = {
                         selectedRecommended.value = it
-                        callbackRecommended(it)
+                        if (it)
+                            callbackRecommended(it)
                     }
                 )
             }
@@ -565,8 +543,7 @@ private fun OthersRowPreview() {
     KSTheme {
         OtherFiltersRow(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-            text = titleForFilter(FilterType.OTHERS),
-            selectedStaffPicked = remember { mutableStateOf(true) }
+            text = titleForFilter(FilterType.OTHERS)
         )
     }
 }

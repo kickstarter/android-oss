@@ -115,7 +115,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                     startProjectActivity(projAndRef)
                                 }
                             },
-                            onDismissBottomSheet = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
+                            onApplySearchWithParams = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
                                 viewModel.updateParamsToSearchWith(
                                     category = category,
                                     projectSort = sort

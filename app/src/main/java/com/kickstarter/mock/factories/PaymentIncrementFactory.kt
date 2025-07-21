@@ -69,6 +69,17 @@ class PaymentIncrementFactory {
             )
         }
 
+        fun incrementUsdRefunded(dateTime: DateTime, formattedAmount: String): PaymentIncrement {
+            return paymentIncrement(
+                paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = formattedAmount, formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                scheduledCollection = dateTime,
+                paymentIncrementableId = "",
+                paymentIncrementableType = "",
+                state = PaymentIncrementState.REFUNDED,
+                stateReason = PaymentIncrementStateReason.UNKNOWN__
+            )
+        }
+
         fun samplePaymentIncrements(): List<PaymentIncrement> {
             val now = DateTime.now()
 
@@ -112,8 +123,15 @@ class PaymentIncrementFactory {
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(60),
                     stateReason = PaymentIncrementStateReason.UNKNOWN__
-                )
-
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.REFUNDED,
+                    paymentIncrementableId = "4",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(60),
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__
+                ),
             )
         }
     }

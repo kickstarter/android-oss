@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,9 +26,21 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun SearchEmptyViewPreview() {
+fun SearchEmptyViewPreviewWithFilter() {
     KSTheme {
         SearchEmptyView()
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SearchEmptyViewPreviewWithoutFilter() {
+    KSTheme {
+        SearchEmptyView(
+            currentSearchTerm = "cat",
+            activeFilters = true
+        )
     }
 }
 
@@ -36,7 +49,8 @@ fun SearchEmptyView(
     modifier: Modifier = Modifier,
     environment: Environment? = null,
     currentSearchTerm: String = "",
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    activeFilters: Boolean = false
 ) {
 
     val title = environment?.ksString()?.format(
@@ -62,25 +76,35 @@ fun SearchEmptyView(
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
+        var text = if (activeFilters) {
+            stringResource(id = R.string.Try_rephrasing_your_filters_fpo)
+        } else {
+            stringResource(id = R.string.Try_rephrasing_your_search_fpo)
+        }
+
         Text(
-            text = stringResource(id = R.string.Try_rephrasing_your_fpo),
+            text = text,
             style = typographyV2.body,
-            color = colors.textPrimary
+            color = colors.textPrimary,
+            modifier = Modifier
+                .padding(horizontal = dimensions.paddingSmall)
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-        KSButton(
-            backgroundColor = colors.kds_black,
-            textColor = colors.kds_white,
-            onClickAction = {
-                onClick()
-            },
-            shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-            text = stringResource(id = R.string.Remove_all_filters_fpo),
-            textStyle = typographyV2.buttonLabel,
-            isEnabled = true,
-            shouldWrapContentWidth = true
-        )
+        if (activeFilters) {
+            KSButton(
+                backgroundColor = colors.kds_black,
+                textColor = colors.kds_white,
+                onClickAction = {
+                    onClick()
+                },
+                shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
+                text = stringResource(id = R.string.Remove_all_filters_fpo),
+                textStyle = typographyV2.buttonLabel,
+                isEnabled = true,
+                shouldWrapContentWidth = true
+            )
+        }
     }
 }

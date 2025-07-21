@@ -409,12 +409,18 @@ fun SearchScreen(
             backgroundColor = colors.kds_white
         ) { padding ->
             if (showEmptyView) {
+                var numbersActive = 0
+                selectedFilterCounts.entries.map { entry ->
+                    numbersActive += entry.value
+                }
+
                 SearchEmptyView(
                     modifier = Modifier
                         .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
                         .background(colors.backgroundSurfaceSecondary),
                     environment = environment,
                     currentSearchTerm = currentSearchTerm,
+                    activeFilters = numbersActive > 0,
                     onClick = {
                         currentCategory.value = null
                         currentProjectState.value = null

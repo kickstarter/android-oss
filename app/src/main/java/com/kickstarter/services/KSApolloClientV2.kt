@@ -150,7 +150,7 @@ interface ApolloClientTypeV2 {
     fun createFlagging(
         project: Project? = null,
         details: String,
-        flaggingKind: String
+        flaggingKind: String,
     ): Observable<String>
 
     fun userPrivacy(): Observable<UserPrivacy>
@@ -159,12 +159,12 @@ interface ApolloClientTypeV2 {
     fun updateUserPassword(
         currentPassword: String = "",
         newPassword: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<UpdateUserPasswordMutation.Data>
 
     fun updateUserEmail(
         email: String,
-        currentPassword: String
+        currentPassword: String,
     ): Observable<UpdateUserEmailMutation.Data>
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
@@ -177,7 +177,7 @@ interface ApolloClientTypeV2 {
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
     fun createPassword(
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<CreatePasswordMutation.Data>
 
     fun creatorDetails(slug: String): Observable<CreatorDetails>
@@ -190,26 +190,26 @@ interface ApolloClientTypeV2 {
     fun getProjectUpdates(
         slug: String,
         cursor: String,
-        limit: Int = PAGE_SIZE
+        limit: Int = PAGE_SIZE,
     ): Observable<UpdatesGraphQlEnvelope>
 
     fun getComment(commentableId: String): Observable<Comment>
     fun getProjectUpdateComments(
         updateId: String,
         cursor: String,
-        limit: Int = PAGE_SIZE
+        limit: Int = PAGE_SIZE,
     ): Observable<CommentEnvelope>
 
     fun getProjectComments(
         slug: String,
         cursor: String,
-        limit: Int = PAGE_SIZE
+        limit: Int = PAGE_SIZE,
     ): Observable<CommentEnvelope>
 
     fun getRepliesForComment(
         comment: Comment,
         cursor: String? = null,
-        pageSize: Int = REPLIES_PAGE_SIZE
+        pageSize: Int = REPLIES_PAGE_SIZE,
     ): Observable<CommentEnvelope>
 
     fun createComment(comment: PostCommentData): Observable<Comment>
@@ -226,14 +226,14 @@ interface ApolloClientTypeV2 {
     fun validateCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String
+        paymentSourceId: String,
     ): Observable<PaymentValidationResponse>
 
     fun completeOnSessionCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
         paymentSourceId: String?,
-        paymentSourceReusable: Boolean
+        paymentSourceReusable: Boolean,
     ): Observable<Pair<String, Boolean>>
 
     fun createAttributionEvent(eventInput: CreateAttributionEventData): Observable<Boolean>
@@ -296,7 +296,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun getProjects(
         discoveryParams: DiscoveryParams,
-        cursor: String?
+        cursor: String?,
     ): Observable<DiscoverEnvelope> {
         val ps = PublishSubject.create<DiscoverEnvelope>()
         this.service.query(query = buildFetchProjectsQuery(discoveryParams, cursor))
@@ -331,7 +331,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     private fun buildFetchProjectsQuery(
         discoveryParams: DiscoveryParams,
-        cursor: String?
+        cursor: String?,
     ): FetchProjectsQuery {
         return FetchProjectsQuery(
             sort = Optional.present(discoveryParams.sort()?.toProjectSort()),
@@ -468,7 +468,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun createFlagging(
         project: Project?,
         details: String,
-        flaggingKind: String
+        flaggingKind: String,
     ): Observable<String> {
         return Observable.defer {
             project?.let {
@@ -589,7 +589,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun updateUserPassword(
         currentPassword: String,
         newPassword: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<UpdateUserPasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdateUserPasswordMutation.Data>()
@@ -619,7 +619,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun updateUserEmail(
         email: String,
-        currentPassword: String
+        currentPassword: String,
     ): Observable<UpdateUserEmailMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdateUserEmailMutation.Data>()
@@ -769,7 +769,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<PaymentPlan>()
             val query = BuildPaymentPlanQuery(
                 slug = input.slug,
-                amount = input.amount
+                amount = input.amount,
+                includeRefundedAmount = false
             )
 
             this.service.query(query)
@@ -1013,7 +1014,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun createPassword(
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): Observable<CreatePasswordMutation.Data> {
         return Observable.defer {
             val ps = PublishSubject.create<CreatePasswordMutation.Data>()
@@ -1231,7 +1232,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProjectUpdates(
         slug: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Observable<UpdatesGraphQlEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<UpdatesGraphQlEnvelope>()
@@ -1318,7 +1319,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProjectUpdateComments(
         updateId: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -1373,7 +1374,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getProjectComments(
         slug: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -1425,7 +1426,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getRepliesForComment(
         comment: Comment,
         cursor: String?,
-        pageSize: Int
+        pageSize: Int,
     ): Observable<CommentEnvelope> {
         return Observable.defer {
             val ps = PublishSubject.create<CommentEnvelope>()
@@ -1656,7 +1657,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun validateCheckout(
         checkoutId: String,
         paymentIntentClientSecret: String,
-        paymentSourceId: String
+        paymentSourceId: String,
     ): Observable<PaymentValidationResponse> {
         return Observable.defer {
             val ps = PublishSubject.create<PaymentValidationResponse>()
@@ -1693,7 +1694,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         checkoutId: String,
         paymentIntentClientSecret: String,
         paymentSourceId: String?,
-        paymentSourceReusable: Boolean
+        paymentSourceReusable: Boolean,
     ): Observable<Pair<String, Boolean>> {
         return Observable.defer {
             val ps = PublishSubject.create<Pair<String, Boolean>>()
@@ -1980,19 +1981,19 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     sealed class KSApolloClientV2Exception(
         message: String? = null,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : Exception(message, cause) {
         class Timeout(
             message: String? = null,
-            cause: Throwable? = null
+            cause: Throwable? = null,
         ) : KSApolloClientV2Exception(message, cause)
         class TooManyRequests(
             message: String? = null,
-            cause: Throwable? = null
+            cause: Throwable? = null,
         ) : KSApolloClientV2Exception(message, cause)
         class ApiError(
             message: String? = null,
-            cause: Throwable? = null
+            cause: Throwable? = null,
         ) : KSApolloClientV2Exception(message, cause)
     }
 

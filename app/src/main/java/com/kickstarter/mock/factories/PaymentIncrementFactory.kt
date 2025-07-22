@@ -17,6 +17,7 @@ class PaymentIncrementFactory {
             scheduledCollection: DateTime,
             state: PaymentIncrementState,
             stateReason: PaymentIncrementStateReason?,
+            refundedAmount: PaymentIncrementAmount? = null
         ): PaymentIncrement {
             return PaymentIncrement.builder()
                 .amount(paymentIncrementAmount)
@@ -25,6 +26,7 @@ class PaymentIncrementFactory {
                 .scheduledCollection(scheduledCollection)
                 .state(state)
                 .stateReason(stateReason)
+                .refundedAmount(refundedAmount)
                 .build()
         }
 
@@ -70,13 +72,15 @@ class PaymentIncrementFactory {
         }
 
         fun incrementUsdRefunded(dateTime: DateTime, formattedAmount: String): PaymentIncrement {
+            val refundedAmount = PaymentIncrementFactory.amount(formattedAmount = formattedAmount, formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$")
             return paymentIncrement(
-                paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = formattedAmount, formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                paymentIncrementAmount = refundedAmount,
                 scheduledCollection = dateTime,
                 paymentIncrementableId = "",
                 paymentIncrementableType = "",
                 state = PaymentIncrementState.REFUNDED,
-                stateReason = PaymentIncrementStateReason.UNKNOWN__
+                stateReason = PaymentIncrementStateReason.UNKNOWN__,
+                refundedAmount = refundedAmount
             )
         }
 
@@ -130,7 +134,8 @@ class PaymentIncrementFactory {
                     paymentIncrementableId = "4",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(60),
-                    stateReason = PaymentIncrementStateReason.UNKNOWN__
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__,
+                    refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$42.00", formattedAmountWithCode = "USD $70.75", amountAsFloat = "70.75", amountAsCents = "7075", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "70.75$")
                 ),
             )
         }

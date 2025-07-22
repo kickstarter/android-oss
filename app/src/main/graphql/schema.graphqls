@@ -111,7 +111,7 @@ type Query {
   """
   Provides an overview of pledge projects
   """
-  pledgeProjectsOverview("Sort option as a string." sort: BackingsDashboardSortOptions = RELEVANCY, "All filter criteria for pledge projects." filters: PledgeProjectsOverviewFilterInput): PledgeProjectsOverview
+  pledgeProjectsOverview("tier types to include in response" tierTypes: [PledgeProjectsOverviewSort!], "Sort option as a string." sort: BackingsDashboardSortOptions = RELEVANCY, "All filter criteria for pledge projects." filters: PledgeProjectsOverviewFilterInput): PledgeProjectsOverview
 
   """
   Fetches a post given its ID.
@@ -886,6 +886,10 @@ enum Feature {
   tax_category_improvements
 
   creator_opt_out_feedback_2025
+
+  allow_editing_shipping_rates_2025
+
+  pm_backer_preview_2025
 }
 
 """
@@ -1289,7 +1293,7 @@ type Project implements Node & Commentable {
   """
   Backing Add-ons
   """
-  addOns("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filters available add ons by pledge redemption only" pledgeManagementOnly: Boolean, "Filters available add ons by given location" forLocation: ID, "Enables\/disables add-ons sort by cost and title, with sorting enabled by default" sort: Boolean): ProjectRewardConnection
+  addOns("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Retrieves both, pledge redemption and crowdfunding add-ons" crowdfundingAndPledgeManagement: Boolean, "Filters available add ons by pledge redemption only" pledgeManagementOnly: Boolean, "Filters available add ons by given location" forLocation: ID, "Enables\/disables add-ons sort by cost and title, with sorting enabled by default" sort: Boolean): ProjectRewardConnection
 
   """
   The project's additional category.
@@ -1351,7 +1355,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by pledge manager completed at minimum" pmCompletedAtMin: String, "Filter by pledge manager completed at maximum" pmCompletedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
 
   """
   Backer survey for the project
@@ -1527,6 +1531,11 @@ type Project implements Node & Commentable {
   The current amount pledged in USD
   """
   currentAmountPledgedUsd: Float
+
+  """
+  Total current backers for the project
+  """
+  currentBackersCount("Whether or not to considere new pm backers in the final count." withNewPmBackers: Boolean): Int!
 
   """
   When is the project scheduled to end?
@@ -2070,7 +2079,7 @@ type Project implements Node & Commentable {
   """
   Project rewards.
   """
-  rewards("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filters available rewards by pledge redemption only" pledgeManagementOnly: Boolean, "Filters by active backings" withActiveBackings: Boolean, "Retrieves rewards considering if the project is currently in PM" withNewPmBackers: Boolean, "Sort the rewards by availability and cost" sort: Boolean): ProjectRewardConnection
+  rewards("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Retrieves both, pledge redemption and crowdfunding rewards" crowdfundingAndPledgeManagement: Boolean, "Filters available rewards by pledge redemption only" pledgeManagementOnly: Boolean, "Filters by active backings" withActiveBackings: Boolean, "Retrieves rewards considering if the project is currently in PM" withNewPmBackers: Boolean, "Sort the rewards by availability and cost" sort: Boolean): ProjectRewardConnection
 
   """
   Risk questions for the project plan.
@@ -2829,6 +2838,11 @@ type Money {
   Currency of the monetary amount
   """
   currency: CurrencyCode
+
+  """
+  Symbol of the currency in which the monetary amount appears
+  """
+  displaySymbol: String
 
   """
   Symbol of the currency in which the monetary amount appears
@@ -3981,6 +3995,11 @@ type Reward implements Node {
   When the reward is scheduled to start
   """
   startsAt: DateTime
+
+  """
+  Whether the creator has included VAT in reward pricing
+  """
+  vatInclusivePricing: Boolean!
 }
 
 """
@@ -5154,11 +5173,6 @@ type Order implements Node {
   isPledgeManagerNetNewBacker: Boolean!
 
   """
-  Whether the rewards have tax included in the price
-  """
-  itemTaxIncluded: Boolean!
-
-  """
   The order location.
   """
   location: Location
@@ -5299,6 +5313,11 @@ type Order implements Node {
   surchargeAmountFormatted: String
 
   """
+  Whether the rewards/shipments have tax included in the price
+  """
+  taxIncluded: Boolean!
+
+  """
   The localized tax (VAT, Tax, HST, etc) based on order address
   """
   taxLocalization("Whether or not the display is for a refund" refund: Boolean): String
@@ -5387,16 +5406,6 @@ type ConvertedOrderAmounts {
 An orderable included in an Order, e.g. a reward.
 """
 type OrderOrderable {
-  """
-  The price, excluding tax
-  """
-  amountExcludingTax: Int!
-
-  """
-  The formatted price, excluding tax
-  """
-  amountExcludingTaxFormatted: String!
-
   """
   The price of one unit of the reward
   """
@@ -5572,6 +5581,11 @@ type PaymentIncrement {
   paymentIncrementableId: ID
 
   paymentIncrementableType: String
+
+  """
+  The total amount that has been refunded on the payment increment, across potentially multiple adjustments
+  """
+  refundedAmount: PaymentIncrementAmount
 
   scheduledCollection: ISO8601DateTime!
 
@@ -12473,6 +12487,29 @@ type PledgeProjectsOverviewOptionSetItem {
   value: String!
 }
 
+"""
+Sort types for PledgedProjectsOverview dashboard.
+"""
+enum PledgeProjectsOverviewSort {
+  TIER1_ADDRESS_LOCKING_SOON
+
+  TIER1_PAYMENT_FAILED
+
+  TIER1_PAYMENT_AUTHENTICATION_REQUIRED
+
+  TIER1_OPEN_SURVEY
+
+  PLEDGE_MANAGEMENT
+
+  SURVEY_SUBMITTED
+
+  PLEDGE_COLLECTED
+
+  ADDRESS_CONFIRMED
+
+  AWAITING_REWARD
+}
+
 enum BackingsDashboardSortOptions {
   """
   Sort by relevancy
@@ -12609,14 +12646,14 @@ enum BackgroundJobProgressStatusEnum {
 Information about why creators would opt out of using our pledge manager
 """
 type OptOutReason {
-  description: String
+  description: String!
 
   """
   A follow-up question for the selected reason
   """
   followUpQuestion: String
 
-  key: String!
+  key: OptOutReasonEnum!
 
   """
   The options associated with the follow-up question
@@ -12624,9 +12661,59 @@ type OptOutReason {
   options: [String!]!
 
   """
-  Whether or not the reason has a prompt
+  Placeholder text for the follow-up question
+  """
+  placeholder: String
+
+  """
+  Whether or not the reason has a follow-up question
   """
   prompt: Boolean!
+
+  """
+  An additional follow-up question for the selected reason
+  """
+  secondaryFollowUp: String
+
+  """
+  Placeholder text for the secondary follow-up question
+  """
+  secondaryPlaceholder: String
+}
+
+"""
+Reasons for opting out of using our pledge manager
+"""
+enum OptOutReasonEnum {
+  """
+  missing_features
+  """
+  missing_features
+
+  """
+  lack_of_confidence
+  """
+  lack_of_confidence
+
+  """
+  ineligible
+  """
+  ineligible
+
+  """
+  committed_to_another_pm
+  """
+  committed_to_another_pm
+
+  """
+  other
+  """
+  other
+
+  """
+  legacy
+  """
+  legacy
 }
 
 """
@@ -13430,6 +13517,11 @@ type Mutation {
   update a reward to be made available in Pledge Management.
   """
   updatePledgeManagementReward(input: UpdatePledgeManagementRewardInput!): UpdatePledgeManagementRewardPayload
+
+  """
+  Update state for a Pledge Manager
+  """
+  updatePledgeManagerState(input: UpdatePledgeManagerStateInput!): UpdatePledgeManagerStatePayload
 
   """
   Update a project post
@@ -16468,6 +16560,8 @@ input CreateRewardInput {
 
   audienceData: AudienceInput
 
+  vatInclusivePricing: Boolean
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -16647,6 +16741,8 @@ input UpdateRewardInput {
   endCondition: Int
 
   audienceData: AudienceInput
+
+  vatInclusivePricing: Boolean
 
   """
   A unique identifier for the client performing the mutation.
@@ -18169,6 +18265,16 @@ input OptOutOfPledgeManagerInput {
   pledgeManagerId: ID!
 
   """
+  The reason for opting out
+  """
+  optOutReason: OptOutReasonEnum!
+
+  """
+  Additional details for opting out
+  """
+  optOutDetails: String
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -19319,6 +19425,41 @@ input UpdateAcceptsNewBackersInput {
   Whether the pledge manager accepts new backers or not
   """
   acceptsNewBackers: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UpdatePledgeManagerState
+"""
+type UpdatePledgeManagerStatePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The updated Pledge Manager
+  """
+  pledgeManager: PledgeManager!
+}
+
+"""
+Autogenerated input type of UpdatePledgeManagerState
+"""
+input UpdatePledgeManagerStateInput {
+  """
+  Pledge Manager id
+  """
+  pledgeManagerId: ID!
+
+  """
+  New state for the Pledge Manager
+  """
+  state: String!
 
   """
   A unique identifier for the client performing the mutation.

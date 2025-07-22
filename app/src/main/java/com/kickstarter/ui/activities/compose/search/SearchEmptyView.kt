@@ -53,11 +53,15 @@ fun SearchEmptyView(
     activeFilters: Boolean = false
 ) {
 
-    val title = environment?.ksString()?.format(
-        stringResource(id = R.string.No_results_for_fpo),
-        "search_term",
-        currentSearchTerm
-    ) ?: stringResource(id = R.string.No_Results)
+    var title = if (currentSearchTerm.isNotEmpty()) {
+        environment?.ksString()?.format(
+            stringResource(id = R.string.No_results_for_fpo),
+            "search_term",
+            currentSearchTerm
+        ) ?: stringResource(id = R.string.No_Results)
+    } else {
+        stringResource(id = R.string.No_Results)
+    }
 
     Column(
         modifier = modifier

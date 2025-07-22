@@ -32,14 +32,8 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
             }
         }
 
-        val text = env.ksString()?.format(
-            context.resources.getString(R.string.No_results_for_fpo),
-            "search_term",
-            ""
-        ) ?: ""
-
         composeTestRule
-            .onNodeWithText(text)
+            .onNodeWithText(context.resources.getString(R.string.No_Results))
             .assertIsDisplayed()
 
         composeTestRule

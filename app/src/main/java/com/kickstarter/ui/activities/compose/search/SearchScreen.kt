@@ -422,6 +422,10 @@ fun SearchScreen(
                     currentSearchTerm = currentSearchTerm,
                     activeFilters = numbersActive > 0,
                     onClick = {
+                        selectedFilterCounts.keys.forEach { key ->
+                            selectedFilterCounts[key] = 0
+                        }
+
                         currentCategory.value = null
                         currentProjectState.value = null
                         currentPercentage.value = null

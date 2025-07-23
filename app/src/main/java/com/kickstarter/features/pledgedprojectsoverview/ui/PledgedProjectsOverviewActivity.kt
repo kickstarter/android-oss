@@ -102,9 +102,10 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
-                        onProjectPledgeSummaryClick = { url ->
+                        onProjectPledgeSummaryClick = { url, isPledgeManagement ->
                             openBackingDetailsWebView(
                                 url = url,
+                                toolbarTitle = if (isPledgeManagement) R.string.Pledge_manager else R.string.Backing_details,
                                 resultLauncher = null
                             )
                         },
@@ -137,6 +138,16 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                     env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts, PPOCard.surveyID ?: "")
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
+                                        toolbarTitle = R.string.Backing_details,
+                                        resultLauncher = startForResult
+                                    )
+                                }
+
+                                PPOCardViewType.PLEDGE_MANAGEMENT -> {
+                                    viewModel.sendFinalizePledgeCTAEvent(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    openBackingDetailsWebView(
+                                        url = PPOCard.webviewUrl ?: "",
+                                        toolbarTitle = R.string.Pledge_manager,
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -146,10 +157,14 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         },
                         onSecondaryActionButtonClicked = { PPOCard ->
                             when (PPOCard.viewType()) {
-                                PPOCardViewType.CONFIRM_ADDRESS -> {
+                                PPOCardViewType.CONFIRM_ADDRESS,
+                                PPOCardViewType.ADDRESS_CONFIRMED,
+                                PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
+                                -> {
                                     env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
+                                        toolbarTitle = R.string.Backing_details,
                                         resultLauncher = startForResult
                                     )
                                 }
@@ -157,7 +172,9 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 else -> { }
                             }
                         },
-                        v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
+                        v2Enabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false,
+                        onRewardReceivedChanged = { backingID, checked -> viewModel.onRewardRecievedChanged(backingID = backingID, checked = checked) },
+
                     )
                 }
 
@@ -193,17 +210,20 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
 
     private fun openBackingDetailsWebView(
         url: String,
+        toolbarTitle: Int,
         resultLauncher: ActivityResultLauncher<Intent>?
     ) {
         if (resultLauncher.isNotNull()) {
             resultLauncher?.launch(
                 Intent(this, BackingDetailsActivity::class.java)
                     .putExtra(IntentKey.URL, url)
+                    .putExtra(IntentKey.TOOLBAR_TITLE, this.getString(toolbarTitle))
             )
         } else {
             startActivity(
                 Intent(this, BackingDetailsActivity::class.java)
                     .putExtra(IntentKey.URL, url)
+                    .putExtra(IntentKey.TOOLBAR_TITLE, this.getString(toolbarTitle))
             )
         }
 

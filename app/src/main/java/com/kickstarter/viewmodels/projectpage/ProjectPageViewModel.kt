@@ -6,6 +6,7 @@ import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
@@ -35,15 +36,17 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.ProjectMetadata
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.backedReward
+import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.libs.utils.extensions.isFalse
-import com.kickstarter.libs.utils.extensions.isNonZero
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isOrderPresentAndComplete
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.isUIEmptyValues
 import com.kickstarter.libs.utils.extensions.metadataForProject
 import com.kickstarter.libs.utils.extensions.negate
+import com.kickstarter.libs.utils.extensions.pledgeManagementAvailable
+import com.kickstarter.libs.utils.extensions.secretRewardToken
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.updateProjectWith
 import com.kickstarter.libs.utils.extensions.userIsCreator
@@ -54,18 +57,27 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.ManagePledgeMenuOptions
 import com.kickstarter.ui.data.MediaElement
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.VideoModelElement
+import com.kickstarter.ui.helpers.createManagePledgeMenuOptions
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
 
@@ -143,6 +155,8 @@ interface ProjectPageViewModel {
         fun onVideoPlayButtonClicked()
 
         fun activityResult(result: ActivityResult)
+
+        fun continuePledgeFlow(callback: () -> Unit)
     }
 
     interface Outputs {
@@ -163,9 +177,6 @@ interface ProjectPageViewModel {
 
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
-
-        /** Emits a menu for managing your pledge or null if there's no menu. */
-        fun managePledgeMenu(): Observable<Int>
 
         /** Emits the color resource ID for the pledge action button. */
         fun pledgeActionButtonColor(): Observable<Int>
@@ -248,6 +259,9 @@ interface ProjectPageViewModel {
         /** Emits when user clicks View Pledge button and should start the [com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity.kt]. */
         fun openBackingDetailsWebview(): Observable<String>
 
+        /** Emits when user clicks Go to Pledge Manager button and should start the [com.kickstarter.ui.activities.WebViewActivity.kt]. */
+        fun openPledgeManagerWebview(): Observable<String>
+
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
 
@@ -271,6 +285,8 @@ interface ProjectPageViewModel {
         fun showLatePledgeFlow(): Observable<Boolean>
 
         fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>>
+
+        fun managePledgeMenuOptions(): Observable<ManagePledgeMenuOptions>
     }
 
     class ProjectPageViewModel(val environment: Environment) :
@@ -322,7 +338,6 @@ interface ProjectPageViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val goBack = PublishSubject.create<Unit>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val managePledgeMenu = BehaviorSubject.create<Int>()
         private val pledgeActionButtonColor = BehaviorSubject.create<Int>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeActionButtonText = BehaviorSubject.create<Int>()
@@ -354,6 +369,7 @@ interface ProjectPageViewModel {
             PublishSubject.create<Pair<Pair<String, String>, Pair<Project, ProjectData>>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val openBackingDetailsWebview = PublishSubject.create<String>()
+        private val openPledgeManagerWebview = PublishSubject.create<String>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
         private val hideVideoPlayer = BehaviorSubject.create<Boolean>()
         private val tabSelected = PublishSubject.create<Int>()
@@ -365,7 +381,8 @@ interface ProjectPageViewModel {
         private val updateVideoCloseSeekPosition = BehaviorSubject.create<Long>()
         private val showLatePledgeFlow = BehaviorSubject.create<Boolean>()
         private val showPledgeRedemptionScreen = BehaviorSubject.create<Pair<Project, User>>()
-
+        private val continuePledgeFlow = PublishSubject.create<() -> Unit>()
+        private val managePledgeMenuOptions = BehaviorSubject.create<ManagePledgeMenuOptions>()
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -641,6 +658,7 @@ interface ProjectPageViewModel {
                 .distinctUntilChanged()
                 .subscribe {
                     this.projectData.onNext(it)
+
                     val showEnvironmentalTab = it.project().envCommitments()?.isNotEmpty() ?: false
                     val tabConfigEnv = PagerTabConfig(
                         ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT,
@@ -655,6 +673,30 @@ interface ProjectPageViewModel {
                 }
                 .addToDisposable(disposables)
 
+            viewModelScope.launch {
+                runCatching {
+                    currentUser.observable()
+                        .asFlow()
+                        .combine(currentProjectData.asFlow()) { user, projectData ->
+                            if (user.isPresent()) {
+                                val deeplink = projectData.fullDeeplink()
+                                val token = deeplink?.takeIf { it.hasSecretRewardToken() }
+                                    ?.secretRewardToken()
+                                token?.let { Pair(projectData.project(), token) }
+                            } else {
+                                null
+                            }
+                        }
+                        .filterNotNull()
+                        .take(1)
+                        .distinctUntilChanged()
+                        .collectLatest { pair ->
+                            val project = pair.first
+                            val token = pair.second
+                            apolloClient.addUserToSecretRewardGroup(project, token)
+                        }
+                }
+            }
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
                 .map {
@@ -772,15 +814,23 @@ interface ProjectPageViewModel {
                 .withLatestFrom(currentProject) { _, project -> project }
                 .subscribe { project ->
                     val netNewBackFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_COMPLETED_PM_CHECKOUT_WEBVIEW) ?: false
+                    val goToPMWebviewFeatureFlag = featureFlagClient?.getBoolean(FlagKey.ANDROID_NET_NEW_BACKER_GO_TO_PM_WEBVIEW) ?: false
+
                     if (project.backing()?.isOrderPresentAndComplete() ?: false && netNewBackFeatureFlag) {
                         // Open webview to backing/survey_responses endpoint instead of backing/details
                         // endpoint to avoid prompting user to re-login
                         project.backing()?.backingDetailsPageRoute()?.let {
                             openBackingDetailsWebview.onNext(it)
                         }
+                    } else if (project.pledgeManagementAvailable() && goToPMWebviewFeatureFlag) {
+                        project.redemptionPageUrl()?.let { path ->
+                            val redemptionPageUrl = UrlUtils.appendPath(environment.webEndpoint(), path)
+                            openPledgeManagerWebview.onNext(redemptionPageUrl)
+                        }
                     } else {
-                        // Open native view pledge screen
-                        this.expandPledgeSheet.onNext(Pair(true, true))
+                        this.continuePledgeFlow.onNext {
+                            expandPledgeSheet.onNext(Pair(true, true))
+                        }
                     }
                 }
                 .addToDisposable(disposables)
@@ -840,10 +890,9 @@ interface ProjectPageViewModel {
                 .addToDisposable(disposables)
 
             currentProject
-                .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
-                .map { managePledgeMenu(it) }
+                .map { createManagePledgeMenuOptions(it, ffClient) }
                 .distinctUntilChanged()
-                .subscribe { this.managePledgeMenu.onNext(it) }
+                .subscribe { managePledgeMenuOptions.onNext(it) }
                 .addToDisposable(disposables)
 
             currentProjectData
@@ -1150,6 +1199,25 @@ interface ProjectPageViewModel {
                 .subscribe {
                     backingViewGroupIsVisible.onNext(false)
                 }.addToDisposable(disposables)
+
+            continuePledgeFlow
+                .flatMap { callback ->
+                    currentUser.observable()
+                        .take(1)
+                        .flatMap { user ->
+                            if (user.isPresent()) {
+                                Observable.just(callback)
+                            } else {
+                                startLoginToutActivity.onNext(Unit)
+                                currentUser.observable()
+                                    .filter { it.isPresent() }
+                                    .take(1)
+                                    .map { callback }
+                            }
+                        }
+                }
+                .subscribe { callback -> callback() }
+                .addToDisposable(disposables)
         }
 
         override fun onCleared() {
@@ -1168,25 +1236,6 @@ interface ProjectPageViewModel {
                 ProjectPagerTabs.ENVIRONMENTAL_COMMITMENT.ordinal -> ENVIRONMENT.contextName
                 else -> OVERVIEW.contextName
             }
-
-        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int {
-            val project = projectAndFragmentStackCount.first
-            val count = projectAndFragmentStackCount.second
-            val isPledgeOverTimeEnabled =
-                featureFlagClient.getBoolean(FlagKey.ANDROID_PLEDGE_OVER_TIME) && project.isPledgeOverTimeAllowed() == true && project.backing()?.incremental() == true
-            return when {
-                !project.isBacking() || count.isNonZero() -> 0
-                project.isLive -> when {
-                    isPledgeOverTimeEnabled -> R.menu.manage_pledge_plot_selected
-                    project.backing()
-                        ?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
-
-                    else -> R.menu.manage_pledge_live
-                }
-
-                else -> R.menu.manage_pledge_ended
-            }
-        }
 
         private fun pledgeData(
             reward: Reward,
@@ -1346,8 +1395,6 @@ interface ProjectPageViewModel {
 
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
-        override fun managePledgeMenu(): Observable<Int> = this.managePledgeMenu
-
         override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
 
         override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> =
@@ -1413,6 +1460,9 @@ interface ProjectPageViewModel {
         override fun openBackingDetailsWebview(): Observable<String> =
             this.openBackingDetailsWebview
 
+        override fun openPledgeManagerWebview(): Observable<String> =
+            this.openPledgeManagerWebview
+
         override fun onOpenVideoInFullScreen(): Observable<kotlin.Pair<String, Long>> =
             this.onOpenVideoInFullScreen
 
@@ -1433,6 +1483,13 @@ interface ProjectPageViewModel {
 
         override fun showPledgeRedemptionScreen(): Observable<Pair<Project, User>> =
             this.showPledgeRedemptionScreen
+
+        override fun managePledgeMenuOptions(): Observable<ManagePledgeMenuOptions> =
+            this.managePledgeMenuOptions
+
+        override fun continuePledgeFlow(callback: () -> Unit) {
+            this.continuePledgeFlow.onNext(callback)
+        }
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

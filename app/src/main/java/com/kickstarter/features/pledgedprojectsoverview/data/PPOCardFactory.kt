@@ -90,6 +90,34 @@ class PPOCardFactory private constructor() {
             )
         }
 
+        fun addressConfirmed(): PPOCard {
+            return ppoCard(
+                backingID = "1234",
+                amount = "12.0",
+                deliveryAddress = deliveryAddress(
+                    addressID = "12234",
+                    addressLine1 = "123 First Street, Apt #5678",
+                    addressLine2 = null,
+                    city = "Los Angeles",
+                    region = "CA",
+                    postalCode = "90025-1234",
+                    countryCode = "United States",
+                    phoneNumber = "(555) 555-5555",
+                    recipientName = "Firsty Lasty"
+                ),
+                currencySymbol = "$",
+                currencyCode = CurrencyCode.USD,
+                projectName = "Super Duper Project",
+                projectId = "123456",
+                projectSlug = "hello/hello",
+                imageUrl = "image/url",
+                creatorName = "creatorName",
+                backingDetailsUrl = "backing/details/url",
+                timeNumberForAction = 10,
+                viewType = PPOCardViewType.ADDRESS_CONFIRMED
+            )
+        }
+
         fun fixPaymentCard(): PPOCard {
             return ppoCard(
                 backingID = "1234",
@@ -144,6 +172,35 @@ class PPOCardFactory private constructor() {
                 backingDetailsUrl = "backing/details/url",
                 timeNumberForAction = 7,
                 viewType = PPOCardViewType.AUTHENTICATE_CARD
+            )
+        }
+
+        fun pledgeManagementCard(): PPOCard {
+            // 3ds card
+            return ppoCard(
+                backingID = "1234",
+                amount = "15.00",
+                deliveryAddress = deliveryAddress(
+                    addressID = "12234",
+                    addressLine1 = "123 First Street, Apt #5678",
+                    addressLine2 = null,
+                    city = "Los Angeles",
+                    region = "CA",
+                    postalCode = "90025-1234",
+                    countryCode = "United States",
+                    phoneNumber = "(555) 555-5555",
+                    recipientName = "Firsty Lasty"
+                ),
+                currencySymbol = "$",
+                currencyCode = CurrencyCode.USD,
+                projectName = "Super Duper Project",
+                projectId = "12345",
+                projectSlug = "project/slug",
+                imageUrl = "image/url",
+                creatorName = "Creator Name",
+                backingDetailsUrl = "backing/details/url",
+                timeNumberForAction = 7,
+                viewType = PPOCardViewType.PLEDGE_MANAGEMENT
             )
         }
     }

@@ -9,6 +9,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import kotlinx.coroutines.CoroutineDispatcher
@@ -107,14 +108,28 @@ class SearchAndFilterViewModel(
         category: Category? = null,
         projectSort: DiscoveryParams.Sort,
         projectState: DiscoveryParams.State? = null,
-        raisedBucket: DiscoveryParams.RaisedBuckets? = null
+        percentageBucket: DiscoveryParams.RaisedBuckets? = null,
+        location: Location? = null,
+        amountBucket: DiscoveryParams.AmountBuckets? = null,
+        goalBucket: DiscoveryParams.GoalBuckets? = null,
+        recommended: Boolean = false,
+        projectsLoved: Boolean = false,
+        savedProjects: Boolean = false,
+        social: Boolean = false
     ) {
         val update = params.value.toBuilder()
             .apply {
                 this.category(category)
                 this.sort(projectSort)
                 this.state(projectState)
-                this.raisedBucket(raisedBucket)
+                this.raisedBucket(percentageBucket)
+                this.location(location)
+                this.amountBucket(amountBucket)
+                this.goalBucket(goalBucket)
+                this.recommended(if (recommended) true else null)
+                this.staffPicks(if (projectsLoved) true else null)
+                this.starred(if (savedProjects) 1 else null)
+                this.social(if (social) 1 else null)
             }
             .build()
 

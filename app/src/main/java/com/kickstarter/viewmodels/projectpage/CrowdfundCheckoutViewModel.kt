@@ -65,7 +65,7 @@ data class CheckoutUIState(
     val shippingRule: ShippingRule? = null,
     val showPlotWidget: Boolean = false,
     val plotEligible: Boolean = false,
-    val isIncrementalPledge: Boolean = false,
+    val isIncrementalPledge: Boolean? = null,
     val paymentIncrements: List<PaymentIncrement>? = null
 )
 
@@ -93,7 +93,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     private var totalAmount = 0.0
     private var bonusAmount = 0.0
     private var thirdPartyEventSent = Pair(false, "")
-    private var incrementalPledge = false
+    private var incrementalPledge: Boolean? = null
     private var showPlotWidget: Boolean = false
     private var plotEligible: Boolean = false
     private var paymentIncrements: List<PaymentIncrement>? = null
@@ -155,6 +155,24 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
      */
     fun getPledgeReason() = this.pledgeReason
 
+    /**
+     * Takes the arguments from the ArgumentsKey.PLEDGE_PLEDGE_DATA and ArgumentsKey.PLEDGE_PLEDGE_REASON
+     * from the Bundle.
+     *
+     * Set the pledgeData and pledgeReason, these values will be used for several functions on this viewmodel.
+     * This method is called from the [com.kickstarter.ui.fragments.projectpage.CheckoutFragment.onCreate]
+     *
+     * @param arguments the bundle coming from the previous screen
+     *  - PledgeData (Parcelable)
+     *  - PledgeReason (Serializable)
+     *
+     *  The method will also extract from PledgeData the Project and its backing information.
+     *  The method will also extract the refTag.
+     *  The method will also trigger the proper method to extract information from either the backing or the pledgeData.
+     *  The method will also trigger the user information collection.
+     *  The method will also trigger the page viewed event.
+     *  The method will also trigger the payment plan build if the project is eligible.
+     */
     fun provideBundle(arguments: Bundle?) {
         val pData = arguments?.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
         pledgeReason = arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason?
@@ -403,9 +421,32 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     fun isThirdPartyEventSent(): Pair<Boolean, String> = this.thirdPartyEventSent
 
     /**
-     * Called when user hits pledge button
+     * Called when the user hits the pledge button.
+     *
+     * This function updates the selected payment method and incremental pledge status
+     * based on the provided parameters. It then emits the current state of the UI.
+     *
+     * Finally, it triggers either `createBacking()` or `updateBacking()` based on the
+     * `pledgeReason`.
+     *
+     * @param selectedCard The card selected by the user for payment. Can be null if no card is selected.
+     * @param isIncremental A boolean indicating whether the pledge is incremental.
+     *                      This is only considered if the project allows incremental pledges.
+     *                      Can be null.
      */
-    fun pledgeOrUpdatePledge() {
+    fun pledgeOrUpdatePledge(selectedCard: StoredCard?, isIncremental: Boolean?) {
+        selectedCard?.let {
+            selectedPaymentMethod = it
+        }
+        incrementalPledge = if (project.isPledgeOverTimeAllowed() == true) {
+            isIncremental
+        } else {
+            null
+        }
+        scope.launch {
+            emitCurrentState()
+        }
+
         scope.launch(dispatcher) {
             when (pledgeReason) {
                 PledgeReason.PLEDGE -> createBacking()
@@ -466,7 +507,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                             amount = null,
                             locationId = null,
                             rewardsList = null,
-                            pMethod = selectedPaymentMethod
+                            pMethod = selectedPaymentMethod,
+                            incremental = null
                         )
                     } else {
                         // Non-PLOT: send the payment method, locationId, and rewards
@@ -484,7 +526,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                             amount = null,
                             locationId = locationId,
                             rwl,
-                            pMethod = selectedPaymentMethod
+                            pMethod = selectedPaymentMethod,
+                            incremental = null
                         )
                     }
                 }
@@ -505,7 +548,8 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
                         pledgeData?.checkoutTotalAmount().toString(),
                         locationId = locationIdOrNull,
                         rwListOrEmpty,
-                        selectedPaymentMethod
+                        null,
+                        incremental = incrementalPledge
                     )
                 }
                 PledgeReason.FIX_PLEDGE -> {

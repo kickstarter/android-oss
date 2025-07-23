@@ -6,6 +6,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue.Hidden
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
@@ -19,6 +20,8 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
 import com.kickstarter.models.Project
@@ -45,17 +48,21 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testEmptyComponentsVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = true,
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = true,
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -72,26 +79,30 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testPopularListComponentsVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = true,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = true,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -119,26 +130,30 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testSearchedListComponentsVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = false,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = false,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -163,17 +178,21 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testLoadingComponentsEmptyListVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = true,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = true,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -190,26 +209,30 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @Test
     fun testLoadingComponentsWithListVisible() {
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = true,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = false,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = {}
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = true,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = false,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {}
+                    )
+                }
             }
         }
 
@@ -238,26 +261,30 @@ class SearchScreenTest : KSRobolectricTestCase() {
         var itemClickedCount = 0
 
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { backClickedCount++ },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = false,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {},
-                    onItemClicked = { itemClickedCount++ }
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { backClickedCount++ },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = false,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = { itemClickedCount++ }
+                    )
+                }
             }
         }
 
@@ -282,28 +309,32 @@ class SearchScreenTest : KSRobolectricTestCase() {
         var currentSearchTerm = ""
 
         composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
             KSTheme {
-                SearchScreen(
-                    onBackClicked = { },
-                    scaffoldState = rememberScaffoldState(),
-                    isLoading = false,
-                    lazyColumnListState = rememberLazyListState(),
-                    showEmptyView = false,
-                    isDefaultList = false,
-                    itemsList = List(20) {
-                        Project.builder()
-                            .name("This is a test $it")
-                            .pledged((it * 2).toDouble())
-                            .goal(20.0)
-                            .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                            .build()
-                    },
-                    categories = listOf(),
-                    onSearchTermChanged = {
-                        currentSearchTerm = it
-                    },
-                    onItemClicked = { }
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        scaffoldState = rememberScaffoldState(),
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = false,
+                        itemsList = List(20) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {
+                            currentSearchTerm = it
+                        },
+                        onItemClicked = { }
+                    )
+                }
             }
         }
 
@@ -314,43 +345,50 @@ class SearchScreenTest : KSRobolectricTestCase() {
     @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun `pager initial State, navigates to category row, then navigate back to filter menu page`() {
+        val categories = CategoryFactory.rootCategories()
+        val selectedStatus = DiscoveryParams.State.LIVE
 
+        val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
+        val dismissed = mutableListOf<Boolean>()
+        val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
         var page = 0
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
+
         composeTestRule.setContent {
-            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
+            val testPagerState = rememberPagerState(
+                initialPage = FilterPages.MAIN_FILTER.ordinal,
+                pageCount = { FilterPages.values().size }
+            )
             val testSheetState = rememberModalBottomSheetState(
                 initialValue = Hidden,
                 skipHalfExpanded = true
             )
-
-            val categories = CategoryFactory.rootCategories()
-            val selectedStatus = DiscoveryParams.State.LIVE
-
-            val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
-            val dismissed = mutableListOf<Boolean>()
-            val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
-
             KSTheme {
-
-                FilterPagerSheet(
-                    selectedProjectStatus = selectedStatus,
-                    currentCategory = categories[0],
-                    categories = categories,
-                    onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, _ -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount, _ ->
-                        selectedCounts.add(
-                            statusCount to categoryCount
-                        )
-                    },
-                    pagerState = testPagerState,
-                    sheetState = testSheetState,
-                    shouldShowPhase = true
-                )
-            }
-
-            LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context
-                page = testPagerState.currentPage
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterPagerSheet(
+                        selectedProjectStatus = selectedStatus,
+                        currentCategory = categories[0],
+                        categories = categories,
+                        onDismiss = { dismissed.add(true) },
+                        onApply = { state, category, _, _, _, _, _, _, _, _ ->
+                            appliedFilters.add(
+                                Pair(state, category)
+                            )
+                        },
+                        updateSelectedCounts = { statusCount, categoryCount, _, _, _, _, _, _, _, _ ->
+                            selectedCounts.add(
+                                statusCount to categoryCount
+                            )
+                        },
+                        pagerState = testPagerState,
+                        sheetState = testSheetState,
+                        shouldShowPhase = true
+                    )
+                }
+                LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context
+                    page = testPagerState.currentPage
+                }
             }
         }
 
@@ -379,6 +417,9 @@ class SearchScreenTest : KSRobolectricTestCase() {
         val dismissed = mutableListOf<Boolean>()
         val selectedCounts = mutableListOf<Int?>()
 
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
+
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
             val testSheetState = rememberModalBottomSheetState(
@@ -387,27 +428,42 @@ class SearchScreenTest : KSRobolectricTestCase() {
             )
 
             KSTheme {
-
-                FilterPagerSheet(
-                    selectedProjectStatus = DiscoveryParams.State.LIVE,
-                    currentCategory = categories[0],
-                    categories = categories,
-                    currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2,
-                    onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, bucket ->
-                        appliedFilters.add(state)
-                        appliedFilters.add(category)
-                        appliedFilters.add(bucket)
-                    },
-                    updateSelectedCounts = { statusCount, categoryCount, bucket ->
-                        selectedCounts.add(statusCount)
-                        selectedCounts.add(categoryCount)
-                        selectedCounts.add(bucket)
-                    },
-                    pagerState = testPagerState,
-                    sheetState = testSheetState,
-                    shouldShowPhase = true
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterPagerSheet(
+                        selectedProjectStatus = DiscoveryParams.State.LIVE,
+                        currentCategory = categories[0],
+                        categories = categories,
+                        currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2,
+                        onDismiss = { dismissed.add(true) },
+                        onApply = { state, category, bucket, location, amountBucket, recommended, projectsLoved, saved, social, goalBucket ->
+                            appliedFilters.add(state)
+                            appliedFilters.add(category)
+                            appliedFilters.add(bucket)
+                            appliedFilters.add(location)
+                            appliedFilters.add(amountBucket)
+                            appliedFilters.add(recommended)
+                            appliedFilters.add(projectsLoved)
+                            appliedFilters.add(saved)
+                            appliedFilters.add(social)
+                            appliedFilters.add(goalBucket)
+                        },
+                        updateSelectedCounts = { statusCount, categoryCount, bucket, location, amountCount, recommended, projectsLoved, saved, social, goal ->
+                            selectedCounts.add(statusCount)
+                            selectedCounts.add(categoryCount)
+                            selectedCounts.add(bucket)
+                            appliedFilters.add(location)
+                            appliedFilters.add(amountCount)
+                            appliedFilters.add(goal)
+                            appliedFilters.add(recommended)
+                            appliedFilters.add(projectsLoved)
+                            appliedFilters.add(saved)
+                            appliedFilters.add(social)
+                        },
+                        pagerState = testPagerState,
+                        sheetState = testSheetState,
+                        shouldShowPhase = true
+                    )
+                }
             }
         }
 
@@ -421,51 +477,19 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithText(context.resources.getString(R.string.Reset_all_filters))
             .performClick()
 
-        assertEquals(appliedFilters.filterNotNull().size, 0)
+        assertEquals(appliedFilters.filterNotNull().last(), 0)
         assertEquals(selectedCounts.last(), 0)
     }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test
-    fun `Pager with phase4 ffOff, does not display percentage raised row`() {
-
-        val categories = CategoryFactory.rootCategories()
-        val selectedStatus = DiscoveryParams.State.LIVE
-
-        composeTestRule.setContent {
-            val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
-            val testSheetState = rememberModalBottomSheetState(
-                initialValue = Hidden,
-                skipHalfExpanded = true
-            )
-
-            KSTheme {
-
-                FilterPagerSheet(
-                    selectedProjectStatus = selectedStatus,
-                    currentCategory = categories[0],
-                    categories = categories,
-                    onDismiss = { },
-                    onApply = { _, _, _ -> },
-                    updateSelectedCounts = { _, _, _ ->
-                    },
-                    pagerState = testPagerState,
-                    sheetState = testSheetState,
-                    shouldShowPhase = false
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag(FilterMenuTestTags.PERCENTAGE_RAISED_ROW).assertDoesNotExist()
-    }
-
-    @OptIn(ExperimentalMaterialApi::class)
-    @Test
-    fun `Pager with phase4 ffOn, does display percentage raised row, can navigate to PercentageRaised screen then navigate back`() {
+    fun `Pager with phase4, does display percentage raised row, can navigate to PercentageRaised screen then navigate back`() {
 
         var page = 0
         val categories = CategoryFactory.rootCategories()
         val selectedStatus = DiscoveryParams.State.LIVE
+        val env = environment()
+        val fakeViewModel = FilterMenuViewModel(env)
 
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
@@ -475,19 +499,20 @@ class SearchScreenTest : KSRobolectricTestCase() {
             )
 
             KSTheme {
-
-                FilterPagerSheet(
-                    selectedProjectStatus = selectedStatus,
-                    currentCategory = categories[0],
-                    categories = categories,
-                    onDismiss = { },
-                    onApply = { _, _, _ -> },
-                    updateSelectedCounts = { _, _, _ ->
-                    },
-                    pagerState = testPagerState,
-                    sheetState = testSheetState,
-                    shouldShowPhase = true
-                )
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    FilterPagerSheet(
+                        selectedProjectStatus = selectedStatus,
+                        currentCategory = categories[0],
+                        categories = categories,
+                        onDismiss = { },
+                        onApply = { _, _, _, _, _, _, _, _, _, _ -> },
+                        updateSelectedCounts = { _, _, _, _, _, _, _, _, _, _ ->
+                        },
+                        pagerState = testPagerState,
+                        sheetState = testSheetState,
+                        shouldShowPhase = true
+                    )
+                }
             }
 
             LaunchedEffect(testPagerState.currentPage) { // Update page counter outside compose context

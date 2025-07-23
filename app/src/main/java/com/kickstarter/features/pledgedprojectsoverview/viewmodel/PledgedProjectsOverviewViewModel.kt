@@ -9,16 +9,21 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import androidx.paging.filter
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.pledgedprojectsoverview.extensions.isTier2Type
+import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.mutations.CreateOrUpdateBackingAddressData
+import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -98,7 +103,7 @@ class PledgedProjectsOverviewViewModel(
     private var snackbarMessage: (stringID: Int, type: String, duration: SnackbarDuration) -> Unit = { _, _, _ -> }
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analyticEvents = requireNotNull(environment.analytics())
-
+    private var isV2Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
     val totalAlertsState = mutableTotalAlerts.asStateFlow()
 
@@ -145,6 +150,11 @@ class PledgedProjectsOverviewViewModel(
                     pagingSource
                 }
                     .flow
+                    .map { pagingData ->
+                        pagingData.filter {
+                            if (!isV2Enabled) !(it.viewType ?: PPOCardViewType.UNKNOWN).isTier2Type() else true
+                        }
+                    }
                     .onStart {
                         emitCurrentState(isLoading = true)
                     }.catch {
@@ -178,6 +188,22 @@ class PledgedProjectsOverviewViewModel(
                     }.catch {
                         showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
                     }.onCompletion {
+                        emitCurrentState()
+                    }.collect()
+            }
+    }
+
+    fun onRewardRecievedChanged(backingID: String, checked: Boolean) {
+        val input = UpdateBackerCompletedData(backingID = backingID, backerCompleted = checked)
+        viewModelScope
+            .launch(ioDispatcher) {
+                apolloClient
+                    .updateBackerCompleted(input)
+                    .asFlow()
+                    .catch {
+                        showErrorSnackbar(R.string.Something_went_wrong_please_try_again)
+                    }
+                    .onCompletion {
                         emitCurrentState()
                     }.collect()
             }
@@ -225,6 +251,14 @@ class PledgedProjectsOverviewViewModel(
 
     fun showErrorSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {
         snackbarMessage.invoke(messageId, KSSnackbarTypes.KS_ERROR.name, duration)
+    }
+
+    fun sendFinalizePledgeCTAEvent(projectID: String, ppoCards: List<PPOCard?>, totalCount: Int) {
+        this@PledgedProjectsOverviewViewModel.analyticEvents.trackPPOFinalizePledgeCTAClicked(
+            projectID = projectID,
+            ppoCards = ppoCards,
+            totalCount = totalCount
+        )
     }
 
     class Factory(

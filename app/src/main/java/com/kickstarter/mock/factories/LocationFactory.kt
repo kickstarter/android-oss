@@ -75,6 +75,16 @@ object LocationFactory {
             .build()
     }
 
+    fun vancouver(): Location {
+        return builder()
+            .id(9807)
+            .displayableName("Vancouver, Canada")
+            .name("Vancouver")
+            .country("Canada")
+            .state("BC")
+            .build()
+    }
+
     fun empty(): Location {
         return builder()
             .id(-1L)

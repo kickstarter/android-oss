@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.projectpage
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -79,6 +80,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             .asSharedFlow()
 
     fun provideProjectData(projectData: ProjectData) {
+        shippingRulesUseCase = null
         currentProjectData = projectData
         previousUserBacking =
             if (projectData.backing() != null) projectData.backing()
@@ -223,6 +225,19 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         }
 
         return false
+    }
+
+    /**
+     * Used for testing purposes.
+     *TODO:
+     * Remove this method when refactoring the view model so no need to use shippingRulesUseCase = null on provideProjectData
+     */
+    @VisibleForTesting
+    fun overrideShippingRulesUseCase(testUseCase: GetShippingRulesUseCase) {
+        shippingRulesUseCase = testUseCase
+        viewModelScope.launch {
+            emitShippingUIState()
+        }
     }
 
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :

@@ -14,6 +14,8 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardItemsAdapter
+import com.kickstarter.ui.compose.designsystem.KSSecretRewardBadge
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.AddOnViewHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -142,7 +144,40 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
     }
 
     private fun bindReward(projectAndReward: Pair<ProjectData, Reward>) {
-        this.viewModel.inputs.configureWith(projectAndReward.first, projectAndReward.second)
+        val project = projectAndReward.first
+        val reward = projectAndReward.second
+
+        viewModel.inputs.configureWith(project, reward)
+
+        val hasImage = reward.image()?.full()?.isNotEmpty() == true
+
+        val badgeOverImage = binding.secretBadgeComposeOverImage
+        val badgeAboveCard = binding.secretBadgeComposeAboveCard
+
+        if (reward.isSecretReward() == true) {
+            if (hasImage) {
+                badgeOverImage.visibility = View.VISIBLE
+                badgeAboveCard.visibility = View.GONE
+
+                badgeOverImage.setContent {
+                    KSTheme {
+                        KSSecretRewardBadge()
+                    }
+                }
+            } else {
+                badgeOverImage.visibility = View.GONE
+                badgeAboveCard.visibility = View.VISIBLE
+
+                badgeAboveCard.setContent {
+                    KSTheme {
+                        KSSecretRewardBadge()
+                    }
+                }
+            }
+        } else {
+            badgeOverImage.visibility = View.GONE
+            badgeAboveCard.visibility = View.GONE
+        }
     }
 
     private fun setUpItemAdapter(): RewardItemsAdapter {

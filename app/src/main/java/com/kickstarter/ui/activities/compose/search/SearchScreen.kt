@@ -64,6 +64,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.models.Category
+import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
@@ -106,8 +107,8 @@ fun PagerPreview() {
                 currentCategory = categories[0],
                 categories = categories,
                 onDismiss = { dismissed.add(true) },
-                onApply = { state, category, bucket -> appliedFilters.add(Pair(state, category)) },
-                updateSelectedCounts = { statusCount, categoryCount, raisedBucket ->
+                onApply = { state, category, bucket, location, amountBucket, _, _, _, _, goalBucket -> appliedFilters.add(Pair(state, category)) },
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount, _, _, _, _, goalBucketCount ->
                     selectedCounts.add(
                         statusCount to categoryCount
                     )
@@ -220,7 +221,20 @@ fun SearchScreen(
     categories: List<Category>,
     onSearchTermChanged: (String) -> Unit,
     onItemClicked: (Project) -> Unit,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?, DiscoveryParams.RaisedBuckets?) -> Unit = { category, sort, projectState, bucket -> },
+    onApplySearchWithParams: (
+        Category?,
+        DiscoveryParams.Sort?,
+        DiscoveryParams.State?,
+        DiscoveryParams.RaisedBuckets?,
+        Location?,
+        DiscoveryParams.AmountBuckets?,
+        Boolean,
+        Boolean,
+        Boolean,
+        Boolean,
+        DiscoveryParams.GoalBuckets?
+    ) -> Unit = { _, _, _, _, _, _, _, _, _, _, _ ->
+    },
     shouldShowPhase: Boolean = true
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -235,9 +249,17 @@ fun SearchScreen(
             FilterRowPillType.CATEGORY.name to 0,
             FilterRowPillType.FILTER.name to 0,
             FilterRowPillType.PROJECT_STATUS.name to 0,
-            FilterRowPillType.PERCENTAGE_RAISED.name to 0
+            FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+            FilterRowPillType.LOCATION.name to 0,
+            FilterRowPillType.AMOUNT_RAISED.name to 0,
+            FilterRowPillType.RECOMMENDED.name to 0,
+            FilterRowPillType.PROJECTS_LOVED.name to 0,
+            FilterRowPillType.SAVED.name to 0,
+            FilterRowPillType.FOLLOWING.name to 0,
+            FilterRowPillType.GOAL.name to 0
         )
     }
+
     val initialCategoryPillText = stringResource(R.string.Category)
     val categoryPillText = remember { mutableStateOf(initialCategoryPillText) }
 
@@ -246,9 +268,18 @@ fun SearchScreen(
 
     val currentSort = remember { mutableStateOf(DiscoveryParams.Sort.MAGIC) }
     val currentCategory = remember { mutableStateOf<Category?>(null) }
+
     val currentProjectState = remember { mutableStateOf<DiscoveryParams.State?>(null) }
     val currentPercentage = remember { mutableStateOf<DiscoveryParams.RaisedBuckets?>(null) }
+    val currentAmountRaised = remember { mutableStateOf<DiscoveryParams.AmountBuckets?>(null) }
+    val currentLocation = remember { mutableStateOf<Location?>(null) }
 
+    val currentStaffPicked = remember { mutableStateOf<Boolean>(false) }
+    val currentStarred = remember { mutableStateOf<Boolean>(false) }
+    val currentSocial = remember { mutableStateOf<Boolean>(false) }
+    val currentRecommended = remember { mutableStateOf<Boolean>(false) }
+
+    val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
 
     val activeBottomSheet = remember {
@@ -275,7 +306,7 @@ fun SearchScreen(
             activeBottomSheet,
             coroutineScope,
             currentCategory,
-            onDismissBottomSheet,
+            onDismissBottomSheet = onApplySearchWithParams,
             currentSort,
             currentProjectState,
             categories,
@@ -288,6 +319,13 @@ fun SearchScreen(
             mainFilterMenuState,
             pagerState,
             currentPercentage = currentPercentage,
+            currentLocation = currentLocation,
+            currentAmountRaised = currentAmountRaised,
+            currentRecommended = currentRecommended,
+            currentProjectsLoved = currentStaffPicked,
+            currentSavedProjects = currentStarred,
+            currentFollowing = currentSocial,
+            currentGoal = currentGoal,
             shouldShowPhase = shouldShowPhase
         ),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -316,18 +354,54 @@ fun SearchScreen(
                         categoryPillText = categoryPillText.value,
                         onBackPressed = onBackClicked,
                         projectStatusText = projectStatusPill.value,
+                        percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
+                        locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location_fpo),
+                        amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised_fpo),
+                        goalText = currentGoal.value?.let { textForBucket(it) } ?: stringResource(R.string.Goal_fpo),
+                        recommendedStatus = currentRecommended,
+                        projectsLovedStatus = currentStaffPicked,
+                        savedProjects = currentStarred,
+                        following = currentSocial,
                         onValueChanged = {
                             onSearchTermChanged.invoke(it)
                             currentSearchTerm = it
                         },
                         selectedFilterCounts = selectedFilterCounts,
-                        onPillPressed = onPillPressed(
+                        onPillPressedOpensBottomSheet = onPillPressedOpensBottomSheet(
                             activeBottomSheet,
                             coroutineScope,
                             sortSheetState,
                             mainFilterMenuState,
                             pagerState
                         ),
+                        onPillPressedShowOnlyToggles = { rowPillType, value ->
+                            selectedFilterCounts[rowPillType.name] = if (value) 1 else 0
+                            val total = selectedFilterCounts[FilterRowPillType.FILTER.name] ?: 0
+                            selectedFilterCounts[FilterRowPillType.FILTER.name] = if (value) total + 1 else total - 1
+
+                            when (rowPillType) {
+                                FilterRowPillType.RECOMMENDED -> currentRecommended.value = value
+                                FilterRowPillType.PROJECTS_LOVED -> currentStaffPicked.value = value
+                                FilterRowPillType.SAVED -> currentStarred.value = value
+                                FilterRowPillType.FOLLOWING -> currentSocial.value = value
+                                else -> {
+                                    // Other pills open bottomSheet, handled in onPillPressed
+                                }
+                            }
+                            onApplySearchWithParams(
+                                currentCategory.value,
+                                currentSort.value,
+                                currentProjectState.value,
+                                currentPercentage.value,
+                                currentLocation.value,
+                                currentAmountRaised.value,
+                                currentRecommended.value,
+                                currentStaffPicked.value,
+                                currentStarred.value,
+                                currentSocial.value,
+                                currentGoal.value
+                            )
+                        },
                         shouldShowPhase = shouldShowPhase
                     )
                 }
@@ -335,12 +409,47 @@ fun SearchScreen(
             backgroundColor = colors.kds_white
         ) { padding ->
             if (showEmptyView) {
+                var numbersActive = 0
+                selectedFilterCounts.entries.map { entry ->
+                    numbersActive += entry.value
+                }
+
                 SearchEmptyView(
                     modifier = Modifier
                         .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
                         .background(colors.backgroundSurfaceSecondary),
                     environment = environment,
-                    currentSearchTerm = currentSearchTerm
+                    currentSearchTerm = currentSearchTerm,
+                    activeFilters = numbersActive > 0,
+                    onClick = {
+                        selectedFilterCounts.keys.forEach { key ->
+                            selectedFilterCounts[key] = 0
+                        }
+
+                        currentCategory.value = null
+                        currentProjectState.value = null
+                        currentPercentage.value = null
+                        currentLocation.value = null
+                        currentAmountRaised.value = null
+                        currentRecommended.value = false
+                        currentStaffPicked.value = false
+                        currentStarred.value = false
+                        currentSocial.value = false
+                        currentGoal.value = null
+                        onApplySearchWithParams(
+                            currentCategory.value,
+                            currentSort.value,
+                            currentProjectState.value,
+                            currentPercentage.value,
+                            currentLocation.value,
+                            currentAmountRaised.value,
+                            currentRecommended.value,
+                            currentStaffPicked.value,
+                            currentStarred.value,
+                            currentSocial.value,
+                            currentGoal.value
+                        )
+                    }
                 )
             } else {
                 LazyColumn(
@@ -446,7 +555,10 @@ fun SearchScreen(
 enum class FilterPages {
     MAIN_FILTER,
     CATEGORIES,
-    PERCENTAGE_RAISED
+    PERCENTAGE_RAISED,
+    LOCATION,
+    AMOUNT_RAISED,
+    GOAL
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -456,9 +568,38 @@ fun FilterPagerSheet(
     currentCategory: Category?,
     categories: List<Category>,
     currentPercentage: DiscoveryParams.RaisedBuckets? = null,
+    currentLocation: Location? = null,
+    currentAmountRaised: DiscoveryParams.AmountBuckets? = null,
+    currentGoal: DiscoveryParams.GoalBuckets? = null,
+    currentRecommended: MutableState<Boolean> = remember { mutableStateOf(false) },
+    currentProjectsLoved: MutableState<Boolean> = remember { mutableStateOf(false) },
+    currentSavedProjects: MutableState<Boolean> = remember { mutableStateOf(false) },
+    currentFollowing: MutableState<Boolean> = remember { mutableStateOf(false) },
     onDismiss: () -> Unit,
-    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?) -> Unit,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
+    onApply: (
+        DiscoveryParams.State?,
+        Category?,
+        DiscoveryParams.RaisedBuckets?,
+        Location?,
+        DiscoveryParams.AmountBuckets?,
+        Boolean,
+        Boolean,
+        Boolean,
+        Boolean,
+        DiscoveryParams.GoalBuckets?
+    ) -> Unit,
+    updateSelectedCounts: (
+        projectStatusCount: Int?,
+        categoryCount: Int?,
+        raisedBucketCount: Int?,
+        location: Int?,
+        amountBucket: Int?,
+        recommended: Int?,
+        projectsLoved: Int?,
+        savedProjects: Int?,
+        social: Int?,
+        goalBucket: Int?
+    ) -> Unit,
     pagerState: PagerState,
     sheetState: ModalBottomSheetState,
     shouldShowPhase: Boolean
@@ -466,8 +607,13 @@ fun FilterPagerSheet(
     val coroutineScope = rememberCoroutineScope()
     val category = remember { mutableStateOf(currentCategory) }
     val projectState = remember { mutableStateOf(selectedProjectStatus) }
-    val bucket = remember { mutableStateOf(currentPercentage) }
+    val percentageBucket = remember { mutableStateOf(currentPercentage) }
+    val location = remember { mutableStateOf(currentLocation) }
+    val amountRaised = remember { mutableStateOf(currentAmountRaised) }
+    val goal = remember { mutableStateOf(currentGoal) }
 
+    // - In case de bottomSheet is dismissed without the user pressing
+    // - see results button, should return to default states
     LaunchedEffect(!sheetState.isVisible) {
         coroutineScope.launch {
             if (currentCategory != category.value) {
@@ -478,8 +624,20 @@ fun FilterPagerSheet(
                 projectState.value = selectedProjectStatus
             }
 
-            if (currentPercentage != bucket.value) {
-                bucket.value = currentPercentage
+            if (currentPercentage != percentageBucket.value) {
+                percentageBucket.value = currentPercentage
+            }
+
+            if (currentLocation != location.value) {
+                location.value = currentLocation
+            }
+
+            if (currentAmountRaised != amountRaised.value) {
+                amountRaised.value = currentAmountRaised
+            }
+
+            if (currentGoal != goal.value) {
+                goal.value = currentGoal
             }
         }
     }
@@ -488,32 +646,59 @@ fun FilterPagerSheet(
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
-            .heightIn(min = dimensions.bottomSheetMinHeight, max = dimensions.bottomSheetMaxHeight),
+            .heightIn(
+                min = dimensions.bottomSheetMinHeight,
+                max = dimensions.bottomSheetMaxHeight
+            ),
         state = pagerState,
 
     ) { page ->
         when (page) {
-            FilterPages.MAIN_FILTER.ordinal -> FilterMenuBottomSheet(
+            FilterPages.MAIN_FILTER.ordinal -> FilterMenuSheet(
+                selectedLocation = currentLocation,
+                selectedPercentage = currentPercentage,
                 selectedProjectStatus = projectState.value,
+                selectedAmount = currentAmountRaised,
+                selectedCategory = currentCategory,
+                selectedRecommended = currentRecommended,
+                selectedProjectsLoved = currentProjectsLoved,
+                selectedSaved = currentSavedProjects,
+                selectedSocial = currentFollowing,
+                selectedGoal = currentGoal,
                 onDismiss = {
                     onDismiss.invoke()
                 },
-                onApply = { selectedProjectState, applyAndDismiss ->
+                onApply = { selectedProjectState, selectedRecommended, selectedProjectsLoved, selectedSaved, selectedSocial, applyAndDismiss ->
                     projectState.value = selectedProjectState
+                    currentRecommended.value = selectedRecommended
+                    currentProjectsLoved.value = selectedProjectsLoved
+                    currentSavedProjects.value = selectedSaved
+                    currentFollowing.value = selectedSocial
+
                     if (applyAndDismiss != null) {
                         // - Reset to default values
                         if (applyAndDismiss.isFalse()) {
                             category.value = null
-                            bucket.value = null
+                            percentageBucket.value = null
+                            location.value = null
+                            amountRaised.value = null
+                            goal.value = null
                         }
                         applyUserSelection(
-                            onApply,
-                            projectState.value,
-                            category.value,
-                            bucket = bucket.value,
-                            updateSelectedCounts,
-                            onDismiss,
-                            applyAndDismiss
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            goalBucket = goal.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss,
                         )
                     }
                 },
@@ -529,10 +714,28 @@ fun FilterPagerSheet(
                             pagerState.animateScrollToPage(FilterPages.PERCENTAGE_RAISED.ordinal)
                         }
                     }
+
+                    if (filterType == FilterType.LOCATION) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
+                        }
+                    }
+
+                    if (filterType == FilterType.AMOUNT_RAISED) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
+                        }
+                    }
+                    if (filterType == FilterType.GOAL) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
+                        }
+                    }
                 },
                 availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                else FilterType.values().asList().filter { it != FilterType.PERCENTAGE_RAISED }
+                else FilterType.values().asList().filter { it != FilterType.OTHERS }
             )
+
             FilterPages.CATEGORIES.ordinal -> CategorySelectionSheet(
                 onNavigate = {
                     coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
@@ -544,18 +747,55 @@ fun FilterPagerSheet(
                     category.value = selectedCategory
                     if (applyAndDismiss != null) {
                         applyUserSelection(
-                            onApply,
-                            projectState.value,
-                            category.value,
-                            bucket = bucket.value,
-                            updateSelectedCounts,
-                            onDismiss,
-                            applyAndDismiss
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
                         )
                     }
                 },
                 isLoading = false
             )
+
+            FilterPages.LOCATION.ordinal -> LocationSheet(
+                selectedLocation = currentLocation,
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { selLocation, applyAndDismiss ->
+                    location.value = selLocation
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
+                        )
+                    }
+                }
+            )
+
             FilterPages.PERCENTAGE_RAISED.ordinal -> PercentageRaisedSheet(
                 currentPercentage = DiscoveryParams.RaisedBuckets.fromString(currentPercentage?.name),
                 onNavigate = {
@@ -563,16 +803,81 @@ fun FilterPagerSheet(
                 },
                 onDismiss = onDismiss,
                 onApply = { selectedBucket, applyAndDismiss ->
-                    bucket.value = selectedBucket
+                    percentageBucket.value = selectedBucket
                     if (applyAndDismiss != null) {
                         applyUserSelection(
-                            onApply,
-                            projectState.value,
-                            category.value,
-                            bucket = bucket.value,
-                            updateSelectedCounts,
-                            onDismiss,
-                            applyAndDismiss
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
+                        )
+                    }
+                }
+            )
+
+            FilterPages.AMOUNT_RAISED.ordinal -> AmountRaisedSheet(
+                currentBucket = DiscoveryParams.AmountBuckets.fromString(currentAmountRaised?.name),
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { selectedBucket, applyAndDismiss ->
+                    amountRaised.value = selectedBucket
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
+                        )
+                    }
+                }
+            )
+
+            FilterPages.GOAL.ordinal -> GoalSheet(
+                currentGoalBucket = DiscoveryParams.GoalBuckets.fromString(currentGoal?.name),
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { selectedBucket, applyAndDismiss ->
+                    goal.value = selectedBucket
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
                         )
                     }
                 }
@@ -589,19 +894,67 @@ fun FilterPagerSheet(
  *  shouldDismiss = true -> user has pressed "See results" button on the footer. (Should dismiss bottomSheet).
  */
 private fun applyUserSelection(
-    onApply: (DiscoveryParams.State?, Category?, DiscoveryParams.RaisedBuckets?) -> Unit,
+    onApply: (
+        DiscoveryParams.State?,
+        Category?,
+        DiscoveryParams.RaisedBuckets?,
+        Location?,
+        DiscoveryParams.AmountBuckets?,
+        recommended: Boolean,
+        projectsLoved: Boolean,
+        savedProjects: Boolean,
+        social: Boolean,
+        goalBucket: DiscoveryParams.GoalBuckets?
+    ) -> Unit,
     projectState: DiscoveryParams.State?,
     category: Category?,
-    bucket: DiscoveryParams.RaisedBuckets?,
-    updateSelectedCounts: (projectStatusCount: Int?, categoryCount: Int?, raisedBucketCount: Int?) -> Unit,
+    location: Location?,
+    percentageRaisedBucket: DiscoveryParams.RaisedBuckets?,
+    amountRaisedBucket: DiscoveryParams.AmountBuckets?,
+    recommended: Boolean,
+    projectsLoved: Boolean,
+    savedProjects: Boolean,
+    social: Boolean,
+    goalBucket: DiscoveryParams.GoalBuckets?,
+    updateSelectedCounts: (
+        projectStatusCount: Int?,
+        categoryCount: Int?,
+        raisedBucketCount: Int?,
+        location: Int?,
+        amountBucketCount: Int?,
+        recommended: Int?,
+        projectsLoved: Int?,
+        savedProjects: Int?,
+        social: Int?,
+        goalBucketCount: Int?
+    ) -> Unit,
     onDismiss: () -> Unit,
     shouldDismiss: Boolean
 ) {
-    onApply(projectState, category, bucket)
+    onApply(
+        projectState,
+        category,
+        percentageRaisedBucket,
+        location,
+        amountRaisedBucket,
+        recommended,
+        projectsLoved,
+        savedProjects,
+        social,
+        goalBucket
+    )
+
     updateSelectedCounts(
         if (projectState != null) 1 else 0,
         if (category != null) 1 else 0,
-        if (bucket != null) 1 else 0
+        if (percentageRaisedBucket != null) 1 else 0,
+        if (location != null) 1 else 0,
+        if (amountRaisedBucket != null) 1 else 0,
+        if (recommended) 1 else 0,
+        if (projectsLoved) 1 else 0,
+        if (savedProjects) 1 else 0,
+        if (social) 1 else 0,
+        if (goalBucket != null) 1 else 0
     )
     if (shouldDismiss) {
         onDismiss.invoke()
@@ -610,7 +963,7 @@ private fun applyUserSelection(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun onPillPressed(
+private fun onPillPressedOpensBottomSheet(
     activeBottomSheet: MutableState<FilterRowPillType?>,
     coroutineScope: CoroutineScope,
     sortSheetState: ModalBottomSheetState,
@@ -623,7 +976,6 @@ private fun onPillPressed(
             FilterRowPillType.SORT -> coroutineScope.launch {
                 sortSheetState.show()
             }
-
             FilterRowPillType.FILTER,
             FilterRowPillType.PROJECT_STATUS -> {
                 coroutineScope.launch {
@@ -631,9 +983,17 @@ private fun onPillPressed(
                     mainFilterMenuState.show()
                 }
             }
+
             FilterRowPillType.CATEGORY -> {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(FilterPages.CATEGORIES.ordinal)
+                    mainFilterMenuState.show()
+                }
+            }
+
+            FilterRowPillType.LOCATION -> {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
                     mainFilterMenuState.show()
                 }
             }
@@ -644,6 +1004,26 @@ private fun onPillPressed(
                     mainFilterMenuState.show()
                 }
             }
+
+            FilterRowPillType.AMOUNT_RAISED -> {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
+                    mainFilterMenuState.show()
+                }
+            }
+
+            FilterRowPillType.GOAL -> {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
+                    mainFilterMenuState.show()
+                }
+            }
+            FilterRowPillType.SAVED,
+            FilterRowPillType.PROJECTS_LOVED,
+            FilterRowPillType.FOLLOWING,
+            FilterRowPillType.RECOMMENDED -> {
+                // Dealt in another callback, this ones do not open BottomSheet
+            }
         }
     }
 
@@ -653,7 +1033,19 @@ private fun sheetContent(
     activeBottomSheet: MutableState<FilterRowPillType?>,
     coroutineScope: CoroutineScope,
     currentCategory: MutableState<Category?>,
-    onDismissBottomSheet: (Category?, DiscoveryParams.Sort?, DiscoveryParams.State?, DiscoveryParams.RaisedBuckets?) -> Unit,
+    onDismissBottomSheet: (
+        Category?,
+        DiscoveryParams.Sort?,
+        DiscoveryParams.State?,
+        DiscoveryParams.RaisedBuckets?,
+        Location?,
+        DiscoveryParams.AmountBuckets?,
+        Boolean,
+        Boolean,
+        Boolean,
+        Boolean,
+        DiscoveryParams.GoalBuckets?
+    ) -> Unit,
     currentSort: MutableState<DiscoveryParams.Sort>,
     currentProjectState: MutableState<DiscoveryParams.State?>,
     categories: List<Category>,
@@ -666,6 +1058,13 @@ private fun sheetContent(
     menuSheetState: ModalBottomSheetState,
     pagerState: PagerState,
     currentPercentage: MutableState<DiscoveryParams.RaisedBuckets?>,
+    currentAmountRaised: MutableState<DiscoveryParams.AmountBuckets?>,
+    currentGoal: MutableState<DiscoveryParams.GoalBuckets?>,
+    currentLocation: MutableState<Location?> = mutableStateOf(null),
+    currentRecommended: MutableState<Boolean> = mutableStateOf(false),
+    currentProjectsLoved: MutableState<Boolean> = mutableStateOf(false),
+    currentSavedProjects: MutableState<Boolean> = mutableStateOf(false),
+    currentFollowing: MutableState<Boolean> = mutableStateOf(false),
     shouldShowPhase: Boolean = true
 ): @Composable() (ColumnScope.() -> Unit) {
     val liveString = stringResource(R.string.Project_status_live)
@@ -679,21 +1078,42 @@ private fun sheetContent(
             FilterRowPillType.CATEGORY,
             FilterRowPillType.PROJECT_STATUS,
             FilterRowPillType.PERCENTAGE_RAISED,
-            FilterRowPillType.FILTER, -> {
+            FilterRowPillType.LOCATION,
+            FilterRowPillType.AMOUNT_RAISED,
+            FilterRowPillType.RECOMMENDED,
+            FilterRowPillType.PROJECTS_LOVED,
+            FilterRowPillType.SAVED,
+            FilterRowPillType.FOLLOWING,
+            FilterRowPillType.GOAL,
+            FilterRowPillType.FILTER -> {
                 FilterPagerSheet(
                     sheetState = menuSheetState,
                     pagerState = pagerState,
                     selectedProjectStatus = currentProjectState.value,
                     currentCategory = currentCategory.value,
                     currentPercentage = currentPercentage.value,
+                    currentLocation = currentLocation.value,
+                    currentAmountRaised = currentAmountRaised.value,
+                    currentRecommended = currentRecommended,
+                    currentProjectsLoved = currentProjectsLoved,
+                    currentSavedProjects = currentSavedProjects,
+                    currentFollowing = currentFollowing,
+                    currentGoal = currentGoal.value,
                     categories = categories,
                     onDismiss = {
                         coroutineScope.launch { menuSheetState.hide() }
                     },
-                    onApply = { project, category, bucket ->
+                    onApply = { project, category, percentageBucket, location, amountRaisedBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
                         currentProjectState.value = project
                         currentCategory.value = category
-                        currentPercentage.value = bucket
+                        currentPercentage.value = percentageBucket
+                        currentLocation.value = location
+                        currentAmountRaised.value = amountRaisedBucket
+                        currentRecommended.value = recommended
+                        currentProjectsLoved.value = projectsLoved
+                        currentSavedProjects.value = savedProjects
+                        currentFollowing.value = following
+                        currentGoal.value = goalBucket
                         projectStatusPillText.value = when (project) {
                             DiscoveryParams.State.LIVE -> liveString
                             DiscoveryParams.State.SUCCESSFUL -> successfulString
@@ -702,11 +1122,31 @@ private fun sheetContent(
                             else -> defaultString
                         }
                         categoryPillText.value = category?.name() ?: initialCategoryPillText
-                        onDismissBottomSheet(currentCategory.value, currentSort.value, currentProjectState.value, currentPercentage.value)
+                        onDismissBottomSheet(
+                            currentCategory.value,
+                            currentSort.value,
+                            currentProjectState.value,
+                            currentPercentage.value,
+                            currentLocation.value,
+                            currentAmountRaised.value,
+                            currentRecommended.value,
+                            currentProjectsLoved.value,
+                            currentSavedProjects.value,
+                            currentFollowing.value,
+                            currentGoal.value
+                        )
                     },
-                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket ->
+                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
 
-                        selectedFilterCounts[FilterRowPillType.FILTER.name] = (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0)
+                        selectedFilterCounts[FilterRowPillType.FILTER.name] =
+                            (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0) +
+                            (location ?: 0) + (amountBucket ?: 0) +
+                            (if (currentRecommended.value.isTrue()) 1 else 0) +
+                            (if (currentProjectsLoved.value.isTrue()) 1 else 0) +
+                            (if (currentSavedProjects.value.isTrue()) 1 else 0) +
+                            (if (currentFollowing.value.isTrue()) 1 else 0) +
+                            (goalBucket ?: 0)
+
                         statusCount?.let {
                             selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
                         }
@@ -715,6 +1155,31 @@ private fun sheetContent(
                         }
                         raisedBucket?.let {
                             selectedFilterCounts[FilterRowPillType.PERCENTAGE_RAISED.name] = it
+                        }
+                        location?.let {
+                            selectedFilterCounts[FilterRowPillType.LOCATION.name] = it
+                        }
+                        amountBucket?.let {
+                            selectedFilterCounts[FilterRowPillType.AMOUNT_RAISED.name] = it
+                        }
+                        recommended?.let {
+                            selectedFilterCounts[FilterRowPillType.RECOMMENDED.name] =
+                                if (currentRecommended.value.isTrue()) 1 else 0
+                        }
+                        projectsLoved?.let {
+                            selectedFilterCounts[FilterRowPillType.PROJECTS_LOVED.name] =
+                                if (currentProjectsLoved.value.isTrue()) 1 else 0
+                        }
+                        savedProjects?.let {
+                            selectedFilterCounts[FilterRowPillType.SAVED.name] =
+                                if (currentSavedProjects.value.isTrue()) 1 else 0
+                        }
+                        following?.let {
+                            selectedFilterCounts[FilterRowPillType.FOLLOWING.name] =
+                                if (currentFollowing.value.isTrue()) 1 else 0
+                        }
+                        goalBucket?.let {
+                            selectedFilterCounts[FilterRowPillType.GOAL.name] = it
                         }
                     },
                     shouldShowPhase = shouldShowPhase
@@ -728,14 +1193,27 @@ private fun sheetContent(
                     onDismiss = { sort ->
                         currentSort.value = sort
                         coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet(currentCategory.value, sort, currentProjectState.value, currentPercentage.value)
+                        onDismissBottomSheet(
+                            currentCategory.value,
+                            sort,
+                            currentProjectState.value,
+                            currentPercentage.value,
+                            currentLocation.value,
+                            currentAmountRaised.value,
+                            currentRecommended.value,
+                            currentProjectsLoved.value,
+                            currentFollowing.value,
+                            currentFollowing.value,
+                            currentGoal.value
+                        )
 
                         selectedFilterCounts[FilterRowPillType.SORT.name] =
                             if (sort == DiscoveryParams.Sort.MAGIC) 0 else 1
                     }
                 )
             }
-            else -> {}
+
+            null -> {}
         }
     }
 }
@@ -751,22 +1229,43 @@ private fun modalBottomSheetState(
     FilterRowPillType.PROJECT_STATUS,
     FilterRowPillType.CATEGORY,
     FilterRowPillType.PERCENTAGE_RAISED,
+    FilterRowPillType.LOCATION,
+    FilterRowPillType.AMOUNT_RAISED,
+    FilterRowPillType.RECOMMENDED,
+    FilterRowPillType.PROJECTS_LOVED,
+    FilterRowPillType.SAVED,
+    FilterRowPillType.FOLLOWING,
+    FilterRowPillType.GOAL,
     FilterRowPillType.FILTER -> mainFilterMenuState
 
     null -> sortSheetState
 }
 
 @Composable
-fun getFundingInfoString(projectCardState: CardProjectState, environment: Environment?, project: Project): String {
+fun getFundingInfoString(
+    projectCardState: CardProjectState,
+    environment: Environment?,
+    project: Project
+): String {
     return when (projectCardState) {
         CardProjectState.LIVE -> environment?.ksString()?.let {
             NumberUtils.format(
                 project.deadlineCountdownValue(),
-            ) + " " + project.deadlineCountdownDetail(LocalContext.current, it) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+            ) + " " + project.deadlineCountdownDetail(
+                LocalContext.current,
+                it
+            ) + " • " + project.percentageFunded()
+                .toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
         }.toString()
-        CardProjectState.LATE_PLEDGES_ACTIVE -> stringResource(R.string.Late_pledges_active) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+
+        CardProjectState.LATE_PLEDGES_ACTIVE -> stringResource(R.string.Late_pledges_active) + " • " + project.percentageFunded()
+            .toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+
         CardProjectState.LAUNCHING_SOON -> stringResource(R.string.Launching_soon)
-        CardProjectState.ENDED_SUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
-        CardProjectState.ENDED_UNSUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded().toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+        CardProjectState.ENDED_SUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded()
+            .toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
+
+        CardProjectState.ENDED_UNSUCCESSFUL -> stringResource(R.string.Ended) + " • " + project.percentageFunded()
+            .toInt() + "% " + stringResource(id = R.string.discovery_baseball_card_stats_funded)
     }
 }

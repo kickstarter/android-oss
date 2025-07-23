@@ -40,11 +40,10 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun CategoryRowSelectedWithSubcategoriesPills() {
+private fun PercentageRaisedPreview() {
     KSTheme {
         PercentageRaisedSheet(
             onNavigate = {},
-            currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_0,
             onDismiss = {},
             onApply = { bucket, applyAndDismiss ->
             }
@@ -103,7 +102,7 @@ fun PercentageRaisedSheet(
                     )
 
                     Text(
-                        text = stringResource(R.string.Percentage_raised_fpo),
+                        text = stringResource(R.string.Percentage_raised),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
@@ -132,14 +131,14 @@ fun PercentageRaisedSheet(
                         }
                         .padding(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMedium),
                 ) {
-                    val validBuckets = DiscoveryParams.RaisedBuckets.values().filter { it != DiscoveryParams.RaisedBuckets.UNKNOWN }
+                    val validBuckets = DiscoveryParams.RaisedBuckets.values()
                     items(validBuckets) { bucket ->
                         Row(
                             modifier = Modifier.testTag(bucketTag(bucket))
                                 .padding(top = dimensions.paddingMediumSmall, bottom = dimensions.paddingMediumSmall)
                                 .clickable {
                                     selectedPercentage.value = bucket
-                                    onApply(selectedPercentage.value, false)
+                                    onApply(selectedPercentage.value, null)
                                 },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
@@ -176,7 +175,7 @@ fun PercentageRaisedSheet(
 }
 
 @Composable
-private fun textForBucket(bucket: DiscoveryParams.RaisedBuckets) = when (bucket) {
+fun textForBucket(bucket: DiscoveryParams.RaisedBuckets) = when (bucket) {
     DiscoveryParams.RaisedBuckets.BUCKET_2 -> stringResource(R.string.Percentage_raised_bucket_2)
     DiscoveryParams.RaisedBuckets.BUCKET_1 -> stringResource(R.string.Percentage_raised_bucket_1)
     DiscoveryParams.RaisedBuckets.BUCKET_0 -> stringResource(R.string.Percentage_raised_bucket_0)

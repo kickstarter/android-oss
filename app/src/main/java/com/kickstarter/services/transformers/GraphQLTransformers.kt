@@ -3,6 +3,7 @@ package com.kickstarter.services.transformers
 import com.apollographql.apollo3.api.Optional
 import com.google.android.gms.common.util.Base64Utils
 import com.google.gson.Gson
+import com.kickstarter.AddUserToSecretRewardGroupMutation
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CreateAttributionEventMutation
 import com.kickstarter.CreateOrUpdateBackingAddressMutation
@@ -23,6 +24,7 @@ import com.kickstarter.fragment.ProjectCard
 import com.kickstarter.fragment.RewardImage
 import com.kickstarter.fragment.SimilarProject
 import com.kickstarter.libs.Permission
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPresent
@@ -32,6 +34,7 @@ import com.kickstarter.models.AiDisclosure
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Category
+import com.kickstarter.models.CheckoutWave
 import com.kickstarter.models.Comment
 import com.kickstarter.models.EnvironmentalCommitment
 import com.kickstarter.models.Item
@@ -42,6 +45,7 @@ import com.kickstarter.models.PaymentIncrementAmount
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Photo
+import com.kickstarter.models.PledgeManager
 import com.kickstarter.models.Project
 import com.kickstarter.models.ProjectFaq
 import com.kickstarter.models.Relay
@@ -67,6 +71,7 @@ import com.kickstarter.type.CreateOrUpdateBackingAddressInput
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
+import com.kickstarter.type.PledgeManagerStateEnum
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
 import com.kickstarter.type.ThirdPartyEventItemInput
@@ -187,7 +192,7 @@ fun rewardTransformer(
     val localReceiptLocation = locationTransformer(rewardGr.localReceiptLocation?.location)
 
     val photo = getPhoto(rewardImage?.image?.url, rewardImage?.image?.altText)
-
+    val isSecretReward = rewardGr.audienceData.secret
     return Reward.builder()
         .title(title)
         .convertedMinimum(convertedAmount)
@@ -213,6 +218,7 @@ fun rewardTransformer(
         .backersCount(backersCount)
         .localReceiptLocation(localReceiptLocation)
         .image(photo)
+        .isSecretReward(isSecretReward)
         .build()
 }
 
@@ -322,6 +328,9 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     val isBacking = projectFragment?.backing?.backing?.let { true } ?: false
     val isPledgeOverTimeAllowed = projectFragment?.isPledgeOverTimeAllowed ?: false
     val isStarred = projectFragment?.isWatched ?: false
+    val lastWave = projectFragment?.lastWave?.lastWave?.let { checkoutWave ->
+        checkoutWaveTransformer(checkoutWave)
+    }
     val launchedAt = projectFragment?.launchedAt
     val location = locationTransformer(projectFragment?.location?.location)
     val name = projectFragment?.name
@@ -337,8 +346,12 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         }
     }
     val pledged = projectFragment?.pledged?.amount?.amount?.toDouble() ?: 0.0
+    val pledgeManager = projectFragment?.pledgeManager?.pledgeManager?.let { pledgeManager ->
+        pledgeManagerTransformer(projectFragment.pledgeManager.pledgeManager)
+    }
     val photo = getPhoto(projectFragment?.full?.image?.url, projectFragment?.full?.image?.altText)
     val projectNotice = projectFragment?.projectNotice
+    val redemptionPageUrl = projectFragment?.redemptionPageUrl
     val tags = mutableListOf<String>()
     projectFragment?.tagsCreative?.tags?.map { tags.add(it?.id ?: "") }
     projectFragment?.tagsDiscovery?.tags?.map { tags.add(it?.id ?: "") }
@@ -425,14 +438,17 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .isPledgeOverTimeAllowed(isPledgeOverTimeAllowed)
         .isStarred(isStarred)
         .lastUpdatePublishedAt(updatedAt)
+        .lastWave(lastWave)
         .launchedAt(launchedAt)
         .location(location)
         .name(name)
         .permissions(permission)
         .pledged(pledged)
+        .pledgeManager(pledgeManager)
         .photo(photo) // - now we get the full size for field from GraphQL, but V1 provided several image sizes
         .prelaunchActivated(prelaunchActivated)
         .projectNotice(projectNotice)
+        .redemptionPageUrl(redemptionPageUrl)
         .sendMetaCapiEvents(sendMetaCapiEvents)
         .sendThirdPartyEvents(sendThirdPartyEvents)
         .tags(tags)
@@ -602,6 +618,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .rewards("$url/rewards")
         .build()
     val urls = Urls.builder().web(urlsWeb).build()
+    val video = videoTransformer(projectFragment?.video?.video)
     val displayPrelaunch = (projectFragment?.isLaunched ?: false).negate()
     val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
     val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled ?: false
@@ -638,6 +655,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .urls(urls)
         .stateChangedAt(stateChangedAt)
         .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
+        .video(video)
         .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
         .build()
 }
@@ -898,7 +916,27 @@ fun projectTransformer(similarProjectFragment: SimilarProject?): Project {
         .slug(slug)
         .build()
 }
+/**
+ * Transform the AddUserToSecretRewardGroupMutation.Project GraphQL data structure into our own Project data model
+ * @param AddUserToSecretRewardGroupMutation.Project project
+ * @return Project
+ */
+fun projectTransformer(project: AddUserToSecretRewardGroupMutation.Project?): Project {
+    val id = decodeRelayId(project?.id) ?: -1
+    val rewards = project?.rewards?.nodes?.mapNotNull { node ->
+        node?.let {
+            Reward.builder()
+                .id(decodeRelayId(it.id) ?: -1)
+                .title(it.name)
+                .build()
+        }
+    } ?: emptyList()
 
+    return Project.builder()
+        .id(id)
+        .rewards(rewards)
+        .build()
+}
 /**
  * For addOns we receive this kind of data structure :[D, D, D, D, D, C, E, E]
  * and we need to transform it in : D(5),C(1),E(2)
@@ -1088,12 +1126,19 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
             val flags = it?.node?.flags?.map { flag ->
                 Flag.builder().message(flag.message).icon(flag.icon).type(flag.type).build()
             }
+            val reward = Reward.builder()
+                .id(decodeRelayId(ppoBackingData?.reward?.id) ?: 0)
+                .shippingPreference(ppoBackingData?.reward?.shippingPreference?.name?.lowercase())
+                .shippingPreferenceType(getShippingPreference(ppoBackingData?.reward?.shippingPreference))
+                .shippingType(ppoBackingData?.reward?.shippingPreference?.name?.lowercase())
+                .build()
             PPOCard.builder()
                 .backingId(ppoBackingData?.id)
                 .backingDetailsUrl(ppoBackingData?.backingDetailsPageRoute)
                 .clientSecret(ppoBackingData?.clientSecret)
                 .amount(ppoBackingData?.amount?.amount?.amount)
                 .currencyCode(ppoBackingData?.amount?.amount?.currency)
+                .backerCompleted(ppoBackingData?.backerCompleted)
                 .currencySymbol(ppoBackingData?.amount?.amount?.symbol)
                 .projectName(ppoBackingData?.project?.name)
                 .projectId(ppoBackingData?.project?.id)
@@ -1101,10 +1146,12 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .imageUrl(ppoBackingData?.project?.full?.image?.url)
                 .creatorName(ppoBackingData?.project?.creator?.name)
                 .creatorID(ppoBackingData?.project?.creator?.id)
-                .viewType(getTierType(it?.node?.tierType))
+                .viewType(getTierType(it?.node?.tierType, reward))
                 .surveyID(ppoBackingData?.project?.backerSurvey?.id)
                 .flags(flags)
+                .reward(reward)
                 .deliveryAddress(getDeliveryAddress(ppoBackingData?.deliveryAddress))
+                .webviewUrl(it?.node?.webviewUrl)
                 .build()
         }
 
@@ -1166,17 +1213,64 @@ fun getDeliveryAddress(deliveryAddress: DeliveryAddress?): com.kickstarter.featu
     } ?: return null
 }
 
-fun getTierType(tierType: String?) =
+fun getTierType(tierType: String?, reward: Reward) =
     when (tierType) {
         PledgeTierType.FAILED_PAYMENT.tierType -> PPOCardViewType.FIX_PAYMENT
         PledgeTierType.SURVEY_OPEN.tierType -> PPOCardViewType.OPEN_SURVEY
         PledgeTierType.ADDRESS_LOCK.tierType -> PPOCardViewType.CONFIRM_ADDRESS
         PledgeTierType.PAYMENT_AUTHENTICATION.tierType -> PPOCardViewType.AUTHENTICATE_CARD
-        PledgeTierType.PLEDGE_COLLECTED.tierType -> PPOCardViewType.PLEDGE_COLLECTED
-        PledgeTierType.SUVERY_SUBMITTED.tierType -> PPOCardViewType.SUVERY_SUBMITTED
+        PledgeTierType.PLEDGE_COLLECTED.tierType -> {
+            if (RewardUtils.isNoReward(reward)) {
+                PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD
+            } else {
+                PPOCardViewType.PLEDGE_COLLECTED_REWARD
+            }
+        }
+        PledgeTierType.SUVERY_SUBMITTED.tierType -> {
+            if (RewardUtils.isDigital(reward)) {
+                PPOCardViewType.SURVEY_SUBMITTED_DIGITAL
+            } else {
+                PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE
+            }
+        }
         PledgeTierType.ADDRESS_CONFIRMED.tierType -> PPOCardViewType.ADDRESS_CONFIRMED
         PledgeTierType.AWAITING_REWARD.tierType -> PPOCardViewType.AWAITING_REWARD
-        PledgeTierType.PLEDGE_REDEMPTION.tierType -> PPOCardViewType.PLEDGE_REDEMPTION
+        PledgeTierType.PLEDGE_MANAGEMENT.tierType -> PPOCardViewType.PLEDGE_MANAGEMENT
         PledgeTierType.REWARD_RECEIVED.tierType -> PPOCardViewType.REWARD_RECEIVED
         else -> PPOCardViewType.UNKNOWN
     }
+
+fun getShippingPreference(shippingPreference: ShippingPreference?): Reward.ShippingPreference {
+    return when (shippingPreference) {
+        ShippingPreference.none -> Reward.ShippingPreference.NONE
+        ShippingPreference.restricted -> Reward.ShippingPreference.RESTRICTED
+        ShippingPreference.unrestricted -> Reward.ShippingPreference.UNRESTRICTED
+        ShippingPreference.local -> Reward.ShippingPreference.LOCAL
+        else -> Reward.ShippingPreference.UNKNOWN
+    }
+}
+
+fun getPledgeManagerStateType(checkoutStateType: PledgeManagerStateEnum?) =
+    when (checkoutStateType) {
+        PledgeManagerStateEnum.draft -> PledgeManager.PledgeManagerStateEnum.DRAFT
+        PledgeManagerStateEnum.submitted -> PledgeManager.PledgeManagerStateEnum.SUBMITTED
+        PledgeManagerStateEnum.approved -> PledgeManager.PledgeManagerStateEnum.APPROVED
+        PledgeManagerStateEnum.denied -> PledgeManager.PledgeManagerStateEnum.DENIED
+        else -> PledgeManager.PledgeManagerStateEnum.DENIED
+    }
+
+fun pledgeManagerTransformer(pledgeManager: com.kickstarter.fragment.PledgeManager): PledgeManager {
+    return PledgeManager.builder()
+        .id(decodeRelayId(pledgeManager.id))
+        .acceptsNewBackers(pledgeManager.acceptsNewBackers)
+        .optedOut(pledgeManager.optedOut)
+        .state(getPledgeManagerStateType(pledgeManager.state))
+        .build()
+}
+
+fun checkoutWaveTransformer(checkoutWave: com.kickstarter.fragment.LastWave): CheckoutWave {
+    return CheckoutWave.builder()
+        .id(decodeRelayId(checkoutWave.id))
+        .active(checkoutWave.active)
+        .build()
+}

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Pair
+import androidx.appcompat.widget.Toolbar
+import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -34,6 +36,7 @@ import com.kickstarter.models.User
 import com.kickstarter.models.Web
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.MediaElement
@@ -41,19 +44,27 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.helpers.createManagePledgeMenuOptions
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
 import com.kickstarter.viewmodels.usecases.TPEventInputData
+import io.mockk.coVerify
+import io.mockk.slot
+import io.mockk.spyk
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subscribers.TestSubscriber
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
 import org.mockito.Mockito
+import org.robolectric.Robolectric
 import java.math.RoundingMode
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectPageViewModel.ProjectPageViewModel
@@ -63,7 +74,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
     private val goBack = TestSubscriber<Unit>()
     private val heartDrawableId = TestSubscriber<Int>()
-    private val managePledgeMenu = TestSubscriber<Int?>()
     private val pledgeActionButtonColor = TestSubscriber<Int>()
     private val pledgeActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeActionButtonText = TestSubscriber<Int>()
@@ -92,6 +102,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val openBackingDetailsWebview = TestSubscriber<String>()
+    private val openPledgeManagerWebview = TestSubscriber<String>()
     private val updateFragments = TestSubscriber<ProjectData>()
     private val projectMedia = BehaviorSubject.create<MediaElement>()
     private val playButtonIsVisible = TestSubscriber<Boolean>()
@@ -118,7 +129,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.expandPledgeSheet().subscribe { this.expandPledgeSheet.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.goBack().subscribe { this.goBack.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.heartDrawableId().subscribe { this.heartDrawableId.onNext(it) }.addToDisposable(disposables)
-        this.vm.outputs.managePledgeMenu().subscribe { this.managePledgeMenu.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgeActionButtonColor().subscribe { this.pledgeActionButtonColor.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe { this.pledgeActionButtonContainerIsGone.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.pledgeActionButtonText().subscribe { this.pledgeActionButtonText.onNext(it) }.addToDisposable(disposables)
@@ -145,6 +155,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startMessagesActivity().subscribe { this.startMessagesActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startThanksActivity().subscribe { this.startThanksActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.openBackingDetailsWebview().subscribe { this.openBackingDetailsWebview.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.openPledgeManagerWebview().subscribe { this.openPledgeManagerWebview.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.updateFragments().subscribe { this.updateFragments.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startRootCommentsForCommentsThreadActivity().subscribe { this.startRootCommentsForCommentsThreadActivity.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startProjectUpdateToRepliesDeepLinkActivity().subscribe { this.startProjectUpdateToRepliesDeepLinkActivity.onNext(it) }.addToDisposable(disposables)
@@ -1349,7 +1360,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenCollapsingSheet() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
 
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
@@ -1359,13 +1380,25 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeToolbarNavigationClicked()
         this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
         this.goBack.assertNoValues()
-        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues(
+            EventName.PAGE_VIEWED.eventName,
+            EventName.CTA_CLICKED.eventName
+        )
     }
 
     @Test
     fun testExpandPledgeSheet_whenProjectLiveAndNotBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
 
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1377,7 +1410,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenProjectLiveAndBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1399,7 +1442,17 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenProjectEndedAndNotBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1410,7 +1463,18 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenProjectEndedAndBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
+
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject()))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1646,92 +1710,6 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.showCancelPledgeSuccess.assertValueCount(1)
         this.projectData.assertValueCount(2)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBackedAndLive_backingIsPledged() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBackedAndLive_backingIsPreauth() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        val backing = BackingFactory.backing()
-            .toBuilder()
-            .status(Backing.STATUS_PREAUTH)
-            .build()
-        val backedProject = ProjectFactory.backedProject()
-            .toBuilder()
-            .name("eruihgfve9d7fvhuo")
-            .backing(backing)
-            .build()
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_preauth)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBackedAndNotLive() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        val successfulBackedProject = ProjectFactory.backedProject()
-            .toBuilder()
-            .state(Project.STATE_SUCCESSFUL)
-            .name("doifjvboiudhgbjnv ")
-            .build()
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, successfulBackedProject))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_ended)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectNotBacked() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-
-        this.managePledgeMenu.assertValue(0)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenProjectBacked_Live_And_PLOTSelected() {
-        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return true
-            }
-        }
-        setUpEnvironment(environment().toBuilder().featureFlagClient(mockFeatureFlagClient).apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a PLOT selected project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProjectWithPlotSelected()))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_plot_selected)
-    }
-
-    @Test
-    fun testManagePledgeMenu_whenManaging() {
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).build())
-
-        // Start the view model with a backed project
-        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-
-        this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
-
-        this.vm.inputs.cancelPledgeClicked()
-        this.vm.inputs.fragmentStackCount(1)
-        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, 0)
-
-        this.vm.inputs.fragmentStackCount(0)
-        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, 0, R.menu.manage_pledge_live)
     }
 
     @Test
@@ -2079,44 +2057,89 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
 
         this.expandPledgeSheet.assertNoValues()
         this.openBackingDetailsWebview.assertValue(url)
+        this.openPledgeManagerWebview.assertNoValues()
+    }
+
+    @Test
+    fun `test open Pledge Manager Webview when project is actively accepting new backers to PM, and feature flag on`() {
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(FlagKey: FlagKey): Boolean {
+                return true
+            }
+        }
+        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
+
+        // Start the view model with a project that is actively accepting new backers to PM
+        val backedProject = ProjectFactory.projectWithActivePMForNewBackers()
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        val url = "https://www.kickstarter.com/backing/redeem"
+
+        this.expandPledgeSheet.assertNoValues()
+        this.openBackingDetailsWebview.assertNoValues()
+        this.openPledgeManagerWebview.assertValue(url)
     }
 
     @Test
     fun `test open pledge sheet when order not null but feature flag off`() {
         val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return false
-            }
+            override fun getBoolean(flagKey: FlagKey): Boolean = false
         }
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
 
-        // Start the view model with a backed project with PM checkout order
         val backedProject = ProjectFactory.backedProjectWithPMCheckoutOrder()
+        val user = UserFactory.user()
+        val mockCurrentUser = MockCurrentUserV2().apply { login(user) }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .featureFlagClient(mockFeatureFlagClient)
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
+
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        val url = "https://ksr.com/backing/survey_responses"
         this.openBackingDetailsWebview.assertNoValues()
+        this.openPledgeManagerWebview.assertNoValues()
         this.expandPledgeSheet.assertValue(Pair(true, true))
     }
 
     @Test
     fun `test open pledge sheet when order null but feature flag on`() {
         val mockFeatureFlagClient = object : MockFeatureFlagClient() {
-            override fun getBoolean(FlagKey: FlagKey): Boolean {
-                return false
-            }
+            override fun getBoolean(flagKey: FlagKey): Boolean = false
         }
-        setUpEnvironment(environment().toBuilder().apolloClientV2(apolloClientSuccessfulGetProject()).featureFlagClient(mockFeatureFlagClient).build())
 
-        // Start the view model with a backed project with PM checkout order
-        val backedProject = ProjectFactory.backedProject()
+        val backing = BackingFactory.backing().toBuilder().order(null).build()
+        val backedProject = ProjectFactory.project()
+            .toBuilder()
+            .isBacking(true)
+            .backing(backing)
+            .build()
+
+        val mockCurrentUser = MockCurrentUserV2().apply {
+            login(UserFactory.user())
+        }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .featureFlagClient(mockFeatureFlagClient)
+                .currentUserV2(mockCurrentUser)
+                .build()
+        )
+
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        val url = "https://ksr.com/backing/survey_responses"
         this.openBackingDetailsWebview.assertNoValues()
         this.expandPledgeSheet.assertValue(Pair(true, true))
     }
@@ -2325,6 +2348,234 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
 
         pledgeRedemptionIsVisible.assertNoValues()
+    }
+
+    @Test
+    fun addUserToSecretRewardGroup_isCalled_whenDeeplinkContainsSecretToken() {
+        val secretToken = "secret_123"
+        val user = UserFactory.user()
+        val currentUserMock = MockCurrentUserV2(user)
+        val deeplinkUri = Uri.parse("https://www.kickstarter.com/projects/cool-project?secret_reward_token=$secretToken")
+        val project = ProjectFactory.project()
+        val capturedProject = slot<Project>()
+        val capturedToken = slot<String>()
+        var timesCalled = 0
+        val mockedApollo = object : MockApolloClientV2() {
+            override suspend fun addUserToSecretRewardGroup(
+                project: Project,
+                secretRewardToken: String
+            ): Result<Project> {
+                timesCalled ++
+                return Result.success(project)
+            }
+        }
+
+        val mockApolloClient = spyk(mockedApollo, recordPrivateCalls = true)
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUserMock)
+            .apolloClientV2(mockApolloClient)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val intent = Intent().putExtra(IntentKey.PROJECT, project).setData(deeplinkUri)
+        vm.configureWith(intent)
+
+        runBlocking {
+            delay(500)
+        }
+
+        coVerify {
+            mockApolloClient.addUserToSecretRewardGroup(capture(capturedProject), capture(capturedToken))
+        }
+
+        assertTrue(timesCalled == 1)
+        assertEquals(secretToken, capturedToken.captured)
+    }
+
+    @Test
+    fun continuePledgeFlow_userNotLoggedInThenLogsIn_callbackIsInvoked() {
+        val currentUser = MockCurrentUserV2() // logged out by default
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val callbackInvoked = AtomicBoolean(false)
+
+        // Start the pledge flow with a callback
+        vm.inputs.continuePledgeFlow {
+            callbackInvoked.set(true)
+        }
+
+        // Assert: login prompt triggered, but callback not yet run
+        this.startLoginToutActivity.assertValueCount(1)
+        assertFalse(callbackInvoked.get())
+
+        // Simulate login
+        currentUser.refresh(UserFactory.user())
+
+        // Assert: callback now triggered
+        assertTrue(callbackInvoked.get())
+    }
+
+    @Test
+    fun continuePledgeFlow_userAlreadyLoggedIn_callbackIsInvokedImmediately() {
+        val user = UserFactory.user()
+        val currentUser = MockCurrentUserV2(user) // already logged in
+
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val callbackInvoked = AtomicBoolean(false)
+
+        // Start the pledge flow
+        vm.inputs.continuePledgeFlow {
+            callbackInvoked.set(true)
+        }
+
+        // Login prompt should NOT be shown
+        this.startLoginToutActivity.assertNoValues()
+
+        // Callback should be invoked immediately
+        assertTrue(callbackInvoked.get())
+    }
+
+    @Test
+    fun `manage pledge menu is inflated when project is backed`() {
+        val project = ProjectFactory.backedProject()
+        val intent = Intent(ApplicationProvider.getApplicationContext(), ProjectPageActivity::class.java)
+        intent.putExtra(IntentKey.PROJECT, project)
+
+        val activity = Robolectric.buildActivity(ProjectPageActivity::class.java, intent)
+            .create()
+            .start()
+            .resume()
+            .get()
+
+        val toolbar = activity.findViewById<Toolbar>(R.id.pledge_toolbar)
+        val menu = toolbar.menu
+
+        assertTrue(menu.findItem(R.id.contact_creator)?.isVisible == true)
+        assertTrue(menu.findItem(R.id.cancel_pledge)?.isVisible == true)
+    }
+
+    @Test
+    fun `edit pledge is shown when feature flag is on and project is pledge over time`() {
+        val user = UserFactory.user().toBuilder().isAdmin(false).build()
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(true)
+            .build()
+
+        val currentUserMock = MockCurrentUserV2(user)
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLEDGE_OVER_TIME,
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> true
+                    else -> false
+                }
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .currentUserV2(currentUserMock)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        val intent = Intent(ApplicationProvider.getApplicationContext(), ProjectPageActivity::class.java)
+        intent.putExtra(IntentKey.PROJECT, project)
+
+        val activity = Robolectric.buildActivity(ProjectPageActivity::class.java, intent)
+            .create()
+            .start()
+            .resume()
+            .get()
+
+        val toolbar = activity.findViewById<Toolbar>(R.id.pledge_toolbar)
+        val menu = toolbar.menu
+
+        assertTrue(menu.findItem(R.id.edit_pledge)?.isVisible == true)
+    }
+
+    @Test
+    fun `showEditPledge is false when feature flag is off`() {
+        val backing = BackingFactory.backing()
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(true)
+            .backing(backing)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLEDGE_OVER_TIME -> true
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> false
+                    else -> false
+                }
+            }
+        }
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertFalse(options.showEditPledge)
+    }
+
+    @Test
+    fun `choose another reward is shown when feature flag for edit pledge is off and standard pledge`() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(false)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLEDGE_OVER_TIME -> true
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> false
+                    else -> false
+                }
+            }
+        }
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertFalse(options.showEditPledge)
+        assertTrue(options.showChooseAnotherReward)
+    }
+
+    @Test
+    fun `choose another reward is hidden and edit pledge is shown when feature flag is on and project is pledge over time`() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .isPledgeOverTimeAllowed(true)
+            .build()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> true
+                    else -> false
+                }
+            }
+        }
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertTrue(options.showEditPledge)
+        assertFalse(options.showChooseAnotherReward)
     }
 
     private fun deepLinkIntent(): Intent {

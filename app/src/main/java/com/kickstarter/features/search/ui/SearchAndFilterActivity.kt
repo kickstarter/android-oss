@@ -11,6 +11,7 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,6 +45,11 @@ import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import kotlinx.coroutines.launch
+
+// TODO: Improve error message
+val LocalFilterMenuViewModel = staticCompositionLocalOf<FilterMenuViewModel> {
+    error("No FilterMenuViewModel provided")
+}
 
 class SearchAndFilterActivity : ComponentActivity() {
 
@@ -80,43 +87,53 @@ class SearchAndFilterActivity : ComponentActivity() {
 
                 val darModeEnabled = this.isDarkModeEnabled(env = env)
                 KickstarterApp(useDarkTheme = darModeEnabled) {
-                    SearchScreen(
-                        environment = env,
-                        onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                        scaffoldState = rememberScaffoldState(),
-                        errorSnackBarHostState = snackbarHostState,
-                        isLoading = isLoading,
-                        isDefaultList = currentSearchTerm.isTrimmedEmpty(),
-                        itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
-                            popularProjects
-                        } else {
-                            searchedProjects
-                        },
-                        lazyColumnListState = lazyListState,
-                        showEmptyView = !isLoading && (searchedProjects.isEmpty() && popularProjects.isEmpty()),
-                        categories = categories,
-                        onSearchTermChanged = { searchTerm ->
-                            currentSearchTerm = searchTerm
-                            viewModel.updateSearchTerm(searchTerm)
-                        },
-                        onItemClicked = { project ->
-                            val projAndRef = viewModel.getProjectAndRefTag(project)
-                            if (project.displayPrelaunch().isTrue()) {
-                                startPreLaunchProjectActivity(project, projAndRef.second)
+                    CompositionLocalProvider(LocalFilterMenuViewModel provides filterMenuViewModel) {
+                        SearchScreen(
+                            environment = env,
+                            onBackClicked = { onBackPressedDispatcher.onBackPressed() },
+                            scaffoldState = rememberScaffoldState(),
+                            errorSnackBarHostState = snackbarHostState,
+                            isLoading = isLoading,
+                            isDefaultList = currentSearchTerm.isTrimmedEmpty(),
+                            itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
+                                popularProjects
                             } else {
-                                startProjectActivity(projAndRef)
-                            }
-                        },
-                        onDismissBottomSheet = { category, sort, projectState, bucket ->
-                            viewModel.updateParamsToSearchWith(
-                                category = category,
-                                projectSort = sort ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
-                                projectState = projectState,
-                                raisedBucket = bucket
-                            )
-                        },
-                        shouldShowPhase = phaseff
-                    )
+                                searchedProjects
+                            },
+                            lazyColumnListState = lazyListState,
+                            showEmptyView = !isLoading && (searchedProjects.isEmpty() && popularProjects.isEmpty()),
+                            categories = categories,
+                            onSearchTermChanged = { searchTerm ->
+                                currentSearchTerm = searchTerm
+                                viewModel.updateSearchTerm(searchTerm)
+                            },
+                            onItemClicked = { project ->
+                                val projAndRef = viewModel.getProjectAndRefTag(project)
+                                if (project.displayPrelaunch().isTrue()) {
+                                    startPreLaunchProjectActivity(project, projAndRef.second)
+                                } else {
+                                    startProjectActivity(projAndRef)
+                                }
+                            },
+                            onApplySearchWithParams = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
+                                viewModel.updateParamsToSearchWith(
+                                    category = category,
+                                    projectSort = sort
+                                        ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
+                                    projectState = projectState,
+                                    percentageBucket = percentageBucket,
+                                    location = location,
+                                    amountBucket = amountRaisedBucket,
+                                    goalBucket = goalBucket,
+                                    recommended = recomended,
+                                    projectsLoved = projectsLoved,
+                                    savedProjects = saved,
+                                    social = social
+                                )
+                            },
+                            shouldShowPhase = phaseff
+                        )
+                    }
                 }
 
                 // Load more when scroll to the end

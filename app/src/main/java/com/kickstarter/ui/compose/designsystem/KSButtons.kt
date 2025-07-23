@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -211,12 +212,20 @@ fun KSSearchToolbarButtonsColumn() {
             KSPillButton(countApiIsReady = false, text = "Art", isSelected = true, count = 0, onClick = {})
         }
         Row {
-            KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowIcon = false)
-            KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowIcon = false)
+            KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = false, count = 30, onClick = {}, shouldShowTrailingIcon = false)
+            KSPillButton(countApiIsReady = true, text = "Late Pledges", isSelected = true, count = 30, onClick = {}, shouldShowTrailingIcon = false)
         }
         Row {
-            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowIcon = false)
-            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowIcon = false)
+            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowTrailingIcon = false)
+            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowTrailingIcon = false)
+        }
+        Row {
+            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = true, count = 0, onClick = {}, shouldShowTrailingIcon = true)
+            KSPillButton(countApiIsReady = false, text = "Late Pledges", isSelected = false, count = 0, onClick = {}, shouldShowTrailingIcon = true)
+        }
+        Row {
+            KSPillButton(countApiIsReady = false, text = "Projects We Love", isSelected = true, count = 0, onClick = {}, shouldShowLeadingIcon = true)
+            KSPillButton(countApiIsReady = false, text = "Projects We Love", isSelected = false, count = 0, onClick = {}, shouldShowLeadingIcon = true)
         }
     }
 }
@@ -398,8 +407,10 @@ fun KSFacebookButton(
             modifier = modifier,
             onClickAction = onClickAction,
             isEnabled = isEnabled,
-            backgroundColor = kds_black,
-            imageId = R.drawable.com_facebook_button_icon
+            backgroundColor = colors.facebook_blue,
+            imageId = R.drawable.com_facebook_button_icon,
+            text = text,
+            textColor = kds_white
         )
     }
 }
@@ -639,8 +650,9 @@ fun KSPillButton(
     isSelected: Boolean = false,
     count: Int = 0,
     onClick: () -> Unit,
-    icon: ImageVector = Icons.Filled.KeyboardArrowDown,
-    shouldShowIcon: Boolean = true,
+    iconTrailing: ImageVector = Icons.Filled.KeyboardArrowDown,
+    shouldShowTrailingIcon: Boolean = false,
+    shouldShowLeadingIcon: Boolean = false
 ) {
     Button(
         onClick = onClick,
@@ -656,6 +668,14 @@ fun KSPillButton(
         shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
         elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
     ) {
+        if (shouldShowLeadingIcon) {
+            Icon(
+                modifier = Modifier.padding(end = dimensions.paddingSmall),
+                contentDescription = null,
+                painter = painterResource(id = R.drawable.projectswelove),
+                tint = Color.Unspecified
+            )
+        }
         Text(
             modifier = Modifier.padding(end = dimensions.paddingSmall),
             text = text,
@@ -665,9 +685,9 @@ fun KSPillButton(
         if (countApiIsReady && count > 0) {
             KSCountBadge(count)
         }
-        if (shouldShowIcon) {
+        if (shouldShowTrailingIcon) {
             Icon(
-                imageVector = icon,
+                imageVector = iconTrailing,
                 contentDescription = text,
                 tint = colors.icon
             )
@@ -713,10 +733,13 @@ fun KSButton(
     textStyle: TextStyle = typographyV2.body,
     textColor: Color,
     shape: RoundedCornerShape? = null,
+    shouldWrapContentWidth: Boolean = false
 ) {
+    val mod = if (shouldWrapContentWidth)
+        modifier.wrapContentWidth()
+    else modifier.fillMaxWidth()
     Button(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = mod
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor,

@@ -1,16 +1,48 @@
-query FetchProjects($first: Int = 15, $cursor: String, $sort: ProjectSort, $state: PublicProjectState,  $backed: Boolean, $recommended: Boolean, $categoryId: String, $starred: Boolean, $staffPicks: Boolean, $searchTerm: String, $raised: RaisedBuckets) {
-  projects(first: $first, after:$cursor, sort:$sort, backed:$backed, recommended:$recommended, categoryId: $categoryId, starred:$starred,  state: $state, staffPicks: $staffPicks, term: $searchTerm, raised: $raised) {
-    edges {
-      cursor
-      node{
-        ... projectCard
-      }
+query FetchProjects(
+  $first: Int = 15,
+  $cursor: String,
+  $sort: ProjectSort,
+  $state: PublicProjectState,
+  $backed: Boolean,
+  $recommended: Boolean,
+  $categoryId: String,
+  $starred: Boolean,
+  $staffPicks: Boolean,
+  $searchTerm: String,
+  $raised: RaisedBuckets,
+  $location: ID,
+  $amountRaisedBucket: PledgedBuckets,
+  $goalBucket: GoalBuckets
+  $following: Boolean
+) {
+    projects(
+      first: $first,
+      after:$cursor,
+      sort: $sort,
+      backed:$backed,
+      recommended:$recommended,
+      categoryId: $categoryId,
+      starred:$starred,
+      state: $state,
+      staffPicks: $staffPicks,
+      term: $searchTerm,
+      raised: $raised,
+      locationId: $location,
+      pledged: $amountRaisedBucket,
+      goal: $goalBucket,
+      following: $following
+      ) {
+        edges {
+          cursor
+          node{
+            ... projectCard
+          }
+        }
+        pageInfo {
+          ... pageInfo
+        }
+        totalCount
     }
-    pageInfo {
-      ... pageInfo
-    }
-    totalCount
-  }
 }
 
 query FetchProject($slug: String!, $rewardImageWidth: Int = 1024) {
@@ -228,6 +260,23 @@ query FetchSimilarProjects($first: Int = 4, $similarToPid: String!, $excludePid:
   ) {
     nodes {
       ...similarProject
+    }
+  }
+}
+
+mutation AddUserToSecretRewardGroup($projectId: ID!, $secretRewardToken: String!) {
+  addUserToSecretRewardGroup(input: {
+    projectId: $projectId,
+    secretRewardToken: $secretRewardToken
+  }) {
+    project {
+      id
+      rewards {
+        nodes {
+          id
+          name
+        }
+      }
     }
   }
 }

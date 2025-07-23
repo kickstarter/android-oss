@@ -13,6 +13,7 @@ import com.apollographql.apollo3.rx2.rxSingle
 import com.google.android.gms.common.util.Base64Utils
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
+import com.kickstarter.AddUserToSecretRewardGroupMutation
 import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CancelBackingMutation
 import com.kickstarter.ClearUserUnseenActivityMutation
@@ -34,6 +35,7 @@ import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
+import com.kickstarter.GetLocationsQuery
 import com.kickstarter.GetProjectAddOnsQuery
 import com.kickstarter.GetProjectBackingQuery
 import com.kickstarter.GetProjectCommentsQuery
@@ -56,13 +58,17 @@ import com.kickstarter.UserPaymentsQuery
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.ValidateCheckoutQuery
 import com.kickstarter.WatchProjectMutation
+import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toBoolean
+import com.kickstarter.libs.utils.extensions.toGoalBucket
+import com.kickstarter.libs.utils.extensions.toPledgedBucket
 import com.kickstarter.libs.utils.extensions.toProjectSort
 import com.kickstarter.libs.utils.extensions.toProjectState
 import com.kickstarter.libs.utils.extensions.toRaisedBucket
@@ -165,7 +171,7 @@ interface ApolloClientTypeV2 {
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
     fun getShippingRules(reward: Reward): Observable<ShippingRulesEnvelope>
     fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
-    fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>>
+    suspend fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String? = null): Result<AddOnsEnvelope>
     fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
     fun triggerThirdPartyEvent(eventInput: TPEventInputData): Observable<Pair<Boolean, String>>
@@ -237,9 +243,11 @@ interface ApolloClientTypeV2 {
     fun getRewardsFromProject(slug: String): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
+    suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
+    suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float? = null, long: Float? = null, radius: Float? = null, filterByCoordinates: Boolean? = null): Result<List<Location>>
     fun cleanDisposables()
 }
 
@@ -334,7 +342,12 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             backed = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.backed().toBoolean()),
             searchTerm = if (discoveryParams.term() == null || discoveryParams.term().isNullOrBlank()) Optional.absent() else Optional.present(discoveryParams.term()),
             state = if (discoveryParams.state() == null) Optional.absent() else Optional.present(discoveryParams.state()?.toProjectState()),
-            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket())
+            raised = if (discoveryParams.raisedBucket() == null) Optional.absent() else Optional.present(discoveryParams.raisedBucket()?.toRaisedBucket()),
+            location = if (discoveryParams.location() == null) Optional.absent() else Optional.present(discoveryParams.location()?.let { encodeRelayId(it) }),
+            amountRaisedBucket = if (discoveryParams.amountBucket() == null) Optional.absent() else Optional.present(discoveryParams.amountBucket()?.toPledgedBucket()),
+            goalBucket = if (discoveryParams.goalBucket() == null) Optional.absent() else Optional.present(discoveryParams.goalBucket()?.toGoalBucket()),
+            following = if (discoveryParams.social() == null) Optional.absent() else Optional.present(discoveryParams.social().toBoolean()),
+            staffPicks = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.staffPicks())
         )
     }
 
@@ -811,43 +824,35 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             )
         }?.toList() ?: emptyList()
     }
-    override fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): Observable<List<Reward>> {
-        return Observable.defer {
-            val ps = PublishSubject.create<List<Reward>>()
 
-            val query = GetRewardAllowedAddOnsQuery(
-                slug,
-                locationId = encodeRelayId(locationId),
+    override suspend fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String?): Result<AddOnsEnvelope> = executeForResult {
+        val query = GetRewardAllowedAddOnsQuery(
+            locationId = encodeRelayId(locationId),
+            rewardId = encodeRelayId(rewardId),
+            cursor = cursor?.let { Optional.present(it) } ?: Optional.absent()
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let {
+            val allowedAddOns = it.node?.onReward?.allowedAddons
+
+            val addOns = if (allowedAddOns != null)
+                getAddOnsFromAllowedAddOns(allowedAddOns)
+            else emptyList()
+
+            val pageInfoEnvelope = allowedAddOns?.pageInfo?.pageInfo?.let {
+                createPageInfoObject(it)
+            }
+
+            AddOnsEnvelope(
+                addOnsList = addOns,
+                pageInfo = pageInfoEnvelope
             )
-
-            this.service
-                .query(query)
-                .rxSingle()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    }
-
-                    response.data?.let { data ->
-                        val rewardNode = data.project?.rewards?.nodes?.firstOrNull { node ->
-                            node?.id?.let { decodeRelayId(it) } == rewardId
-                        }
-                        val allowedAddOns = rewardNode?.allowedAddons
-
-                        val addOns = if (allowedAddOns != null)
-                            getAddOnsFromAllowedAddOns(allowedAddOns)
-                        else emptyList()
-                        ps.onNext(addOns)
-                    }
-
-                    ps.onComplete()
-                }.addToDisposable(disposables)
-
-            return@defer ps
-        }
+        } ?: AddOnsEnvelope()
     }
 
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
@@ -888,7 +893,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 if (updateBackingData.rewardsIds.isNotNull()) Optional.present(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                 else Optional.absent(),
                 paymentSourceId = if (updateBackingData.paymentSourceId.isNotNull()) Optional.present(updateBackingData.paymentSourceId) else Optional.absent(),
-                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent()
+                intentClientSecret = if (updateBackingData.intentClientSecret.isNotNull()) Optional.present(updateBackingData.intentClientSecret) else Optional.absent(),
+                incremental = if (updateBackingData.incremental.isNotNull()) Optional.present(updateBackingData.incremental) else Optional.absent()
             )
             val ps = PublishSubject.create<Checkout>()
             service
@@ -1797,6 +1803,25 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }
     }
 
+    override suspend fun addUserToSecretRewardGroup(
+        project: Project,
+        secretRewardToken: String,
+    ): Result<Project> = executeForResult {
+        val mutation = AddUserToSecretRewardGroupMutation(
+            projectId = encodeRelayId(project).toString(),
+            secretRewardToken = secretRewardToken
+        )
+
+        val response = service.mutation(mutation).execute()
+
+        if (response.hasErrors()) {
+            throw buildClientException(response.errors)
+        }
+
+        val updatedProject = response.data?.addUserToSecretRewardGroup?.project
+        projectTransformer(updatedProject)
+    }
+
     // TODO: was part of initial discovery for PledgeRedemption ML2 on mobile, not is use currently, as is happens on a webview
     override fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload> {
         return Observable.defer {
@@ -1919,6 +1944,36 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         response.data?.let { responseData ->
             responseData.projects?.nodes?.map {
                 projectTransformer(it?.similarProject)
+            }
+        } ?: emptyList()
+    }
+
+    override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> = executeForResult {
+
+        val query = GetLocationsQuery(
+            useSessionLocation = if (useDefault.isTrue()) Optional.present(useDefault) else Optional.absent(),
+            term = if (term.isNullOrEmpty()) Optional.absent() else Optional.present(term),
+            filterByCoordinates = if (filterByCoordinates == null) Optional.absent() else Optional.present(filterByCoordinates),
+            first = if (useDefault) Optional.Present(5) else Optional.present(10),
+            radius = if (radius == null) Optional.absent() else Optional.present(radius.toDouble()),
+            long = if (long == null) Optional.absent() else Optional.present(long.toDouble()),
+            lat = if (lat == null) Optional.absent() else Optional.present(lat.toDouble()),
+            discoverable = if (useDefault.isTrue()) Optional.present(true) else Optional.absent()
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            responseData.locations?.nodes?.map {
+                Location.builder()
+                    .name(it?.location?.name)
+                    .displayableName(it?.location?.displayableName)
+                    .id(decodeRelayId(it?.location?.id))
+                    .country(it?.location?.country)
+                    .build()
             }
         } ?: emptyList()
     }

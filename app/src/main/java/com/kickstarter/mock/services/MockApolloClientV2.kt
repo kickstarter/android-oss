@@ -7,6 +7,7 @@ import com.kickstarter.SendEmailVerificationMutation
 import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.UpdateUserEmailMutation
 import com.kickstarter.UpdateUserPasswordMutation
+import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.search.data.SearchEnvelope
@@ -195,8 +196,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
-    override fun getRewardAllowedAddOns(slug: String, locationId: Location, rewardId: Long): io.reactivex.Observable<List<Reward>> {
-        return io.reactivex.Observable.empty()
+    override suspend fun getRewardAllowedAddOns(locationId: Location, rewardId: Reward, cursor: String?): Result<AddOnsEnvelope> {
+        return Result.success(AddOnsEnvelope())
     }
 
     override fun updateBacking(updateBackingData: UpdateBackingData): io.reactivex.Observable<Checkout> {
@@ -359,7 +360,18 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return io.reactivex.Observable.empty()
     }
 
+    override suspend fun addUserToSecretRewardGroup(
+        project: Project,
+        secretRewardToken: String,
+    ): Result<Project> {
+        return Result.success(project)
+    }
+
     override suspend fun getCategories(): Result<List<Category>> {
+        return Result.success(emptyList())
+    }
+
+    override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> {
         return Result.success(emptyList())
     }
 

@@ -256,6 +256,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         "Some reward description here",
         DateTime.now().toDate(),
         true,
+        audienceData = Reward.AudienceData(secret = false),
         Reward.Amount("Amount", Amount("20.0", null, null)),
         Reward.PledgeAmount(
             "PledgeAmount", Amount("10.0", null, null)

@@ -52,6 +52,9 @@ fragment projectCard on Project {
     pledgeOverTimeCollectionPlanChargeExplanation
     pledgeOverTimeCollectionPlanChargedAsNPayments
     pledgeOverTimeCollectionPlanShortPitch
+    video {
+        ...video
+    }
 }
 
 # Fragment used to load all the Project information on Project Page
@@ -84,6 +87,9 @@ fragment fullProject on Project {
     }
     currency
     canComment
+    pledgeManager {
+        ... pledgeManager
+    }
     prelaunchActivated
     projectNotice
     projectOfTheDayAt
@@ -99,6 +105,9 @@ fragment fullProject on Project {
     }
     id
     isWatched
+    lastWave {
+        ...lastWave
+    }
     launchedAt
     location {
         ... location
@@ -112,6 +121,7 @@ fragment fullProject on Project {
     prelaunchActivated
     ...tagsCreative
     ...tagsDiscovery
+    redemptionPageUrl
     rewards { # query within project the bare minimum for rewards
         nodes {
             ... reward
@@ -320,6 +330,9 @@ fragment reward on Reward {
     description
     estimatedDeliveryOn
     available
+    audienceData {
+        secret
+    }
     amount {
         ... amount
     }
@@ -414,6 +427,11 @@ fragment ppoCard on Backing {
     amount {
         ...amount
     }
+    reward {
+        shippingPreference
+        id
+    }
+    backerCompleted
     deliveryAddress {
         id
         addressLine1
@@ -548,4 +566,16 @@ fragment order on Order {
     checkoutState
     currency
     total
+}
+
+fragment pledgeManager on PledgeManager {
+    id
+    acceptsNewBackers
+    optedOut
+    state
+}
+
+fragment lastWave on CheckoutWave {
+    id
+    active
 }

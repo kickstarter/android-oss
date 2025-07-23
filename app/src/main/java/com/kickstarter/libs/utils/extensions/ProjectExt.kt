@@ -57,6 +57,9 @@ fun Project.showLatePledgeFlow() = this.isInPostCampaignPledgingPhase() ?: false
 
 fun Project.isLatePledgesActive() = this.isInPostCampaignPledgingPhase() ?: false && this.postCampaignPledgingEnabled() ?: false
 
+fun Project.pledgeManagementAvailable() = this.lastWave()?.active() == true &&
+    (this.pledgeManager()?.acceptsNewBackers() == true || this.isBacking())
+
 /**
  * Checks if the given card type is listed in the available card types
  *

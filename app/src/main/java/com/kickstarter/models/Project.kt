@@ -37,15 +37,18 @@ class Project private constructor(
     private val isPledgeOverTimeAllowed: Boolean?,
     private val isStarred: Boolean,
     private val lastUpdatePublishedAt: DateTime?,
+    private val lastWave: CheckoutWave?,
     private val launchedAt: DateTime?,
     private val location: Location?,
     private val name: String,
     private val percentFunded: Int?,
     private val permissions: List<Permission?>?,
     private val pledged: Double,
+    private val pledgeManager: PledgeManager?,
     private val photo: Photo?,
     private val prelaunchActivated: Boolean?,
     private val projectNotice: String?,
+    private val redemptionPageUrl: String?,
     private val tags: List<String>?,
     private val rewards: List<Reward>?,
     private val slug: String?,
@@ -101,15 +104,18 @@ class Project private constructor(
     fun isPledgeOverTimeAllowed() = this.isPledgeOverTimeAllowed
     fun isStarred() = this.isStarred
     fun lastUpdatePublishedAt() = this.lastUpdatePublishedAt
+    fun lastWave() = this.lastWave
     fun launchedAt() = this.launchedAt
     fun location() = this.location
     fun name() = this.name
     fun percentFunded() = this.percentFunded
     fun permissions() = this.permissions
     fun pledged() = this.pledged
+    fun pledgeManager() = this.pledgeManager
     fun photo() = this.photo
     fun prelaunchActivated() = this.prelaunchActivated
     fun projectNotice() = this.projectNotice
+    fun redemptionPageUrl() = this.redemptionPageUrl
     fun sendMetaCapiEvents() = this.sendMetaCapiEvents
     fun sendThirdPartyEvents() = this.sendThirdPartyEvents
     fun tags() = this.tags
@@ -169,15 +175,18 @@ class Project private constructor(
         private var isPledgeOverTimeAllowed: Boolean? = null,
         private var isStarred: Boolean = false,
         private var lastUpdatePublishedAt: DateTime? = null,
+        private var lastWave: CheckoutWave? = null,
         private var launchedAt: DateTime? = null,
         private var location: Location? = null,
         private var name: String = "",
         private var percentFunded: Int? = null,
         private var permissions: List<Permission?>? = null,
         private var pledged: Double = 0.0,
+        private var pledgeManager: PledgeManager? = null,
         private var photo: Photo? = null,
         private var prelaunchActivated: Boolean? = null,
         private var projectNotice: String? = null,
+        private var redemptionPageUrl: String? = null,
         private var sendMetaCapiEvents: Boolean? = null,
         private var sendThirdPartyEvents: Boolean? = null,
         private var tags: List<String>? = emptyList(),
@@ -250,7 +259,7 @@ class Project private constructor(
         fun isStarred(isStarred: Boolean?) = apply { this.isStarred = isStarred ?: false }
         fun lastUpdatePublishedAt(lastUpdatePublishedAt: DateTime?) =
             apply { this.lastUpdatePublishedAt = lastUpdatePublishedAt }
-
+        fun lastWave(lastWave: CheckoutWave?) = apply { this.lastWave = lastWave }
         fun launchedAt(launchedAt: DateTime?) = apply { this.launchedAt = launchedAt }
         fun location(location: Location?) = apply { this.location = location }
         fun name(name: String?) = apply { this.name = name ?: "" }
@@ -259,11 +268,13 @@ class Project private constructor(
             apply { this.permissions = permissions?.filterNotNull() ?: emptyList() }
 
         fun pledged(pledged: Double?) = apply { this.pledged = pledged ?: 0.0 }
+        fun pledgeManager(pledgeManager: PledgeManager?) = apply { this.pledgeManager = pledgeManager }
         fun photo(photo: Photo?) = apply { this.photo = photo }
         fun prelaunchActivated(prelaunchActivated: Boolean?) =
             apply { this.prelaunchActivated = prelaunchActivated }
 
         fun projectNotice(projectNotice: String?) = apply { this.projectNotice = projectNotice }
+        fun redemptionPageUrl(redemptionPageUrl: String?) = apply { this.redemptionPageUrl = redemptionPageUrl }
         fun sendMetaCapiEvents(sendMetaCapiEvents: Boolean?) =
             apply { this.sendMetaCapiEvents = sendMetaCapiEvents }
 
@@ -354,15 +365,18 @@ class Project private constructor(
             isPledgeOverTimeAllowed = isPledgeOverTimeAllowed,
             isStarred = isStarred,
             lastUpdatePublishedAt = lastUpdatePublishedAt,
+            lastWave = lastWave,
             launchedAt = launchedAt,
             location = location,
             name = name,
             percentFunded = percentFunded,
             permissions = permissions,
             pledged = pledged,
+            pledgeManager = pledgeManager,
             photo = photo,
             prelaunchActivated = prelaunchActivated,
             projectNotice = projectNotice,
+            redemptionPageUrl = redemptionPageUrl,
             sendMetaCapiEvents = sendMetaCapiEvents,
             sendThirdPartyEvents = sendThirdPartyEvents,
             tags = tags,
@@ -421,15 +435,18 @@ class Project private constructor(
         isPledgeOverTimeAllowed = isPledgeOverTimeAllowed,
         isStarred = isStarred,
         lastUpdatePublishedAt = lastUpdatePublishedAt,
+        lastWave = lastWave,
         launchedAt = launchedAt,
         location = location,
         name = name,
         percentFunded = percentFunded,
         permissions = permissions,
         pledged = pledged,
+        pledgeManager = pledgeManager,
         photo = photo,
         prelaunchActivated = prelaunchActivated,
         projectNotice = projectNotice,
+        redemptionPageUrl = redemptionPageUrl,
         sendMetaCapiEvents = sendMetaCapiEvents,
         sendThirdPartyEvents = sendThirdPartyEvents,
         tags = tags,
@@ -601,17 +618,20 @@ class Project private constructor(
                 isPledgeOverTimeAllowed() == other.isPledgeOverTimeAllowed() &&
                 isStarred() == other.isStarred() &&
                 lastUpdatePublishedAt() == other.lastUpdatePublishedAt() &&
+                lastWave() == other.lastWave() &&
                 launchedAt() == other.launchedAt() &&
                 location() == other.location() &&
                 name() == other.name() &&
                 percentFunded() == other.percentFunded() &&
                 permissions() == other.permissions() &&
                 pledged() == other.pledged() &&
+                pledgeManager() == other.pledgeManager() &&
                 photo() == other.photo() &&
                 prelaunchActivated() == other.prelaunchActivated() &&
                 projectNotice() == other.projectNotice() &&
                 sendMetaCapiEvents() == other.sendMetaCapiEvents() &&
                 sendThirdPartyEvents() == other.sendThirdPartyEvents() &&
+                redemptionPageUrl() == other.redemptionPageUrl() &&
                 rewards() == other.rewards() &&
                 slug() == other.slug() &&
                 staffPick() == other.staffPick() &&

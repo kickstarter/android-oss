@@ -4,7 +4,9 @@ import android.content.Context
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.CheckoutWaveFactory
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.PledgeManagerFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
@@ -465,5 +467,83 @@ class ProjectExtTest : KSRobolectricTestCase() {
             .build()
 
         assertFalse(project.isAllowedToPledge())
+    }
+
+    @Test
+    fun `test that a project is accepting net new backers for pledge manager when the pledge manager accepts new backers and last checkout wave is active`() {
+        val pledgeManager = PledgeManagerFactory.pledgeManagerAcceptsNetNewBackers()
+        val lastWave = CheckoutWaveFactory.checkoutWaveActive()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .pledgeManager(pledgeManager)
+            .lastWave(lastWave)
+            .isBacking(false)
+            .build()
+
+        assertTrue(project.pledgeManagementAvailable())
+    }
+
+    @Test
+    fun `test that a project is not accepting net new backers for pledge manager when the pledge manager does not accept new backers and last checkout wave is active`() {
+        val pledgeManager = PledgeManagerFactory.pledgeManagerDoesNotAcceptNetNewBackers()
+        val lastWave = CheckoutWaveFactory.checkoutWaveActive()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .pledgeManager(pledgeManager)
+            .lastWave(lastWave)
+            .isBacking(false)
+            .build()
+
+        assertFalse(project.pledgeManagementAvailable())
+    }
+
+    @Test
+    fun `test that a project is not accepting net new backers for pledge manager when the pledge manager accepts new backers but last checkout wave is inactive`() {
+        val pledgeManager = PledgeManagerFactory.pledgeManagerAcceptsNetNewBackers()
+        val lastWave = CheckoutWaveFactory.checkoutWaveInactive()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .pledgeManager(pledgeManager)
+            .lastWave(lastWave)
+            .isBacking(false)
+            .build()
+
+        assertFalse(project.pledgeManagementAvailable())
+    }
+
+    @Test
+    fun `test that a project is not accepting net new backers for pledge manager when the pledge manager is in non approved state and last checkout wave is inactive`() {
+        val pledgeManager = PledgeManagerFactory.pledgeManagerInNonApprovedState()
+        val lastWave = CheckoutWaveFactory.checkoutWaveInactive()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .pledgeManager(pledgeManager)
+            .lastWave(lastWave)
+            .isBacking(false)
+            .build()
+
+        assertFalse(project.pledgeManagementAvailable())
+    }
+
+    @Test
+    fun `test that pledge management is available when pm window is open and user is backer`() {
+        val pledgeManager = PledgeManagerFactory.pledgeManagerInNonApprovedState()
+            .toBuilder()
+            .acceptsNewBackers(false)
+            .build()
+        val lastWave = CheckoutWaveFactory.checkoutWaveInactive()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .pledgeManager(pledgeManager)
+            .lastWave(lastWave)
+            .isBacking(true)
+            .build()
+
+        assertFalse(project.pledgeManagementAvailable())
     }
 }

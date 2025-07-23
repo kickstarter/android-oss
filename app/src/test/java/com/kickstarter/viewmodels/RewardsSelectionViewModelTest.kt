@@ -92,7 +92,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         }
 
         assert(uiState.size == 2)
-        assert(flowState.size == 0)
+        assert(flowState.isEmpty())
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
@@ -135,7 +135,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         }
 
         assert(uiState.size == 2)
-        assert(flowState.size == 0)
+        assert(flowState.isEmpty())
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
@@ -182,7 +182,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         }
 
         assert(uiState.size == 2)
-        assert(flowState.size == 0)
+        assert(flowState.isEmpty())
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
@@ -229,7 +229,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         }
 
         assert(uiState.size == 2)
-        assert(flowState.size == 0)
+        assert(flowState.isEmpty())
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
@@ -276,7 +276,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         }
 
         assert(uiState.size == 2)
-        assert(flowState.size == 0)
+        assert(flowState.isEmpty())
         assertEquals(
             uiState.last(),
             RewardSelectionUIState(
@@ -300,37 +300,38 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `Test rewards list filtered when given a Germany location and a Project with unavailable rewards and mixed types of shipping`() = runTest {
         val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
+
         val testRewards: List<Reward> = (0..8).map {
-            if (it == 5)
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
+            when (it) {
+                0 -> RewardFactory.noReward()
+                3 -> Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true)
                     .pledgeAmount(3.0)
                     .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
                     .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-                    .shippingRules((listOf(ShippingRuleFactory.mexicoShippingRule())))
+                    .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule()))
                     .build()
-            else if (it == 3)
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
+                5 -> Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(true)
                     .pledgeAmount(3.0)
                     .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
                     .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-                    .shippingRules((listOf(ShippingRuleFactory.germanyShippingRule())))
+                    .shippingRules(listOf(ShippingRuleFactory.mexicoShippingRule()))
                     .build()
-            else if (it == 0)
-                RewardFactory.noReward()
-            else if (it % 2 == 0)
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(true).hasAddons(it != 2)
-                    .pledgeAmount(3.0)
-                    .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
-                    .shippingRules(testShippingRulesList.shippingRules())
-                    .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED)
-                    .build()
-            else
-                Reward.builder().title("$it").id(it.toLong()).isAvailable(false).hasAddons(it != 2)
-                    .pledgeAmount(3.0)
-                    .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
-                    .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-                    .shippingRules((listOf(ShippingRuleFactory.mexicoShippingRule())))
-                    .build()
+                else -> {
+                    val isEven = it % 2 == 0
+                    Reward.builder().title("$it").id(it.toLong()).isAvailable(isEven).hasAddons(true)
+                        .pledgeAmount(3.0)
+                        .shippingPreference(
+                            if (isEven) Reward.ShippingPreference.UNRESTRICTED.name
+                            else Reward.ShippingPreference.RESTRICTED.name
+                        )
+                        .shippingPreferenceType(
+                            if (isEven) Reward.ShippingPreference.UNRESTRICTED
+                            else Reward.ShippingPreference.RESTRICTED
+                        )
+                        .shippingRules(testShippingRulesList.shippingRules())
+                        .build()
+                }
+            }
         }
 
         val testProject = Project.builder().rewards(testRewards).build()
@@ -351,41 +352,43 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val shippingUiState = mutableListOf<ShippingRulesState>()
 
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(testProject, config, testRewards, this, dispatcher)
-            createViewModel(env, useCase)
+            createViewModel(env)
             viewModel.provideProjectData(testProjectData)
 
+            val useCase = GetShippingRulesUseCase(testProject, config, testRewards, this, dispatcher)
+            viewModel.overrideShippingRulesUseCase(useCase)
             viewModel.shippingUIState.toList(shippingUiState)
         }
-        advanceUntilIdle() // wait until all state emissions completed
-        viewModel.selectedShippingRule(ShippingRuleFactory.germanyShippingRule())
-        advanceTimeBy(600) // account for de delay within GetShippingRulesUseCase.filterBySelectedRule
 
-        // - Available rewards should be those available AND able to ship to germany
-        val filteredRewards = mutableListOf(
-            testRewards[0],
-            testRewards[2],
-            testRewards[3],
-            testRewards[4],
-            testRewards[6],
-            testRewards[8]
+        advanceUntilIdle()
+        viewModel.selectedShippingRule(ShippingRuleFactory.germanyShippingRule())
+        advanceTimeBy(600)
+
+        // Construct expected filtered list
+        val filteredRewards = listOf(
+            testRewards[0], // noReward (always first)
+            testRewards[2], // available, unrestricted
+            testRewards[3], // available, restricted to Germany
+            testRewards[4], // available, unrestricted
+            testRewards[6], // available, unrestricted
+            testRewards[8], // available, unrestricted
+            testRewards[1], // unavailable
+            testRewards[7] // unavailable
         )
 
+        val obtained = shippingUiState.last().filteredRw
+
+        // Assertions
         assertEquals(shippingUiState.size, 4)
         assertEquals(shippingUiState[2].loading, true)
         assertEquals(shippingUiState[3].loading, false)
 
-        // - make sure the uiState output reward list is filtered
-        assertEquals(shippingUiState.last().filteredRw.size, filteredRewards.size)
+        assertEquals(filteredRewards.size, obtained.size)
+        assertEquals(filteredRewards, obtained)
 
-        val obtained = shippingUiState.last().filteredRw
-        assertEquals(
-            obtained,
-            filteredRewards
-        )
-
-        assertEquals(obtained.first(), RewardFactory.noReward())
-        assertEquals(obtained[2].shippingRules()?.first(), ShippingRuleFactory.germanyShippingRule())
+        // Optional: Verify that "no reward" is first and Germany-shipping reward is correctly placed
+        assertEquals(obtained.first(), testRewards[0]) // noReward
+        assertEquals(obtained[2], testRewards[3]) // restricted Germany reward
     }
 
     @Test
@@ -471,9 +474,11 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
-            createViewModel(env, useCase)
+            createViewModel(env)
             viewModel.provideProjectData(projectData)
+
+            val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
+            viewModel.overrideShippingRulesUseCase(useCase)
             viewModel.shippingUIState.toList(shippingUiState)
         }
 
@@ -513,9 +518,10 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
-            val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
-            createViewModel(env, useCase)
+            createViewModel(env)
             viewModel.provideProjectData(projectData)
+            val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
+            viewModel.overrideShippingRulesUseCase(useCase)
             viewModel.shippingUIState.toList(shippingUiState)
         }
 

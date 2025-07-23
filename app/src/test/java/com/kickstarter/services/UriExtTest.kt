@@ -2,6 +2,7 @@ package com.kickstarter.services
 
 import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
 import com.kickstarter.libs.utils.extensions.isBackingDetailsUri
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
@@ -28,6 +29,7 @@ import com.kickstarter.libs.utils.extensions.isSignupUri
 import com.kickstarter.libs.utils.extensions.isUserSurveyUri
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
 import com.kickstarter.libs.utils.extensions.isWebViewUri
+import com.kickstarter.libs.utils.extensions.secretRewardToken
 import org.junit.Test
 
 class UriExtTest : KSRobolectricTestCase() {
@@ -267,5 +269,27 @@ class UriExtTest : KSRobolectricTestCase() {
     fun testUri_FromMainPage_OpenButton() {
         val uri = Uri.parse("ksr://www.kickstarter.com/?app_banner=1&ref=nav")
         assertTrue(uri.isMainPage())
+    }
+
+    @Test
+    fun testUri_hasSecretRewardToken() {
+        val uriWithToken = Uri.parse("https://www.ksr.com/project?secret_reward_token=abc123")
+        val uriWithEmptyToken = Uri.parse("https://www.ksr.com/project?secret_reward_token=")
+        val uriWithoutToken = Uri.parse("https://www.ksr.com/project")
+
+        assertTrue(uriWithToken.hasSecretRewardToken())
+        assertFalse(uriWithEmptyToken.hasSecretRewardToken())
+        assertFalse(uriWithoutToken.hasSecretRewardToken())
+    }
+
+    @Test
+    fun testUri_secretRewardToken() {
+        val uriWithToken = Uri.parse("https://www.ksr.com/project?secret_reward_token=abc123")
+        val uriWithEmptyToken = Uri.parse("https://www.ksr.com/project?secret_reward_token=")
+        val uriWithoutToken = Uri.parse("https://www.ksr.com/project")
+
+        assertEquals("abc123", uriWithToken.secretRewardToken())
+        assertEquals("", uriWithEmptyToken.secretRewardToken())
+        assertEquals("", uriWithoutToken.secretRewardToken())
     }
 }

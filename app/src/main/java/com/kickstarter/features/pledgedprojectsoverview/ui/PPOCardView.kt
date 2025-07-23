@@ -23,6 +23,10 @@ import androidx.compose.material.BadgedBox
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,12 +45,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.Flag
+import com.kickstarter.features.pledgedprojectsoverview.extensions.isTier1Alert
 import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSAlertBadge
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecondaryRedButton
+import com.kickstarter.ui.compose.designsystem.KSSwitch
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -66,7 +72,127 @@ fun PPOCardPreview() {
         ) {
             item {
                 PPOCardView(
-                    viewType = PPOCardViewType.CONFIRM_ADDRESS,
+                    viewType = PPOCardViewType.AWAITING_REWARD,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Awaiting reward type").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.SURVEY_SUBMITTED_DIGITAL,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Survey Submitted Digital type").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    shippingAddress = "Firsty Lasty\n123 First Street, Apt #5678\nLos Angeles, CA 90025-1234\nUnited States",
+
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Survey Submitted Shippable type").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.PLEDGE_MANAGEMENT,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Finalize pledge").type("warning").icon("time").build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.PLEDGE_COLLECTED_REWARD,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Pledge collected reward type").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Pledge collected no reward type").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.REWARD_RECEIVED,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Reward Received type").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
+                    viewType = PPOCardViewType.ADDRESS_CONFIRMED,
                     onCardClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
                     pledgeAmount = "$50.00",
@@ -76,7 +202,7 @@ fun PPOCardPreview() {
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
-                    flags = listOf(Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address locks in 7 days").type("warning").icon("time").build(), Flag.builder().message("Address").type("warning").icon("time").build()),
+                    flags = listOf(Flag.builder().message("Address confirmed type").type("warning").icon("time").build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -94,7 +220,7 @@ fun PPOCardPreview() {
                     onActionButtonClicked = {},
                     onSecondaryActionButtonClicked = {},
                     onProjectPledgeSummaryClick = {},
-                    flags = listOf(Flag.builder().message("In fulfillment").type("info").icon(null).build()),
+                    flags = listOf(Flag.builder().message("Confirm address").type("info").icon(null).build()),
                 )
 
                 Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -158,11 +284,13 @@ enum class PPOCardViewType {
     FIX_PAYMENT,
     AUTHENTICATE_CARD,
     OPEN_SURVEY,
-    PLEDGE_COLLECTED,
-    SUVERY_SUBMITTED,
+    PLEDGE_COLLECTED_NO_REWARD,
+    PLEDGE_COLLECTED_REWARD,
+    SURVEY_SUBMITTED_DIGITAL,
+    SURVEY_SUBMITTED_SHIPPABLE,
     ADDRESS_CONFIRMED,
     AWAITING_REWARD,
-    PLEDGE_REDEMPTION,
+    PLEDGE_MANAGEMENT,
     REWARD_RECEIVED,
     UNKNOWN,
 }
@@ -171,6 +299,8 @@ enum class PPOCardViewTestTag {
     SHIPPING_ADDRESS_VIEW,
     CONFIRM_ADDRESS_BUTTONS_VIEW,
     FlAG_LIST_VIEW,
+    REWARD_RECEIVED_SWITCH,
+    ALERT_NOTIFICATION_DOT
 }
 
 @Composable
@@ -188,10 +318,19 @@ fun PPOCardView(
     onActionButtonClicked: () -> Unit,
     onSecondaryActionButtonClicked: () -> Unit,
     flags: List<Flag?>? = null,
+    onRewardReceivedChanged: ((Boolean) -> Unit) = {},
+    rewardReceived: Boolean = false,
 ) {
 
     BadgedBox(
-        badge = { if (isTier1Alert(viewType)) Badge(backgroundColor = colors.backgroundDangerBold) }
+        badge = {
+            if (viewType.isTier1Alert() || viewType == PPOCardViewType.PLEDGE_MANAGEMENT) {
+                Badge(
+                    modifier = Modifier.testTag(PPOCardViewTestTag.ALERT_NOTIFICATION_DOT.name),
+                    backgroundColor = colors.backgroundDangerBold
+                )
+            }
+        }
     ) {
         Card(
             modifier = Modifier
@@ -221,13 +360,22 @@ fun PPOCardView(
                     sendAMessageClickAction = sendAMessageClickAction
                 )
 
-                if (viewType == PPOCardViewType.CONFIRM_ADDRESS) {
-                    Spacer(modifier = Modifier.height(dimensions.paddingSmall))
+                when (viewType) {
+                    PPOCardViewType.CONFIRM_ADDRESS,
+                    PPOCardViewType.ADDRESS_CONFIRMED,
+                    PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE, -> {
+                        Spacer(modifier = Modifier.height(dimensions.paddingSmall))
 
-                    ShippingAddressView(
-                        shippingAddress = shippingAddress,
-                        onEditAddressClicked = onSecondaryActionButtonClicked
-                    )
+                        ShippingAddressView(
+                            shippingAddress = shippingAddress,
+                            onEditAddressClicked = onSecondaryActionButtonClicked
+                        )
+                    }
+                    else -> {}
+                }
+
+                if (viewType == PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE) {
+                    KSDividerLineGrey()
                 }
 
                 when (viewType) {
@@ -235,7 +383,18 @@ fun PPOCardView(
                     PPOCardViewType.FIX_PAYMENT -> FixPaymentButtonView(onActionButtonClicked)
                     PPOCardViewType.AUTHENTICATE_CARD -> AuthenticateCardButtonView(onActionButtonClicked)
                     PPOCardViewType.OPEN_SURVEY -> TakeSurveyButtonView(onActionButtonClicked)
+                    PPOCardViewType.PLEDGE_MANAGEMENT -> FinalizePledgeButtonView(onActionButtonClicked)
                     PPOCardViewType.UNKNOWN -> {}
+                    else -> {}
+                }
+
+                when (viewType) {
+                    PPOCardViewType.PLEDGE_COLLECTED_REWARD,
+                    PPOCardViewType.SURVEY_SUBMITTED_DIGITAL,
+                    PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
+                    PPOCardViewType.AWAITING_REWARD,
+                    PPOCardViewType.REWARD_RECEIVED,
+                    -> RewardReceivedToggleView(checked = rewardReceived, onCheckChanged = onRewardReceivedChanged)
                     else -> {}
                 }
             }
@@ -303,7 +462,6 @@ fun ProjectPledgeSummaryView(
         )
     }
 }
-
 @Composable
 fun CreatorNameSendMessageView(
     creatorName: String? = null,
@@ -401,6 +559,8 @@ fun ShippingAddressView(
             }
         }
     }
+
+    Spacer(modifier = Modifier.height(dimensions.paddingMediumSmall))
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -446,7 +606,7 @@ fun ConfirmAddressButtonsView(isConfirmButtonEnabled: Boolean, onConfirmAddressC
 
         KSPrimaryGreenButton(
             modifier = Modifier
-                .weight(0.5f).padding(dimensions.paddingMediumSmall),
+                .weight(0.5f).padding(start = dimensions.paddingMediumSmall, end = dimensions.paddingMediumSmall, bottom = dimensions.paddingMediumSmall),
             onClickAction = { onConfirmAddressClicked.invoke() },
             text = stringResource(id = R.string.Confirm),
             isEnabled = isConfirmButtonEnabled,
@@ -478,19 +638,74 @@ fun AuthenticateCardButtonView(onAuthenticateCardClicked: () -> Unit) {
 }
 
 @Composable
-fun TakeSurveyButtonView(onAuthenticateCardClicked: () -> Unit) {
+fun TakeSurveyButtonView(onTakeSurveyButtonClick: () -> Unit) {
     KSPrimaryGreenButton(
         modifier = Modifier.padding(dimensions.paddingMediumSmall),
-        onClickAction = { onAuthenticateCardClicked.invoke() },
+        onClickAction = { onTakeSurveyButtonClick.invoke() },
         text = stringResource(id = R.string.Take_survey),
         isEnabled = true,
         textStyle = typographyV2.buttonLabel
     )
 }
 
-fun isTier1Alert(viewType: PPOCardViewType): Boolean {
-    return when (viewType) {
-        PPOCardViewType.CONFIRM_ADDRESS, PPOCardViewType.AUTHENTICATE_CARD, PPOCardViewType.OPEN_SURVEY, PPOCardViewType.FIX_PAYMENT -> true
-        else -> false
+@Composable
+fun FinalizePledgeButtonView(onFinalizePledgeButtonClick: () -> Unit) {
+    KSPrimaryGreenButton(
+        modifier = Modifier.padding(
+            start = dimensions.paddingMediumSmall,
+            end = dimensions.paddingMediumSmall,
+            top = dimensions.paddingMediumSmall,
+        ),
+        onClickAction = { onFinalizePledgeButtonClick.invoke() },
+        text = stringResource(id = R.string.Finalize_pledge),
+        isEnabled = true,
+        textStyle = typographyV2.buttonLabel
+    )
+
+    Text(
+        modifier = Modifier.padding(
+            top = dimensions.paddingSmall,
+            start = dimensions.paddingMediumSmall,
+            end = dimensions.paddingMediumSmall,
+            bottom = dimensions.paddingMediumSmall,
+        ),
+        text = stringResource(id = R.string.This_may_involve_submitting_a_delivery_address),
+        style = typographyV2.bodyXS,
+        color = colors.textSecondary
+    )
+}
+
+@Composable
+fun RewardReceivedToggleView(
+    checked: Boolean,
+    onCheckChanged: ((Boolean) -> Unit),
+) {
+    var currentSelection by rememberSaveable { mutableStateOf(checked) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = dimensions.paddingMediumSmall,
+                end = dimensions.paddingXSmall
+            )
+    ) {
+        Text(
+            text = stringResource(R.string.Reward_delivered),
+            style = typographyV2.bodyBoldLG,
+            color = colors.textPrimary
+        )
+        Spacer(modifier = Modifier.weight(1f))
+
+        KSSwitch(
+            modifier = Modifier.padding(end = dimensions.paddingXSmall).testTag(PPOCardViewTestTag.REWARD_RECEIVED_SWITCH.name),
+            checked = currentSelection,
+            onCheckChanged = {
+                currentSelection = it
+                onCheckChanged.invoke(it)
+            },
+            enabled = true,
+        )
     }
 }

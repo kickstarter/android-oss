@@ -285,6 +285,17 @@ object ProjectFactory {
     }
 
     @JvmStatic
+    fun projectWithActivePMForNewBackers(): Project {
+        val project = project()
+        return project
+            .toBuilder()
+            .pledgeManager(PledgeManagerFactory.pledgeManagerAcceptsNetNewBackers())
+            .lastWave(CheckoutWaveFactory.checkoutWaveActive())
+            .redemptionPageUrl("backing/redeem")
+            .build()
+    }
+
+    @JvmStatic
     fun projectWithAddOns(): Project {
         val rwWithAddOn =
             RewardFactory.reward().toBuilder().hasAddons(true).build()

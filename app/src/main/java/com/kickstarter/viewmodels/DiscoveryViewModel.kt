@@ -438,13 +438,12 @@ interface DiscoveryViewModel {
                 .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_ONBOARDING, it).apply() }
                 .addToDisposable(disposables)
 
-            val userHasntSeenOnboardingFlow = ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) == false || !sharedPreferences.getBoolean(HAS_SEEN_ONBOARDING, false)
+            // Old logic for consent management and notification permissions dialogs
 
             currentUserType.isLoggedIn
                 .filter { it }
                 .distinctUntilChanged()
                 .take(1)
-                .filter { userHasntSeenOnboardingFlow }
                 .filter { !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false) }
                 .subscribe { showNotifPermissionRequest.onNext(Unit) }
                 .addToDisposable(disposables)
@@ -455,7 +454,6 @@ interface DiscoveryViewModel {
 
             Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
                 .filter { !it }
-                .filter { userHasntSeenOnboardingFlow }
                 .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
                 .subscribe { showConsentManagementDialog.onNext(Unit) }
                 .addToDisposable(disposables)

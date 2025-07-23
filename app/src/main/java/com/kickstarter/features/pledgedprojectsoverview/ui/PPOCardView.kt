@@ -39,7 +39,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.style.TextOverflow.Companion.Visible
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -60,7 +59,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSWarningBadge
 import com.kickstarter.ui.compose.designsystem.shapes
-import java.time.Month
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true, name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -538,15 +536,15 @@ fun ShippingAddressView(
             .padding(top = dimensions.paddingSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingXSmall)
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
-            Text(
-                text = stringResource(id = R.string.Shipping_address),
-                modifier = Modifier
-                    .weight(0.25f)
-                    .height(dimensions.clickableButtonHeight)
-                    .clip(shapes.small),
-                color = colors.textPrimary,
-                style = typographyV2.headingSM,
-            )
+        Text(
+            text = stringResource(id = R.string.Shipping_address),
+            modifier = Modifier
+                .weight(0.25f)
+                .height(dimensions.clickableButtonHeight)
+                .clip(shapes.small),
+            color = colors.textPrimary,
+            style = typographyV2.headingSM,
+        )
 
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
@@ -562,7 +560,7 @@ fun ShippingAddressView(
                     minLines = 4,
                     maxLines = 6
                 )
-            }  else {
+            } else {
                 Text(
                     modifier = Modifier.weight(10f),
                     text = "The creator has not collected your address, please contact them to resolve this issue.",

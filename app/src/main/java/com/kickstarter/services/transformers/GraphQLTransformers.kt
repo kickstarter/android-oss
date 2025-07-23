@@ -1229,7 +1229,7 @@ fun getTierType(tierType: String?, reward: Reward) =
         PledgeTierType.SUVERY_SUBMITTED.tierType -> {
             if (RewardUtils.isDigital(reward)) {
                 PPOCardViewType.SURVEY_SUBMITTED_DIGITAL
-            } else if(RewardUtils.isNoReward(reward)) {
+            } else if (RewardUtils.isNoReward(reward)) {
                 PPOCardViewType.SURVEY_SUBMITTED_NO_REWARD
             } else {
                 PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE

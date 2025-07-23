@@ -48,21 +48,6 @@ class OnboardingFlowActivity : AppCompatActivity() {
         }
     }
 
-    fun onboardingCompleted() {
-        // Add analytics
-        exit()
-    }
-
-    fun onboardingCancelled() {
-        // Add analytics
-        exit()
-    }
-
-    fun exit() {
-        viewModel.hasSeenNotificationsPermission(true)
-        ApplicationUtils.resumeDiscoveryActivity(this)
-    }
-
     fun turnOnNotifications(permissionLauncher: ActivityResultLauncher<String>) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -83,8 +68,24 @@ class OnboardingFlowActivity : AppCompatActivity() {
     }
 
     fun signupOrLogin() {
+        viewModel.setHasSeenOnboardingFlow(true)
         val intent = Intent().getLoginActivityIntent(this, null, LoginReason.COMPLETED_ONBOARDING)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
         finish()
+    }
+
+    fun onboardingCompleted() {
+        // Add analytics
+        exit()
+    }
+
+    fun onboardingCancelled() {
+        // Add analytics
+        exit()
+    }
+
+    fun exit() {
+        viewModel.setHasSeenOnboardingFlow(true)
+        ApplicationUtils.resumeDiscoveryActivity(this)
     }
 }

@@ -105,8 +105,12 @@ class FeatureFlagClient(
             minimumFetchIntervalInSeconds = getFetchInterval()
         }
 
-        // - For the MVP no in-app defaults, will add them later on
         remoteConfig?.setConfigSettingsAsync(configSettings)
+
+        val defaultsMap: MutableMap<String, Any> = mutableMapOf(
+            Pair(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW.key, true)
+        )
+        remoteConfig?.setDefaultsAsync(defaultsMap)
 
         log("${this.javaClass} initialized with interval: ${this.getFetchInterval()}, remoteConfig ${this.remoteConfig}")
     }

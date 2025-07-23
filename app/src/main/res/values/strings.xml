@@ -112,6 +112,12 @@
   <string name="Saved_projects_fpo" formatted="false">Saved projects</string>
   <string name="Following_fpo" formatted="false">Following</string>
 
+  <!-- FPO's for search&filter empty states -->
+  <string name="No_results_for_fpo" formatted="false">No results for \"%{search_term}\"</string>
+  <string name="Try_rephrasing_your_filters_fpo" formatted="false">Try rephrasing your search or adjusting the filters</string>
+  <string name="Try_rephrasing_your_search_fpo" formatted="false">Try rephrasing your search</string>
+  <string name="Remove_all_filters_fpo" formatted="false">Remove all filters</string>
+
   <!-- FPO's for reward shipment tracking -->
   <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
   <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>

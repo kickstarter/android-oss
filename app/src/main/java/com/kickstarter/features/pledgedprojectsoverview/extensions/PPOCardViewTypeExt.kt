@@ -1,5 +1,6 @@
 package com.kickstarter.features.pledgedprojectsoverview.extensions
 
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 
 fun PPOCardViewType.isTier1Alert(): Boolean {

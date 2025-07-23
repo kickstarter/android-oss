@@ -2,31 +2,25 @@ package com.kickstarter.ui.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build.VERSION
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.util.Util
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.source.MediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
-import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.utils.WebUtils.userAgent
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
@@ -36,7 +30,6 @@ import com.kickstarter.viewmodels.VideoViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-@UnstableApi
 class VideoActivity : AppCompatActivity() {
 
     private lateinit var build: Build
@@ -44,9 +37,8 @@ class VideoActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: VideoViewModel.Factory
     private val viewModel: VideoViewModel.VideoViewModel by viewModels { viewModelFactory }
 
-    private var player: ExoPlayer? = null
+    private lateinit var player: ExoPlayer
     private var playerPosition: Long? = null
-    private var trackSelector: DefaultTrackSelector? = null
     private val disposables = CompositeDisposable()
 
     private val lifecycleObserver = object : DefaultLifecycleObserver {
@@ -61,10 +53,14 @@ class VideoActivity : AppCompatActivity() {
         WindowInsetsUtil.manageEdgeToEdge(window, binding.root)
         setContentView(binding.root)
 
-        val environment = requireNotNull(this.getEnvironment()).also {
-            viewModelFactory = VideoViewModel.Factory(it, intent = intent)
-            build = requireNotNull(it.build())
+        val environment = this.getEnvironment()?.let { env ->
+            viewModelFactory = VideoViewModel.Factory(env, intent = intent)
+            env
         }
+        build = requireNotNull(environment?.build())
+
+        player = ExoPlayer.Builder(this)
+            .build()
 
         binding.playerView.findViewById<ImageView>(R.id.exo_fullscreen_icon).apply {
             setImageResource(R.drawable.ic_fullscreen_close)
@@ -94,7 +90,11 @@ class VideoActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            binding.videoPlayerLayout.systemUiVisibility = systemUIFlags()
+            if (VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                enterImmersiveModeApi30()
+            } else {
+                systemUIFlags()
+            }
         }
     }
 
@@ -110,50 +110,44 @@ class VideoActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer(videoUrl: String) {
-        trackSelector = DefaultTrackSelector(this, AdaptiveTrackSelection.Factory())
-        player = ExoPlayer.Builder(this)
-            .setTrackSelector(trackSelector!!)
+        val mediaItem = MediaItem.Builder()
+            .setUri(videoUrl)
             .build()
-            .also {
-                binding.playerView.player = it
-                it.addListener(eventListener)
-                it.setMediaSource(getMediaSource(videoUrl))
-                it.prepare()
-                playerPosition?.let(it::seekTo)
-                it.playWhenReady = true
-            }
-    }
 
-    private fun getMediaSource(videoUrl: String): MediaSource {
-        val dataSourceFactory = DefaultHttpDataSource.Factory()
-            .setUserAgent(userAgent(build))
-        val uri = videoUrl.toUri()
-        val fileType = Util.inferContentType(uri)
-
-        return if (fileType == C.TYPE_HLS) {
-            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(uri))
-        } else {
-            ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(uri))
+        player.also {
+            binding.playerView.player = it
+            it.addListener(eventListener)
+            it.setMediaItem(mediaItem)
+            it.prepare()
+            playerPosition?.let(it::seekTo)
+            it.playWhenReady = true
         }
     }
 
     private fun releasePlayer() {
-        player?.let {
+        player.also {
             playerPosition = it.currentPosition
             it.duration.takeIf { duration -> duration > 0 }?.let { duration ->
-                // viewModel.inputs.onVideoCompleted(duration, playerPosition ?: 0L)
+                viewModel.inputs.onVideoCompleted(duration, playerPosition ?: 0L)
             }
             it.removeListener(eventListener)
             it.release()
         }
-        player = null
-        trackSelector = null
     }
 
     private fun back() {
-        val intent = Intent().putExtra(IntentKey.VIDEO_SEEK_POSITION, player?.currentPosition)
+        val intent = Intent().putExtra(IntentKey.VIDEO_SEEK_POSITION, player.currentPosition)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    // For API 30+ (Android 11 and above)
+    @RequiresApi(android.os.Build.VERSION_CODES.R)
+    private fun enterImmersiveModeApi30() {
+        window.insetsController?.let { controller ->
+            controller.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
+            controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
     }
 
     private fun systemUIFlags(): Int {
@@ -168,7 +162,7 @@ class VideoActivity : AppCompatActivity() {
     private fun onStateChanged(playbackState: Int) {
         when (playbackState) {
             Player.STATE_READY -> {
-                player?.duration?.let {
+                player.duration.let {
                     viewModel.inputs.onVideoStarted(it, playerPosition ?: 0L)
                 }
                 binding.loadingIndicator.visibility = View.GONE
@@ -182,7 +176,8 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
-    private val eventListener = object : Player.Listener {
+    private val eventListener = @UnstableApi
+    object : Player.Listener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             onStateChanged(playbackState)
         }

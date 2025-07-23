@@ -258,18 +258,18 @@ class PledgedProjectsOverviewViewModel(
     }
 
     private fun getAllowedTierTypes(): List<PledgeTierType> {
-        val list = PledgeTierType.values()
-        list.toMutableList().remove(PledgeTierType.REWARD_RECEIVED)
+        val list = PledgeTierType.values().toMutableList()
+        list.remove(PledgeTierType.REWARD_RECEIVED)
 
         isV1Enabled.isFalse().let {
-            list.filter { !it.isTier1Type() }
+            list.removeAll { it.isTier1Type() }
         }
 
         isV2Enabled.isFalse().let {
-            list.filter { !it.isTier2Type() }
+            list.removeAll { it.isTier2Type() }
         }
 
-        return list.asList()
+        return list
     }
 
     fun showHeadsUpSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {

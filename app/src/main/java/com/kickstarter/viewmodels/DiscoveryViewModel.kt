@@ -164,7 +164,7 @@ interface DiscoveryViewModel {
         private val profileClick = PublishSubject.create<Unit>()
         private val showNotifPermissionRequest = BehaviorSubject.create<Unit>()
         private val showConsentManagementDialog = BehaviorSubject.create<Unit>()
-        private val showOnboardingFlow = PublishSubject.create<Unit>()
+        private val showOnboardingFlow = BehaviorSubject.create<Unit>()
         private val settingsClick = PublishSubject.create<Unit>()
         private val pledgedProjectsClick = PublishSubject.create<Unit>()
         private val sortClicked = PublishSubject.create<Int>()
@@ -417,21 +417,20 @@ interface DiscoveryViewModel {
         }
 
         private fun setupUserOnboarding() {
-        /*
-         Show the new native onboarding if:
-            - the feature switch is true,
-            - the onboarding screen hasn't been shown already,
-            - and the user is a "new user",
-        New user heuristic: user has not seen consent management or notifications permission dialog
-         */
+            /*
+             Show the new native onboarding if:
+                - the onboarding flow feature switch is true,
+                - the onboarding flow hasn't been shown already,
+                - and the user is a "new user",
+             New user heuristic: user has not seen consent management or notifications permission dialog
+             */
+            val newUserHeuristic = !sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE) ||
+                !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
 
             Observable.just(ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW))
                 .filter { it }
                 .filter { !sharedPreferences.getBoolean(HAS_SEEN_ONBOARDING, false) }
-                .filter { // Filter out existing users
-                    !sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false) ||
-                        !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
-                }
+                .filter { newUserHeuristic }
                 .subscribe { showOnboardingFlow.onNext(Unit) }
                 .addToDisposable(disposables)
 
@@ -440,12 +439,13 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
 
             // If native onboarding feature switch is false, show the existing alert dialogs
+
             currentUserType.isLoggedIn
                 .filter { it }
                 .distinctUntilChanged()
                 .take(1)
-                .filter { !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false) }
                 .filter { ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) == false } // Check Onboarding FF
+                .filter { !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false) }
                 .subscribe { showNotifPermissionRequest.onNext(Unit) }
                 .addToDisposable(disposables)
 
@@ -455,8 +455,8 @@ interface DiscoveryViewModel {
 
             Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
                 .filter { !it }
-                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
                 .filter { ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) == false } // Check Onboarding FF
+                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
                 .subscribe { showConsentManagementDialog.onNext(Unit) }
                 .addToDisposable(disposables)
         }
@@ -510,7 +510,9 @@ interface DiscoveryViewModel {
         override fun showErrorMessage(): Observable<String> { return messageError }
         override fun showNotifPermissionsRequest(): Observable<Unit> { return showNotifPermissionRequest }
         override fun showConsentManagementDialog(): Observable<Unit> { return showConsentManagementDialog }
-        override fun showOnboardingFlow(): Observable<Unit> { return showOnboardingFlow }
+        override fun showOnboardingFlow(): Observable<Unit> {
+            return showOnboardingFlow
+        }
 
         override fun darkThemeEnabled(): Observable<Boolean> { return darkThemeEnabled }
         fun closeDrawer(): Observable<Unit> { return closeDrawer }

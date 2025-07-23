@@ -21,6 +21,7 @@ import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
@@ -259,10 +260,15 @@ class PledgedProjectsOverviewViewModel(
     private fun getAllowedTierTypes(): List<PledgeTierType> {
         val list = PledgeTierType.values()
         list.toMutableList().remove(PledgeTierType.REWARD_RECEIVED)
-        list.filter {
-            if (!isV1Enabled) !it.isTier1Type() else true
-            if (!isV2Enabled) !it.isTier2Type() else true
+
+        isV1Enabled.isFalse().let {
+            list.filter { !it.isTier1Type() }
         }
+
+        isV2Enabled.isFalse().let {
+            list.filter { !it.isTier2Type() }
+        }
+
         return list.asList()
     }
 

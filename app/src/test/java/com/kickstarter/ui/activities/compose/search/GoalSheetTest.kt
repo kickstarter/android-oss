@@ -29,7 +29,7 @@ class GoalSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Goal_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Goal))
             .assertIsDisplayed()
 
         DiscoveryParams.GoalBuckets.values().forEach { bucket ->

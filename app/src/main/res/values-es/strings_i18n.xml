@@ -50,6 +50,11 @@
   <string name="Amount_raised_bucket_2" formatted="false">Entre USD 10 000 y USD 100 000</string>
   <string name="Amount_raised_bucket_3" formatted="false">Entre USD 100 000 y USD 1 000 000</string>
   <string name="Amount_raised_bucket_4" formatted="false">Más de USD 1 000 000</string>
+  <string name="Amount_raised_pill_bucket_0" formatted="false">Menos de USD 1000 recaudados</string>
+  <string name="Amount_raised_pill_bucket_1" formatted="false">Entre USD 1000 y USD 10 000 recaudados</string>
+  <string name="Amount_raised_pill_bucket_2" formatted="false">Entre USD 10 000 y USD 100 000 recaudados</string>
+  <string name="Amount_raised_pill_bucket_3" formatted="false">Entre USD 100 000 y USD 1 000 000 recaudados</string>
+  <string name="Amount_raised_pill_bucket_4" formatted="false">Más de USD 1 000 000 recaudados</string>
   <string name="Amount_reward" formatted="false">Monto: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Los montos mostrados son una conversión aproximada. Si el proyecto tiene éxito, tu contribución se recaudará en la moneda nativa del proyecto, que también se mostrará.</string>
   <string name="Announcements" formatted="false">Anuncios</string>
@@ -149,6 +154,7 @@ patrocinadores</string>
   <string name="Closes_project" formatted="false">Cierra el proyecto.</string>
   <string name="Collaborator" formatted="false">Colaborador</string>
   <string name="Collapses_subcategories" formatted="false">Muestra menos subcategorías.</string>
+  <string name="Collected_adjusted" formatted="false">Collected (adjusted)</string>
   <string name="Collection_plan" formatted="false">Plan de pagos</string>
   <string name="Collections" formatted="false">Colecciones</string>
   <string name="Coming_soon" formatted="false">Próximamente</string>
@@ -344,7 +350,18 @@ Toca para intentar de nuevo.</string>
   <string name="Get_started" formatted="false">¡Manos a la obra!</string>
   <string name="Go_to_pledge_manager" formatted="false">Ir al gestor de contribuciones</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
+  <string name="Goal" formatted="false">Meta</string>
+  <string name="Goal_bucket_0" formatted="false">Menos de USD 1000</string>
+  <string name="Goal_bucket_1" formatted="false">Entre USD 1000 y USD 10 000</string>
+  <string name="Goal_bucket_2" formatted="false">Entre USD 10 000 y USD 100 000</string>
+  <string name="Goal_bucket_3" formatted="false">Entre USD 100 000 y USD 1 000 000</string>
+  <string name="Goal_bucket_4" formatted="false">Más de USD 1 000 000</string>
   <string name="Goal_met" formatted="false">Meta cumplida</string>
+  <string name="Goal_pill_bucket_0" formatted="false">Meta: menos de USD 1000</string>
+  <string name="Goal_pill_bucket_1" formatted="false">Meta: entre USD 1000 y USD 10 000</string>
+  <string name="Goal_pill_bucket_2" formatted="false">Meta: entre USD 10 000 y USD 100 000</string>
+  <string name="Goal_pill_bucket_3" formatted="false">Meta: entre USD 100 000 y USD 1 000 000</string>
+  <string name="Goal_pill_bucket_4" formatted="false">Meta: más de USD 1 000 000</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Listo. Se han guardado tus cambios.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
@@ -484,6 +501,7 @@ Toca para intentar de nuevo.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
+  <string name="No_results_for" formatted="false">No hay resultados para %{query}</string>
   <string name="No_saved_projects" formatted="false">No hay proyectos guardados</string>
   <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
   <string name="Not_available" formatted="false">No disponible</string>
@@ -533,6 +551,9 @@ Toca para intentar de nuevo.</string>
   <string name="Percentage_raised_bucket_0" formatted="false">Menos del 75 %</string>
   <string name="Percentage_raised_bucket_1" formatted="false">Del 75 % al 100 %</string>
   <string name="Percentage_raised_bucket_2" formatted="false">Más del 100 %</string>
+  <string name="Percentage_raised_pill_bucket_0" formatted="false">Menos del 75  % recaudado</string>
+  <string name="Percentage_raised_pill_bucket_1" formatted="false">Entre el 75  % y el 100  % recaudado</string>
+  <string name="Percentage_raised_pill_bucket_2" formatted="false">Más del 100  % recaudado</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Por favor ingresa un monto de contribución entre %{min} y %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Ingresa un monto de contribución de %{amount} o menor.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Ingresa un monto de contribución de %{amount} o más.</string>
@@ -613,8 +634,10 @@ Toca para intentar de nuevo.</string>
   <string name="Recommended_for_you" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Refunded" formatted="false">Refunded</string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">Recuerda que las fechas de entrega no están garantizadas.</string>
   <string name="Remember_this_card" formatted="false">Guarda esta tarjeta</string>
+  <string name="Remove_all_filters" formatted="false">Eliminar todos los filtros</string>
   <string name="Remove_this_card" formatted="false">Eliminar esta tarjeta</string>
   <string name="Replay" formatted="false">Repetición</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Repetición disponible por %{time} %{units} más</string>
@@ -721,6 +744,12 @@ Toca para intentar de nuevo.</string>
   <string name="Ships_worldwide" formatted="false">Envíos a todo el mundo</string>
   <string name="Show_comment" formatted="false">Mostrar comentario</string>
   <string name="Show_me_projects" formatted="false">Múestrame proyectos</string>
+  <string name="Show_only" formatted="false">Solo mostrar</string>
+  <string name="Show_only_following" formatted="false">Siguiendo</string>
+  <string name="Show_only_projects_we_love" formatted="false">Nuestros favoritos</string>
+  <string name="Show_only_recommended_for_you" formatted="false">Recomendaciones</string>
+  <string name="Show_only_saved_pill_title" formatted="false">Guardados</string>
+  <string name="Show_only_saved_projects" formatted="false">Proyectos guardados</string>
   <string name="Show_password" formatted="false">Mostrar contraseña</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">Apoya tus espacios culturales favoritos</string>
   <string name="Shows_list_of_subcategories" formatted="false">Mostrar lista de subcategorías.</string>
@@ -829,6 +858,8 @@ Toca para intentar de nuevo.</string>
   <string name="Track_shipment" formatted="false">Seguir envío</string>
   <string name="Track_your_backings" formatted="false">Sigue los proyectos que has patrocinado</string>
   <string name="Tracking_number" formatted="false">Número de seguimiento: %{number}</string>
+  <string name="Try_rephrasing_your_search" formatted="false">Intenta reformular tu búsqueda</string>
+  <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Intenta reformular tu búsqueda o ajustar los filtros</string>
   <string name="Twice_a_day_summary" formatted="false">Resumen dos veces al día</string>
   <string name="Unable_to_request" formatted="false">No se pueden solicitar datos.</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>

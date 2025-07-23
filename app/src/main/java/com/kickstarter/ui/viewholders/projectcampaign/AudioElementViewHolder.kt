@@ -164,7 +164,8 @@ class AudioElementViewHolder(
                 "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(duration),
                 TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(duration))
+                    TimeUnit.MILLISECONDS.toMinutes(duration)
+                )
             )
 
             updateProgressTextLabel()
@@ -179,7 +180,8 @@ class AudioElementViewHolder(
                 "%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(currentPos),
                 TimeUnit.MILLISECONDS.toSeconds(currentPos) - TimeUnit.MINUTES.toSeconds(
-                    TimeUnit.MILLISECONDS.toMinutes(currentPos))
+                    TimeUnit.MILLISECONDS.toMinutes(currentPos)
+                )
             )
             this.binding.progress.text = progress
         }

@@ -41,7 +41,7 @@ class GoalSheetTest : KSRobolectricTestCase() {
                 .onNodeWithText(
                     context.resources.getString(
                         context.resources.getIdentifier(
-                            "Bucket_${bucket.name.last().digitToInt()}_fpo",
+                            "Goal_bucket_${bucket.name.last().digitToInt()}",
                             "string",
                             context.packageName
                         )

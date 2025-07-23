@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import OnboardingScreen
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -11,7 +10,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.checkPermissions
@@ -51,18 +49,23 @@ class OnboardingFlowActivity : AppCompatActivity() {
     }
 
     fun onboardingCompleted() {
-        ApplicationUtils.resumeDiscoveryActivity(this)
+        // Add analytics
+        exit()
     }
 
     fun onboardingCancelled() {
+        // Add analytics
+        exit()
+    }
+
+    fun exit() {
+        viewModel.hasSeenNotificationsPermission(true)
         ApplicationUtils.resumeDiscoveryActivity(this)
     }
 
     fun turnOnNotifications(permissionLauncher: ActivityResultLauncher<String>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-//            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)) {
-                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             // NOTE: we would not expect to reach this else block in the onboarding flow as we only show onboarding flow to new users
             Toast.makeText(this, "Notifications permission already granted", Toast.LENGTH_SHORT).show()

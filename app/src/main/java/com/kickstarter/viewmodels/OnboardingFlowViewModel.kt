@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS
+import com.kickstarter.ui.SharedPreferenceKey.HAS_SEEN_ONBOARDING
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,6 +42,10 @@ class OnboardingFlowViewModel(
 
     fun hasSeenNotificationsPermission(hasSeen: Boolean) {
         sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, hasSeen).apply()
+    }
+
+    fun setHasSeenOnboardingFlow(hasSeen: Boolean) {
+        sharedPreferences.edit().putBoolean(HAS_SEEN_ONBOARDING, hasSeen).apply()
     }
 
     class Factory(

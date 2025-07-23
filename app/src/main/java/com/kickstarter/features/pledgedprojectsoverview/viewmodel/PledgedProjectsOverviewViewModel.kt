@@ -256,7 +256,7 @@ class PledgedProjectsOverviewViewModel(
         )
     }
 
-    private fun getAllowedTierTypes() : List<PledgeTierType> {
+    private fun getAllowedTierTypes(): List<PledgeTierType> {
         val list = PledgeTierType.values()
         list.toMutableList().remove(PledgeTierType.REWARD_RECEIVED)
         list.filter {

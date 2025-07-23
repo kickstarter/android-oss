@@ -409,12 +409,47 @@ fun SearchScreen(
             backgroundColor = colors.kds_white
         ) { padding ->
             if (showEmptyView) {
+                var numbersActive = 0
+                selectedFilterCounts.entries.map { entry ->
+                    numbersActive += entry.value
+                }
+
                 SearchEmptyView(
                     modifier = Modifier
                         .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
                         .background(colors.backgroundSurfaceSecondary),
                     environment = environment,
-                    currentSearchTerm = currentSearchTerm
+                    currentSearchTerm = currentSearchTerm,
+                    activeFilters = numbersActive > 0,
+                    onClick = {
+                        selectedFilterCounts.keys.forEach { key ->
+                            selectedFilterCounts[key] = 0
+                        }
+
+                        currentCategory.value = null
+                        currentProjectState.value = null
+                        currentPercentage.value = null
+                        currentLocation.value = null
+                        currentAmountRaised.value = null
+                        currentRecommended.value = false
+                        currentStaffPicked.value = false
+                        currentStarred.value = false
+                        currentSocial.value = false
+                        currentGoal.value = null
+                        onApplySearchWithParams(
+                            currentCategory.value,
+                            currentSort.value,
+                            currentProjectState.value,
+                            currentPercentage.value,
+                            currentLocation.value,
+                            currentAmountRaised.value,
+                            currentRecommended.value,
+                            currentStaffPicked.value,
+                            currentStarred.value,
+                            currentSocial.value,
+                            currentGoal.value
+                        )
+                    }
                 )
             } else {
                 LazyColumn(

@@ -563,8 +563,8 @@ fun ShippingAddressView(
             } else {
                 Text(
                     modifier = Modifier.weight(10f),
-                    text = "The creator has not collected your address, please contact them to resolve this issue.",
-                    color = colors.textPrimary,
+                    text = stringResource(R.string.fpo_the_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue),
+                    color = colors.textSecondary,
                     style = typographyV2.headingSM,
                 )
             }

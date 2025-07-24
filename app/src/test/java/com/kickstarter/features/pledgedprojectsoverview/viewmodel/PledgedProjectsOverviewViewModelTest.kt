@@ -315,7 +315,8 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,
                 AnalyticEvents(listOf(trackingClient)),
-                mutableTotalAlerts
+                mutableTotalAlerts,
+                tierTypes = listOf(),
             )
 
             val pager = TestPager(
@@ -364,6 +365,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 mockApolloClientV2,
                 AnalyticEvents(listOf(trackingClient)),
                 mutableTotalAlerts,
+                tierTypes = listOf()
             )
 
             var viewModel = PledgedProjectsOverviewViewModel.Factory(

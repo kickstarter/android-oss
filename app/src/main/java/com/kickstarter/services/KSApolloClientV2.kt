@@ -769,7 +769,8 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val ps = PublishSubject.create<PaymentPlan>()
             val query = BuildPaymentPlanQuery(
                 slug = input.slug,
-                amount = input.amount
+                amount = input.amount,
+                includeRefundedAmount = false
             )
 
             this.service.query(query)

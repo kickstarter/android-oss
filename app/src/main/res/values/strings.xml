@@ -100,5 +100,7 @@
   <!-- FPO's for PLOT refund -->
   <string name="fpo_refunded" formatted="false">Refunded</string>
 
+  <!-- Content descriptions -->
+  <string name="Close" formatted="false">Close</string>
 
 </resources>

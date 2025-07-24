@@ -48,7 +48,6 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
-import org.jsoup.helper.Validate.isFalse
 
 private val PAGE_LIMIT = 25
 class PledgedProjectsPagingSource(

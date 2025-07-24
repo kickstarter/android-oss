@@ -29,7 +29,7 @@ class GoalSheetTest : KSRobolectricTestCase() {
         }
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Goal_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Goal))
             .assertIsDisplayed()
 
         DiscoveryParams.GoalBuckets.values().forEach { bucket ->
@@ -41,7 +41,7 @@ class GoalSheetTest : KSRobolectricTestCase() {
                 .onNodeWithText(
                     context.resources.getString(
                         context.resources.getIdentifier(
-                            "Bucket_${bucket.name.last().digitToInt()}_fpo",
+                            "Goal_bucket_${bucket.name.last().digitToInt()}",
                             "string",
                             context.packageName
                         )

@@ -116,7 +116,7 @@ fun AmountRaisedSheet(
                     )
 
                     Text(
-                        text = stringResource(R.string.Amount_raised_fpo),
+                        text = stringResource(R.string.Amount_raised),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
@@ -190,9 +190,9 @@ fun AmountRaisedSheet(
 
 @Composable
 fun textForBucket(bucket: DiscoveryParams.AmountBuckets) = when (bucket) {
-    DiscoveryParams.AmountBuckets.BUCKET_2 -> stringResource(R.string.Bucket_2_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_1 -> stringResource(R.string.Bucket_1_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_0 -> stringResource(R.string.Bucket_0_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_3 -> stringResource(R.string.Bucket_3_fpo)
-    DiscoveryParams.AmountBuckets.BUCKET_4 -> stringResource(R.string.Bucket_4_fpo)
+    DiscoveryParams.AmountBuckets.BUCKET_2 -> stringResource(R.string.Amount_raised_bucket_2)
+    DiscoveryParams.AmountBuckets.BUCKET_1 -> stringResource(R.string.Amount_raised_bucket_1)
+    DiscoveryParams.AmountBuckets.BUCKET_0 -> stringResource(R.string.Amount_raised_bucket_0)
+    DiscoveryParams.AmountBuckets.BUCKET_3 -> stringResource(R.string.Amount_raised_bucket_3)
+    DiscoveryParams.AmountBuckets.BUCKET_4 -> stringResource(R.string.Amount_raised_bucket_4)
 }

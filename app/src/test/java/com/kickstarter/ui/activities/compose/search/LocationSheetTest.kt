@@ -68,7 +68,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+            .onNodeWithText(context.resources.getString(R.string.Location_anywhere))
             .assertIsDisplayed()
 
         composeTestRule
@@ -131,7 +131,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+            .onNodeWithText(context.resources.getString(R.string.Location_anywhere))
             .assertDoesNotExist()
 
         composeTestRule
@@ -184,7 +184,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
                 .assertIsDisplayed()
 
             composeTestRule
-                .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+                .onNodeWithText(context.resources.getString(R.string.Location_anywhere))
                 .assertDoesNotExist()
 
             composeTestRule
@@ -231,7 +231,7 @@ class LocationSheetTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Location_Anywhere))
+            .onNodeWithText(context.resources.getString(R.string.Location_anywhere))
             .assertIsDisplayed()
 
         composeTestRule

@@ -50,6 +50,11 @@
   <string name="Amount_raised_bucket_2" formatted="false">Entre 10 000 $ et 100 000 $</string>
   <string name="Amount_raised_bucket_3" formatted="false">Entre 100 000 $ et 1 000 000 $</string>
   <string name="Amount_raised_bucket_4" formatted="false">Plus de 1 000 000 $</string>
+  <string name="Amount_raised_pill_bucket_0" formatted="false">Moins de 1 000 $ levés</string>
+  <string name="Amount_raised_pill_bucket_1" formatted="false">Entre 1 000 $ et 10 000 $ levés</string>
+  <string name="Amount_raised_pill_bucket_2" formatted="false">Entre 10 000 $ et 100 000 $ levés</string>
+  <string name="Amount_raised_pill_bucket_3" formatted="false">Entre 100 000 $ et 1 000 000 $ levés</string>
+  <string name="Amount_raised_pill_bucket_4" formatted="false">Plus d\'1 000 000 $ levés</string>
   <string name="Amount_reward" formatted="false">Montant : %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Les montants qui s\'affichent représentent une conversion approximative. Si le projet est intégralement financé, votre contribution sera débitée dans la devise d\'origine du projet, également affichée.</string>
   <string name="Announcements" formatted="false">Annonces</string>
@@ -149,6 +154,7 @@ contributeurs</string>
   <string name="Closes_project" formatted="false">Ferme le projet.</string>
   <string name="Collaborator" formatted="false">Collaborateur</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
+  <string name="Collected_adjusted" formatted="false">Total prélevé (réajusté)</string>
   <string name="Collection_plan" formatted="false">Type de règlement</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Coming_soon" formatted="false">Bientôt disponible</string>
@@ -230,7 +236,7 @@ Cliquez pour réessayer.</string>
   <string name="Developer" formatted="false">Développeur</string>
   <string name="Discover_arts_news" formatted="false">Des idées et des projets innovants à découvrir, soigneusement sélectionnés deux fois par mois par l\'équipe Design et technologie de Kickstarter.</string>
   <string name="Discover_creative_projects" formatted="false">Des projets créatifs à découvrir</string>
-  <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
+  <string name="Discover_more_projects" formatted="false">Découvrir plus de projets</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Tout sur l\'avenir du design et de la technologie.</string>
   <string name="Dismiss" formatted="false">Ignorer</string>
   <string name="Do_you_have_the_consent_of_the_owners_of_the_works_used_for_AI" formatted="false">Avez-vous obtenu le consentement des propriétaires des œuvres utilisées (ou à utiliser) pour produire la partie de votre projet générée par IA ? Veuillez expliquer.</string>
@@ -344,7 +350,18 @@ Cliquez pour réessayer.</string>
   <string name="Get_started" formatted="false">Démarrer</string>
   <string name="Go_to_pledge_manager" formatted="false">Ouvrir le gestionnaire d\'engagements</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
+  <string name="Goal" formatted="false">Objectif</string>
+  <string name="Goal_bucket_0" formatted="false">Moins de 1 000 $</string>
+  <string name="Goal_bucket_1" formatted="false">Entre 1 000 $ et 10 000 $</string>
+  <string name="Goal_bucket_2" formatted="false">Entre 10 000 $ et 100 000 $</string>
+  <string name="Goal_bucket_3" formatted="false">Entre 100 000 $ et 1 000 000 $</string>
+  <string name="Goal_bucket_4" formatted="false">Plus de 1 000 000 $</string>
   <string name="Goal_met" formatted="false">Objectif atteint</string>
+  <string name="Goal_pill_bucket_0" formatted="false">Objectif : inférieur à 1 000 $</string>
+  <string name="Goal_pill_bucket_1" formatted="false">Objectif : entre 1 000 $ et 10 000 $</string>
+  <string name="Goal_pill_bucket_2" formatted="false">Objectif : entre 10 000 $ et 100 000 $</string>
+  <string name="Goal_pill_bucket_3" formatted="false">Objectif : entre 100 000 $ et 1 000 000 $</string>
+  <string name="Goal_pill_bucket_4" formatted="false">Objectif : supérieur à 1 000 000 $</string>
   <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">C\'est bon, vos modifications ont été enregistrées.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
@@ -484,6 +501,7 @@ Cliquez pour réessayer.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Mes amis \n
 n\'ont rien soutenu.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Pas de rediffusion possible pour cette diffusion en direct.</string>
+  <string name="No_results_for" formatted="false">Aucun résultat pour « %{query} »</string>
   <string name="No_saved_projects" formatted="false">Pas de projets enregistrés</string>
   <string name="No_unread_messages" formatted="false">Pas de messages non lus</string>
   <string name="Not_available" formatted="false">Indisponible</string>
@@ -533,6 +551,9 @@ n\'ont rien soutenu.</string>
   <string name="Percentage_raised_bucket_0" formatted="false">Inférieur à 75 %</string>
   <string name="Percentage_raised_bucket_1" formatted="false">Entre 75 % et 100 %</string>
   <string name="Percentage_raised_bucket_2" formatted="false">Supérieur à 100 %</string>
+  <string name="Percentage_raised_pill_bucket_0" formatted="false">Financé à moins de 75 %</string>
+  <string name="Percentage_raised_pill_bucket_1" formatted="false">Financé entre 75 % et 100 %</string>
+  <string name="Percentage_raised_pill_bucket_2" formatted="false">Financé à plus de 100 %</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Veuillez saisir un engagement entre %{min} et %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Veuillez saisir un montant de %{amount} ou moins.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Veuillez saisir un montant de %{amount} ou plus.</string>
@@ -613,8 +634,10 @@ n\'ont rien soutenu.</string>
   <string name="Recommended_for_you" formatted="false">Rien que pour vous</string>
   <string name="Recorded_Live" formatted="false">Enregistré en direct</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Enregistré en direct avec &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Refunded" formatted="false">Remboursé</string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">N\'oubliez pas que les dates de livraison ne sont pas garanties.</string>
   <string name="Remember_this_card" formatted="false">Enregistrer cette carte</string>
+  <string name="Remove_all_filters" formatted="false">Supprimer tous les filtres</string>
   <string name="Remove_this_card" formatted="false">Supprimer cette carte</string>
   <string name="Replay" formatted="false">Rediffuser</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Rediffusion encore disponible pendant %{time} %{units}</string>
@@ -695,7 +718,7 @@ n\'ont rien soutenu.</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
   <string name="Select_up_to_five" formatted="false">Sélectionnez cinq catégories parmi les propositions ci-dessous.</string>
-  <string name="Select_your_reward" formatted="false">Veuillez sélectionner votre récompense</string>
+  <string name="Select_your_reward" formatted="false">Choix de récompense</string>
   <string name="Selected" formatted="false">Sélectionné</string>
   <string name="Selected_card" formatted="false">Carte sélectionnée</string>
   <string name="Selected_reward" formatted="false">Récompense sélectionnée</string>
@@ -721,6 +744,12 @@ n\'ont rien soutenu.</string>
   <string name="Ships_worldwide" formatted="false">Livraison dans le monde entier</string>
   <string name="Show_comment" formatted="false">Afficher le commentaire</string>
   <string name="Show_me_projects" formatted="false">Montrez-moi des projets</string>
+  <string name="Show_only" formatted="false">Afficher seulement</string>
+  <string name="Show_only_following" formatted="false">Abonnements</string>
+  <string name="Show_only_projects_we_love" formatted="false">Nos coups de cœur</string>
+  <string name="Show_only_recommended_for_you" formatted="false">Rien que pour vous</string>
+  <string name="Show_only_saved_pill_title" formatted="false">Projets enregistrés</string>
+  <string name="Show_only_saved_projects" formatted="false">Projets enregistrés</string>
   <string name="Show_password" formatted="false">Afficher le mot de passe</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">Soutenez vos espaces culturels préférés.</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
@@ -829,6 +858,8 @@ n\'ont rien soutenu.</string>
   <string name="Track_shipment" formatted="false">Suivre le colis</string>
   <string name="Track_your_backings" formatted="false">Suivi de vos engagements</string>
   <string name="Tracking_number" formatted="false">Numéro de suivi : %{number}</string>
+  <string name="Try_rephrasing_your_search" formatted="false">Essayez de reformuler votre recherche</string>
+  <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Essayez de reformuler votre recherche ou de modifier les filtres</string>
   <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
@@ -1021,10 +1052,10 @@ Veuillez réessayer ultérieurement.</string>
   <string name="activity_creator_navigation_header_activity" formatted="false">Activité</string>
   <string name="activity_creator_reward" formatted="false">Récompense</string>
   <string name="activity_creator_you" formatted="false">Vous</string>
-  <string name="activity_empty_state_logged_in_button" formatted="false">Découvrez des projets</string>
+  <string name="activity_empty_state_logged_in_button" formatted="false">Découvrir des projets</string>
   <string name="activity_empty_state_logged_in_message" formatted="false">L\'activité des projets que vous soutenez ou des amis que vous suivez sera affichée ici.</string>
   <string name="activity_empty_state_logged_in_title" formatted="false">Activité vide</string>
-  <string name="activity_empty_state_logged_out_button" formatted="false">Découvrez des projets</string>
+  <string name="activity_empty_state_logged_out_button" formatted="false">Découvrir des projets</string>
   <string name="activity_empty_state_logged_out_message" formatted="false">L\'activité des projets que vous soutenez ou des amis que vous suivez sera affichée ici.</string>
   <string name="activity_empty_state_logged_out_title" formatted="false">Activité vide</string>
   <string name="activity_follow_back" formatted="false">Suivre cette personne ?</string>
@@ -1453,7 +1484,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Campagne suspendue le %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">Plus que %{time_left}</string>
   <string name="discovery_category" formatted="false">Catégorie</string>
-  <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Découvrez des projets</string>
+  <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Découvrir des projets</string>
   <string name="discovery_empty_states_saved_logged_in_message" formatted="false">Si vous ajoutez un projet à vos projets préférés, nous vous enverrons un rappel par e-mail 48 heures avant la fin de sa campagne.</string>
   <string name="discovery_empty_states_saved_logged_in_title" formatted="false">Mes projets préférés</string>
   <string name="discovery_empty_states_saved_logged_out_button" formatted="false">Connexion</string>
@@ -1507,7 +1538,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="facebook_confirmation_could_not_log_in" formatted="false">La connexion Facebook a échoué.</string>
   <string name="facebook_confirmation_detail" formatted="false">Avant de créer votre compte, vérifions l\'adresse e-mail que nous avons obtenue de votre profil Facebook :</string>
   <string name="facebook_confirmation_navbar_title" formatted="false">Inscription</string>
-  <string name="facebook_confirmation_newsletter_bold" formatted="false">Découvrez des projets</string>
+  <string name="facebook_confirmation_newsletter_bold" formatted="false">Découvrir des projets</string>
   <string name="facebook_confirmation_newsletter_normal" formatted="false">\u0020avec notre lettre d\'informations hebdomadaire.</string>
   <string name="facebook_confirmation_title" formatted="false">Bienvenue sur Kickstarter !</string>
   <string name="facebook_confirmation_wrong_account_button" formatted="false">Connectez-vous avec votre adresse e-mail.</string>
@@ -1680,7 +1711,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">0 PROJETS SOUTENUS</string>
   <string name="profile_projects_backed_projects" formatted="false">Projets soutenus</string>
   <string name="profile_projects_created_projects" formatted="false">Mes projets</string>
-  <string name="profile_projects_empty_state_button" formatted="false">Découvrez des projets</string>
+  <string name="profile_projects_empty_state_button" formatted="false">Découvrir des projets</string>
   <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Découvrir de nouveaux projets</string>
   <string name="profile_projects_empty_state_message" formatted="false">Vous n\'avez pas encore soutenu de projets. On change ça ?</string>
   <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">Pas de projets soutenus</string>

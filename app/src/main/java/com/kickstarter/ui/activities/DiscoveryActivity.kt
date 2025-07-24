@@ -167,6 +167,14 @@ class DiscoveryActivity : AppCompatActivity() {
             }
             .addToDisposable(disposables)
 
+        viewModel.outputs.showOnboardingFlow()
+            .distinctUntilChanged()
+            .subscribe {
+                startActivity(Intent(this, OnboardingFlowActivity::class.java))
+                viewModel.inputs.hasSeenOnboarding(true)
+            }
+            .addToDisposable(disposables)
+
         viewModel.outputs.clearPages()
             .compose<List<Int?>>(Transformers.observeForUIV2())
             .subscribe { pagerAdapter.clearPages(it) }

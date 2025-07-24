@@ -71,26 +71,26 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithTag(FilterMenuTestTags.LIST)
             .performScrollToNode(hasTestTag(FilterMenuTestTags.OTHERS_ROW))
-        composeTestRule.onNodeWithText(context.resources.getString(R.string.Show_only_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Show_only)).assertIsDisplayed()
 
         // Recommended
         composeTestRule.onNodeWithTag(DiscoveryParams::recommended.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(context.resources.getString(R.string.Recommended_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Recommended)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::recommended.name)).assertIsOff()
 
         // Projects we love
         composeTestRule.onNodeWithTag(DiscoveryParams::staffPicks.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(context.resources.getString(R.string.Projects_We_Love_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Projects_We_Love)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::staffPicks.name)).assertIsOff()
 
         // Saved
         composeTestRule.onNodeWithTag(DiscoveryParams::starred.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(context.resources.getString(R.string.Saved_projects_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Saved_projects)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::starred.name)).assertIsOff()
 
         // Social
         composeTestRule.onNodeWithTag(DiscoveryParams::social.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(context.resources.getString(R.string.Following_fpo)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Following)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(FilterMenuTestTags.switchTag(DiscoveryParams::social.name)).assertIsOff()
     }
 

@@ -222,7 +222,7 @@ fun FilterMenuSheet(
 @Composable
 private fun OtherFiltersRow(
     modifier: Modifier = Modifier,
-    text: String = stringResource(R.string.Show_only_fpo),
+    text: String = stringResource(R.string.Show_only),
     selectedStaffPicked: MutableState<Boolean> = mutableStateOf(false),
     callbackStaffPicked: (Boolean) -> Unit = {},
     selectedStarred: MutableState<Boolean> = mutableStateOf(false),
@@ -270,7 +270,7 @@ private fun OtherFiltersRow(
                 Text(
                     modifier = Modifier
                         .weight(1f),
-                    text = stringResource(R.string.Recommended_fpo),
+                    text = stringResource(R.string.Recommended),
                     style = typographyV2.bodyMD,
                     color = colors.textSecondary
                 )
@@ -293,7 +293,7 @@ private fun OtherFiltersRow(
                 Text(
                     modifier = Modifier
                         .weight(1f),
-                    text = stringResource(R.string.Projects_We_Love_fpo),
+                    text = stringResource(R.string.Projects_We_Love),
                     style = typographyV2.bodyMD,
                     color = colors.textSecondary
                 )
@@ -315,7 +315,7 @@ private fun OtherFiltersRow(
                 Text(
                     modifier = Modifier
                         .weight(1f),
-                    text = stringResource(R.string.Saved_projects_fpo),
+                    text = stringResource(R.string.Saved_projects),
                     style = typographyV2.bodyMD,
                     color = colors.textSecondary
                 )
@@ -337,7 +337,7 @@ private fun OtherFiltersRow(
                 Text(
                     modifier = Modifier
                         .weight(1f),
-                    text = stringResource(R.string.Following_fpo),
+                    text = stringResource(R.string.Following),
                     style = typographyV2.bodyMD,
                     color = colors.textSecondary
                 )
@@ -516,11 +516,11 @@ private fun titleForFilter(filter: FilterType): String {
     return when (filter) {
         FilterType.CATEGORIES -> stringResource(R.string.Category)
         FilterType.PROJECT_STATUS -> stringResource(R.string.Project_status)
-        FilterType.LOCATION -> stringResource(R.string.Location_fpo)
+        FilterType.LOCATION -> stringResource(R.string.Location)
         FilterType.PERCENTAGE_RAISED -> stringResource(R.string.Percentage_raised)
-        FilterType.AMOUNT_RAISED -> stringResource(R.string.Amount_raised_fpo)
-        FilterType.GOAL -> stringResource(R.string.Goal_fpo)
-        FilterType.OTHERS -> stringResource(R.string.Show_only_fpo)
+        FilterType.AMOUNT_RAISED -> stringResource(R.string.Amount_raised)
+        FilterType.GOAL -> stringResource(R.string.Goal)
+        FilterType.OTHERS -> stringResource(R.string.Show_only)
     }
 }
 

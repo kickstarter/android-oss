@@ -55,7 +55,7 @@ fun SearchEmptyView(
 
     var title = if (currentSearchTerm.isNotEmpty()) {
         environment?.ksString()?.format(
-            stringResource(id = R.string.No_results_for_fpo),
+            stringResource(id = R.string.No_results_for),
             "search_term",
             currentSearchTerm
         ) ?: stringResource(id = R.string.No_Results)
@@ -81,9 +81,9 @@ fun SearchEmptyView(
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
         var text = if (activeFilters) {
-            stringResource(id = R.string.Try_rephrasing_your_filters_fpo)
+            stringResource(id = R.string.Try_rephrasing_your_search_or_adjusting_the_filters)
         } else {
-            stringResource(id = R.string.Try_rephrasing_your_search_fpo)
+            stringResource(id = R.string.Try_rephrasing_your_search)
         }
 
         Text(
@@ -104,7 +104,7 @@ fun SearchEmptyView(
                     onClick()
                 },
                 shape = RoundedCornerShape(size = KSTheme.dimensions.radiusExtraSmall),
-                text = stringResource(id = R.string.Remove_all_filters_fpo),
+                text = stringResource(id = R.string.Remove_all_filters),
                 textStyle = typographyV2.buttonLabel,
                 isEnabled = true,
                 shouldWrapContentWidth = true

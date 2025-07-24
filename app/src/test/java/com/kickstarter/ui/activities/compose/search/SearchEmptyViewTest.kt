@@ -37,15 +37,15 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search))
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_filters_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search_or_adjusting_the_filters))
             .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Remove_all_filters_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Remove_all_filters))
             .assertDoesNotExist()
     }
 
@@ -68,7 +68,7 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
         }
 
         val text = env.ksString()?.format(
-            context.resources.getString(R.string.No_results_for_fpo),
+            context.resources.getString(R.string.No_results_for),
             "search_term",
             "cat"
         ) ?: ""
@@ -78,15 +78,15 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search))
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_filters_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search_or_adjusting_the_filters))
             .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Remove_all_filters_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Remove_all_filters))
             .assertDoesNotExist()
     }
 
@@ -109,7 +109,7 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
         }
 
         val text = env.ksString()?.format(
-            context.resources.getString(R.string.No_results_for_fpo),
+            context.resources.getString(R.string.No_results_for),
             "search_term",
             "cat"
         ) ?: ""
@@ -119,15 +119,15 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search))
             .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_filters_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search_or_adjusting_the_filters))
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText(context.resources.getString(R.string.Remove_all_filters_fpo))
+            .onNodeWithText(context.resources.getString(R.string.Remove_all_filters))
             .assertIsDisplayed()
     }
 }

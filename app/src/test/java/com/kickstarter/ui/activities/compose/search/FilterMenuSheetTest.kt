@@ -95,6 +95,42 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test FilterMenuSheet renders all options within OthersRow when logged out user`() {
+
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2())
+            .build()
+        val fakeViewModel = FilterMenuViewModel(env)
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    Surface {
+                        FilterMenuSheet()
+                    }
+                }
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.OTHERS_ROW))
+        composeTestRule.onNodeWithText(context.resources.getString(R.string.Show_only)).assertIsDisplayed()
+
+        // Recommended
+        composeTestRule.onNodeWithTag(DiscoveryParams::recommended.name).assertDoesNotExist()
+
+        // Projects we love is displayed with logged off user
+        composeTestRule.onNodeWithTag(DiscoveryParams::staffPicks.name).assertIsDisplayed()
+
+        // Saved
+        composeTestRule.onNodeWithTag(DiscoveryParams::starred.name).assertDoesNotExist()
+
+        // Social
+        composeTestRule.onNodeWithTag(DiscoveryParams::social.name).assertDoesNotExist()
+    }
+
+    @Test
     fun `test FilterMenuSheet renders all available filter Rows with ffOff`() {
         val shouldShowPhase = false
         val env = environment()

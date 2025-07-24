@@ -59,8 +59,7 @@ class VideoActivity : AppCompatActivity() {
         }
         build = requireNotNull(environment?.build())
 
-        player = ExoPlayer.Builder(this)
-            .build()
+        player = ExoPlayer.Builder(this).build()
 
         binding.playerView.findViewById<ImageView>(R.id.exo_fullscreen_icon).apply {
             setImageResource(R.drawable.ic_fullscreen_close)

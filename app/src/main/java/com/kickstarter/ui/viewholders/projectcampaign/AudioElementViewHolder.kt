@@ -99,7 +99,7 @@ class AudioElementViewHolder(
 
     fun startPlayer() {
         if (isPrepared && mediaPlayer?.isPlaying == false) {
-            this.binding.playPause.setImageResource(R.drawable.ic_play_icon) // TODO: needs a pause icon
+            this.binding.playPause.setImageResource(R.drawable.ic_pause_icon)
             mediaPlayer?.play()
 
             updateDisposable = updateObservable

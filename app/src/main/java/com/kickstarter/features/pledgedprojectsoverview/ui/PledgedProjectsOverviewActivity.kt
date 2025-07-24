@@ -3,6 +3,7 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -26,11 +27,13 @@ import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProject
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
@@ -38,6 +41,7 @@ import com.kickstarter.ui.activities.ProfileActivity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startCreatorMessageActivity
+import com.kickstarter.ui.extensions.startProjectUpdatesActivity
 import com.kickstarter.ui.extensions.transition
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
@@ -102,12 +106,8 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
-                        onProjectPledgeSummaryClick = { url, isPledgeManagement ->
-                            openBackingDetailsWebView(
-                                url = url,
-                                toolbarTitle = if (isPledgeManagement) R.string.Pledge_manager else R.string.Backing_details,
-                                resultLauncher = null
-                            )
+                        onProjectPledgeSummaryClick = { projectSlug ->
+                            this.startProjectActivity(projectSlug)
                         },
                         isLoading = isLoading,
                         isErrored = isErrored,
@@ -268,6 +268,14 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         } catch (exception: Exception) {
             FirebaseCrashlytics.getInstance().recordException(exception)
         }
+    }
+
+    private fun startProjectActivity(projectSlug: String) {
+        val intent = Intent().getProjectIntent(this)
+            .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+            .putExtra(IntentKey.REF_TAG, RefTag.activity())
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

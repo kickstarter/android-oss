@@ -50,6 +50,11 @@
   <string name="Amount_raised_bucket_2" formatted="false">10.000 $ bis 100.000 $</string>
   <string name="Amount_raised_bucket_3" formatted="false">100.000 $ bis 1.000.000 $</string>
   <string name="Amount_raised_bucket_4" formatted="false">Über 1.000.000 $</string>
+  <string name="Amount_raised_pill_bucket_0" formatted="false">Unter 1.000 $ gesammelt</string>
+  <string name="Amount_raised_pill_bucket_1" formatted="false">1.000 $ bis 10.000 $ gesammelt</string>
+  <string name="Amount_raised_pill_bucket_2" formatted="false">10.000 $ bis 100.000 $ gesammelt</string>
+  <string name="Amount_raised_pill_bucket_3" formatted="false">100.000 $ bis 1.000.000 $ gesammelt</string>
+  <string name="Amount_raised_pill_bucket_4" formatted="false">Über 1.000.000 $ gesammelt</string>
   <string name="Amount_reward" formatted="false">Betrag: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Die angezeigten Beträge stellen nur eine ungefähre Umrechnung dar. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht. Dieser Betrag wird ebenso angezeigt.</string>
   <string name="Announcements" formatted="false">Ankündigungen</string>
@@ -149,6 +154,7 @@ Unterstützer</string>
   <string name="Closes_project" formatted="false">Schließt das Projekt.</string>
   <string name="Collaborator" formatted="false">Mitarbeiter</string>
   <string name="Collapses_subcategories" formatted="false">Reduziert die Anzeige der Unterkategorien.</string>
+  <string name="Collected_adjusted" formatted="false">Collected (adjusted)</string>
   <string name="Collection_plan" formatted="false">Zahlungsplan</string>
   <string name="Collections" formatted="false">Sammlungen</string>
   <string name="Coming_soon" formatted="false">Demnächst</string>
@@ -344,7 +350,18 @@ Antippen und erneut versuchen</string>
   <string name="Get_started" formatted="false">Jetzt loslegen</string>
   <string name="Go_to_pledge_manager" formatted="false">Zur Beitragsverwaltung</string>
   <string name="Go_to_project_page" formatted="false">Zu Projektseite</string>
+  <string name="Goal" formatted="false">Ziel</string>
+  <string name="Goal_bucket_0" formatted="false">Unter 1.000 $</string>
+  <string name="Goal_bucket_1" formatted="false">1.000 $ bis 10.000 $</string>
+  <string name="Goal_bucket_2" formatted="false">10.000 $ bis 100.000 $</string>
+  <string name="Goal_bucket_3" formatted="false">100.000 $ bis 1.000.000 $</string>
+  <string name="Goal_bucket_4" formatted="false">Über 1.000.000 $</string>
   <string name="Goal_met" formatted="false">Ziel erreicht</string>
+  <string name="Goal_pill_bucket_0" formatted="false">Ziel: Unter 1.000 $</string>
+  <string name="Goal_pill_bucket_1" formatted="false">Ziel: 1.000 $ bis 10.000 $</string>
+  <string name="Goal_pill_bucket_2" formatted="false">Ziel: 10.000 $ bis 100.000 $</string>
+  <string name="Goal_pill_bucket_3" formatted="false">Ziel: 100.000 $ bis 1.000.000 $</string>
+  <string name="Goal_pill_bucket_4" formatted="false">Ziel: Über 1.000.000 $</string>
   <string name="Got_it" formatted="false">Alles klar!</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Alles klar! Deine Änderungen wurden gespeichert.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Alles klar! Deine Antwort auf die Befragung wurde übermittelt.</string>
@@ -483,6 +500,7 @@ Antippen und erneut versuchen</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Es wurden noch keine Updates gepostet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Es gibt noch keine Beiträge von Freunden.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
+  <string name="No_results_for" formatted="false">Keine Ergebnisse für „%{query}“</string>
   <string name="No_saved_projects" formatted="false">Keine gespeicherten Projekte</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
   <string name="Not_available" formatted="false">Nicht verfügbar</string>
@@ -532,6 +550,9 @@ Antippen und erneut versuchen</string>
   <string name="Percentage_raised_bucket_0" formatted="false">Unter 75 %</string>
   <string name="Percentage_raised_bucket_1" formatted="false">75–100 %</string>
   <string name="Percentage_raised_bucket_2" formatted="false">Mehr als 100 %</string>
+  <string name="Percentage_raised_pill_bucket_0" formatted="false">Unter 75 % gesammelt</string>
+  <string name="Percentage_raised_pill_bucket_1" formatted="false">75–100 % gesammelt</string>
+  <string name="Percentage_raised_pill_bucket_2" formatted="false">Über 100 % gesammelt</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Bitte gebe einen Betrag zwischen %{min} und %{max} ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Bitte gib einen Finanzierungsbeitrag von %{amount} oder weniger ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Bitte gib einen Finanzierungsbeitrag von mindestens %{amount} ein.</string>
@@ -612,8 +633,10 @@ Antippen und erneut versuchen</string>
   <string name="Recommended_for_you" formatted="false">Empfehlungen für dich</string>
   <string name="Recorded_Live" formatted="false">Live aufgenommen</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Live aufgenommen von &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Refunded" formatted="false">Refunded</string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">Denke daran, dass es keine Garantie für das Lieferdatum gibt.</string>
   <string name="Remember_this_card" formatted="false">Karte speichern</string>
+  <string name="Remove_all_filters" formatted="false">Alle Filter entfernen</string>
   <string name="Remove_this_card" formatted="false">Karte entfernen</string>
   <string name="Replay" formatted="false">Wiedergabe</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Wiedergabe verfügbar für weitere %{time} %{units}</string>
@@ -720,6 +743,12 @@ Antippen und erneut versuchen</string>
   <string name="Ships_worldwide" formatted="false">Weltweiter Versand</string>
   <string name="Show_comment" formatted="false">Kommentar anzeigen</string>
   <string name="Show_me_projects" formatted="false">Projekte anzeigen</string>
+  <string name="Show_only" formatted="false">Nur Folgende anzeigen</string>
+  <string name="Show_only_following" formatted="false">Gefolgt</string>
+  <string name="Show_only_projects_we_love" formatted="false">Team-Favoriten</string>
+  <string name="Show_only_recommended_for_you" formatted="false">Empfehlungen für dich</string>
+  <string name="Show_only_saved_pill_title" formatted="false">Gespeichert</string>
+  <string name="Show_only_saved_projects" formatted="false">Gespeicherte Projekte</string>
   <string name="Show_password" formatted="false">Passwort anzeigen</string>
   <string name="Show_up_for_the_spaces_you_love" formatted="false">Zeige deinen Lieblingslokalen deine Solidarität</string>
   <string name="Shows_list_of_subcategories" formatted="false">Unterkategorien anzeigen.</string>
@@ -828,6 +857,8 @@ Antippen und erneut versuchen</string>
   <string name="Track_shipment" formatted="false">Sendung verfolgen</string>
   <string name="Track_your_backings" formatted="false">Folge deinen unterstützten Projekten</string>
   <string name="Tracking_number" formatted="false">Sendungsnummer: %{number}</string>
+  <string name="Try_rephrasing_your_search" formatted="false">Versuche, deine Suche anders zu formulieren</string>
+  <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Versuche, deine Suche anders zu formulieren oder die Filter anzupassen</string>
   <string name="Twice_a_day_summary" formatted="false">Übersicht (zweimal täglich)</string>
   <string name="Unable_to_request" formatted="false">Daten konnten nicht angefordert werden.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>

@@ -3,6 +3,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -198,6 +199,10 @@ fun OnboardingScreen(
         ) {
 
             // Progress bar
+            val animatedProgress by animateFloatAsState(
+                targetValue = (currentPage + 1) / pages.size.toFloat(),
+                animationSpec = tween(durationMillis = 1000)
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -205,7 +210,7 @@ fun OnboardingScreen(
                     .padding(top = dimensions.paddingDoubleLarge, bottom = dimensions.paddingLarge)
             ) {
                 LinearProgressIndicator(
-                    progress = (currentPage + 1) / pages.size.toFloat(),
+                    progress = animatedProgress,
                     color = colors.textAccentGreen,
                     backgroundColor = colors.kds_white,
                     strokeCap = StrokeCap.Round,
@@ -223,7 +228,7 @@ fun OnboardingScreen(
                 )
             }
 
-            // Animated content spans the page
+            // Animated content spans the page vertically
             OnboardingPageAnimation(modifier = Modifier.weight(1.0f), pageData = pages[currentPage])
 
             // Buttons footer
@@ -329,7 +334,7 @@ fun OnboardingPageAnimation(modifier: Modifier, pageData: OnboardingPageData) {
 
                 Text(
                     text = targetPage.description,
-                    style = typographyV2.bodyMD,
+                    style = typographyV2.bodyLG,
                     color = colors.textPrimary,
                     textAlign = TextAlign.Center,
                     minLines = 4,

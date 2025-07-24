@@ -838,12 +838,23 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .amountFormattedInProjectNativeCurrency(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
             .currencyCode(it.paymentIncrement.amount.paymentIncrementAmount.currency)
             .build()
+        val refundedAmount = it.paymentIncrement.refundedAmount?.let { refunded ->
+            PaymentIncrementAmount.builder()
+                .amountAsCents(refunded.paymentIncrementAmount.amountAsCents)
+                .amountAsFloat(refunded.paymentIncrementAmount.amountAsFloat)
+                .formattedAmount(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                .formattedAmountWithCode(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+                .amountFormattedInProjectNativeCurrency(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                .currencyCode(refunded.paymentIncrementAmount.currency)
+                .build()
+        }
         val scheduleCollection = it.paymentIncrement.scheduledCollection
         PaymentIncrement.builder()
             .amount(paymentIncrementAmount)
             .scheduledCollection(scheduleCollection)
             .state(it.paymentIncrement.state)
             .stateReason(it.paymentIncrement.stateReason)
+            .refundedAmount(refundedAmount)
             .build()
     }
 
@@ -1179,7 +1190,6 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
 fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.PaymentPlan): PaymentPlan {
     val paymentIncrements =
         buildPaymentPlanResponse.paymentIncrements?.map {
-
             val paymentIncrementAmount = PaymentIncrementAmount.builder()
                 .amountAsFloat(it.amount.paymentIncrementAmount.amountAsFloat)
                 .amountAsCents(it.amount.paymentIncrementAmount.amountAsCents)
@@ -1188,15 +1198,23 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
                 .amountFormattedInProjectNativeCurrency(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
                 .currencyCode(it.amount.paymentIncrementAmount.currency)
                 .build()
-
+            val refundedAmount = it.refundedAmount?.let { refunded ->
+                PaymentIncrementAmount.builder()
+                    .amountAsCents(refunded.paymentIncrementAmount.amountAsCents)
+                    .amountAsFloat(refunded.paymentIncrementAmount.amountAsFloat)
+                    .formattedAmount(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                    .formattedAmountWithCode(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+                    .amountFormattedInProjectNativeCurrency(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                    .currencyCode(refunded.paymentIncrementAmount.currency)
+                    .build()
+            }
             val scheduledCollection = it.scheduledCollection
-
             PaymentIncrement.builder()
                 .amount(paymentIncrementAmount)
                 .scheduledCollection(scheduledCollection)
+                .refundedAmount(refundedAmount)
                 .build()
         }
-
     return PaymentPlan.builder()
         .paymentIncrements(paymentIncrements)
         .amountIsPledgeOverTimeEligible(buildPaymentPlanResponse.amountIsPledgeOverTimeEligible)

@@ -72,15 +72,15 @@ class PaymentIncrementFactory {
         }
 
         fun incrementUsdRefunded(dateTime: DateTime, formattedAmount: String): PaymentIncrement {
-            val refundedAmount = PaymentIncrementFactory.amount(formattedAmount = formattedAmount, formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$")
+            val amount = PaymentIncrementFactory.amount(formattedAmount = formattedAmount, formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$")
             return paymentIncrement(
-                paymentIncrementAmount = refundedAmount,
+                paymentIncrementAmount = amount,
                 scheduledCollection = dateTime,
                 paymentIncrementableId = "",
                 paymentIncrementableType = "",
                 state = PaymentIncrementState.REFUNDED,
                 stateReason = PaymentIncrementStateReason.UNKNOWN__,
-                refundedAmount = refundedAmount
+                refundedAmount = amount
             )
         }
 

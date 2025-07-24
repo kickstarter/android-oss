@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
+import org.jsoup.helper.Validate.isFalse
 
 private val PAGE_LIMIT = 25
 class PledgedProjectsPagingSource(
@@ -261,13 +262,8 @@ class PledgedProjectsOverviewViewModel(
         val list = PledgeTierType.values().toMutableList()
         list.remove(PledgeTierType.REWARD_RECEIVED)
 
-        isV1Enabled.isFalse().let {
-            list.removeAll { it.isTier1Type() }
-        }
-
-        isV2Enabled.isFalse().let {
-            list.removeAll { it.isTier2Type() }
-        }
+        if (isV1Enabled.isFalse()) list.removeAll { it.isTier1Type() }
+        if (isV2Enabled.isFalse()) list.removeAll { it.isTier2Type() }
 
         return list
     }

@@ -37,10 +37,19 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     private val playbackStateListener = object : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
-            loadingIndicator.isVisible = playbackState == Player.STATE_BUFFERING
+            super.onPlaybackStateChanged(playbackState)
+
+            if (playbackState == Player.STATE_BUFFERING) {
+                loadingIndicator.visibility = VISIBLE
+            }
+
+            if (playbackState == Player.STATE_READY) {
+                loadingIndicator.visibility = GONE
+            }
         }
 
         override fun onIsLoadingChanged(isLoading: Boolean) {
+            super.onIsLoadingChanged(isLoading)
             loadingIndicator.isVisible = isLoading
         }
     }

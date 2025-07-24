@@ -8,7 +8,7 @@
     android:layout_marginTop="@dimen/grid_3"
     android:clipToPadding="true">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <androidx.media3.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

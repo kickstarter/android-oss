@@ -108,7 +108,6 @@ fun FilterMenuSheet(
 ) {
     val viewModel = LocalFilterMenuViewModel.current
     val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
-    val filteredFilters = if (loggedInUser) availableFilters else availableFilters.filter { it != FilterType.OTHERS }
 
     val projStatus = remember { mutableStateOf(selectedProjectStatus) }
 
@@ -127,7 +126,7 @@ fun FilterMenuSheet(
             )
 
             LazyColumn(modifier = Modifier.weight(1f).testTag(FilterMenuTestTags.LIST)) {
-                items(filteredFilters) { filter ->
+                items(availableFilters) { filter ->
                     when (filter) {
                         FilterType.CATEGORIES -> FilterRow(
                             text = titleForFilter(filter),
@@ -171,6 +170,7 @@ fun FilterMenuSheet(
                             selectedRecommended = selectedRecommended,
                             selectedStarred = selectedSaved,
                             selectedSocial = selectedSocial,
+                            isUserloggedIn = loggedInUser,
                             callbackRecommended = { recommended ->
                                 selectedRecommended.value = recommended
                                 onApply(projStatus.value, selectedRecommended.value, selectedProjectsLoved.value, selectedSaved.value, selectedSocial.value, null)
@@ -231,6 +231,7 @@ private fun OtherFiltersRow(
     callbackSocial: (Boolean) -> Unit = {},
     selectedRecommended: MutableState<Boolean> = mutableStateOf(false),
     callbackRecommended: (Boolean) -> Unit = {},
+    isUserloggedIn: Boolean,
 ) {
     val backgroundDisabledColor = colors.backgroundDisabled
     val dimensions: KSDimensions = KSTheme.dimensions
@@ -262,28 +263,30 @@ private fun OtherFiltersRow(
                 color = colors.textPrimary
             )
 
-            Row(
-                modifier = Modifier.testTag(DiscoveryParams::recommended.name),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-            ) {
-                Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = stringResource(R.string.Recommended),
-                    style = typographyV2.bodyMD,
-                    color = colors.textSecondary
-                )
+            if (isUserloggedIn) {
+                Row(
+                    modifier = Modifier.testTag(DiscoveryParams::recommended.name),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = stringResource(R.string.Recommended),
+                        style = typographyV2.bodyMD,
+                        color = colors.textSecondary
+                    )
 
-                KSSwitch(
-                    modifier = Modifier.testTag(switchTag(DiscoveryParams::recommended.name)),
-                    checked = selectedRecommended.value,
-                    onCheckChanged = {
-                        selectedRecommended.value = it
-                        if (it)
-                            callbackRecommended(it)
-                    }
-                )
+                    KSSwitch(
+                        modifier = Modifier.testTag(switchTag(DiscoveryParams::recommended.name)),
+                        checked = selectedRecommended.value,
+                        onCheckChanged = {
+                            selectedRecommended.value = it
+                            if (it)
+                                callbackRecommended(it)
+                        }
+                    )
+                }
             }
             Row(
                 modifier = Modifier.testTag(DiscoveryParams::staffPicks.name),
@@ -307,49 +310,51 @@ private fun OtherFiltersRow(
                     }
                 )
             }
-            Row(
-                modifier = Modifier.testTag(DiscoveryParams::starred.name),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-            ) {
-                Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = stringResource(R.string.Saved_projects),
-                    style = typographyV2.bodyMD,
-                    color = colors.textSecondary
-                )
+            if (isUserloggedIn) {
+                Row(
+                    modifier = Modifier.testTag(DiscoveryParams::starred.name),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = stringResource(R.string.Saved_projects),
+                        style = typographyV2.bodyMD,
+                        color = colors.textSecondary
+                    )
 
-                KSSwitch(
-                    modifier = Modifier.testTag(switchTag(DiscoveryParams::starred.name)),
-                    checked = selectedStarred.value,
-                    onCheckChanged = {
-                        selectedStarred.value = it
-                        callbackStarred(it)
-                    }
-                )
-            }
-            Row(
-                modifier = Modifier.testTag(DiscoveryParams::social.name),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-            ) {
-                Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = stringResource(R.string.Following),
-                    style = typographyV2.bodyMD,
-                    color = colors.textSecondary
-                )
+                    KSSwitch(
+                        modifier = Modifier.testTag(switchTag(DiscoveryParams::starred.name)),
+                        checked = selectedStarred.value,
+                        onCheckChanged = {
+                            selectedStarred.value = it
+                            callbackStarred(it)
+                        }
+                    )
+                }
+                Row(
+                    modifier = Modifier.testTag(DiscoveryParams::social.name),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1f),
+                        text = stringResource(R.string.Following),
+                        style = typographyV2.bodyMD,
+                        color = colors.textSecondary
+                    )
 
-                KSSwitch(
-                    modifier = Modifier.testTag(switchTag(DiscoveryParams::social.name)),
-                    checked = selectedSocial.value.isTrue(),
-                    onCheckChanged = {
-                        selectedSocial.value = it
-                        callbackSocial(it)
-                    }
-                )
+                    KSSwitch(
+                        modifier = Modifier.testTag(switchTag(DiscoveryParams::social.name)),
+                        checked = selectedSocial.value.isTrue(),
+                        onCheckChanged = {
+                            selectedSocial.value = it
+                            callbackSocial(it)
+                        }
+                    )
+                }
             }
         }
     }
@@ -543,7 +548,8 @@ private fun OthersRowPreview() {
     KSTheme {
         OtherFiltersRow(
             modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-            text = titleForFilter(FilterType.OTHERS)
+            text = titleForFilter(FilterType.OTHERS),
+            isUserloggedIn = true
         )
     }
 }

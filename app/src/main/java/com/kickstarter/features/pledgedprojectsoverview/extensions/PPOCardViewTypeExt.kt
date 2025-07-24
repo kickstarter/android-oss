@@ -15,6 +15,7 @@ fun PPOCardViewType.isTier2Type(): Boolean {
         PPOCardViewType.PLEDGE_COLLECTED_REWARD,
         PPOCardViewType.PLEDGE_COLLECTED_NO_REWARD,
         PPOCardViewType.SURVEY_SUBMITTED_DIGITAL,
+        PPOCardViewType.SURVEY_SUBMITTED_NO_REWARD,
         PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
         PPOCardViewType.AWAITING_REWARD,
         PPOCardViewType.PLEDGE_MANAGEMENT,

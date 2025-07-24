@@ -13,7 +13,7 @@ data class PaymentIncrement(
     val paymentIncrementableType: String,
     val scheduledCollection: DateTime,
     val state: PaymentIncrementState,
-    val stateReason: PaymentIncrementStateReason?,
+    val stateReason: PaymentIncrementStateReason,
     val refundedAmount: PaymentIncrementAmount?,
 ) : Parcelable {
     fun amount() = this.paymentIncrementAmount

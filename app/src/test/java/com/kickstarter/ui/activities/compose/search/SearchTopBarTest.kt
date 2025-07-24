@@ -148,7 +148,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.AMOUNT_RAISED)).assertExists() // exists instead of display to avoid having to scroll
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER)).assertIsDisplayed()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.RECOMMENDED)).assertDoesNotExist()
-        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECTS_LOVED)).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.PROJECTS_LOVED)).assertExists()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.SAVED)).assertDoesNotExist()
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FOLLOWING)).assertDoesNotExist()
     }

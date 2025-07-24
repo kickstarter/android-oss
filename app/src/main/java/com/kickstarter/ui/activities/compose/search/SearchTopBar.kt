@@ -63,8 +63,34 @@ import io.reactivex.Observable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarLocationActiveFilterPreview() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -98,8 +124,34 @@ fun SearchTopBarLocationActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarAmountRaisedActiveFilterPreview() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -131,8 +183,34 @@ fun SearchTopBarAmountRaisedActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarGoalActiveFilterPreview() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -160,8 +238,34 @@ fun SearchTopBarGoalActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarPercentageRaisedActiveFilterPreview() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -192,8 +296,34 @@ fun SearchTopBarPercentageRaisedActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarProjectStatusActiveFilterPreview() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -225,8 +355,34 @@ fun SearchTopBarProjectStatusActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarCategoryActiveFilterPreview() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -254,8 +410,34 @@ fun SearchTopBarCategoryActiveFilterPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchTopBarAllActiveFiltersPreviewLoggedOutUser() {
+    // Mocked user holder
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {
+        }
+
+        override fun login(newUser: User) {
+        }
+
+        override fun logout() {
+        }
+
+        override val accessToken: String?
+            get() = null
+
+        override fun refresh(freshUser: User) {
+        }
+
+        override fun observable(): Observable<KsOptional<User>> {
+            return Observable.just(KsOptional.empty())
+        }
+
+        override fun getUser(): User? {
+            return null
+        }
+    }
     val env = Environment.builder()
         .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
         .build()
 
     val fakeViewModel = FilterMenuViewModel(environment = env)
@@ -646,25 +828,23 @@ fun PillBar(
         )
 
         if (shouldShowPhase) {
-            if (loggedInUser) {
-                KSPillButton(
-                    shouldShowLeadingIcon = true,
-                    modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
-                    text = projectsLovedText,
-                    isSelected = projectsLovedStatus.value,
-                    count = selectedFilterCounts.getOrDefault(
-                        FilterRowPillType.PROJECTS_LOVED.name,
-                        0
-                    ),
-                    onClick = {
-                        projectsLovedStatus.value = !projectsLovedStatus.value
-                        onPillPressedShowOnlyToggles(
-                            FilterRowPillType.PROJECTS_LOVED,
-                            projectsLovedStatus.value
-                        )
-                    }
-                )
-            }
+            KSPillButton(
+                shouldShowLeadingIcon = true,
+                modifier = Modifier.testTag(pillTag(FilterRowPillType.PROJECTS_LOVED)),
+                text = projectsLovedText,
+                isSelected = projectsLovedStatus.value,
+                count = selectedFilterCounts.getOrDefault(
+                    FilterRowPillType.PROJECTS_LOVED.name,
+                    0
+                ),
+                onClick = {
+                    projectsLovedStatus.value = !projectsLovedStatus.value
+                    onPillPressedShowOnlyToggles(
+                        FilterRowPillType.PROJECTS_LOVED,
+                        projectsLovedStatus.value
+                    )
+                }
+            )
             KSPillButton(
                 shouldShowTrailingIcon = true,
                 modifier = Modifier.testTag(pillTag(FilterRowPillType.GOAL)),

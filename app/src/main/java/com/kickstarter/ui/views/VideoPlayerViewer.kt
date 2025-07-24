@@ -47,7 +47,6 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     fun setVideoModelElement(element: VideoModelElement) {
         this.element = element
-        initializePlayer()
     }
 
     fun setPlayerSeekPosition(seekPosition: Long) {
@@ -56,32 +55,27 @@ class VideoPlayerViewer @JvmOverloads constructor(
     }
 
     fun setPlayerPlayWhenReadyFlag(playWhenReady: Boolean) {
-        this.playWhenReady = playWhenReady
-        videoPlayerView.player?.playWhenReady = this.playWhenReady
+        if (playWhenReady)
+            initializePlayer()
     }
 
     fun initializePlayer() {
         if (element == null) return
-
+        player = ExoPlayer.Builder(context).build()
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
 
-        player = ExoPlayer.Builder(context)
+        val mediaItem = MediaItem.Builder()
+            .setUri(element?.sourceUrl ?: "")
             .build()
-            .also { exoPlayer ->
-                videoPlayerView.player = exoPlayer
 
-                element?.sourceUrl?.let { url ->
-                    val mediaItem = MediaItem.Builder()
-                        .setUri(url)
-                        .build()
-                    exoPlayer.setMediaItem(mediaItem)
-                }
-
-                exoPlayer.addListener(playbackStateListener)
-                exoPlayer.seekTo(playbackPosition)
-                exoPlayer.playWhenReady = playWhenReady
-                exoPlayer.prepare()
-            }
+        binding.playerView.player = player
+        player?.addListener(playbackStateListener)
+        player?.setMediaItem(mediaItem)
+        player?.prepare()
+        element?.seekPosition?.let {
+            player?.seekTo(it)
+        }
+        player?.playWhenReady = true
 
         fullscreenButton?.setOnClickListener {
             element?.sourceUrl?.let { url ->
@@ -94,19 +88,12 @@ class VideoPlayerViewer @JvmOverloads constructor(
         }
     }
 
-    fun setFullscreenButtonDrawableResource(closeFullScreen: Boolean = false) {
-        fullscreenButton?.setImageResource(
-            if (closeFullScreen) R.drawable.ic_fullscreen_close
-            else R.drawable.ic_fullscreen_open
-        )
-    }
-
     fun releasePlayer() {
-        player?.let { exoPlayer ->
-            playbackPosition = exoPlayer.currentPosition
-            playWhenReady = exoPlayer.playWhenReady
-            exoPlayer.removeListener(playbackStateListener)
-            exoPlayer.release()
+        player?.let {
+            playbackPosition = it.currentPosition
+            playWhenReady = it.playWhenReady
+            it.removeListener(playbackStateListener)
+            it.release()
         }
         player = null
     }

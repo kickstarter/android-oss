@@ -1212,6 +1212,7 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
             PaymentIncrement.builder()
                 .amount(paymentIncrementAmount)
                 .scheduledCollection(scheduledCollection)
+                .refundedAmount(refundedAmount)
                 .build()
         }
     return PaymentPlan.builder()

@@ -107,7 +107,7 @@ fun GoalSheet(
                     )
 
                     Text(
-                        text = stringResource(R.string.Goal_fpo),
+                        text = stringResource(R.string.Goal),
                         style = typographyV2.headingXL,
                         modifier = Modifier.weight(1f),
                         color = colors.textPrimary
@@ -183,9 +183,9 @@ fun GoalSheet(
 
 @Composable
 fun textForBucket(bucket: DiscoveryParams.GoalBuckets): String = when (bucket) {
-    DiscoveryParams.GoalBuckets.BUCKET_0 -> stringResource(R.string.Bucket_0_fpo)
-    DiscoveryParams.GoalBuckets.BUCKET_1 -> stringResource(R.string.Bucket_1_fpo)
-    DiscoveryParams.GoalBuckets.BUCKET_2 -> stringResource(R.string.Bucket_2_fpo)
-    DiscoveryParams.GoalBuckets.BUCKET_3 -> stringResource(R.string.Bucket_3_fpo)
-    DiscoveryParams.GoalBuckets.BUCKET_4 -> stringResource(R.string.Bucket_4_fpo)
+    DiscoveryParams.GoalBuckets.BUCKET_0 -> stringResource(R.string.Goal_bucket_0)
+    DiscoveryParams.GoalBuckets.BUCKET_1 -> stringResource(R.string.Goal_bucket_1)
+    DiscoveryParams.GoalBuckets.BUCKET_2 -> stringResource(R.string.Goal_bucket_2)
+    DiscoveryParams.GoalBuckets.BUCKET_3 -> stringResource(R.string.Goal_bucket_3)
+    DiscoveryParams.GoalBuckets.BUCKET_4 -> stringResource(R.string.Goal_bucket_4)
 }

@@ -525,7 +525,7 @@ private fun DefaultLocationComposable(
                         modifier = Modifier
                             .weight(1f),
                         color = colors.textPrimary,
-                        text = stringResource(R.string.Location_Anywhere),
+                        text = stringResource(R.string.Location_anywhere),
                         style = typographyV2.headingLG
                     )
                 }

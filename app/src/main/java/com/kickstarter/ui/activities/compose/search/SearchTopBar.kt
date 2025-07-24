@@ -50,6 +50,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.User
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.activities.compose.search.PillBarTestTags.pillTag
 import com.kickstarter.ui.compose.designsystem.KSIconPillButton
 import com.kickstarter.ui.compose.designsystem.KSPillButton
@@ -358,13 +359,13 @@ fun SearchTopBar(
     categoryPillText: String = stringResource(R.string.Category),
     projectStatusText: String = stringResource(R.string.Project_status),
     percentageRaisedText: String = stringResource(R.string.Percentage_raised),
-    locationText: String = stringResource(R.string.Location_fpo),
-    amountRaisedText: String = stringResource(R.string.Amount_raised_fpo),
-    recommendedText: String = stringResource(R.string.Recommended_fpo),
-    projectsLovedText: String = stringResource(R.string.Projects_We_Love_fpo),
-    savedProjectsText: String = stringResource(R.string.Saved_projects_fpo),
+    locationText: String = stringResource(R.string.Location),
+    amountRaisedText: String = stringResource(R.string.Amount_raised),
+    recommendedText: String = stringResource(R.string.Recommended),
+    projectsLovedText: String = stringResource(R.string.Projects_We_Love),
+    savedProjectsText: String = stringResource(R.string.Saved_projects),
     followingText: String = stringResource(R.string.Following),
-    goalText: String = stringResource(R.string.Goal_fpo),
+    goalText: String = stringResource(R.string.Goal),
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -495,13 +496,13 @@ fun PillBar(
     categoryPillText: String = stringResource(R.string.Category),
     projectStatusText: String = stringResource(R.string.Project_status),
     percentageRaisedText: String = stringResource(R.string.Percentage_raised),
-    locationText: String = stringResource(R.string.Location_fpo),
-    amountRaisedText: String = stringResource(R.string.Amount_raised_fpo),
-    recommendedText: String = stringResource(R.string.Recommended_fpo),
-    projectsLovedText: String = stringResource(R.string.Projects_We_Love_fpo),
-    savedProjectsText: String = stringResource(R.string.Saved_projects_fpo),
+    locationText: String = stringResource(R.string.Location),
+    amountRaisedText: String = stringResource(R.string.Amount_raised),
+    recommendedText: String = stringResource(R.string.Recommended),
+    projectsLovedText: String = stringResource(R.string.Projects_We_Love),
+    savedProjectsText: String = stringResource(R.string.Saved_projects),
     followingText: String = stringResource(R.string.Following),
-    goalText: String = stringResource(R.string.Goal_fpo),
+    goalText: String = stringResource(R.string.Goal),
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase: Boolean = true,
@@ -716,6 +717,15 @@ fun PillBar(
             }
         }
     }
+}
+
+@Composable
+fun textForGoalPill(bucket: DiscoveryParams.GoalBuckets): String = when (bucket) {
+    DiscoveryParams.GoalBuckets.BUCKET_0 -> stringResource(R.string.Goal_pill_bucket_0)
+    DiscoveryParams.GoalBuckets.BUCKET_1 -> stringResource(R.string.Goal_pill_bucket_1)
+    DiscoveryParams.GoalBuckets.BUCKET_2 -> stringResource(R.string.Goal_pill_bucket_2)
+    DiscoveryParams.GoalBuckets.BUCKET_3 -> stringResource(R.string.Goal_pill_bucket_3)
+    DiscoveryParams.GoalBuckets.BUCKET_4 -> stringResource(R.string.Goal_pill_bucket_4)
 }
 
 enum class FilterRowPillType {

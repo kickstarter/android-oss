@@ -3,7 +3,9 @@ package com.kickstarter.ui.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -25,11 +27,17 @@ class ConsentManagementDialogFragment : DialogFragment() {
             builder.setMessage(R.string.We_use_personal_data_to_provide_a_good_experience_on_Kickstarter_and_to_help_connect_you_with_projects_you_ll_love)
                 .setPositiveButton(R.string.Allow) { dialog, id ->
                     this.viewModel.inputs.userConsentPreference(true)
+                    setFragmentResult(TAG, bundleOf("result" to "allow"))
                 }
                 .setNegativeButton(R.string.Decline) { dialog, id ->
                     this.viewModel.inputs.userConsentPreference(false)
+                    setFragmentResult(TAG, bundleOf("result" to "decline"))
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    companion object {
+        const val TAG = "ConsentManagementDialogFragment"
     }
 }

@@ -68,6 +68,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     private val showErrorMessage = TestSubscriber<String>()
     private val showNotifPermissionRequest = TestSubscriber<Unit>()
     private val showConsentManagementDialog = TestSubscriber<Unit>()
+    private val showOnboardingFlow = TestSubscriber<Unit>()
     private val darkThemeEnabled = TestSubscriber<Boolean>()
     private val exceptions = TestSubscriber<Throwable>()
     private val disposables = CompositeDisposable()
@@ -745,7 +746,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotificationPermissionRequest_whenUserHasSeenRequest_shouldNotEmit() {
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         var user: User = user()
         val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
 
@@ -765,7 +766,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNotificationPermissionRequest_whenLoggedInAndHasNotSeeRequest_shouldEmit() {
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         var user: User = user()
         val currentUser: CurrentUserTypeV2 = MockCurrentUserV2(user)
 
@@ -785,7 +786,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testConsentManagementDialog_whenPreferenceContainsKeyValue_shouldNotEmit() {
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -810,7 +811,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testConsentManagementDialog_whenFFOff_shouldNotEmit() {
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
@@ -835,14 +836,19 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testConsentManagementDialog_preferenceDoesNotContainKeyValueAndFFOn_shouldEmit() {
-        var sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return true
+                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
+                        return true
+                    } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        return false
+                    } else {
+                        return false
+                    }
                 }
             }
 
@@ -857,6 +863,130 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
 
         showConsentManagementDialog.assertValue(Unit)
+    }
+
+    @Test
+    fun testOnboardingFlow_hasSeenPreferenceFalseNewUserTrueAndFFOn_shouldEmit() {
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(false)
+
+        // New user heuristic: has not seen consent management or notification permissions
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(false)
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        return true
+                    } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
+                        return false
+                    } else {
+                        return false
+                    }
+                }
+            }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        vm.outputs.showOnboardingFlow().subscribe { showOnboardingFlow.onNext(it) }.addToDisposable(disposables)
+
+        showOnboardingFlow.assertValue(Unit)
+    }
+
+    @Test
+    fun testOnboardingFlow_hasSeenPreferenceFalseNewUserFalseAndFFOn_shouldEmit() {
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(false)
+
+        // New user heuristic: has not seen consent management or notification permissions
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(true)
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        return true
+                    } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
+                        return false
+                    } else {
+                        return false
+                    }
+                }
+            }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        vm.outputs.showOnboardingFlow().subscribe { showOnboardingFlow.onNext(it) }.addToDisposable(disposables)
+
+        showOnboardingFlow.assertNoValues()
+    }
+
+    @Test
+    fun testOnboardingFlow_hasSeenPreferenceFalseAndFFOff_shouldNotEmit() {
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        return false
+                    } else {
+                        return false
+                    }
+                }
+            }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        vm.outputs.showOnboardingFlow().subscribe { showOnboardingFlow.onNext(it) }.addToDisposable(disposables)
+
+        showOnboardingFlow.assertNoValues()
+    }
+
+    @Test
+    fun testOnboardingFlow_hasSeenPreferenceTrueAndFFOn_shouldNotEmit() {
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(true)
+
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        return true
+                    } else {
+                        return false
+                    }
+                }
+            }
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .featureFlagClient(mockFeatureFlagClient)
+                .build()
+        )
+
+        vm.outputs.showOnboardingFlow().subscribe { showOnboardingFlow.onNext(it) }.addToDisposable(disposables)
+
+        showOnboardingFlow.assertNoValues()
     }
 
     private fun setUpDefaultParamsTest(user: User?) {

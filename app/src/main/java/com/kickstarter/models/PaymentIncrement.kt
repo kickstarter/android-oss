@@ -13,7 +13,8 @@ data class PaymentIncrement(
     val paymentIncrementableType: String,
     val scheduledCollection: DateTime,
     val state: PaymentIncrementState,
-    val stateReason: PaymentIncrementStateReason?
+    val stateReason: PaymentIncrementStateReason,
+    val refundedAmount: PaymentIncrementAmount?,
 ) : Parcelable {
     fun amount() = this.paymentIncrementAmount
     fun paymentIncrementableId() = this.paymentIncrementableId
@@ -21,6 +22,7 @@ data class PaymentIncrement(
     fun scheduledCollection() = this.scheduledCollection
     fun state() = this.state
     fun stateReason() = this.stateReason
+    fun refundedAmount() = this.refundedAmount
 
     @Parcelize
     data class Builder(
@@ -31,6 +33,7 @@ data class PaymentIncrement(
         private var scheduledCollection: DateTime = DateTime.now(),
         private var state: PaymentIncrementState = PaymentIncrementState.UNKNOWN__,
         private var stateReason: PaymentIncrementStateReason = PaymentIncrementStateReason.UNKNOWN__,
+        private var refundedAmount: PaymentIncrementAmount? = null,
     ) : Parcelable {
         fun amount(paymentIncrementAmount: PaymentIncrementAmount) =
             apply { this.paymentIncrementAmount = paymentIncrementAmount }
@@ -50,6 +53,7 @@ data class PaymentIncrement(
                 this.stateReason = stateReason
             }
         }
+        fun refundedAmount(refundedAmount: PaymentIncrementAmount?) = apply { this.refundedAmount = refundedAmount }
 
         fun build() = PaymentIncrement(
             paymentIncrementAmount = paymentIncrementAmount,
@@ -57,7 +61,8 @@ data class PaymentIncrement(
             paymentIncrementableType = paymentIncrementableType,
             scheduledCollection = scheduledCollection,
             state = state,
-            stateReason = stateReason
+            stateReason = stateReason,
+            refundedAmount = refundedAmount
         )
     }
 
@@ -69,7 +74,8 @@ data class PaymentIncrement(
                 paymentIncrementableType() == obj.paymentIncrementableType() &&
                 scheduledCollection() == obj.scheduledCollection() &&
                 state() == obj.state() &&
-                stateReason() == obj.stateReason()
+                stateReason() == obj.stateReason() &&
+                refundedAmount() == obj.refundedAmount()
         }
         return equals
     }
@@ -82,6 +88,7 @@ data class PaymentIncrement(
             scheduledCollection = scheduledCollection,
             state = state,
             stateReason = stateReason,
+            refundedAmount = refundedAmount
         )
     }
 

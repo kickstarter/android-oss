@@ -1,5 +1,5 @@
-query PledgedProjectsOverview($first: Int, $after: String, $last: Int, $before: String) {
-      pledgeProjectsOverview {
+query PledgedProjectsOverview($first: Int, $after: String, $last: Int, $before: String, $tierTypes: [PledgeProjectsOverviewSort!]) {
+      pledgeProjectsOverview(tierTypes: $tierTypes) {
         pledges(first : $first, after: $after, last : $last, before: $before) {
           totalCount
           edges {

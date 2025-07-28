@@ -12,12 +12,16 @@ import androidx.paging.PagingState
 import androidx.paging.filter
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.pledgedprojectsoverview.data.PledgeTierType
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.pledgedprojectsoverview.data.isTier1Type
+import com.kickstarter.features.pledgedprojectsoverview.data.isTier2Type
 import com.kickstarter.features.pledgedprojectsoverview.extensions.isTier2Type
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApolloClientTypeV2
@@ -51,6 +55,7 @@ class PledgedProjectsPagingSource(
     private val analyticEvents: AnalyticEvents,
     private var totalAlerts: MutableStateFlow<Int>,
     private val limit: Int = PAGE_LIMIT,
+    private val tierTypes: List<PledgeTierType>,
 
 ) : PagingSource<String, PPOCard>() {
     override fun getRefreshKey(state: PagingState<String, PPOCard>): String {
@@ -61,7 +66,7 @@ class PledgedProjectsPagingSource(
         return try {
             var ppoCardsList = emptyList<PPOCard>()
             var nextPageEnvelope: PageInfoEnvelope? = null
-            var inputData = PledgedProjectsOverviewQueryData(limit, params.key ?: "")
+            var inputData = PledgedProjectsOverviewQueryData(limit, params.key ?: "", tierTypes = tierTypes)
             var result: LoadResult<String, PPOCard> = LoadResult.Error(Throwable())
 
             apolloClient.getPledgedProjectsOverviewPledges(
@@ -104,6 +109,7 @@ class PledgedProjectsOverviewViewModel(
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analyticEvents = requireNotNull(environment.analytics())
     private var isV2Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
+    private var isV1Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
     private val mutableTotalAlerts = MutableStateFlow<Int>(0)
     val totalAlertsState = mutableTotalAlerts.asStateFlow()
 
@@ -114,7 +120,13 @@ class PledgedProjectsOverviewViewModel(
     val paymentRequiresAction: SharedFlow<String>
         get() = mutablePaymentRequiresAction.asSharedFlow()
 
-    private var pagingSource = PledgedProjectsPagingSource(apolloClient = apolloClient, analyticEvents = analyticEvents, totalAlerts = mutableTotalAlerts, limit = PAGE_LIMIT)
+    private var pagingSource = PledgedProjectsPagingSource(
+        apolloClient = apolloClient,
+        analyticEvents = analyticEvents,
+        totalAlerts = mutableTotalAlerts,
+        limit = PAGE_LIMIT,
+        tierTypes = getAllowedTierTypes()
+    )
 
     val ppoUIState: StateFlow<PledgedProjectsOverviewUIState>
         get() = mutablePPOUIState
@@ -243,6 +255,16 @@ class PledgedProjectsOverviewViewModel(
                 isErrored = isErrored,
             )
         )
+    }
+
+    private fun getAllowedTierTypes(): List<PledgeTierType> {
+        val list = PledgeTierType.values().toMutableList()
+        list.remove(PledgeTierType.REWARD_RECEIVED)
+
+        if (isV1Enabled.isFalse()) list.removeAll { it.isTier1Type() }
+        if (isV2Enabled.isFalse()) list.removeAll { it.isTier2Type() }
+
+        return list
     }
 
     fun showHeadsUpSnackbar(messageId: Int, duration: SnackbarDuration = SnackbarDuration.Short) {

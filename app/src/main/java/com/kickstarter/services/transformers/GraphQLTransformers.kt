@@ -72,6 +72,7 @@ import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
 import com.kickstarter.type.PledgeManagerStateEnum
+import com.kickstarter.type.PledgeProjectsOverviewSort
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference
 import com.kickstarter.type.ThirdPartyEventItemInput
@@ -837,12 +838,23 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .amountFormattedInProjectNativeCurrency(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
             .currencyCode(it.paymentIncrement.amount.paymentIncrementAmount.currency)
             .build()
+        val refundedAmount = it.paymentIncrement.refundedAmount?.let { refunded ->
+            PaymentIncrementAmount.builder()
+                .amountAsCents(refunded.paymentIncrementAmount.amountAsCents)
+                .amountAsFloat(refunded.paymentIncrementAmount.amountAsFloat)
+                .formattedAmount(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                .formattedAmountWithCode(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+                .amountFormattedInProjectNativeCurrency(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                .currencyCode(refunded.paymentIncrementAmount.currency)
+                .build()
+        }
         val scheduleCollection = it.paymentIncrement.scheduledCollection
         PaymentIncrement.builder()
             .amount(paymentIncrementAmount)
             .scheduledCollection(scheduleCollection)
             .state(it.paymentIncrement.state)
             .stateReason(it.paymentIncrement.stateReason)
+            .refundedAmount(refundedAmount)
             .build()
     }
 
@@ -1111,11 +1123,15 @@ fun getUpdateBackerCompletedMutation(inputData: UpdateBackerCompletedData): Upda
 }
 
 fun getPledgedProjectsOverviewQuery(queryInput: PledgedProjectsOverviewQueryData): PledgedProjectsOverviewQuery {
+    val tierTypes =
+        queryInput.tierTypes?.map { getPledgeTierType(it) }?.filter { it != PledgeProjectsOverviewSort.UNKNOWN__ }
+
     return PledgedProjectsOverviewQuery(
         after = Optional.present(queryInput.after),
         before = Optional.present(queryInput.before),
         first = Optional.present(queryInput.first),
-        last = Optional.present(queryInput.last)
+        last = Optional.present(queryInput.last),
+        tierTypes = Optional.present(tierTypes)
     )
 }
 
@@ -1146,7 +1162,7 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
                 .imageUrl(ppoBackingData?.project?.full?.image?.url)
                 .creatorName(ppoBackingData?.project?.creator?.name)
                 .creatorID(ppoBackingData?.project?.creator?.id)
-                .viewType(getTierType(it?.node?.tierType, reward))
+                .viewType(getPPOCardViewType(it?.node?.tierType, reward))
                 .surveyID(ppoBackingData?.project?.backerSurvey?.id)
                 .flags(flags)
                 .reward(reward)
@@ -1174,7 +1190,6 @@ fun pledgedProjectsOverviewEnvelopeTransformer(ppoResponse: PledgedProjectsOverv
 fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.PaymentPlan): PaymentPlan {
     val paymentIncrements =
         buildPaymentPlanResponse.paymentIncrements?.map {
-
             val paymentIncrementAmount = PaymentIncrementAmount.builder()
                 .amountAsFloat(it.amount.paymentIncrementAmount.amountAsFloat)
                 .amountAsCents(it.amount.paymentIncrementAmount.amountAsCents)
@@ -1183,15 +1198,23 @@ fun paymentPlanTransformer(buildPaymentPlanResponse: BuildPaymentPlanQuery.Payme
                 .amountFormattedInProjectNativeCurrency(it.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
                 .currencyCode(it.amount.paymentIncrementAmount.currency)
                 .build()
-
+            val refundedAmount = it.refundedAmount?.let { refunded ->
+                PaymentIncrementAmount.builder()
+                    .amountAsCents(refunded.paymentIncrementAmount.amountAsCents)
+                    .amountAsFloat(refunded.paymentIncrementAmount.amountAsFloat)
+                    .formattedAmount(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                    .formattedAmountWithCode(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrencyWithCurrencyCode)
+                    .amountFormattedInProjectNativeCurrency(refunded.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
+                    .currencyCode(refunded.paymentIncrementAmount.currency)
+                    .build()
+            }
             val scheduledCollection = it.scheduledCollection
-
             PaymentIncrement.builder()
                 .amount(paymentIncrementAmount)
                 .scheduledCollection(scheduledCollection)
+                .refundedAmount(refundedAmount)
                 .build()
         }
-
     return PaymentPlan.builder()
         .paymentIncrements(paymentIncrements)
         .amountIsPledgeOverTimeEligible(buildPaymentPlanResponse.amountIsPledgeOverTimeEligible)
@@ -1213,7 +1236,7 @@ fun getDeliveryAddress(deliveryAddress: DeliveryAddress?): com.kickstarter.featu
     } ?: return null
 }
 
-fun getTierType(tierType: String?, reward: Reward) =
+fun getPPOCardViewType(tierType: String?, reward: Reward) =
     when (tierType) {
         PledgeTierType.FAILED_PAYMENT.tierType -> PPOCardViewType.FIX_PAYMENT
         PledgeTierType.SURVEY_OPEN.tierType -> PPOCardViewType.OPEN_SURVEY
@@ -1226,7 +1249,7 @@ fun getTierType(tierType: String?, reward: Reward) =
                 PPOCardViewType.PLEDGE_COLLECTED_REWARD
             }
         }
-        PledgeTierType.SUVERY_SUBMITTED.tierType -> {
+        PledgeTierType.SURVEY_SUBMITTED.tierType -> {
             if (RewardUtils.isDigital(reward)) {
                 PPOCardViewType.SURVEY_SUBMITTED_DIGITAL
             } else if (RewardUtils.isNoReward(reward)) {
@@ -1240,6 +1263,20 @@ fun getTierType(tierType: String?, reward: Reward) =
         PledgeTierType.PLEDGE_MANAGEMENT.tierType -> PPOCardViewType.PLEDGE_MANAGEMENT
         PledgeTierType.REWARD_RECEIVED.tierType -> PPOCardViewType.REWARD_RECEIVED
         else -> PPOCardViewType.UNKNOWN
+    }
+
+fun getPledgeTierType(tierType: PledgeTierType?) =
+    when (tierType) {
+        PledgeTierType.FAILED_PAYMENT -> PledgeProjectsOverviewSort.TIER1_PAYMENT_FAILED
+        PledgeTierType.SURVEY_OPEN -> PledgeProjectsOverviewSort.TIER1_OPEN_SURVEY
+        PledgeTierType.ADDRESS_LOCK -> PledgeProjectsOverviewSort.TIER1_ADDRESS_LOCKING_SOON
+        PledgeTierType.PAYMENT_AUTHENTICATION -> PledgeProjectsOverviewSort.TIER1_PAYMENT_AUTHENTICATION_REQUIRED
+        PledgeTierType.PLEDGE_COLLECTED -> PledgeProjectsOverviewSort.PLEDGE_COLLECTED
+        PledgeTierType.SURVEY_SUBMITTED -> PledgeProjectsOverviewSort.SURVEY_SUBMITTED
+        PledgeTierType.ADDRESS_CONFIRMED -> PledgeProjectsOverviewSort.ADDRESS_CONFIRMED
+        PledgeTierType.AWAITING_REWARD -> PledgeProjectsOverviewSort.AWAITING_REWARD
+        PledgeTierType.PLEDGE_MANAGEMENT -> PledgeProjectsOverviewSort.PLEDGE_MANAGEMENT
+        else -> PledgeProjectsOverviewSort.UNKNOWN__
     }
 
 fun getShippingPreference(shippingPreference: ShippingPreference?): Reward.ShippingPreference {

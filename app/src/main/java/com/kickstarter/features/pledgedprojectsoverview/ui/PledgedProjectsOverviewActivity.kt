@@ -3,7 +3,6 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Pair
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -27,7 +26,6 @@ import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProject
 import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
-import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent

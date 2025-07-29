@@ -101,4 +101,7 @@
   <!-- Content descriptions -->
   <string name="Close" formatted="false">Close</string>
 
+  <!-- FPO's for PPO v2 -->
+  <string name="fpo_the_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue" formatted="false">The creator has not collected your address. Please contact them to resolve the issue.</string>
+
 </resources>

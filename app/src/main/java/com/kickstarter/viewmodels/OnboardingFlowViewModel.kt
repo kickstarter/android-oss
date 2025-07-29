@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import OnboardingPage
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,15 +19,16 @@ class OnboardingFlowViewModel(
     testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
     private val currentUser = requireNotNull(environment.currentUserV2())
-    val sharedPreferences = requireNotNull(environment.sharedPreferences())
-    val ffClient = requireNotNull(environment.featureFlagClient())
+    private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+    private val analytics = requireNotNull(environment.analytics())
 
     private var isUserLoggedIn = false
     private var deviceNeedsNotificationPermissions = false
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
 
     init {
-        deviceNeedsNotificationPermissions = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+        deviceNeedsNotificationPermissions = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
 
         scope.launch {
             currentUser.observable().asFlow()
@@ -43,6 +45,22 @@ class OnboardingFlowViewModel(
         sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, hasSeen).apply()
     }
 
+    fun analytics() = analytics // Expose for Compose screen
+    fun trackSignUpOrLoginCtaClicked() {
+        analytics.trackOnboardingSignupLoginCTAClicked()
+    }
+    fun trackOnboardingPromptViewed(prompt: String) {
+        analytics.trackOnboardingPageViewed(prompt)
+    }
+    fun trackOnboardingAllowTrackingPromptCtaClicked() {
+        analytics.trackOnboardingAllowTrackingCTAClicked()
+    }
+    fun trackOnboardingEnableNotificationsPromptCtaClicked() {
+        analytics.trackOnboardingGetNotifiedCTAClicked()
+    }
+    fun trackOnboardingCancelled(onboardingPage: OnboardingPage) {
+        analytics.trackOnboardingCloseCTAClicked(onboardingPage.analyticsSectionName)
+    }
     class Factory(
         private val environment: Environment,
         private val testDispatcher: CoroutineDispatcher? = null

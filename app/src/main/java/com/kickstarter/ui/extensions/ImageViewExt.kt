@@ -21,10 +21,20 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
+import com.kickstarter.libs.utils.WebUtils
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isKSApplication
 
 const val header = "User-Agent"
-fun ImageView.loadCircleImage(url: String?, userAgent: String = "") {
+const val ua = "Custom-UA"
+
+fun userAgent(context: Context) = if (context.applicationContext.isKSApplication()) {
+    val build = requireNotNull(context.applicationContext.getEnvironment()?.build())
+    WebUtils.userAgent(build)
+} else ua
+
+fun ImageView.loadCircleImage(url: String?) {
+
     url?.let {
         try {
             if (it.isBlank()) { // - load with drawable
@@ -36,7 +46,7 @@ fun ImageView.loadCircleImage(url: String?, userAgent: String = "") {
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent)
+                        .addHeader(header, userAgent(context))
                         .build()
                 )
                 Glide.with(context)
@@ -55,13 +65,13 @@ fun ImageView.loadCircleImage(url: String?, userAgent: String = "") {
     }
 }
 
-fun ImageView.loadImage(url: String?, userAgent: String = "") {
+fun ImageView.loadImage(url: String?) {
     url?.let {
         try {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent)
+                    .addHeader(header, userAgent(context))
                     .build()
             )
             Glide.with(context)
@@ -81,15 +91,14 @@ fun ImageView.loadImageWithResize(
     url: String?,
     targetImageWidth: Int,
     targetImageHeight: Int,
-    placeholder: Drawable,
-    userAgent: String = ""
+    placeholder: Drawable
 ) {
     url?.let {
         try {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent)
+                    .addHeader(header, userAgent(context))
                     .build()
             )
             Glide.with(context)
@@ -106,7 +115,7 @@ fun ImageView.loadImageWithResize(
         }
     }
 }
-fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder: AppCompatImageView? = null, userAgent: String = "") {
+fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder: AppCompatImageView? = null) {
     url?.let {
         val targetView = this
         if (context.applicationContext.isKSApplication()) {
@@ -114,7 +123,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent)
+                        .addHeader(header, userAgent(context))
                         .build()
                 )
                 Glide.with(context)
@@ -157,13 +166,13 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
     }
 }
 
-fun ImageView.loadWebp(url: String?, context: Context, userAgent: String = "") {
+fun ImageView.loadWebp(url: String?, context: Context) {
     url?.let {
         try {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent)
+                    .addHeader(header, userAgent(context))
                     .build()
             )
             val roundedCorners = RoundedCorners(1)
@@ -183,14 +192,14 @@ fun ImageView.loadWebp(url: String?, context: Context, userAgent: String = "") {
     }
 }
 
-fun ImageView.loadGifImage(url: String?, context: Context, userAgent: String = "") {
+fun ImageView.loadGifImage(url: String?, context: Context) {
     url?.let {
         if (context.applicationContext.isKSApplication()) {
             try {
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent)
+                        .addHeader(header, userAgent(context))
                         .build()
                 )
                 Glide.with(context)

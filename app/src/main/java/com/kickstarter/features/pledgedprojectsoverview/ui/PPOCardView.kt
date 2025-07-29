@@ -89,6 +89,23 @@ fun PPOCardPreview() {
 
             item {
                 PPOCardView(
+                    viewType = PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
+                    onCardClick = {},
+                    projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
+                    pledgeAmount = "$70.00",
+                    creatorName = "Some really really really really really really really long name",
+                    sendAMessageClickAction = {},
+                    onActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    onProjectPledgeSummaryClick = {},
+                    flags = listOf(Flag.builder().message("Survey submitted shippable").type("info").icon(null).build()),
+                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+
+            item {
+                PPOCardView(
                     viewType = PPOCardViewType.SURVEY_SUBMITTED_DIGITAL,
                     onCardClick = {},
                     projectName = "Sugardew Island - Your cozy farm shop let’s pretend this is a longer title let’s pretend this is a longer title",
@@ -519,17 +536,15 @@ fun ShippingAddressView(
             .padding(top = dimensions.paddingSmall, start = dimensions.paddingMediumSmall, end = dimensions.paddingXSmall)
             .testTag(PPOCardViewTestTag.SHIPPING_ADDRESS_VIEW.name),
     ) {
-        if (!shippingAddress.isNullOrEmpty()) {
-            Text(
-                text = stringResource(id = R.string.Shipping_address),
-                modifier = Modifier
-                    .weight(0.25f)
-                    .height(dimensions.clickableButtonHeight)
-                    .clip(shapes.small),
-                color = colors.textPrimary,
-                style = typographyV2.headingSM,
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.Shipping_address),
+            modifier = Modifier
+                .weight(0.25f)
+                .height(dimensions.clickableButtonHeight)
+                .clip(shapes.small),
+            color = colors.textPrimary,
+            style = typographyV2.headingSM,
+        )
 
         Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
@@ -544,6 +559,13 @@ fun ShippingAddressView(
                     overflow = TextOverflow.Ellipsis,
                     minLines = 4,
                     maxLines = 6
+                )
+            } else {
+                Text(
+                    modifier = Modifier.weight(10f),
+                    text = stringResource(R.string.fpo_the_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue),
+                    color = colors.textSecondary,
+                    style = typographyV2.headingSM,
                 )
             }
 

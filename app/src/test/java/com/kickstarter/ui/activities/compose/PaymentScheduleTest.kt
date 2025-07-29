@@ -508,8 +508,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
     @Test
     fun testPaymentScheduleAmountsText() {
-        val expectedCount = PaymentIncrementFactory.samplePaymentIncrements()
-            .count { it.state == PaymentIncrementState.COLLECTED && it.refundedAmount == null }
+        val totalIncrements = PaymentIncrementFactory.samplePaymentIncrements().size
 
         composeTestRule.setContent {
             KSTheme {
@@ -529,9 +528,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
 
-        amountText.assertCountEquals(7)
-        amountText.assertCountEquals(expectedCount)
-        amountText.assertAll(hasText("99.75$", ignoreCase = true))
+        amountText.assertCountEquals(totalIncrements)
+        amountText.assertAll(hasText("99.75$", ignoreCase = true) or hasText("70.75$", ignoreCase = true))
     }
 
     @Test

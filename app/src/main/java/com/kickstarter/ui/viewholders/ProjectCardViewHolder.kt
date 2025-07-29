@@ -35,6 +35,7 @@ class ProjectCardViewHolder(
 ) : KSViewHolder(binding.root) {
     private val viewModel = ProjectCardHolderViewModel.ViewModel()
     private val ksString = requireNotNull(environment().ksString())
+    private val build = requireNotNull(environment().build())
     private val disposables = CompositeDisposable()
 
     interface Delegate {

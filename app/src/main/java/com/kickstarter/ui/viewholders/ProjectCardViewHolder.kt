@@ -17,6 +17,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.SocialUtils
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.isProjectNamePunctuated
@@ -35,6 +36,7 @@ class ProjectCardViewHolder(
 ) : KSViewHolder(binding.root) {
     private val viewModel = ProjectCardHolderViewModel.ViewModel()
     private val ksString = requireNotNull(environment().ksString())
+    private val build = requireNotNull(environment().build())
     private val disposables = CompositeDisposable()
 
     interface Delegate {
@@ -158,7 +160,9 @@ class ProjectCardViewHolder(
 
         viewModel.outputs.photoUrl()
             .compose(Transformers.observeForUIV2())
-            .subscribe { resizeProjectImage(it) }
+            .subscribe {
+                resizeProjectImage(it, WebUtils.userAgent(build))
+            }
             .addToDisposable(disposables)
 
         viewModel.outputs.projectCanceledAt()
@@ -314,7 +318,7 @@ class ProjectCardViewHolder(
         binding.nameAndBlurbTextView.text = styledString
     }
 
-    private fun resizeProjectImage(avatarUrl: String?) {
+    private fun resizeProjectImage(avatarUrl: String?, userAgent: String) {
         val targetImageWidth = getProjectImageWidth()
         val targetImageHeight = photoHeightFromWidthRatio(targetImageWidth)
 
@@ -322,7 +326,7 @@ class ProjectCardViewHolder(
         avatarUrl?.let {
             ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)
                 ?.let { placeholder ->
-                    binding.projectCardPhoto.photo.loadImageWithResize(it, targetImageWidth, targetImageHeight, placeholder)
+                    binding.projectCardPhoto.photo.loadImageWithResize(it, targetImageWidth, targetImageHeight, placeholder, userAgent = userAgent)
                 }
         }
     }

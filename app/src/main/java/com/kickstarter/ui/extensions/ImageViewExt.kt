@@ -21,8 +21,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.libs.Build
-import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.isKSApplication
 
 const val header = "User-Agent"

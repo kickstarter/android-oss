@@ -12,6 +12,8 @@ import com.bumptech.glide.integration.webp.decoder.WebpDrawable
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
@@ -19,9 +21,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
+import com.kickstarter.libs.Build
+import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.isKSApplication
 
-fun ImageView.loadCircleImage(url: String?) {
+const val header = "User-Agent"
+fun ImageView.loadCircleImage(url: String?, userAgent: String = "") {
     url?.let {
         try {
             if (it.isBlank()) { // - load with drawable
@@ -30,8 +35,14 @@ fun ImageView.loadCircleImage(url: String?) {
                     .circleCrop()
                     .into(this)
             } else { // - load with url string
+                val glideUrl = GlideUrl(
+                    it,
+                    LazyHeaders.Builder()
+                        .addHeader(header, userAgent)
+                        .build()
+                )
                 Glide.with(context)
-                    .load(it)
+                    .load(glideUrl)
                     .placeholder(ColorDrawable(Color.TRANSPARENT))
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .circleCrop()
@@ -46,11 +57,17 @@ fun ImageView.loadCircleImage(url: String?) {
     }
 }
 
-fun ImageView.loadImage(url: String?) {
+fun ImageView.loadImage(url: String?, userAgent: String = "") {
     url?.let {
         try {
+            val glideUrl = GlideUrl(
+                it,
+                LazyHeaders.Builder()
+                    .addHeader(header, userAgent)
+                    .build()
+            )
             Glide.with(context)
-                .load(url)
+                .load(glideUrl)
                 .placeholder(ColorDrawable(Color.TRANSPARENT))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .into(this)
@@ -66,12 +83,19 @@ fun ImageView.loadImageWithResize(
     url: String?,
     targetImageWidth: Int,
     targetImageHeight: Int,
-    placeholder: Drawable
+    placeholder: Drawable,
+    userAgent: String = ""
 ) {
     url?.let {
         try {
+            val glideUrl = GlideUrl(
+                it,
+                LazyHeaders.Builder()
+                    .addHeader(header, userAgent)
+                    .build()
+            )
             Glide.with(context)
-                .load(url)
+                .load(glideUrl)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .apply(RequestOptions().override(targetImageWidth, targetImageHeight))
                 .centerCrop()
@@ -84,13 +108,19 @@ fun ImageView.loadImageWithResize(
         }
     }
 }
-fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder: AppCompatImageView? = null) {
+fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder: AppCompatImageView? = null, userAgent: String = "") {
     url?.let {
         val targetView = this
         if (context.applicationContext.isKSApplication()) {
             try {
+                val glideUrl = GlideUrl(
+                    it,
+                    LazyHeaders.Builder()
+                        .addHeader(header, userAgent)
+                        .build()
+                )
                 Glide.with(context)
-                    .load(url)
+                    .load(glideUrl)
                     .listener(object : RequestListener<Drawable> {
                         override fun onResourceReady(
                             resource: Drawable,
@@ -129,12 +159,18 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
     }
 }
 
-fun ImageView.loadWebp(url: String?, context: Context) {
+fun ImageView.loadWebp(url: String?, context: Context, userAgent: String = "") {
     url?.let {
         try {
+            val glideUrl = GlideUrl(
+                it,
+                LazyHeaders.Builder()
+                    .addHeader(header, userAgent)
+                    .build()
+            )
             val roundedCorners = RoundedCorners(1)
             Glide.with(this)
-                .load(it)
+                .load(glideUrl)
                 .downsample(DownsampleStrategy.AT_LEAST)
                 .override(Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
                 .optionalTransform(roundedCorners)
@@ -149,13 +185,19 @@ fun ImageView.loadWebp(url: String?, context: Context) {
     }
 }
 
-fun ImageView.loadGifImage(url: String?, context: Context) {
+fun ImageView.loadGifImage(url: String?, context: Context, userAgent: String = "") {
     url?.let {
         if (context.applicationContext.isKSApplication()) {
             try {
+                val glideUrl = GlideUrl(
+                    it,
+                    LazyHeaders.Builder()
+                        .addHeader(header, userAgent)
+                        .build()
+                )
                 Glide.with(context)
                     .asGif()
-                    .load(it)
+                    .load(glideUrl)
                     .downsample(DownsampleStrategy.AT_LEAST)
                     .override(Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)

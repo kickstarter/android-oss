@@ -2,6 +2,7 @@ package com.kickstarter.ui.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build.VERSION.SDK_INT
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,15 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale.Companion.FillWidth
 import androidx.core.view.isVisible
+import coil.ImageLoader
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+
 import coil.load
+
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif
@@ -47,7 +53,16 @@ class ImageWithCaptionView @JvmOverloads constructor(
         } else {
             when {
                 src.isWebp() -> {
-                    binding.imageView.load(src)
+                    val gifEnabledLoader = ImageLoader.Builder(context)
+                        .components {
+                            if (SDK_INT >= 28) {
+                                add(ImageDecoderDecoder.Factory())
+                            } else {
+                                add(GifDecoder.Factory())
+                            }
+                        }
+                        .build()
+                    binding.imageView.load(src, gifEnabledLoader)
                     binding.imageView.visibility = VISIBLE
                     binding.composeViewImage.visibility = GONE
                 }

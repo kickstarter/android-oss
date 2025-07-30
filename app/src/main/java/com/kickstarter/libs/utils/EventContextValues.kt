@@ -48,10 +48,17 @@ class EventContextValues {
         LOGIN_SUBMIT("log_in_submit"),
         SIGN_UP_SUBMIT("sign_up_submit"),
         SIGN_UP_INITIATE("sign_up_initiate"),
+        SIGNUP_LOGIN("signup_login"),
         COMMENT_POST("comment_post"),
         PROJECT_SELECT("project_select"),
         LATE_PLEDGE("late_pledge"),
         EDIT("edit"),
+        CLOSE("close"),
+        NEXT("next"),
+        GET_NOTIFIED("get_notified"),
+        ALLOW_TRACKING("allow_tracking"),
+        ALLOW("allow"),
+        DENY("deny"),
     }
 
     /**
@@ -91,7 +98,8 @@ class EventContextValues {
         LOGIN("log_in"),
         MANAGE_PLEDGE("manage_pledge"),
         PROJECT_ALERTS("project_alerts"),
-        TWO_FACTOR_AUTH("two_factor_auth")
+        TWO_FACTOR_AUTH("two_factor_auth"),
+        ONBOARDING("onboarding"),
     }
 
     /**
@@ -115,6 +123,8 @@ class EventContextValues {
         FAQS("faq"),
         ENVIRONMENT("environment"),
         AI("use_of_ai"),
+        ACTIVITY_TRACKING_PROMPT("activity_tracking_prompt"),
+        ENABLE_NOTIFICATIONS_PROMPT("enable_notifications_prompt"),
     }
 
     /**

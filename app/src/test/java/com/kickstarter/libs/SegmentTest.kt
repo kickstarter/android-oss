@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.PROJECT_UPDATE_ID
 import com.kickstarter.libs.utils.EventContextValues
@@ -19,12 +20,14 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ONBOARDING
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT_ALERTS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CLOSE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
@@ -1794,6 +1797,31 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(0, expectedProperties["notification_count_survey_available"])
         assertEquals(0, expectedProperties["notification_count_pledge_management"])
         assertEquals(11, expectedProperties["notification_count_total"])
+    }
+
+    @Test
+    fun `test onboarding page viewed`() {
+        val user = user()
+        val client = client(user)
+
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackOnboardingCloseCTAClicked(OnboardingPage.SAVE_PROJECTS.analyticsSectionName)
+
+        val properties = this.propertiesTest.value ?: mapOf()
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+
+        assertEquals(ONBOARDING.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(OnboardingPage.SAVE_PROJECTS.analyticsSectionName, properties[CONTEXT_SECTION.contextName])
+        assertEquals(CLOSE.contextName, properties[CONTEXT_CTA.contextName])
     }
 
     @Test

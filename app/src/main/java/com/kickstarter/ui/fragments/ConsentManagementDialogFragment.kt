@@ -8,6 +8,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.kickstarter.R
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ALLOW
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DENY
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.viewmodels.ConsentManagementDialogFragmentViewModel
 
@@ -27,11 +29,11 @@ class ConsentManagementDialogFragment : DialogFragment() {
             builder.setMessage(R.string.We_use_personal_data_to_provide_a_good_experience_on_Kickstarter_and_to_help_connect_you_with_projects_you_ll_love)
                 .setPositiveButton(R.string.Allow) { dialog, id ->
                     this.viewModel.inputs.userConsentPreference(true)
-                    setFragmentResult(TAG, bundleOf("result" to "allow"))
+                    setFragmentResult(TAG, bundleOf("result" to ALLOW.contextName))
                 }
                 .setNegativeButton(R.string.Decline) { dialog, id ->
                     this.viewModel.inputs.userConsentPreference(false)
-                    setFragmentResult(TAG, bundleOf("result" to "decline"))
+                    setFragmentResult(TAG, bundleOf("result" to DENY.contextName))
                 }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")

@@ -280,6 +280,31 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertNull(index)
     }
 
+    @Test
+    fun maskUserAgent() {
+        val ua1 = "Mozilla/5.0 (Linux; Android 16; Pixel 8 Build/BP2A.250705.008; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/138.0.7204.179 Mobile Safari/537.36"
+        val ua2 = "Mozilla/5.0 (Linux; Android 15; SM-S931B Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/127.0.6533.103 Mobile Safari/537.36"
+        val ua3 = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36,gzip(gfe)"
+        val ua4 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59"
+        val ua5 = "Opera/9.80 (Macintosh; Intel Mac OS X; U; en) Presto/2.2.15 Version/10.00"
+        val ua6 = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1"
+        assertEquals(
+            "Mozilla/5.0 (Linux; Android 10; K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/138.0.7204.179 Mobile Safari/537.36",
+            ua1.maskUserAgent()
+        )
+        assertEquals(
+            "Mozilla/5.0 (Linux; Android 10; K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/127.0.6533.103 Mobile Safari/537.36",
+            ua2.maskUserAgent()
+        )
+        assertEquals(
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36,gzip(gfe)",
+            ua3.maskUserAgent()
+        )
+        assertEquals(ua4, ua4.maskUserAgent())
+        assertEquals(ua5, ua5.maskUserAgent())
+        assertEquals(ua6, ua6.maskUserAgent())
+    }
+
     companion object {
         private const val VALID_EMAIL = "hello@kickstarter.com"
         private const val VALID_GIF_URL = "https://i.kickstarter.com/assets/035/272/960/eae68383730822ffe949f3825600a80a_original.gif?origin=ugc-qa&q=92&sig=C1dWB6NvmlwKGw4lty6s4FGU6Dn3rzNv%2F3p%2B4bhSpzk%3D"

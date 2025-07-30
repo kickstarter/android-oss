@@ -124,7 +124,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     private fun getMediaSource(videoUrl: String): MediaSource {
         val headers = mapOf(
-            header to userAgent(context)
+            header to context.userAgent()
         )
 
         val dataSourceFactory = DefaultHttpDataSource.Factory()

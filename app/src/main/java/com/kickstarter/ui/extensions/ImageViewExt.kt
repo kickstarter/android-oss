@@ -38,7 +38,7 @@ fun ImageView.loadCircleImage(url: String?) {
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent(context))
+                        .addHeader(header, context.userAgent())
                         .build()
                 )
                 Glide.with(context)
@@ -63,7 +63,7 @@ fun ImageView.loadImage(url: String?) {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent(context))
+                    .addHeader(header, context.userAgent())
                     .build()
             )
             Glide.with(context)
@@ -90,7 +90,7 @@ fun ImageView.loadImageWithResize(
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent(context))
+                    .addHeader(header, context.userAgent())
                     .build()
             )
             Glide.with(context)
@@ -115,7 +115,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent(context))
+                        .addHeader(header, context.userAgent())
                         .build()
                 )
                 Glide.with(context)
@@ -164,7 +164,7 @@ fun ImageView.loadWebp(url: String?, context: Context) {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent(context))
+                    .addHeader(header, context.userAgent())
                     .build()
             )
             val roundedCorners = RoundedCorners(1)
@@ -191,7 +191,7 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent(context))
+                        .addHeader(header, context.userAgent())
                         .build()
                 )
                 Glide.with(context)

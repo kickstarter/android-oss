@@ -21,8 +21,8 @@ import com.stripe.android.paymentsheet.PaymentSheet
 const val header = "User-Agent"
 const val ua = "Custom-UA"
 
-fun userAgent(context: Context) = if (context.applicationContext.isKSApplication()) {
-    val build = requireNotNull(context.applicationContext.getEnvironment()?.build())
+fun Context.userAgent() = if (this.applicationContext.isKSApplication()) {
+    val build = requireNotNull(this.applicationContext.getEnvironment()?.build())
     WebUtils.userAgent(build)
 } else ua
 

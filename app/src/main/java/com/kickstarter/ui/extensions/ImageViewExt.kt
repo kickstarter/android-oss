@@ -21,17 +21,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.libs.utils.WebUtils
-import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.header
 import com.kickstarter.libs.utils.extensions.isKSApplication
-
-const val header = "User-Agent"
-const val ua = "Custom-UA"
-
-fun userAgent(context: Context) = if (context.applicationContext.isKSApplication()) {
-    val build = requireNotNull(context.applicationContext.getEnvironment()?.build())
-    WebUtils.userAgent(build)
-} else ua
+import com.kickstarter.libs.utils.extensions.userAgent
 
 fun ImageView.loadCircleImage(url: String?) {
 

@@ -1,12 +1,12 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -21,6 +21,8 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
+import com.kickstarter.libs.utils.extensions.header
+import com.kickstarter.libs.utils.extensions.userAgent
 import com.kickstarter.ui.data.VideoModelElement
 
 class VideoPlayerViewer @JvmOverloads constructor(
@@ -121,8 +123,14 @@ class VideoPlayerViewer @JvmOverloads constructor(
     }
 
     private fun getMediaSource(videoUrl: String): MediaSource {
+        val headers = mapOf(
+            header to userAgent(context)
+        )
+
         val dataSourceFactory = DefaultHttpDataSource.Factory()
-        val videoUri = Uri.parse(videoUrl)
+            .setDefaultRequestProperties(headers)
+
+        val videoUri = videoUrl.toUri()
         val fileType = Util.inferContentType(videoUri)
 
         return if (fileType == C.TYPE_HLS) {

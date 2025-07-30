@@ -13,11 +13,11 @@ import com.kickstarter.KSApplication
 import com.kickstarter.databinding.WebViewBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.WebViewJavascriptInterface
+import com.kickstarter.libs.utils.extensions.maskUserAgent
 import com.kickstarter.services.KSWebViewClient
 import com.kickstarter.services.RequestHandler
 import javax.inject.Inject
 
-private const val LOGTAG = "KSWebView"
 class KSWebView@JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -53,6 +53,14 @@ class KSWebView@JvmOverloads constructor(
             binding.internalWebView.settings.javaScriptEnabled = true
             binding.internalWebView.settings.allowFileAccess = false
             binding.internalWebView.settings.domStorageEnabled = true
+
+            // TODO: Replace `36` with `Build.VERSION_CODES.BAKLAVA` after updating `compileSdkVersion`.
+            // TODO: Consider upperbound. See link in `String.maskUserAgent()`.
+            if (android.os.Build.VERSION.SDK_INT >= 36) {
+                binding.internalWebView.settings.apply {
+                    userAgentString = userAgentString.maskUserAgent()
+                }
+            }
 
             this.client.setDelegate(this)
 

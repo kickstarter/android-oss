@@ -22,6 +22,8 @@ import javax.crypto.spec.IvParameterSpec
 
 const val MINIMUM_PASSWORD_LENGTH = 6
 
+private val NON_WORD_REGEXP = Pattern.compile("[^\\w]")
+
 fun String.encrypt(secretKey: Key?): String? {
     return try {
         val cipher = Cipher.getInstance("AES/CBC/PKCS7PADDING")
@@ -294,4 +296,12 @@ fun String.createValidUrl(): String {
     return this
 }
 
-private val NON_WORD_REGEXP = Pattern.compile("[^\\w]")
+/*
+ * See https://android-developers.googleblog.com/2024/12/user-agent-reduction-on-android-webview.html
+ * Currently only a _partial_ mask. Consider moving this closer to WebView-related code.
+ */
+fun String.maskUserAgent() =
+    this.replace(
+        Regex("""\(Linux; Android \d+; [^)]+? Build/[^;]+; wv\)"""),
+        "(Linux; Android 10; K; wv)"
+    )

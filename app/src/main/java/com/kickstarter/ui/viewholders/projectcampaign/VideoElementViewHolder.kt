@@ -2,17 +2,26 @@ package com.kickstarter.ui.viewholders.projectcampaign
 
 import android.view.View
 import android.widget.ImageView
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.google.android.exoplayer2.util.Util
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.libs.utils.extensions.header
+import com.kickstarter.libs.utils.extensions.userAgent
 import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -101,7 +110,8 @@ class VideoElementViewHolder(
                     }
                 }
             }
-            exoPlayer.setMediaItem(MediaItem.fromUri(url), !playerIsResuming)
+
+            exoPlayer.setMediaSource(getMediaSource(url), !playerIsResuming)
             exoPlayer.prepare()
         }
 
@@ -115,6 +125,25 @@ class VideoElementViewHolder(
         }
 
         playersMap[bindingAdapterPosition] = player
+    }
+
+    private fun getMediaSource(videoUrl: String): MediaSource {
+        val headers = mapOf(
+            header to userAgent(context())
+        )
+
+        val dataSourceFactory = DefaultHttpDataSource.Factory()
+            .setDefaultRequestProperties(headers)
+
+        val videoUri = videoUrl.toUri()
+        val fileType = Util.inferContentType(videoUri)
+
+        return if (fileType == C.TYPE_HLS) {
+            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri(videoUri))
+        } else {
+            ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(videoUri))
+        }
     }
 
     private fun openFullscreenDialog(url: String) {

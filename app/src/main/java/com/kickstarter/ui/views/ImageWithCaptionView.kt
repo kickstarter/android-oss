@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import coil.load
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewImageWithCaptionBinding
 import com.kickstarter.libs.utils.extensions.isGif
@@ -46,7 +47,7 @@ class ImageWithCaptionView @JvmOverloads constructor(
         } else {
             when {
                 src.isWebp() -> {
-                    binding.imageView.loadWebp(src, context)
+                    binding.imageView.load(src)
                     binding.imageView.visibility = VISIBLE
                     binding.composeViewImage.visibility = GONE
                 }

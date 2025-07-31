@@ -152,7 +152,7 @@
   <string name="Closes_project" formatted="false">プロジェクトを閉じる</string>
   <string name="Collaborator" formatted="false">コラボレーター（協力者）</string>
   <string name="Collapses_subcategories" formatted="false">サブカテゴリーを閉じる</string>
-  <string name="Collected_adjusted" formatted="false">Collected (adjusted)</string>
+  <string name="Collected_adjusted" formatted="false">請求済み（調整済み）</string>
   <string name="Collection_plan" formatted="false">資金回収プラン</string>
   <string name="Collections" formatted="false">コレクション</string>
   <string name="Coming_soon" formatted="false">近日公開</string>
@@ -498,6 +498,7 @@
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
   <string name="No_pledges_from_friends_yet" formatted="false">友達からのプレッジはありません。</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">このライブ配信を再生することはできません</string>
+  <string name="No_results" formatted="false">結果なし</string>
   <string name="No_results_for" formatted="false">「%{query}」の検索結果がありません</string>
   <string name="No_saved_projects" formatted="false">保存済みのプロジェクトはありません</string>
   <string name="No_unread_messages" formatted="false">未読メッセージはありません</string>
@@ -632,7 +633,7 @@
   <string name="Recommended_for_you" formatted="false">あなたにおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>
   <string name="Recorded_live_with_creator_name" formatted="false">配信された&lt;b>%{creator_name}&lt;/b>のライブ</string>
-  <string name="Refunded" formatted="false">Refunded</string>
+  <string name="Refunded" formatted="false">払い戻し</string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">配送日は保証されませんのでご注意ください。</string>
   <string name="Remember_this_card" formatted="false">このカードを保存する</string>
   <string name="Remove_all_filters" formatted="false">すべてのフィルタを外す</string>
@@ -856,6 +857,7 @@
   <string name="Track_shipment" formatted="false">配送状況を追跡</string>
   <string name="Track_your_backings" formatted="false">支援したプロジェクトを追跡</string>
   <string name="Tracking_number" formatted="false">追跡番号：%{number}</string>
+  <string name="Try_adjusting_the_filters" formatted="false">フィルターを調整してみてください</string>
   <string name="Try_rephrasing_your_search" formatted="false">検索キーワードを変更してみてください</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">検索キーワードを変更するか、フィルターを調整してみてください</string>
   <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>

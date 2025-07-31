@@ -501,6 +501,7 @@ Cliquez pour réessayer.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Mes amis \n
 n\'ont rien soutenu.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Pas de rediffusion possible pour cette diffusion en direct.</string>
+  <string name="No_results" formatted="false">Pas de résultats</string>
   <string name="No_results_for" formatted="false">Aucun résultat pour « %{query} »</string>
   <string name="No_saved_projects" formatted="false">Pas de projets enregistrés</string>
   <string name="No_unread_messages" formatted="false">Pas de messages non lus</string>
@@ -858,6 +859,7 @@ n\'ont rien soutenu.</string>
   <string name="Track_shipment" formatted="false">Suivre le colis</string>
   <string name="Track_your_backings" formatted="false">Suivi de vos engagements</string>
   <string name="Tracking_number" formatted="false">Numéro de suivi : %{number}</string>
+  <string name="Try_adjusting_the_filters" formatted="false">Essayez de modifier les filtres</string>
   <string name="Try_rephrasing_your_search" formatted="false">Essayez de reformuler votre recherche</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Essayez de reformuler votre recherche ou de modifier les filtres</string>
   <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>

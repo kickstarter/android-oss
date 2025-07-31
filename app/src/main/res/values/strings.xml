@@ -97,8 +97,6 @@
   <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
   <string name="fpo_track_shipment" formatted="false">Track shipment</string>
 
-  <!-- FPO's for PLOT refund -->
-  <string name="fpo_refunded" formatted="false">Refunded</string>
 
   <!-- Content descriptions -->
   <string name="Close" formatted="false">Close</string>

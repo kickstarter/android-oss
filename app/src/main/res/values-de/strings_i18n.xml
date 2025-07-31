@@ -154,7 +154,7 @@ Unterstützer</string>
   <string name="Closes_project" formatted="false">Schließt das Projekt.</string>
   <string name="Collaborator" formatted="false">Mitarbeiter</string>
   <string name="Collapses_subcategories" formatted="false">Reduziert die Anzeige der Unterkategorien.</string>
-  <string name="Collected_adjusted" formatted="false">Collected (adjusted)</string>
+  <string name="Collected_adjusted" formatted="false">Eingezogen (bereinigt)</string>
   <string name="Collection_plan" formatted="false">Zahlungsplan</string>
   <string name="Collections" formatted="false">Sammlungen</string>
   <string name="Coming_soon" formatted="false">Demnächst</string>
@@ -500,6 +500,7 @@ Antippen und erneut versuchen</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Es wurden noch keine Updates gepostet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Es gibt noch keine Beiträge von Freunden.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
+  <string name="No_results" formatted="false">Keine Ergebnisse</string>
   <string name="No_results_for" formatted="false">Keine Ergebnisse für „%{query}“</string>
   <string name="No_saved_projects" formatted="false">Keine gespeicherten Projekte</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
@@ -633,7 +634,7 @@ Antippen und erneut versuchen</string>
   <string name="Recommended_for_you" formatted="false">Empfehlungen für dich</string>
   <string name="Recorded_Live" formatted="false">Live aufgenommen</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Live aufgenommen von &lt;b>%{creator_name}&lt;/b></string>
-  <string name="Refunded" formatted="false">Refunded</string>
+  <string name="Refunded" formatted="false">Beitrag rückerstattet</string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">Denke daran, dass es keine Garantie für das Lieferdatum gibt.</string>
   <string name="Remember_this_card" formatted="false">Karte speichern</string>
   <string name="Remove_all_filters" formatted="false">Alle Filter entfernen</string>
@@ -857,6 +858,7 @@ Antippen und erneut versuchen</string>
   <string name="Track_shipment" formatted="false">Sendung verfolgen</string>
   <string name="Track_your_backings" formatted="false">Folge deinen unterstützten Projekten</string>
   <string name="Tracking_number" formatted="false">Sendungsnummer: %{number}</string>
+  <string name="Try_adjusting_the_filters" formatted="false">Versuche, die Filter anzupassen</string>
   <string name="Try_rephrasing_your_search" formatted="false">Versuche, deine Suche anders zu formulieren</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Versuche, deine Suche anders zu formulieren oder die Filter anzupassen</string>
   <string name="Twice_a_day_summary" formatted="false">Übersicht (zweimal täglich)</string>

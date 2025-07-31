@@ -106,6 +106,15 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.COLLECTED,
+                    paymentIncrementableId = "2",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(30),
+                    stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+                    refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$42.00", formattedAmountWithCode = "USD $70.75", amountAsFloat = "70.75", amountAsCents = "7075", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "70.75$")
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
                     state = PaymentIncrementState.ERRORED,
                     paymentIncrementableId = "3",
                     paymentIncrementableType = "pledge",
@@ -135,7 +144,7 @@ class PaymentIncrementFactory {
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(60),
                     stateReason = PaymentIncrementStateReason.UNKNOWN__,
-                    refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$42.00", formattedAmountWithCode = "USD $70.75", amountAsFloat = "70.75", amountAsCents = "7075", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "70.75$")
+                    refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$")
                 ),
             )
         }

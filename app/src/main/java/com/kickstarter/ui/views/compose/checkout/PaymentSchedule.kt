@@ -188,6 +188,9 @@ fun PaymentRow(
     paymentIncrement: PaymentIncrement,
     ksCurrency: KSCurrency?
 ) {
+    val refundedAmount = paymentIncrement.refundedAmount()?.amountAsFloat?.toFloatOrNull()
+    val displayedAmount = paymentIncrement.refundedAmount()?.amountFormattedInProjectNativeCurrency
+        ?: paymentIncrement.amount().amountFormattedInProjectNativeCurrency
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,11 +207,11 @@ fun PaymentRow(
                 style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
-            paymentIncrement.stateReason?.let { StatusBadge(paymentIncrement.state, it) }
+            paymentIncrement.stateReason?.let { StatusBadge(paymentIncrement.state, it, refundedAmount) }
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
-            text = paymentIncrement.amount().amountFormattedInProjectNativeCurrency ?: "",
+            text = displayedAmount ?: "",
             style = typographyV2.bodyXL,
             color = colors.textPrimary
         )
@@ -258,7 +261,7 @@ private fun paymentIncrementStyledCurrency(
 }
 
 @Composable
-fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason) {
+fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason, refundedAmount: Float?) {
     when (state) {
         PaymentIncrementState.ERRORED -> {
             if (stateReason == PaymentIncrementStateReason.REQUIRES_ACTION) {
@@ -322,6 +325,13 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             val isLight = !isSystemInDarkTheme()
             val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
             val textColor = if (isLight) colors.green_06 else colors.green_07
+            val wasRefunded = refundedAmount != null && refundedAmount > 0f
+            val labelRes = if (wasRefunded) {
+                R.string.Collected_adjusted
+            } else {
+                R.string.project_view_pledge_status_collected
+            }
+
             Box(
                 modifier = Modifier
                     .background(
@@ -340,7 +350,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.project_view_pledge_status_collected),
+                    text = stringResource(id = labelRes),
                     style = typographyV2.headingSM,
                     color = textColor
                 )
@@ -420,7 +430,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.fpo_refunded),
+                    text = stringResource(id = R.string.Refunded),
                     style = typographyV2.headingSM,
                     color = colors.purple_08
                 )

@@ -871,18 +871,18 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(false)
 
         // New user heuristic: has not seen consent management or notification permissions
-        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(false)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        return true
+                    return if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        true
                     } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
-                        return false
+                        true
                     } else {
-                        return false
+                        false
                     }
                 }
             }
@@ -901,23 +901,23 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testOnboardingFlow_hasSeenPreferenceFalseNewUserFalseAndFFOn_shouldEmit() {
+    fun testOnboardingFlow_hasSeenPreferenceFalseNewUserFalseAndFFOn_shouldNotEmit() {
         val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(false)
 
-        // New user heuristic: has not seen consent management or notification permissions
+        // NOT a new user, because user has seen both notification permissions and consent management
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(true)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        return true
+                    return if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        true
                     } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
-                        return false
+                        true
                     } else {
-                        return false
+                        false
                     }
                 }
             }
@@ -940,10 +940,10 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        return false
+                    return if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        false
                     } else {
-                        return false
+                        false
                     }
                 }
             }
@@ -968,10 +968,10 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        return true
+                    return if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
+                        true
                     } else {
-                        return false
+                        false
                     }
                 }
             }

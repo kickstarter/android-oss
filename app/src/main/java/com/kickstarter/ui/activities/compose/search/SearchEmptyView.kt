@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,18 +87,14 @@ fun SearchEmptyView(
             stringResource(id = R.string.Try_rephrasing_your_search)
         }
 
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                style = typographyV2.body,
-                color = colors.textPrimary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(horizontal = dimensions.paddingSmall),
-            )
-        }
+        Text(
+            text = text,
+            style = typographyV2.body,
+            color = colors.textPrimary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(horizontal = dimensions.paddingSmall),
+        )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 

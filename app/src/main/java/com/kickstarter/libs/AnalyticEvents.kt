@@ -1,5 +1,6 @@
 package com.kickstarter.libs
 
+import OnboardingPage
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
@@ -20,6 +21,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ONBOARDING
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT_ALERTS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
@@ -27,6 +29,8 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENABLE_NOTIFICATIONS_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.REPLY
@@ -34,7 +38,9 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ROOT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ALLOW_TRACKING
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CLOSE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.COMMENT_POST
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_SUBMIT
@@ -44,16 +50,19 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SOR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.EDIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FINALIZE_PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.FIX_PLEDGE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.GET_NOTIFIED
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREATOR_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.NEXT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_CONFIRM
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGNUP_LOGIN
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
@@ -87,7 +96,6 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData
 import java.util.Locale
-import kotlin.collections.HashMap
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
@@ -840,6 +848,75 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
                 map[PROJECT_UPDATE_ID.contextName] = projectUpdateId
             }
         }
+    }
+
+    /**
+     * Sends data to the client when onboarding flow screens are viewed
+     */
+    fun trackOnboardingPageViewed(onboardingPage: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = onboardingPage
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the close CTA is tapped on the onboarding flow
+     */
+    fun trackOnboardingCloseCTAClicked(onboardingPage: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = onboardingPage
+        props[CONTEXT_CTA.contextName] = CLOSE.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the next CTA is tapped on the onboarding flow
+     */
+    fun trackOnboardingNextCTAClicked(onboardingPage: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = onboardingPage
+        props[CONTEXT_CTA.contextName] = NEXT.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the Get Notified CTA is tapped on the onboarding flow
+     */
+    fun trackOnboardingGetNotifiedCTAClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = ENABLE_NOTIFICATIONS_PROMPT.contextName
+        props[CONTEXT_CTA.contextName] = GET_NOTIFIED.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the Allow Tracking CTA is tapped on the onboarding flow
+     */
+    fun trackOnboardingAllowTrackingCTAClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = ACTIVITY_TRACKING_PROMPT.contextName
+        props[CONTEXT_CTA.contextName] = ALLOW_TRACKING.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the either the allow or deny CTA is tapped on the dialog prompt
+     */
+    fun trackOnboardingAllowDenyPromptCTAClicked(prompt: String, allowOrDeny: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = prompt
+        props[CONTEXT_CTA.contextName] = allowOrDeny
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the close CTA is tapped on the onboarding flow
+     */
+    fun trackOnboardingSignupLoginCTAClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
+        props[CONTEXT_SECTION.contextName] = OnboardingPage.SIGNUP_LOGIN
+        props[CONTEXT_CTA.contextName] = SIGNUP_LOGIN.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun reset() {

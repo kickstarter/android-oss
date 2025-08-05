@@ -559,6 +559,9 @@ fragment paymentIncrement on PaymentIncrement {
     state
     stateReason
     scheduledCollection
+    refundedAmount  {
+        ...paymentIncrementAmount
+    }
 }
 
 fragment order on Order {

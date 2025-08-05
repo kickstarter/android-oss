@@ -58,7 +58,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -67,7 +68,9 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
+
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -76,7 +79,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -85,7 +89,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         )
     )
 
@@ -97,7 +102,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -106,7 +112,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -115,7 +122,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -124,7 +132,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         )
     )
 
@@ -136,7 +145,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -145,7 +155,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -154,7 +165,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -163,7 +175,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         )
     )
 
@@ -175,7 +188,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -184,7 +198,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -193,7 +208,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -202,7 +218,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         )
     )
 
@@ -214,7 +231,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"),
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -223,7 +241,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"),
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -232,7 +251,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"),
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -241,7 +261,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"),
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         )
     )
 
@@ -253,7 +274,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -262,7 +284,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -271,7 +294,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -280,7 +304,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = null
         )
     )
 
@@ -292,7 +317,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
-            stateReason = PaymentIncrementStateReason.UNKNOWN__
+            stateReason = PaymentIncrementStateReason.UNKNOWN__,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -301,7 +327,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
-            stateReason = PaymentIncrementStateReason.UNKNOWN__
+            stateReason = PaymentIncrementStateReason.UNKNOWN__,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -310,7 +337,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
-            stateReason = PaymentIncrementStateReason.UNKNOWN__
+            stateReason = PaymentIncrementStateReason.UNKNOWN__,
+            refundedAmount = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -319,7 +347,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
-            stateReason = PaymentIncrementStateReason.UNKNOWN__
+            stateReason = PaymentIncrementStateReason.UNKNOWN__,
+            refundedAmount = null
         )
     )
 

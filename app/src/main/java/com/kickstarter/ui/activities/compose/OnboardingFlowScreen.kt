@@ -3,6 +3,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +51,10 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.kickstarter.R
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ALLOW
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DENY
 import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSIconButton
@@ -58,12 +64,12 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 
-enum class OnboardingPage {
-    WELCOME,
-    SAVE_PROJECTS,
-    ENABLE_NOTIFICATIONS,
-    ACTIVITY_TRACKING,
-    LOGIN_SIGNUP,
+enum class OnboardingPage(val analyticsSectionName: String) {
+    WELCOME("welcome"),
+    SAVE_PROJECTS("save_projects"),
+    ENABLE_NOTIFICATIONS("enable_notifications"),
+    ACTIVITY_TRACKING("activity_tracking"),
+    SIGNUP_LOGIN("signup_login"),
 }
 
 data class OnboardingPageData(
@@ -96,10 +102,11 @@ fun OnboardingScreen(
     isUserLoggedIn: Boolean = false,
     deviceNeedsNotificationPermissions: Boolean = false,
     onboardingCompleted: () -> Unit = {},
-    onboardingCancelled: () -> Unit = {},
+    onboardingCancelled: (onboardingPage: OnboardingPage) -> Unit = {},
     turnOnNotifications: (permissionLauncher: ActivityResultLauncher<String>) -> Unit = {},
     allowTracking: (fragmentManager: FragmentManager?) -> Unit = {},
-    signupOrLogin: () -> Unit = {}
+    signupOrLogin: () -> Unit = {},
+    analyticEvents: AnalyticEvents? = null,
 ) {
     val loggedOutPages = mutableListOf(
         OnboardingPageData(
@@ -133,7 +140,7 @@ fun OnboardingScreen(
             secondaryButtonText = stringResource(R.string.Not_right_now),
         ),
         OnboardingPageData(
-            page = OnboardingPage.LOGIN_SIGNUP,
+            page = OnboardingPage.SIGNUP_LOGIN,
             title = stringResource(R.string.onboarding_join_the_community_title),
             description = stringResource(R.string.onboarding_join_the_community_subtitle),
             animationRes = R.raw.android_onboarding_flow_login_signup,
@@ -146,6 +153,11 @@ fun OnboardingScreen(
     val pages: List<OnboardingPageData> = if (isUserLoggedIn) loggedInPages.toList() else loggedOutPages.toList()
 
     var currentPage by remember { mutableStateOf(0) }
+    LaunchedEffect(currentPage) {
+        // Launch Page Viewed analytics any time the currentPage changes
+        analyticEvents?.trackOnboardingPageViewed(pages[currentPage].page.analyticsSectionName)
+    }
+
     val context = LocalContext.current
     val activity = context as? ComponentActivity
 
@@ -154,10 +166,10 @@ fun OnboardingScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            // Add analytics
+            analyticEvents?.trackOnboardingAllowDenyPromptCTAClicked(ACTIVITY_TRACKING_PROMPT.contextName, ALLOW.contextName)
             currentPage++
         } else {
-            // Add analytics
+            analyticEvents?.trackOnboardingAllowDenyPromptCTAClicked(ACTIVITY_TRACKING_PROMPT.contextName, DENY.contextName)
             currentPage++
         }
     }
@@ -168,13 +180,12 @@ fun OnboardingScreen(
     }
     fragmentManager?.setFragmentResultListener(ConsentManagementDialogFragment.TAG, (context as FragmentActivity)) {
             _, result ->
-        val value = result.getString("result")
+        val value = result.getString("result") ?: ""
+        analyticEvents?.trackOnboardingAllowDenyPromptCTAClicked(ACTIVITY_TRACKING_PROMPT.contextName, value)
 
         if (isUserLoggedIn) { // Skip signup/login page
-            // Add analytics
             onboardingCompleted()
         } else {
-            // Add analytics
             currentPage++
         }
     }
@@ -198,6 +209,10 @@ fun OnboardingScreen(
         ) {
 
             // Progress bar
+            val animatedProgress by animateFloatAsState(
+                targetValue = (currentPage + 1) / pages.size.toFloat(),
+                animationSpec = tween(durationMillis = 1000)
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -205,7 +220,7 @@ fun OnboardingScreen(
                     .padding(top = dimensions.paddingDoubleLarge, bottom = dimensions.paddingLarge)
             ) {
                 LinearProgressIndicator(
-                    progress = (currentPage + 1) / pages.size.toFloat(),
+                    progress = animatedProgress,
                     color = colors.textAccentGreen,
                     backgroundColor = colors.kds_white,
                     strokeCap = StrokeCap.Round,
@@ -217,13 +232,13 @@ fun OnboardingScreen(
                 KSIconButton(
                     modifier = Modifier
                         .testTag(OnboardingScreenTestTags.CLOSE_BUTTON),
-                    onClick = { onboardingCancelled() },
+                    onClick = { onboardingCancelled(pages[currentPage].page) },
                     contentDescription = stringResource(R.string.Close),
                     imageVector = Icons.Filled.Close
                 )
             }
 
-            // Animated content spans the page
+            // Animated content spans the page vertically
             OnboardingPageAnimation(modifier = Modifier.weight(1.0f), pageData = pages[currentPage])
 
             // Buttons footer
@@ -240,13 +255,16 @@ fun OnboardingScreen(
                     text = pages[currentPage].buttonText,
                     onClickAction = {
                         when (pages[currentPage].page) {
-                            OnboardingPage.WELCOME -> currentPage++
+                            OnboardingPage.WELCOME -> {
+                                analyticEvents?.trackOnboardingNextCTAClicked(pages[currentPage].page.analyticsSectionName)
+                                currentPage++
+                            }
                             OnboardingPage.SAVE_PROJECTS -> {
+                                analyticEvents?.trackOnboardingNextCTAClicked(pages[currentPage].page.analyticsSectionName)
                                 if (deviceNeedsNotificationPermissions) {
                                     currentPage++ // Go to notifications page
                                 } else {
-                                    currentPage++
-                                    currentPage++ // Skip notifications page and go to activity tracking
+                                    currentPage += 2 // Skip notifications page and go to activity tracking
                                 }
                             }
                             OnboardingPage.ENABLE_NOTIFICATIONS -> {
@@ -257,7 +275,7 @@ fun OnboardingScreen(
                                 activity?.let { allowTracking(fragmentManager) }
                             }
 
-                            OnboardingPage.LOGIN_SIGNUP -> {
+                            OnboardingPage.SIGNUP_LOGIN -> {
                                 signupOrLogin()
                             }
                         }
@@ -272,6 +290,7 @@ fun OnboardingScreen(
                     KSButton(
                         text = secondaryText,
                         onClickAction = {
+                            analyticEvents?.trackOnboardingNextCTAClicked(pages[currentPage].page.analyticsSectionName)
                             if (currentPage < pages.lastIndex) { // More pages remaining
                                 if (pages[currentPage].page == OnboardingPage.ACTIVITY_TRACKING && isUserLoggedIn) {
                                     // Skip signup/login page
@@ -329,7 +348,7 @@ fun OnboardingPageAnimation(modifier: Modifier, pageData: OnboardingPageData) {
 
                 Text(
                     text = targetPage.description,
-                    style = typographyV2.bodyMD,
+                    style = typographyV2.bodyLG,
                     color = colors.textPrimary,
                     textAlign = TextAlign.Center,
                     minLines = 4,

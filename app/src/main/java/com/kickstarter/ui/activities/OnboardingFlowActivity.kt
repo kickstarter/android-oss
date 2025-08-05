@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities
 
+import OnboardingPage
 import OnboardingScreen
 import android.Manifest
 import android.content.Intent
@@ -12,6 +13,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENABLE_NOTIFICATIONS_PROMPT
 import com.kickstarter.libs.utils.extensions.checkPermissions
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getLoginActivityIntent
@@ -38,10 +41,17 @@ class OnboardingFlowActivity : AppCompatActivity() {
                         isUserLoggedIn = viewModel.isUserLoggedIn(),
                         deviceNeedsNotificationPermissions = viewModel.deviceNeedsNotificationPermissions(),
                         onboardingCompleted = { onboardingCompleted() },
-                        onboardingCancelled = { onboardingCancelled() },
-                        turnOnNotifications = { permissionLauncher -> turnOnNotifications(permissionLauncher) },
-                        allowTracking = { fragmentManager -> allowTracking(fragmentManager) },
-                        signupOrLogin = { signupOrLogin() }
+                        onboardingCancelled = { onboardingPage -> onboardingCancelled(onboardingPage) },
+                        turnOnNotifications = { permissionLauncher ->
+                            viewModel.trackOnboardingEnableNotificationsPromptCtaClicked()
+                            turnOnNotifications(permissionLauncher)
+                        },
+                        allowTracking = { fragmentManager ->
+                            viewModel.trackOnboardingAllowTrackingPromptCtaClicked()
+                            allowTracking(fragmentManager)
+                        },
+                        signupOrLogin = { signupOrLogin() },
+                        analyticEvents = viewModel.analytics()
                     )
                 }
             }
@@ -52,12 +62,14 @@ class OnboardingFlowActivity : AppCompatActivity() {
         ApplicationUtils.resumeDiscoveryActivity(this)
     }
 
-    fun onboardingCancelled() {
+    fun onboardingCancelled(onboardingPage: OnboardingPage) {
+        viewModel.trackOnboardingCancelled(onboardingPage)
         ApplicationUtils.resumeDiscoveryActivity(this)
     }
 
     fun turnOnNotifications(permissionLauncher: ActivityResultLauncher<String>) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)) {
+            viewModel.trackOnboardingPromptViewed(ENABLE_NOTIFICATIONS_PROMPT.contextName)
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             // NOTE: we would not expect to reach this else block in the onboarding flow as we only show onboarding flow to new users
@@ -71,11 +83,13 @@ class OnboardingFlowActivity : AppCompatActivity() {
         val consentManagementDialogFragment = ConsentManagementDialogFragment()
         consentManagementDialogFragment.isCancelable = false
         fragmentManager?.let {
+            viewModel.trackOnboardingPromptViewed(ACTIVITY_TRACKING_PROMPT.contextName)
             consentManagementDialogFragment.show(it, "consentManagementDialogFragment")
         }
     }
 
     fun signupOrLogin() {
+        viewModel.trackSignUpOrLoginCtaClicked()
         val intent = Intent().getLoginActivityIntent(this, null, LoginReason.COMPLETED_ONBOARDING)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
         finish()

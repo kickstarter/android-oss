@@ -1355,7 +1355,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by pledge manager completed at minimum" pmCompletedAtMin: String, "Filter by pledge manager completed at maximum" pmCompletedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
 
   """
   Backer survey for the project
@@ -3995,6 +3995,11 @@ type Reward implements Node {
   When the reward is scheduled to start
   """
   startsAt: DateTime
+
+  """
+  Whether the creator has included VAT in reward pricing
+  """
+  vatInclusivePricing: Boolean!
 }
 
 """
@@ -16555,6 +16560,8 @@ input CreateRewardInput {
 
   audienceData: AudienceInput
 
+  vatInclusivePricing: Boolean
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -16734,6 +16741,8 @@ input UpdateRewardInput {
   endCondition: Int
 
   audienceData: AudienceInput
+
+  vatInclusivePricing: Boolean
 
   """
   A unique identifier for the client performing the mutation.

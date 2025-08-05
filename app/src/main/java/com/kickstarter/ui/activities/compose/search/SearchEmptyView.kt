@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -56,7 +57,7 @@ fun SearchEmptyView(
     var title = if (currentSearchTerm.isNotEmpty()) {
         environment?.ksString()?.format(
             stringResource(id = R.string.No_results_for),
-            "search_term",
+            "query",
             currentSearchTerm
         ) ?: stringResource(id = R.string.No_Results)
     } else {
@@ -80,7 +81,7 @@ fun SearchEmptyView(
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-        var text = if (activeFilters) {
+        val text = if (activeFilters) {
             stringResource(id = R.string.Try_rephrasing_your_search_or_adjusting_the_filters)
         } else {
             stringResource(id = R.string.Try_rephrasing_your_search)
@@ -90,8 +91,9 @@ fun SearchEmptyView(
             text = text,
             style = typographyV2.body,
             color = colors.textPrimary,
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .padding(horizontal = dimensions.paddingSmall)
+                .padding(horizontal = dimensions.paddingSmall),
         )
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))

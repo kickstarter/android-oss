@@ -57,11 +57,12 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
             .ksString(ksString)
             .build()
 
+        val searchedTerm = "cat"
         composeTestRule.setContent {
             KSTheme {
                 SearchEmptyView(
                     environment = env,
-                    currentSearchTerm = "cat",
+                    currentSearchTerm = searchedTerm,
                     activeFilters = false
                 )
             }
@@ -69,13 +70,17 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
 
         val text = env.ksString()?.format(
             context.resources.getString(R.string.No_results_for),
-            "search_term",
-            "cat"
+            "query",
+            searchedTerm
         ) ?: ""
 
         composeTestRule
             .onNodeWithText(text)
             .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(searchedTerm, true, true)
+            .assertExists()
 
         composeTestRule
             .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search))
@@ -98,11 +103,12 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
             .ksString(ksString)
             .build()
 
+        val searchedTerm = "cat"
         composeTestRule.setContent {
             KSTheme {
                 SearchEmptyView(
                     environment = env,
-                    currentSearchTerm = "cat",
+                    currentSearchTerm = searchedTerm,
                     activeFilters = true
                 )
             }
@@ -110,13 +116,17 @@ class SearchEmptyViewTest : KSRobolectricTestCase() {
 
         val text = env.ksString()?.format(
             context.resources.getString(R.string.No_results_for),
-            "search_term",
-            "cat"
+            "query",
+            searchedTerm
         ) ?: ""
 
         composeTestRule
             .onNodeWithText(text)
             .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(searchedTerm, true, true)
+            .assertExists()
 
         composeTestRule
             .onNodeWithText(context.resources.getString(R.string.Try_rephrasing_your_search))

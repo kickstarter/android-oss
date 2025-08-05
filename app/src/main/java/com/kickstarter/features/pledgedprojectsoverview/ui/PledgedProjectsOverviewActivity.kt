@@ -102,12 +102,8 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         totalAlerts = totalAlerts,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
-                        onProjectPledgeSummaryClick = { url, isPledgeManagement ->
-                            openBackingDetailsWebView(
-                                url = url,
-                                toolbarTitle = if (isPledgeManagement) R.string.Pledge_manager else R.string.Backing_details,
-                                resultLauncher = null
-                            )
+                        onProjectPledgeSummaryClick = { projectSlug ->
+                            this.startProjectActivity(projectSlug)
                         },
                         isLoading = isLoading,
                         isErrored = isErrored,
@@ -268,6 +264,14 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
         } catch (exception: Exception) {
             FirebaseCrashlytics.getInstance().recordException(exception)
         }
+    }
+
+    private fun startProjectActivity(projectSlug: String) {
+        val intent = Intent().getProjectIntent(this)
+            .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+            .putExtra(IntentKey.REF_TAG, RefTag.activity())
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

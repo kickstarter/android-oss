@@ -290,9 +290,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.2"
 
     // Exoplayer
-    def exoplayer= '1.7.1'
-    implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
+    def exoplayer= '1.8.0'
     implementation "androidx.media3:media3-ui:$exoplayer"
+    implementation "androidx.media3:media3-exoplayer:$exoplayer"
+    implementation "androidx.media3:media3-datasource:$exoplayer"
 
     // Coroutines
     def coroutines = '1.7.3'

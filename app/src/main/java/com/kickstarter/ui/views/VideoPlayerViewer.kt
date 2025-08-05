@@ -5,13 +5,19 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.OptIn
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
+import com.kickstarter.libs.utils.extensions.userAgent
 import com.kickstarter.ui.data.VideoModelElement
 
 class VideoPlayerViewer @JvmOverloads constructor(
@@ -68,10 +74,20 @@ class VideoPlayerViewer @JvmOverloads constructor(
             initializePlayer()
     }
 
+    @OptIn(UnstableApi::class)
     fun initializePlayer() {
         if (element == null) return
         player = ExoPlayer.Builder(context).build()
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
+
+        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+            .setUserAgent(context.userAgent())
+
+        val dataSourceFactory = DefaultDataSource.Factory(context, httpDataSourceFactory)
+
+        player = ExoPlayer.Builder(context)
+            .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+            .build()
 
         val mediaItem = MediaItem.Builder()
             .setUri(element?.sourceUrl ?: "")

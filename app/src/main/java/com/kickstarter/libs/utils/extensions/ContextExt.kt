@@ -13,9 +13,18 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
 import com.stripe.android.paymentsheet.PaymentSheet
+
+const val header = "User-Agent"
+const val ua = "Custom-UA"
+
+fun Context.userAgent() = if (this.applicationContext.isKSApplication()) {
+    val build = requireNotNull(this.applicationContext.getEnvironment()?.build())
+    WebUtils.userAgent(build)
+} else ua
 
 fun Context.isKSApplication() = (this is KSApplication) && !this.isInUnitTests
 

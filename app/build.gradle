@@ -292,7 +292,7 @@ dependencies {
     // Exoplayer
     def exoplayer= '1.8.0'
     implementation "androidx.media3:media3-ui:$exoplayer"
-    implementation "androidx.media3:media3-exoplayer:$exoplayer"
+    implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
     implementation "androidx.media3:media3-datasource:$exoplayer"
 
     // Coroutines

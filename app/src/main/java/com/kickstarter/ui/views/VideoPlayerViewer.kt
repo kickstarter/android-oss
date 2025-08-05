@@ -11,13 +11,10 @@ import androidx.core.view.isVisible
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.kickstarter.R
 import com.kickstarter.databinding.VideoPlayerLayoutBinding
-import com.kickstarter.libs.utils.extensions.userAgent
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.data.VideoModelElement
 
 class VideoPlayerViewer @JvmOverloads constructor(
@@ -76,26 +73,19 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     @OptIn(UnstableApi::class)
     fun initializePlayer() {
-        if (element == null) return
-        player = ExoPlayer.Builder(context).build()
+        if (element == null || element?.sourceUrl == null) return
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
 
-        val httpDataSourceFactory = DefaultHttpDataSource.Factory()
-            .setUserAgent(context.userAgent())
-
-        val dataSourceFactory = DefaultDataSource.Factory(context, httpDataSourceFactory)
-
-        player = ExoPlayer.Builder(context)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
-            .build()
+        player = context.initializeExoplayer()
 
         val mediaItem = MediaItem.Builder()
             .setUri(element?.sourceUrl ?: "")
             .build()
 
+        player?.setMediaItem(mediaItem)
+
         binding.playerView.player = player
         player?.addListener(playbackStateListener)
-        player?.setMediaItem(mediaItem)
         player?.prepare()
         element?.seekPosition?.let {
             player?.seekTo(it)

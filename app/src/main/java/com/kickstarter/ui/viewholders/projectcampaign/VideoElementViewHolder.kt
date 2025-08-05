@@ -7,13 +7,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.SimpleExoPlayer
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.kickstarter.R
 import com.kickstarter.databinding.ViewElementVideoFromHtmlBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.htmlparser.VideoViewElement
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.adapters.projectcampaign.ViewElementAdapter
 import com.kickstarter.ui.extensions.loadImage
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -82,13 +83,12 @@ class VideoElementViewHolder(
         val adaptiveTrackSelectionFactory: AdaptiveTrackSelection.Factory = AdaptiveTrackSelection.Factory()
         trackSelector = DefaultTrackSelector(context(), adaptiveTrackSelectionFactory)
 
-        val playerBuilder = SimpleExoPlayer.Builder(context())
-        trackSelector?.let { playerBuilder.setTrackSelector(it) }
+        val player = context().initializeExoplayer()
 
         val playerIsResuming = (seekPosition != 0L || playersMap[bindingAdapterPosition]?.currentPosition != 0L)
 
         // Provide url to load the video from here
-        val player = playerBuilder.build().also { exoPlayer ->
+        player.also { exoPlayer ->
             exoPlayer.playWhenReady = false
             if (seekPosition != 0L) {
                 exoPlayer.seekTo(seekPosition)
@@ -135,10 +135,10 @@ class VideoElementViewHolder(
 
     companion object {
         // for hold all players generated
-        private var playersMap: MutableMap<Int, SimpleExoPlayer?> = mutableMapOf()
+        private var playersMap: MutableMap<Int, ExoPlayer?> = mutableMapOf()
 
         // for hold current player
-        private var currentPlayingVideo: Pair<Int, SimpleExoPlayer?>? = null
+        private var currentPlayingVideo: Pair<Int, ExoPlayer?>? = null
 
         fun releaseAllPlayers() {
             val itr = playersMap.iterator()
@@ -177,7 +177,7 @@ class VideoElementViewHolder(
             if (playersMap[index]?.playWhenReady == false) {
                 pauseCurrentPlayingVideo()
                 playersMap[index]?.currentPosition?.let {
-                    playersMap[index]?.isCurrentWindowSeekable
+                    playersMap[index]?.isCurrentMediaItemSeekable
                     if (it != 0L) {
                         playersMap[index]?.playWhenReady = true
                     }

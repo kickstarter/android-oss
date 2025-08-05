@@ -9,6 +9,7 @@ import com.kickstarter.databinding.ViewElementAudioFromHtmlBinding
 import com.kickstarter.libs.KSLifecycleEvent
 import com.kickstarter.libs.htmlparser.AudioViewElement
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.projectpage.AudioViewElementViewHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -137,7 +138,7 @@ class AudioElementViewHolder(
 
     fun initializePlayer(url: String) {
         try {
-            mediaPlayer = ExoPlayer.Builder(context()).build()
+            mediaPlayer = context().initializeExoplayer()
             val mediaItem = MediaItem.fromUri(url)
             mediaPlayer?.setMediaItem(mediaItem)
             mediaPlayer?.addListener(object : Player.Listener {

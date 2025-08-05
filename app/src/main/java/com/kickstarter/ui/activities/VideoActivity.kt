@@ -23,6 +23,7 @@ import com.kickstarter.databinding.VideoPlayerLayoutBinding
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.utils.WindowInsetsUtil
@@ -59,7 +60,7 @@ class VideoActivity : AppCompatActivity() {
         }
         build = requireNotNull(environment?.build())
 
-        player = ExoPlayer.Builder(this).build()
+        player = this.initializeExoplayer()
 
         binding.playerView.findViewById<ImageView>(R.id.exo_fullscreen_icon).apply {
             setImageResource(R.drawable.ic_fullscreen_close)

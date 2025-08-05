@@ -6,9 +6,15 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.OptIn
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -30,6 +36,29 @@ fun Context.isKSApplication() = (this is KSApplication) && !this.isInUnitTests
 
 fun Context.getEnvironment(): Environment? {
     return (this.applicationContext as KSApplication).component()?.environment()
+}
+
+/**
+ * Initializes and returns a configured [ExoPlayer] instance.
+ *
+ * This player is preconfigured with KS custom User-Agent and uses a [DefaultDataSource.Factory]
+ * to support media playback over HTTP(S).
+ *
+ * Note: This method opts into Media3's [UnstableApi] due to the usage of [setMediaSourceFactory],
+ * which is required for setting custom HTTP headers such as User-Agent.
+ */
+@OptIn(UnstableApi::class)
+fun Context.initializeExoplayer(): ExoPlayer {
+    val httpDataSourceFactory = DefaultHttpDataSource.Factory()
+        .setUserAgent(this.userAgent())
+
+    val dataSourceFactory = DefaultDataSource.Factory(this, httpDataSourceFactory)
+
+    val player = ExoPlayer.Builder(this)
+        .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+        .build()
+
+    return player
 }
 
 @Composable

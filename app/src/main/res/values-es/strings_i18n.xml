@@ -154,7 +154,7 @@ patrocinadores</string>
   <string name="Closes_project" formatted="false">Cierra el proyecto.</string>
   <string name="Collaborator" formatted="false">Colaborador</string>
   <string name="Collapses_subcategories" formatted="false">Muestra menos subcategorías.</string>
-  <string name="Collected_adjusted" formatted="false">Collected (adjusted)</string>
+  <string name="Collected_adjusted" formatted="false">Cobrado (ajustado)</string>
   <string name="Collection_plan" formatted="false">Plan de pagos</string>
   <string name="Collections" formatted="false">Colecciones</string>
   <string name="Coming_soon" formatted="false">Próximamente</string>
@@ -501,6 +501,7 @@ Toca para intentar de nuevo.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
+  <string name="No_results" formatted="false">Sin resultados</string>
   <string name="No_results_for" formatted="false">No hay resultados para %{query}</string>
   <string name="No_saved_projects" formatted="false">No hay proyectos guardados</string>
   <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
@@ -634,7 +635,7 @@ Toca para intentar de nuevo.</string>
   <string name="Recommended_for_you" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
-  <string name="Refunded" formatted="false">Refunded</string>
+  <string name="Refunded" formatted="false">Reembolso emitido</string>
   <string name="Remember_that_delivery_dates_are_not_guaranteed" formatted="false">Recuerda que las fechas de entrega no están garantizadas.</string>
   <string name="Remember_this_card" formatted="false">Guarda esta tarjeta</string>
   <string name="Remove_all_filters" formatted="false">Eliminar todos los filtros</string>
@@ -858,6 +859,7 @@ Toca para intentar de nuevo.</string>
   <string name="Track_shipment" formatted="false">Seguir envío</string>
   <string name="Track_your_backings" formatted="false">Sigue los proyectos que has patrocinado</string>
   <string name="Tracking_number" formatted="false">Número de seguimiento: %{number}</string>
+  <string name="Try_adjusting_the_filters" formatted="false">Prueba modificar los filtros</string>
   <string name="Try_rephrasing_your_search" formatted="false">Intenta reformular tu búsqueda</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Intenta reformular tu búsqueda o ajustar los filtros</string>
   <string name="Twice_a_day_summary" formatted="false">Resumen dos veces al día</string>

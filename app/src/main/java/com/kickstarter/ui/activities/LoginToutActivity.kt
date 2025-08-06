@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,6 +12,7 @@ import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.content.IntentCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
@@ -230,7 +230,8 @@ class LoginToutActivity : ComponentActivity() {
         Timber.d("$oAuthLogcat onDestroy")
         super.onDestroy()
     }
-    override fun onNewIntent(intent: Intent?) {
+
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
         intent?.let {
@@ -241,7 +242,7 @@ class LoginToutActivity : ComponentActivity() {
     }
 
     private fun afterRedirection(url: String, intent: Intent) {
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
         uri?.let {
             if (OAuthViewModel.isAfterRedirectionStep(it))
                 oAuthViewModel.produceState(intent = intent, uri)
@@ -269,7 +270,7 @@ class LoginToutActivity : ComponentActivity() {
      * If default Browser is not Chrome Webview will be open with given URL
      */
     private fun openChromeTabOrWebViewWithUrl(url: String) {
-        val authorizationUri = Uri.parse(url)
+        val authorizationUri = url.toUri()
 
         val tabIntent = CustomTabsIntent.Builder().build()
 

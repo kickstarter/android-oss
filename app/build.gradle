@@ -199,14 +199,14 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.annotation:annotation:1.3.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.core:core-ktx:1.16.0'
+    implementation 'androidx.annotation:annotation:1.9.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    implementation 'androidx.work:work-runtime-ktx:2.10.3'
     // Chrome Tabs library
     implementation 'androidx.browser:browser:1.8.0'
 
@@ -231,16 +231,17 @@ dependencies {
     implementation "com.apollographql.apollo3:apollo-rx2-support:$apolloVersion"
 
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
-    implementation("com.google.android.play:review-ktx:2.0.1")
+    implementation("com.google.android.play:review-ktx:2.0.2")
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.6.1'
     final dagger_version = "2.46"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation 'com.jakewharton:process-phoenix:2.1.2'
+    implementation 'com.jakewharton:process-phoenix:3.0.0'
     implementation "com.jakewharton.timber:timber:5.0.1"
     implementation 'com.stripe:stripe-android:20.47.3'
+
     final okhttp_version = '4.10.+'
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
@@ -329,7 +330,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + espresso
     androidTestImplementation 'androidx.test.espresso:espresso-intents:' + espresso
     androidTestImplementation "androidx.test.ext:junit:1.3.0"
-    androidTestImplementation 'androidx.test:rules:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.7.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     // Desugaring Java 8 to < API 26

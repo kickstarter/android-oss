@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.5'
         classpath 'com.apollographql.apollo3:apollo-gradle-plugin:3.8.5'
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -270,13 +270,13 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:32.8.1')
+    implementation platform('com.google.firebase:firebase-bom:33.1.0')
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-perf'
-    implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-config'
 
     // Compose
     implementation "androidx.compose.ui:ui:$compose_version"

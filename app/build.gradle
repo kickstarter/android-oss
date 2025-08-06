@@ -235,7 +235,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.google.android.material:material:1.6.1'
-    final dagger_version = "2.46"
+    final dagger_version = "2.57"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation 'com.jakewharton:process-phoenix:3.0.0'
@@ -258,7 +258,7 @@ dependencies {
     implementation 'com.appboy:appboy-segment-integration:15.0.1'
 
     // Dependencies for HTML Parser
-    implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'org.jsoup:jsoup:1.21.1'
 
     // GLIDE
     final glide_version = "4.16.0"
@@ -334,7 +334,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     // Desugaring Java 8 to < API 26
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     // Statsig
     implementation 'com.github.statsig-io:android-sdk:4.37.+'

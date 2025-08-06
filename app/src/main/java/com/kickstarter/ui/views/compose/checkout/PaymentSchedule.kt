@@ -188,9 +188,18 @@ fun PaymentRow(
     paymentIncrement: PaymentIncrement,
     ksCurrency: KSCurrency?
 ) {
-    val refundedAmount = paymentIncrement.refundedAmount()?.amountAsFloat?.toFloatOrNull()
-    val displayedAmount = paymentIncrement.refundedAmount()?.amountFormattedInProjectNativeCurrency
-        ?: paymentIncrement.amount().amountFormattedInProjectNativeCurrency
+    val isCollectedAdjusted =
+        paymentIncrement.state == PaymentIncrementState.COLLECTED &&
+            paymentIncrement.refundedAmount != null
+    val displayedAmount =
+        if (isCollectedAdjusted) {
+            paymentIncrement.refundUpdatedAmountInProjectNativeCurrency
+        } else if (paymentIncrement.state == PaymentIncrementState.REFUNDED) {
+            paymentIncrement.refundedAmount?.amountFormattedInProjectNativeCurrency
+        } else {
+            paymentIncrement.amount().amountFormattedInProjectNativeCurrency
+        }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -207,7 +216,7 @@ fun PaymentRow(
                 style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
-            paymentIncrement.stateReason?.let { StatusBadge(paymentIncrement.state, it, refundedAmount) }
+            StatusBadge(paymentIncrement.state, paymentIncrement.stateReason, isCollectedAdjusted)
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
@@ -261,7 +270,7 @@ private fun paymentIncrementStyledCurrency(
 }
 
 @Composable
-fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason, refundedAmount: Float?) {
+fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason, isCollectedAdjusted: Boolean) {
     when (state) {
         PaymentIncrementState.ERRORED -> {
             if (stateReason == PaymentIncrementStateReason.REQUIRES_ACTION) {
@@ -325,8 +334,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             val isLight = !isSystemInDarkTheme()
             val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
             val textColor = if (isLight) colors.green_06 else colors.green_07
-            val wasRefunded = refundedAmount != null && refundedAmount > 0f
-            val labelRes = if (wasRefunded) {
+            val labelRes = if (isCollectedAdjusted) {
                 R.string.Collected_adjusted
             } else {
                 R.string.project_view_pledge_status_collected

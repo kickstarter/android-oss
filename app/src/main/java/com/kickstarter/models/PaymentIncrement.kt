@@ -15,6 +15,7 @@ data class PaymentIncrement(
     val state: PaymentIncrementState,
     val stateReason: PaymentIncrementStateReason,
     val refundedAmount: PaymentIncrementAmount?,
+    val refundUpdatedAmountInProjectNativeCurrency: String?,
 ) : Parcelable {
     fun amount() = this.paymentIncrementAmount
     fun paymentIncrementableId() = this.paymentIncrementableId
@@ -23,6 +24,7 @@ data class PaymentIncrement(
     fun state() = this.state
     fun stateReason() = this.stateReason
     fun refundedAmount() = this.refundedAmount
+    fun refundUpdatedAmountInProjectNativeCurrency() = this.refundUpdatedAmountInProjectNativeCurrency
 
     @Parcelize
     data class Builder(
@@ -34,6 +36,7 @@ data class PaymentIncrement(
         private var state: PaymentIncrementState = PaymentIncrementState.UNKNOWN__,
         private var stateReason: PaymentIncrementStateReason = PaymentIncrementStateReason.UNKNOWN__,
         private var refundedAmount: PaymentIncrementAmount? = null,
+        private var refundUpdatedAmountInProjectNativeCurrency: String? = null,
     ) : Parcelable {
         fun amount(paymentIncrementAmount: PaymentIncrementAmount) =
             apply { this.paymentIncrementAmount = paymentIncrementAmount }
@@ -54,6 +57,8 @@ data class PaymentIncrement(
             }
         }
         fun refundedAmount(refundedAmount: PaymentIncrementAmount?) = apply { this.refundedAmount = refundedAmount }
+        fun refundUpdatedAmountInProjectNativeCurrency(refundUpdatedAmountInProjectNativeCurrency: String?) =
+            apply { this.refundUpdatedAmountInProjectNativeCurrency = refundUpdatedAmountInProjectNativeCurrency }
 
         fun build() = PaymentIncrement(
             paymentIncrementAmount = paymentIncrementAmount,
@@ -62,7 +67,8 @@ data class PaymentIncrement(
             scheduledCollection = scheduledCollection,
             state = state,
             stateReason = stateReason,
-            refundedAmount = refundedAmount
+            refundedAmount = refundedAmount,
+            refundUpdatedAmountInProjectNativeCurrency = refundUpdatedAmountInProjectNativeCurrency,
         )
     }
 
@@ -75,22 +81,22 @@ data class PaymentIncrement(
                 scheduledCollection() == obj.scheduledCollection() &&
                 state() == obj.state() &&
                 stateReason() == obj.stateReason() &&
-                refundedAmount() == obj.refundedAmount()
+                refundedAmount() == obj.refundedAmount() &&
+                refundUpdatedAmountInProjectNativeCurrency() == obj.refundUpdatedAmountInProjectNativeCurrency()
         }
         return equals
     }
 
-    fun toBuilder() = stateReason?.let {
-        Builder(
-            paymentIncrementAmount = paymentIncrementAmount,
-            paymentIncrementableId = paymentIncrementableId,
-            paymentIncrementableType = paymentIncrementableType,
-            scheduledCollection = scheduledCollection,
-            state = state,
-            stateReason = stateReason,
-            refundedAmount = refundedAmount
-        )
-    }
+    fun toBuilder() = Builder(
+        paymentIncrementAmount = paymentIncrementAmount,
+        paymentIncrementableId = paymentIncrementableId,
+        paymentIncrementableType = paymentIncrementableType,
+        scheduledCollection = scheduledCollection,
+        state = state,
+        stateReason = stateReason,
+        refundedAmount = refundedAmount,
+        refundUpdatedAmountInProjectNativeCurrency = refundUpdatedAmountInProjectNativeCurrency,
+    )
 
     companion object {
         @JvmStatic

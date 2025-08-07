@@ -98,7 +98,7 @@ class AudioElementViewHolder(
         if (isPrepared) {
             stopPlayer()
             this.binding.progressbar.progress = 0
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
+            this.binding.playPause.setImageResource(R.drawable.ic_play_icon)
             mediaPlayer.seekTo(0)
             updateProgressTextLabel()
             prepareMediaPlayer()
@@ -107,7 +107,7 @@ class AudioElementViewHolder(
 
     fun startPlayer() {
         if (isPrepared && !mediaPlayer.isPlaying) {
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_pause)
+            this.binding.playPause.setImageResource(R.drawable.ic_pause_icon)
             mediaPlayer.start()
 
             updateDisposable = updateObservable
@@ -130,7 +130,7 @@ class AudioElementViewHolder(
 
     fun pausePlayer() {
         if (isPrepared && mediaPlayer.isPlaying) {
-            this.binding.playPause.setImageResource(R.drawable.exo_controls_play)
+            this.binding.playPause.setImageResource(R.drawable.ic_play_icon)
             updateDisposable.dispose()
             mediaPlayer.pause()
         }

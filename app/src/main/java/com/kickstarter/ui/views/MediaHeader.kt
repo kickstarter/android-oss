@@ -43,7 +43,6 @@ class MediaHeader @JvmOverloads constructor(
         /**
          * set media player video start
          */
-
         fun initializePlayer()
 
         /**

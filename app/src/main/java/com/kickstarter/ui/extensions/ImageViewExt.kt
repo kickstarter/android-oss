@@ -21,17 +21,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.libs.utils.WebUtils
-import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.header
 import com.kickstarter.libs.utils.extensions.isKSApplication
-
-const val header = "User-Agent"
-const val ua = "Custom-UA"
-
-fun userAgent(context: Context) = if (context.applicationContext.isKSApplication()) {
-    val build = requireNotNull(context.applicationContext.getEnvironment()?.build())
-    WebUtils.userAgent(build)
-} else ua
+import com.kickstarter.libs.utils.extensions.userAgent
 
 fun ImageView.loadCircleImage(url: String?) {
 
@@ -46,7 +38,7 @@ fun ImageView.loadCircleImage(url: String?) {
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent(context))
+                        .addHeader(header, context.userAgent())
                         .build()
                 )
                 Glide.with(context)
@@ -71,7 +63,7 @@ fun ImageView.loadImage(url: String?) {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent(context))
+                    .addHeader(header, context.userAgent())
                     .build()
             )
             Glide.with(context)
@@ -98,7 +90,7 @@ fun ImageView.loadImageWithResize(
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent(context))
+                    .addHeader(header, context.userAgent())
                     .build()
             )
             Glide.with(context)
@@ -123,7 +115,7 @@ fun ImageView.loadImage(url: String?, context: Context, imageZoomablePlaceholder
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent(context))
+                        .addHeader(header, context.userAgent())
                         .build()
                 )
                 Glide.with(context)
@@ -172,7 +164,7 @@ fun ImageView.loadWebp(url: String?, context: Context) {
             val glideUrl = GlideUrl(
                 it,
                 LazyHeaders.Builder()
-                    .addHeader(header, userAgent(context))
+                    .addHeader(header, context.userAgent())
                     .build()
             )
             val roundedCorners = RoundedCorners(1)
@@ -199,7 +191,7 @@ fun ImageView.loadGifImage(url: String?, context: Context) {
                 val glideUrl = GlideUrl(
                     it,
                     LazyHeaders.Builder()
-                        .addHeader(header, userAgent(context))
+                        .addHeader(header, context.userAgent())
                         .build()
                 )
                 Glide.with(context)

@@ -319,7 +319,7 @@ dependencies {
     androidTestImplementation 'androidx.annotation:annotation:1.9.1'
     testImplementation 'androidx.compose.ui:ui-test-junit4:1.8.3'
     debugImplementation 'androidx.compose.ui:ui-test-manifest:1.8.3'
-    def mockkVersion = '1.14.5'
+    def mockkVersion = '1.13.4'
     testImplementation "io.mockk:mockk-android:$mockkVersion"
     testImplementation "io.mockk:mockk-agent:$mockkVersion"
 

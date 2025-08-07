@@ -297,12 +297,6 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
     implementation "androidx.media3:media3-datasource:$exoplayer"
 
-    // Exoplayer
-    def exoplayer= '1.8.0'
-    implementation "androidx.media3:media3-ui:$exoplayer"
-    implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
-    implementation "androidx.media3:media3-datasource:$exoplayer"
-
     // Coroutines
     def coroutines = '1.7.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"

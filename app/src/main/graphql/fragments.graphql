@@ -562,6 +562,7 @@ fragment paymentIncrement on PaymentIncrement {
     refundedAmount  {
         ...paymentIncrementAmount
     }
+    refundUpdatedAmountInProjectNativeCurrency
 }
 
 fragment order on Order {

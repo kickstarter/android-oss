@@ -502,6 +502,7 @@ with friends.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
 from friends yet.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
+  <string name="No_results" formatted="false">No results</string>
   <string name="No_results_for" formatted="false">No results for “%{query}”</string>
   <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">No unread messages</string>
@@ -861,6 +862,7 @@ catch your eye?</string>
   <string name="Track_shipment" formatted="false">Track shipment</string>
   <string name="Track_your_backings" formatted="false">Track your backings</string>
   <string name="Tracking_number" formatted="false">Tracking number: %{number}</string>
+  <string name="Try_adjusting_the_filters" formatted="false">Try adjusting the filters</string>
   <string name="Try_rephrasing_your_search" formatted="false">Try rephrasing your search</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Try rephrasing your search or adjusting the filters</string>
   <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>

@@ -59,7 +59,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -69,8 +70,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
-
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -80,7 +81,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -90,7 +92,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -103,7 +106,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -113,7 +117,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -123,7 +128,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -133,7 +139,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -146,7 +153,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -156,7 +164,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -166,7 +175,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -176,7 +186,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -189,7 +200,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -199,7 +211,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -209,7 +222,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -219,7 +233,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -232,7 +247,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"),
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -242,7 +258,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"),
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -252,7 +269,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"),
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -262,7 +280,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"),
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -275,7 +294,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -285,7 +305,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -295,7 +316,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -305,7 +327,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -318,7 +341,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.UNKNOWN__,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -328,7 +352,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-15T14:00:00Z"), // Tue, 15 Oct 2024 14:00 UTC
             stateReason = PaymentIncrementStateReason.UNKNOWN__,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -338,7 +363,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-16T10:00:00Z"), // Wed, 16 Oct 2024 10:00 UTC
             stateReason = PaymentIncrementStateReason.UNKNOWN__,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
@@ -348,7 +374,8 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-17T16:30:00Z"), // Thu, 17 Oct 2024 16:30 UTC
             stateReason = PaymentIncrementStateReason.UNKNOWN__,
-            refundedAmount = null
+            refundedAmount = null,
+            refundUpdatedAmountInProjectNativeCurrency = null
         )
     )
 
@@ -503,11 +530,13 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         badgeText.assertCountEquals(samplePaymentIncrementsWithRefundedState.size)
-        badgeText.assertAll(hasText(context.getString(R.string.fpo_refunded)))
+        badgeText.assertAll(hasText(context.getString(R.string.Refunded)))
     }
 
     @Test
     fun testPaymentScheduleAmountsText() {
+        val totalIncrements = PaymentIncrementFactory.samplePaymentIncrements().size
+
         composeTestRule.setContent {
             KSTheme {
                 val config = ConfigFactory.configForUSUser()
@@ -525,9 +554,91 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         }
 
         composeTestRule.waitForIdle()
-        amountText.assertCountEquals(6)
 
-        // Assert Currency text
-        amountText.assertAll(hasText("99.75$", ignoreCase = true))
+        amountText.assertCountEquals(totalIncrements)
+        amountText.assertAll(hasText("99.75$", ignoreCase = true) or hasText("18.00$", ignoreCase = true))
+    }
+
+    @Test
+    fun testCollectedAdjustedBadge() {
+        val collectedAdjustedIncrements = listOf(
+            PaymentIncrement(
+                paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
+                    .amountAsFloat("25.00")
+                    .currencyCode("USD")
+                    .amountFormattedInProjectNativeCurrency("25$")
+                    .build(),
+                state = PaymentIncrementState.COLLECTED,
+                paymentIncrementableId = "adjusted-1",
+                paymentIncrementableType = "pledge",
+                scheduledCollection = DateTime.parse("2024-10-18T12:00:00Z"),
+                stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+                refundedAmount = PaymentIncrementAmount.builder()
+                    .formattedAmount("$5.00")
+                    .amountAsFloat("5.00")
+                    .currencyCode("USD")
+                    .amountFormattedInProjectNativeCurrency("5$")
+                    .build(),
+                refundUpdatedAmountInProjectNativeCurrency = "20.00$"
+            )
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = collectedAdjustedIncrements
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        badgeText.assertCountEquals(1)
+        badgeText.assertAll(hasText(context.getString(R.string.Collected_adjusted)))
+    }
+
+    @Test
+    fun testRefundedAmountIsDisplayed() {
+        val refundedIncrement = PaymentIncrementFactory.paymentIncrement(
+            paymentIncrementAmount = PaymentIncrementFactory.amount(
+                formattedAmount = "$99.75",
+                formattedAmountWithCode = "USD $99.75",
+                amountAsFloat = "99.75",
+                amountAsCents = "9975",
+                currencyCode = "USD",
+                amountFormattedInProjectNativeCurrency = "99.75$"
+            ),
+            paymentIncrementableId = "refunded-adjusted",
+            paymentIncrementableType = "pledge",
+            scheduledCollection = DateTime.now(),
+            state = PaymentIncrementState.COLLECTED,
+            stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
+            refundedAmount = PaymentIncrementFactory.amount(
+                formattedAmount = "$70.75",
+                formattedAmountWithCode = "USD $70.75",
+                amountAsFloat = "70.75",
+                amountAsCents = "7075",
+                currencyCode = "USD",
+                amountFormattedInProjectNativeCurrency = "70.75$"
+            ),
+            refundUpdatedAmountInProjectNativeCurrency = "29.00$"
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                PaymentSchedule(
+                    isExpanded = true,
+                    onExpandChange = {},
+                    paymentIncrements = listOf(refundedIncrement)
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        amountText.assertCountEquals(1)
+        amountText.assertAll(hasText("29.00$"))
     }
 }

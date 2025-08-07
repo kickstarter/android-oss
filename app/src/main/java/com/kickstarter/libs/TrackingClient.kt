@@ -7,7 +7,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.view.accessibility.AccessibilityManager
 import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
@@ -32,7 +32,7 @@ abstract class TrackingClient(
 ) : TrackingClientType() {
 
     override val isGooglePlayServicesAvailable: Boolean
-        get() = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
+        get() = GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
 
     override val isTalkBackOn: Boolean
         get() {

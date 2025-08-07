@@ -9,7 +9,6 @@ import android.os.Build
 import android.util.Pair
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
@@ -57,11 +56,7 @@ fun Activity.startActivityWithTransition(
 ) {
     startActivity(intent)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-        overrideActivityTransition(
-            ComponentActivity.OVERRIDE_TRANSITION_OPEN,
-            enterAnim,
-            exitAnim
-        )
+        overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, enterAnim, exitAnim)
     } else {
         overridePendingTransition(enterAnim, exitAnim)
     }

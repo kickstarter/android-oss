@@ -871,6 +871,8 @@ enum Feature {
 
   pledge_over_time_edit_pledge_2025
 
+  pledge_over_time_mid_plot_refunds_2025
+
   eufymake_backer_report
 
   multi_vat_ids_2025
@@ -885,11 +887,21 @@ enum Feature {
 
   tax_category_improvements
 
+  prelaunch_updates
+
   creator_opt_out_feedback_2025
+
+  include_canada_item_taxes_in_price
 
   allow_editing_shipping_rates_2025
 
   pm_backer_preview_2025
+
+  include_uk_vat_in_item_prices
+
+  include_eu_vat_in_item_prices
+
+  pledge_manager_eligibility_questionnaire_2025
 }
 
 """
@@ -1648,6 +1660,11 @@ type Project implements Node & Commentable {
   googleAnalyticsTrackingId: String
 
   """
+  Whether the project creator has answered the eligibility questionnaire
+  """
+  hasAnsweredEligibilityQuestionnaire: Boolean!
+
+  """
   Does this project have any pledge over time config record?
   """
   hasPledgeOverTimeConfig: Boolean!
@@ -1830,6 +1847,11 @@ type Project implements Node & Commentable {
   latePledgesEndedAt: DateTime
 
   """
+  The tallies from the sentiment from each backers latest feedback
+  """
+  latestSentimentStats: ProjectSentimentStats
+
+  """
   When the project launched
   """
   launchedAt: DateTime
@@ -2002,7 +2024,7 @@ type Project implements Node & Commentable {
   """
   Project updates.
   """
-  posts("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Scoped to draft or published posts" state: PostState, "Scoped to post type: creator_interview or freeform_post" postType: PostFormat, "Scoped to a creator’s post associated with the active prompt" forActivePrompt: Boolean): PostConnection
+  posts("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Scoped to draft or published posts" state: PostState, "Scoped to post type: creator_interview or freeform_post" postType: PostFormat, "Scoped to a creator’s post associated with the active prompt" forActivePrompt: Boolean): PostConnection!
 
   """
   Whether a project has activated prelaunch.
@@ -2535,16 +2557,6 @@ type Backing implements Node {
   The amount pledged by the backer, less shipping.
   """
   amountLessShipping: Float!
-
-  """
-  Add-ons available to be added at Pledge Redemption
-  """
-  availableCrossSells: [Reward!]!
-
-  """
-  Base rewards available to upgrade to
-  """
-  availableUpgradeableRewards: [Reward!]!
 
   """
   The backer
@@ -3480,7 +3492,7 @@ enum CountryCode {
 }
 
 """
-A cart associated with a backing
+A cart associated with a surveyable (backing or order)
 """
 type Cart {
   """
@@ -4531,7 +4543,7 @@ type SurchargeRule {
 }
 
 """
-An answer associated with one of the following: LineItem, Cart, BackingAddon, CartReward
+An answer associated with one of the following: LineItem, Cart, BackingAddon, OrderOrderable
 """
 type Answer {
   """
@@ -4552,7 +4564,7 @@ type Answer {
   response: [String!]!
 }
 
-union Answerable = LineItem|Cart|BackingAddon|CartReward
+union Answerable = LineItem|Cart|BackingAddon|OrderOrderable
 
 """
 An add-on reward included in a backing.
@@ -4597,21 +4609,105 @@ type BackingAddon {
 }
 
 """
-A reward in the cart (currently scoped to cross-sell rewards only)
+An orderable included in an Order, e.g. a reward.
 """
-type CartReward {
+type OrderOrderable {
   """
-  The addon reward
+  The price of one unit of the reward
   """
-  backerReward: Reward!
+  baseAmount: Int!
+
+  """
+  The price of one unit of the reward
+  """
+  baseAmountFormatted: String!
+
+  """
+  The cost of the orderable, after voucher is applied
+  """
+  cost: Int!
+
+  """
+  The formatted cost of the orderable, after voucher is applied
+  """
+  costFormatted: String!
 
   id: ID!
 
   """
-  The add-on name.
+  Whether the orderable has been removed after order collection
+  """
+  isRemoved: Boolean!
+
+  """
+  The orderable name.
   """
   name: String
+
+  """
+  The order items associated with the reward
+  """
+  orderItems: [OrderItem!]!
+
+  """
+  The reward data for this OrderOrderable
+  """
+  orderable: Orderable!
+
+  """
+  The amount refunded for the base amount
+  """
+  refundedBaseAmount: Int!
+
+  """
+  The amount refunded for the cost
+  """
+  refundedCost: Int!
+
+  """
+  The remaining base amount
+  """
+  remainingBaseAmountFormatted: String!
+
+  """
+  The remaining cost
+  """
+  remainingCost: Int!
+
+  """
+  The remaining cost
+  """
+  remainingCostFormatted: String!
+
+  """
+  The amount of the voucher
+  """
+  voucherAmount: Int!
+
+  """
+  The amount of the voucher
+  """
+  voucherAmountFormatted: String!
 }
+
+"""
+An item included in an Order.
+"""
+type OrderItem {
+  id: ID!
+
+  """
+  The line item associated with the order item
+  """
+  lineItem: LineItem
+
+  """
+  The name of the order item. This is the name of the product or service being purchased.
+  """
+  name: String!
+}
+
+union Orderable = Reward
 
 """
 A question associated with a cart, composed with an answer if one is present
@@ -5061,9 +5157,19 @@ type Order implements Node {
   address: Address
 
   """
-  The associated backer
+  Countries that the backing's reward can be shipped to. If null, the backing's reward can be shipped to any country.
   """
-  backer: User!
+  allowedCountries: [CountryCode!]
+
+  """
+  Add-ons available to be added at Pledge Redemption
+  """
+  availableCrossSells: [Reward!]!
+
+  """
+  Base rewards available to upgrade to
+  """
+  availableUpgradeableRewards: [Reward!]!
 
   """
   The associated backing
@@ -5074,6 +5180,11 @@ type Order implements Node {
   The base reward on the order. Could be base reward from original backing or one from reward upgrade.
   """
   baseOrderOrderable: OrderOrderable
+
+  """
+  The base reward on the order. Could be base reward from original backing or one from reward upgrade.
+  """
+  baseOrderable: Reward
 
   """
   The voucher amount for the base orderable, or 0 if there is no base orderable
@@ -5151,6 +5262,11 @@ type Order implements Node {
   currency: CurrencyCode!
 
   """
+  The associated user
+  """
+  customer: User!
+
+  """
   Whether the order is in a finalized state
   """
   finalized: Boolean!
@@ -5171,6 +5287,11 @@ type Order implements Node {
   Whether this order is a net new order for the pledge manager
   """
   isPledgeManagerNetNewBacker: Boolean!
+
+  """
+  Whether the order is a preview order
+  """
+  isPreview: Boolean!
 
   """
   The order location.
@@ -5323,6 +5444,11 @@ type Order implements Node {
   taxLocalization("Whether or not the display is for a refund" refund: Boolean): String
 
   """
+  Requests the Avatax data for a given document code. This is only available to KSR admins.
+  """
+  taxProviderSalesInvoice: AvataxTransactionResponseData!
+
+  """
   The total cost for the order including taxes and shipping
   """
   total: Int
@@ -5341,6 +5467,11 @@ type Order implements Node {
   The total tax amount for the order, formatted
   """
   totalTaxFormatted: String
+
+  """
+  All of the user's saved addresses that match the order country
+  """
+  usableAddresses: [Address!]!
 
   """
   Whether or not the location is in the EU or UK (uses VAT)
@@ -5401,102 +5532,6 @@ type ConvertedOrderAmounts {
 
   totalTax: String
 }
-
-"""
-An orderable included in an Order, e.g. a reward.
-"""
-type OrderOrderable {
-  """
-  The price of one unit of the reward
-  """
-  baseAmount: Int!
-
-  """
-  The price of one unit of the reward
-  """
-  baseAmountFormatted: String!
-
-  """
-  The cost of the orderable, after voucher is applied
-  """
-  cost: Int!
-
-  """
-  The formatted cost of the orderable, after voucher is applied
-  """
-  costFormatted: String!
-
-  id: ID!
-
-  """
-  Whether the orderable has been removed after order collection
-  """
-  isRemoved: Boolean!
-
-  """
-  The order items associated with the reward
-  """
-  orderItems: [OrderItem!]!
-
-  """
-  The reward data for this OrderOrderable
-  """
-  orderable: Orderable!
-
-  """
-  The amount refunded for the base amount
-  """
-  refundedBaseAmount: Int!
-
-  """
-  The amount refunded for the cost
-  """
-  refundedCost: Int!
-
-  """
-  The remaining base amount
-  """
-  remainingBaseAmountFormatted: String!
-
-  """
-  The remaining cost
-  """
-  remainingCost: Int!
-
-  """
-  The remaining cost
-  """
-  remainingCostFormatted: String!
-
-  """
-  The amount of the voucher
-  """
-  voucherAmount: Int!
-
-  """
-  The amount of the voucher
-  """
-  voucherAmountFormatted: String!
-}
-
-"""
-An item included in an Order.
-"""
-type OrderItem {
-  id: ID!
-
-  """
-  The line item associated with the order item
-  """
-  lineItem: LineItem
-
-  """
-  The name of the order item. This is the name of the product or service being purchased.
-  """
-  name: String!
-}
-
-union Orderable = Reward
 
 """
 All rewards of a particular kind included in an Order, bundled together with their quantity and price information
@@ -5570,6 +5605,68 @@ enum CheckoutStateEnum {
   not_started
 }
 
+"""
+Avatax transaction response data type containing details about a transaction.
+"""
+type AvataxTransactionResponseData {
+  """
+  The processed response from the Avatax API, containing structured data about the transaction.
+  """
+  handledResponse: [AvataxTransactionLineItem!]!
+
+  """
+  The raw response from the Avatax API for the transaction.
+  """
+  rawResponse: JSON!
+}
+
+scalar JSON
+
+"""
+Avatax transaction line item type containing details about a line item in a transaction.
+"""
+type AvataxTransactionLineItem {
+  """
+  The amount of tax applied to the item.
+  """
+  amount: Int!
+
+  """
+  The deemed supplier for the tax.
+  """
+  deemedSupplier: String!
+
+  """
+  The name of the tax applied to the item.
+  """
+  name: String!
+
+  """
+  The tax rate applied to the item.
+  """
+  rate: Float!
+
+  """
+  The ID of the tax applied to the item.
+  """
+  taxId: String!
+
+  """
+  The ID of the taxable item.
+  """
+  taxableId: String!
+
+  """
+  The type of the taxable item (e.g., OrderItem or Shipment).
+  """
+  taxableType: String!
+
+  """
+  The VAT number associated with the transaction, if applicable.
+  """
+  vatNumber: String
+}
+
 type PaymentIncrement {
   """
   The payment increment amount represented in various formats
@@ -5581,6 +5678,11 @@ type PaymentIncrement {
   paymentIncrementableId: ID
 
   paymentIncrementableType: String
+
+  """
+  The original amount minus the refunded amount formatted in the project native currency
+  """
+  refundUpdatedAmountInProjectNativeCurrency: String
 
   """
   The total amount that has been refunded on the payment increment, across potentially multiple adjustments
@@ -7067,6 +7169,16 @@ enum EnvironmentalCommitmentCategory {
 A number between 0.0 and 1.0.
 """
 scalar Ratio
+
+type ProjectSentimentStats {
+  negative: Int!
+
+  neutral: Int!
+
+  positive: Int!
+
+  total: Int!
+}
 
 """
 A profile for after a project has ended.
@@ -9524,8 +9636,6 @@ enum AccessRuleTypeEnum {
 }
 
 union SecretResource = Reward
-
-scalar JSON
 
 """
 Operators for SQL filters
@@ -12508,6 +12618,8 @@ enum PledgeProjectsOverviewSort {
   ADDRESS_CONFIRMED
 
   AWAITING_REWARD
+
+  REWARD_RECEIVED
 }
 
 enum BackingsDashboardSortOptions {
@@ -12878,6 +12990,11 @@ type Mutation {
   createEditorialLayout(input: CreateEditorialLayoutTypeInput!): CreateEditorialLayoutTypePayload
 
   """
+  create a filled out eligibility questionnaire recording access to PM.
+  """
+  createEligibilityQuestionnaire(input: CreateEligibilityQuestionnaireInput!): CreateEligibilityQuestionnairePayload
+
+  """
   Create a flagging (report) of a piece flaggable content.
   """
   createFlagging(input: CreateFlaggingInput!): CreateFlaggingPayload
@@ -12898,6 +13015,11 @@ type Mutation {
   Creates/updates item tax config and creates/updates tax category for an item
   """
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
+
+  """
+  Creates or updates a preview order with given starting attributes
+  """
+  createOrUpdatePreviewOrder(input: CreateOrUpdatePreviewOrderInput!): CreateOrUpdatePreviewOrderPayload
 
   """
   Creates (or updates) a shipping zone with weight ranges and locations
@@ -19465,6 +19587,117 @@ input UpdatePledgeManagerStateInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateEligibilityQuestionnaire
+"""
+type CreateEligibilityQuestionnairePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project
+}
+
+"""
+Autogenerated input type of CreateEligibilityQuestionnaire
+"""
+input CreateEligibilityQuestionnaireInput {
+  projectId: ID!
+
+  chargedUsSalesTax: Boolean
+
+  chargedUkVat: Boolean
+
+  chargedEuVat: Boolean
+
+  chargedGstOrHst: Boolean
+
+  backersReceivingGoodsFromMultiplePlaces: Boolean
+
+  tableAcknowledged: Boolean
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdatePreviewOrder
+"""
+type CreateOrUpdatePreviewOrderPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The preview order
+  """
+  order: Order!
+}
+
+"""
+Autogenerated input type of CreateOrUpdatePreviewOrder
+"""
+input CreateOrUpdatePreviewOrderInput {
+  """
+  The id of the project the order should belong to
+  """
+  projectId: ID!
+
+  """
+  The id of an existing order to update (optional)
+  """
+  existingOrderId: ID
+
+  """
+  The id of the location for the order
+  """
+  locationId: ID!
+
+  """
+  The type of order you are trying to preview, e.g. one with a crowdfunding backing
+  """
+  entryPoint: PreviewEntryPointEnum!
+
+  """
+  The id of the crowdfunding base reward for the order (optional)
+  """
+  baseRewardId: ID
+
+  """
+  The ids of the crowdfunding add-ons for the order (optional)
+  """
+  addonIds: [ID!]
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Customer entry points to be used when previewing an order.
+"""
+enum PreviewEntryPointEnum {
+  """
+  crowdfunding
+  """
+  crowdfunding
+
+  """
+  late_pledge
+  """
+  late_pledge
+
+  """
+  pledge_manager
+  """
+  pledge_manager
 }
 
 """

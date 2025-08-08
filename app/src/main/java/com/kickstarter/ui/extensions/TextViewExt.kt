@@ -38,7 +38,8 @@ fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>, @ColorR
             }
         }
 
-        startIndexOfLink = this.text.toString().toLowerCase(Locale.getDefault()).indexOf(link.first.toLowerCase(Locale.getDefault()), startIndexOfLink + 1)
+        startIndexOfLink = this.text.toString().lowercase(Locale.getDefault())
+            .indexOf(link.first.lowercase(Locale.getDefault()), startIndexOfLink + 1)
 
         if (startIndexOfLink == -1) continue // todo if you want to verify your texts contains links text
 

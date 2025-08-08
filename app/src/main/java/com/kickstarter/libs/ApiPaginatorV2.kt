@@ -26,7 +26,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
     private val envelopeToMoreUrl: Function<Envelope, String>,
     private val pageTransformation: Function<List<Data>, List<Data>>?,
     private val clearWhenStartingOver: Boolean,
-    private val concater: BiFunction<List<Data>, List<Data>, List<Data>>,
+    private val concater: BiFunction<List<Data>?, List<Data>?, List<Data>>,
     private val distinctUntilChanged: Boolean
 ) {
     private val _morePath = PublishSubject.create<String>()
@@ -139,7 +139,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
          * [Optional] Determines how two lists are concatenated together while paginating. A regular `ListUtils::concat` is probably
          * sufficient, but sometimes you may want `ListUtils::concatDistinct`
          */
-        fun concater(concater: BiFunction<List<Data>, List<Data>, List<Data>>): Builder<Data, Envelope, Params> {
+        fun concater(concater: BiFunction<List<Data>?, List<Data>?, List<Data>>): Builder<Data, Envelope, Params> {
             this.concater = concater
             return this
         }
@@ -226,7 +226,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
     private fun fetchData(paginatingData: Pair<Params, String>): Observable<List<Data>> {
         return (
             if (paginatingData.second != null) loadWithPaginationPath.apply(paginatingData.second!!) else loadWithParams.apply(
-                paginatingData.first
+                paginatingData.first as (Params & Any)
             )
             )
             .retry(2)
@@ -242,7 +242,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
 
     private fun keepMorePath(envelope: Envelope) {
         try {
-            val url = URL(envelopeToMoreUrl.apply(envelope))
+            val url = URL(envelopeToMoreUrl.apply(envelope as (Envelope & Any)))
             _morePath.onNext(pathAndQueryFromURL(url))
         } catch (ignored: MalformedURLException) {
         } catch (e: Exception) {

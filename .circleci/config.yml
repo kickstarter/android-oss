@@ -4,7 +4,7 @@ aws_cli_setup: &aws_cli_setup
 base_job: &base_job
   executor:
     name: android/android-machine
-    resource-class: large
+    resource-class: xlarge
     tag: 2025.04.1 #https://circleci.com/developer/images/image/cimg/android
   working_directory: "~/project"
   environment:
@@ -89,7 +89,9 @@ jobs:
           at: ~/project
       - android/create-avd:
           avd-name: Emulator
-          system-image: system-images;android-30;google_apis;x86
+          system-image:
+            - system-images;android-30;google_apis;x86
+            - system-images;android-36;google_apis;x86_64
           install: true
       - run:
           name: Configure screen size and dpi for Screenshot test

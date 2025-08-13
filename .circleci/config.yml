@@ -89,9 +89,7 @@ jobs:
           at: ~/project
       - android/create-avd:
           avd-name: Emulator
-          system-image:
-            - system-images;android-30;google_apis;x86
-            - system-images;android-36;google_apis;x86_64
+          system-image: system-images;android-36;google_apis;x86_64
           install: true
       - run:
           name: Configure screen size and dpi for Screenshot test

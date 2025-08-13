@@ -3,7 +3,7 @@ aws_cli_setup: &aws_cli_setup
 
 base_job: &base_job
   docker:
-    - image: cimg/android:2025:04.1 #https://circleci.com/developer/images/image/cimg/android
+    - image: cimg/android:2025.04.1 #https://circleci.com/developer/images/image/cimg/android
   working_directory: "~/project"
   environment:
     TERM: dumb

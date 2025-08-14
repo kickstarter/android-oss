@@ -170,11 +170,10 @@ fun OnboardingScreen(
     ) { isGranted: Boolean ->
         if (isGranted) {
             analyticEvents?.trackOnboardingAllowDenyPromptCTAClicked(ACTIVITY_TRACKING_PROMPT.contextName, ALLOW.contextName)
-            currentPage++
         } else {
             analyticEvents?.trackOnboardingAllowDenyPromptCTAClicked(ACTIVITY_TRACKING_PROMPT.contextName, DENY.contextName)
-            currentPage++
         }
+        if (currentPage < filteredPages.lastIndex) currentPage++
     }
 
     // Fragment Manager for consent management dialog
@@ -189,7 +188,7 @@ fun OnboardingScreen(
         if (isUserLoggedIn) { // Skip signup/login page
             onboardingCompleted()
         } else {
-            currentPage++
+            if (currentPage < filteredPages.lastIndex) currentPage++
         }
     }
 
@@ -210,36 +209,8 @@ fun OnboardingScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-
             // Progress bar
-            val animatedProgress by animateFloatAsState(
-                targetValue = (currentPage + 1) / filteredPages.size.toFloat(),
-                animationSpec = tween(durationMillis = 1000)
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(horizontal = dimensions.paddingLarge)
-                    .padding(top = dimensions.paddingDoubleLarge, bottom = dimensions.paddingLarge)
-            ) {
-                LinearProgressIndicator(
-                    progress = animatedProgress,
-                    color = colors.textAccentGreen,
-                    backgroundColor = colors.kds_white,
-                    strokeCap = StrokeCap.Round,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(dimensions.paddingSmall)
-                        .testTag(OnboardingScreenTestTags.PROGRESS_BAR)
-                )
-                KSIconButton(
-                    modifier = Modifier
-                        .testTag(OnboardingScreenTestTags.CLOSE_BUTTON),
-                    onClick = { onboardingCancelled(filteredPages[currentPage].page) },
-                    contentDescription = stringResource(R.string.Close),
-                    imageVector = Icons.Filled.Close
-                )
-            }
+            OnboardingProgressBar(currentPage, filteredPages.size.toFloat(), filteredPages, onboardingCancelled)
 
             // Animated content spans the page vertically
             OnboardingPageAnimation(modifier = Modifier.weight(1.0f), pageData = filteredPages[currentPage])
@@ -254,28 +225,38 @@ fun OnboardingScreen(
                         vertical = dimensions.paddingSmall
                     )
             ) {
+                var lastClickTime by remember { mutableStateOf(0L) }
+                val debounceInterval = 500L // milliseconds
+
                 KSPrimaryBlackButton(
                     text = filteredPages[currentPage].buttonText,
                     onClickAction = {
-                        when (filteredPages[currentPage].page) {
-                            OnboardingPage.WELCOME -> {
-                                analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
-                                currentPage++
-                            }
-                            OnboardingPage.SAVE_PROJECTS -> {
-                                analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
-                                currentPage++
-                            }
-                            OnboardingPage.ENABLE_NOTIFICATIONS -> {
-                                activity?.let { turnOnNotifications(permissionLauncher) }
-                            }
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastClickTime > debounceInterval) {
+                            lastClickTime = currentTime
 
-                            OnboardingPage.ACTIVITY_TRACKING -> {
-                                activity?.let { allowTracking(fragmentManager) }
-                            }
-
-                            OnboardingPage.SIGNUP_LOGIN -> {
-                                signupOrLogin()
+                            when (filteredPages[currentPage].page) {
+                                OnboardingPage.WELCOME -> {
+                                    analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
+                                    if (currentPage < filteredPages.lastIndex) currentPage++
+                                }
+                                OnboardingPage.SAVE_PROJECTS -> {
+                                    analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
+                                    if (currentPage < filteredPages.lastIndex) currentPage++
+                                }
+                                OnboardingPage.ENABLE_NOTIFICATIONS -> {
+                                    activity?.let {
+                                        turnOnNotifications(permissionLauncher)
+                                    }
+                                }
+                                OnboardingPage.ACTIVITY_TRACKING -> {
+                                    activity?.let {
+                                        allowTracking(fragmentManager)
+                                    }
+                                }
+                                OnboardingPage.SIGNUP_LOGIN -> {
+                                    signupOrLogin()
+                                }
                             }
                         }
                     },
@@ -291,10 +272,6 @@ fun OnboardingScreen(
                         onClickAction = {
                             analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
                             if (currentPage < filteredPages.lastIndex) { // More pages remaining
-                                if (filteredPages[currentPage].page == OnboardingPage.ACTIVITY_TRACKING && isUserLoggedIn) {
-                                    // Skip signup/login page
-                                    onboardingCompleted()
-                                }
                                 currentPage++
                             } else {
                                 onboardingCompleted()
@@ -308,6 +285,38 @@ fun OnboardingScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun OnboardingProgressBar(currentPage: Int, totalPages: Float, filteredPages: List<OnboardingPageData>, onboardingCancelled: (OnboardingPage) -> Unit) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = (currentPage + 1) / totalPages,
+        animationSpec = tween(durationMillis = 1000)
+    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(horizontal = dimensions.paddingLarge)
+            .padding(top = dimensions.paddingDoubleLarge, bottom = dimensions.paddingLarge)
+    ) {
+        LinearProgressIndicator(
+            progress = animatedProgress,
+            color = colors.textAccentGreen,
+            backgroundColor = colors.kds_white,
+            strokeCap = StrokeCap.Round,
+            modifier = Modifier
+                .weight(1f)
+                .height(dimensions.paddingSmall)
+                .testTag(OnboardingScreenTestTags.PROGRESS_BAR)
+        )
+        KSIconButton(
+            modifier = Modifier
+                .testTag(OnboardingScreenTestTags.CLOSE_BUTTON),
+            onClick = { onboardingCancelled(filteredPages[currentPage].page) },
+            contentDescription = stringResource(R.string.Close),
+            imageVector = Icons.Filled.Close
+        )
     }
 }
 

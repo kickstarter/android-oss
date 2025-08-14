@@ -173,9 +173,7 @@ fun OnboardingScreen(
         } else {
             analyticEvents?.trackOnboardingAllowDenyPromptCTAClicked(ACTIVITY_TRACKING_PROMPT.contextName, DENY.contextName)
         }
-        if (currentPage < filteredPages.lastIndex) { // More pages remaining)
-            currentPage++
-        }
+        if (currentPage < filteredPages.lastIndex) currentPage++
     }
 
     // Fragment Manager for consent management dialog
@@ -190,9 +188,7 @@ fun OnboardingScreen(
         if (isUserLoggedIn) { // Skip signup/login page
             onboardingCompleted()
         } else {
-            if (currentPage < filteredPages.lastIndex) { // More pages remaining)
-                currentPage++
-            }
+            if (currentPage < filteredPages.lastIndex) currentPage++
         }
     }
 
@@ -229,34 +225,38 @@ fun OnboardingScreen(
                         vertical = dimensions.paddingSmall
                     )
             ) {
+                var lastClickTime by remember { mutableStateOf(0L) }
+                val debounceInterval = 500L // milliseconds
+
                 KSPrimaryBlackButton(
                     text = filteredPages[currentPage].buttonText,
                     onClickAction = {
-                        when (filteredPages[currentPage].page) {
-                            OnboardingPage.WELCOME -> {
-                                analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
-                                if (currentPage < filteredPages.lastIndex) { // More pages remaining)
-                                    currentPage++
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastClickTime > debounceInterval) {
+                            lastClickTime = currentTime
+
+                            when (filteredPages[currentPage].page) {
+                                OnboardingPage.WELCOME -> {
+                                    analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
+                                    if (currentPage < filteredPages.lastIndex) currentPage++
                                 }
-                            }
-                            OnboardingPage.SAVE_PROJECTS -> {
-                                analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
-                                if (currentPage < filteredPages.lastIndex) { // More pages remaining)
-                                    currentPage++
+                                OnboardingPage.SAVE_PROJECTS -> {
+                                    analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
+                                    if (currentPage < filteredPages.lastIndex) currentPage++
                                 }
-                            }
-                            OnboardingPage.ENABLE_NOTIFICATIONS -> {
-                                activity?.let {
-                                    turnOnNotifications(permissionLauncher)
+                                OnboardingPage.ENABLE_NOTIFICATIONS -> {
+                                    activity?.let {
+                                        turnOnNotifications(permissionLauncher)
+                                    }
                                 }
-                            }
-                            OnboardingPage.ACTIVITY_TRACKING -> {
-                                activity?.let {
-                                    allowTracking(fragmentManager)
+                                OnboardingPage.ACTIVITY_TRACKING -> {
+                                    activity?.let {
+                                        allowTracking(fragmentManager)
+                                    }
                                 }
-                            }
-                            OnboardingPage.SIGNUP_LOGIN -> {
-                                signupOrLogin()
+                                OnboardingPage.SIGNUP_LOGIN -> {
+                                    signupOrLogin()
+                                }
                             }
                         }
                     },

@@ -80,7 +80,7 @@ jobs:
     <<: *base_job
     steps:
       - checkout
-      - - run:
+      - run:
             name: List Android SDK packages
             command: sdkmanager --list
       - restore_cache:

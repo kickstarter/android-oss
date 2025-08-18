@@ -103,10 +103,9 @@ jobs:
       - run:
           name: Config Emulator for Screenshot test
           command: ./script/emulator/screenshot_config_emulator.sh
-      # Temporary JDK 17 workaround https://github.com/pedrovgs/Shot/issues/268 until https://github.com/pedrovgs/Shot/pull/292 is merged
       - run:
           name: Internal Debug Execute Screenshot Tests
-          command: ./gradlew internalDebugExecuteScreenshotTests -Dorg.gradle.jvmargs="--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.nio.channels=ALL-UNNAMED --add-exports java.base/sun.nio.ch=ALL-UNNAMED" -Dorg.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
+          command: ./gradlew internalDebugExecuteScreenshotTests
       - android/save-gradle-cache:
           cache-prefix: v1a
       - store_artifacts:

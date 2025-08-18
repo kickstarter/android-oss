@@ -81,8 +81,8 @@ jobs:
     steps:
       - checkout
       - run:
-            name: List Android SDK packages
-            command: sdkmanager --list
+          name: List Android SDK packages
+          command: sdkmanager --list
       - restore_cache:
           keys:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
@@ -91,7 +91,7 @@ jobs:
           at: ~/project
       - android/create-avd:
           avd-name: Emulator
-          system-image: system-images;android-30;google_apis;x86
+          system-image: system-images;android-36;google_apis;x86_64
           install: true
       - run:
           name: Configure screen size and dpi for Screenshot test

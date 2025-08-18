@@ -80,6 +80,9 @@ jobs:
     <<: *base_job
     steps:
       - checkout
+      - - run:
+            name: List Android SDK packages
+            command: sdkmanager --list
       - restore_cache:
           keys:
             - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}

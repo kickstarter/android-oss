@@ -26,7 +26,6 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="false"
         android:theme="@style/KSTheme"
-        android:enableOnBackInvokedCallback="true"
         tools:replace="android:supportsRtl">
         <!-- ACTIVITIES -->
         <activity android:name="androidx.activity.ComponentActivity" /> <!-- Workaround for https://github.com/robolectric/robolectric/pull/4736 -->

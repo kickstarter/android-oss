@@ -121,7 +121,7 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen(deviceNeedsNotificationPermissions = false)
 
         primaryButton.performClick() // Welcome -> Save
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         primaryButton.performClick() // Save -> Activity Tracking
 
         pageTitle.assertIsDisplayed()
@@ -139,8 +139,9 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen()
 
         primaryButton.performClick() // Welcome -> Save
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         primaryButton.performClick() // Save -> Notifications
+        Thread.sleep(500)
 
         pageTitle.assertIsDisplayed()
         pageTitle.assertTextEquals(notificationsPageTitleText)
@@ -161,10 +162,11 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen()
 
         primaryButton.performClick() // Welcome -> Save
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         primaryButton.performClick() // Save -> Notifications
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         secondaryButton.performClick() // Notifications -> Activity Tracking
+        Thread.sleep(500)
 
         pageTitle.assertIsDisplayed()
         pageTitle.assertTextEquals(activityTrackingPageTitleText)
@@ -185,12 +187,13 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen(isUserLoggedIn = false)
 
         primaryButton.performClick() // Welcome -> Save
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         primaryButton.performClick() // Save -> Notifications
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         secondaryButton.performClick() // Notifications -> Activity Tracking
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         secondaryButton.performClick() // Activity Tracking -> Login/Signup
+        Thread.sleep(500)
 
         pageTitle.assertIsDisplayed()
         pageTitle.assertTextEquals(loginOrSignupPageTitleText)
@@ -212,12 +215,13 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
 
         // Navigate to Notifications Page (Welcome -> Save -> Notifications)
         primaryButton.performClick() // Welcome -> Save
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         primaryButton.performClick() // Save -> Notifications
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         secondaryButton.performClick() // Notifications -> Activity Tracking
-        composeTestRule.waitForIdle()
+        Thread.sleep(500)
         secondaryButton.performClick() // Activity Tracking -> Login/Signup
+        Thread.sleep(500)
 
         // Assert that signupOrLogin callback was NOT called
         assertFalse("signupOrLogin callback should NOT have been called", signupOrLoginCalled)

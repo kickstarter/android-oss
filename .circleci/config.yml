@@ -11,9 +11,19 @@ base_job: &base_job
     ADB_INSTALL_TIMEOUT: 8
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"'
 
+emulator_job: &emulator_job
+  executor:
+    name: android/android-machine
+    resource_class: xlarge
+  working_directory: "~/project"
+  environment:
+    TERM: dumb
+    ADB_INSTALL_TIMEOUT: 8
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"'
+
 version: 2.1
 orbs:
-  android: circleci/android@2.5.0
+  android: circleci/android@3.1.0
   aws-cli: circleci/aws-cli@3.1
   codecov: codecov/codecov@3.2.4
 jobs:
@@ -77,7 +87,7 @@ jobs:
           token: CODECOV_TOKEN
           
   snapshot-test:
-    <<: *base_job
+    <<: *emulator_job
     steps:
       - checkout
       - run:

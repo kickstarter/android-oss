@@ -14,7 +14,7 @@ base_job: &base_job
 emulator_job: &emulator_job
   executor:
     name: android/android-machine
-    resource_class: xlarge
+    resource-class: xlarge
     tag: default
   working_directory: "~/project"
   environment:

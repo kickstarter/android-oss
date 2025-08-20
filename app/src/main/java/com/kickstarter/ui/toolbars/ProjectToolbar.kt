@@ -3,7 +3,6 @@ package com.kickstarter.ui.toolbars
 import android.content.Context
 import android.util.AttributeSet
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
 import com.kickstarter.ui.views.IconButton
 
@@ -21,10 +20,6 @@ class ProjectToolbar @JvmOverloads constructor(
     }
 
     private fun backIconClick() {
-        if (context is ComponentActivity) {
-            (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
-        } else {
-            (context as AppCompatActivity).onBackPressed()
-        }
+        (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 }

@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.8.10'
+    ext.kotlin_version = '2.1.21'
     ext.jacoco_version = '0.8.8'
 
     repositories {
@@ -10,9 +10,10 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.12.0'
         classpath 'com.google.gms:google-services:4.4.3'
+        classpath "com.google.firebase:perf-plugin:2.0.0"
         classpath "org.jacoco:org.jacoco.core:$jacoco_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.firebase:perf-plugin:2.0.0"
+        classpath "org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:$kotlin_version"
     }
 }
 

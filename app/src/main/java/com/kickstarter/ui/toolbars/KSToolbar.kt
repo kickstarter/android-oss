@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.annotation.CallSuper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.kickstarter.KSApplication
@@ -75,10 +74,6 @@ open class KSToolbar @JvmOverloads constructor(
     }
 
     private fun backButtonClick() {
-        if (context is ComponentActivity) {
-            (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
-        } else {
-            (context as AppCompatActivity).onBackPressed()
-        }
+        (context as ComponentActivity).onBackPressedDispatcher.onBackPressed()
     }
 }

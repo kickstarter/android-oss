@@ -14,7 +14,7 @@ class WebUtilsTest : KSRobolectricTestCase() {
 
         val packageInfo = packageManager.getPackageInfo(context().applicationContext.packageName, 0)
         val variant = StringBuilder().append(BuildConfig.FLAVOR)
-            .append(BuildConfig.BUILD_TYPE.substring(0, 1).toUpperCase(Locale.US))
+            .append(BuildConfig.BUILD_TYPE.substring(0, 1).uppercase(Locale.US))
             .append(BuildConfig.BUILD_TYPE.substring(1))
             .toString()
         val versionCode = packageInfo.versionCode

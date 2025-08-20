@@ -17,6 +17,7 @@ buildscript {
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
 apply plugin: 'com.google.firebase.crashlytics'
@@ -144,10 +145,6 @@ android {
         compose true
         viewBinding true
         buildConfig true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion "$compose_version"
     }
 
     packagingOptions {

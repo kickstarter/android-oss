@@ -17,7 +17,7 @@ import java.net.URL
  * @param <Envelope> The type of envelope the API returns for a list of data, e.g. `DiscoverEnvelope`.
  * @param <Params> The type of params that [ApiClientType] can use to make a request. Many times this can just be `Void`.
 </Params></Envelope></Data> */
-class ApiPaginatorV2<Data, Envelope, Params> private constructor(
+class ApiPaginatorV2<Data, Envelope : Any, Params : Any> private constructor(
     private val nextPage: Observable<Unit>,
     private val startOverWith: Observable<Params>?,
     private val envelopeToListOfData: Function<Envelope, List<Data>>,
@@ -57,7 +57,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
         }
     }
 
-    class Builder<Data, Envelope, Params> {
+    class Builder<Data, Envelope : Any, Params : Any> {
         private lateinit var nextPage: Observable<Unit>
         private var startOverWith: Observable<Params>? = null
         private lateinit var envelopeToListOfData: Function<Envelope, List<Data>>
@@ -66,7 +66,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
         private lateinit var envelopeToMoreUrl: Function<Envelope, String>
         private var pageTransformation: Function<List<Data>, List<Data>>? = null
         private var clearWhenStartingOver = false
-        private var concater =
+        private var concater: BiFunction<List<Data>, List<Data>, List<Data>> =
             BiFunction { xs: List<Data>, ys: List<Data> -> ListUtils.concat(xs, ys) }
         private var distinctUntilChanged = false
 
@@ -255,7 +255,7 @@ class ApiPaginatorV2<Data, Envelope, Params> private constructor(
     }
 
     companion object {
-        fun <Data, Envelope, FirstPageParams> builder(): Builder<Data, Envelope, FirstPageParams> {
+        fun <Data, Envelope : Any, FirstPageParams : Any> builder(): Builder<Data, Envelope, FirstPageParams> {
             return Builder()
         }
     }

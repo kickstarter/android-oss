@@ -3,25 +3,17 @@ package com.kickstarter.libs.utils
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RelativeDateTimeOptions.Companion.builder
 import com.kickstarter.libs.utils.DateTimeUtils.relative
-import net.danlew.android.joda.JodaTimeAndroid
 import org.hamcrest.CoreMatchers.anyOf
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
 import java.util.Locale
 import java.util.TimeZone
 
 class DateTimeUtilsTest : KSRobolectricTestCase() {
-
-    @Before
-    fun init() {
-        // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
-        JodaTimeAndroid.init(context())
-    }
 
     @Test
     fun testEstimatedDeliveryOn() {
@@ -127,7 +119,7 @@ class DateTimeUtilsTest : KSRobolectricTestCase() {
             "Dec 17, 2015, 1:35:05 PM",
             DateTimeUtils.mediumDateTime(
                 DateTime.parse("2015-12-17T18:35:05Z"),
-                DateTimeZone.forID("EST")
+                DateTimeZone.forOffsetHours(-5)
             )
         )
         assertEquals(

@@ -114,6 +114,7 @@ jobs:
           run-logcat: true
           no-window: true
           restore-gradle-cache-prefix: v1a
+      - android/wait-for-emulator
       - run:
           name: Config Emulator for Screenshot test
           command: ./script/emulator/screenshot_config_emulator.sh

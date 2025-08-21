@@ -248,7 +248,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    implementation 'net.danlew:android.joda:2.10.7'
+    implementation 'net.danlew:android.joda:2.13.1'
 
     // Analytics Segment-Braze
     implementation 'com.segment.analytics.android:analytics:4.11.3'
@@ -301,12 +301,12 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
 
     // Paging 3 for compose dependency
-    implementation "androidx.paging:paging-compose:3.3.0"
-    implementation "androidx.paging:paging-testing:3.3.0"
+    implementation "androidx.paging:paging-compose:3.3.6"
+    implementation "androidx.paging:paging-testing:3.3.6"
 
     // Lottie animations
-    implementation 'com.airbnb.android:lottie:6.6.6'
-    implementation "com.airbnb.android:lottie-compose:6.6.6"
+    implementation 'com.airbnb.android:lottie:6.6.7'
+    implementation "com.airbnb.android:lottie-compose:6.6.7"
 
     // Testing
     testImplementation "junit:junit:4.13.2"
@@ -334,7 +334,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     // Statsig
-    implementation 'com.github.statsig-io:android-sdk:4.37.+'
+    implementation 'com.github.statsig-io:android-sdk:4.37.0'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

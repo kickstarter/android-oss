@@ -44,6 +44,13 @@ public final class ExternalApplicationModule {
     return Secrets.IS_OSS ? new MockApiClientV2() : new ApiClientV2(apiService, gson);
   }
 
+  @Provides
+  @Singleton
+  @NonNull
+  static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
+    return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
+  }
+
 
   @Provides
   @Singleton

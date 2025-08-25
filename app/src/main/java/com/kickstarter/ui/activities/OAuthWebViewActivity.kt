@@ -84,7 +84,6 @@ class CustomWebViewClient(private val context: Context, private val callback: (S
     /**
      * Only used on staging environments for basic http authentication
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceivedHttpAuthRequest(
         view: WebView?,
         handler: HttpAuthHandler?,

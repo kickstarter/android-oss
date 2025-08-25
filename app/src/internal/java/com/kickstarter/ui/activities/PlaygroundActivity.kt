@@ -45,7 +45,6 @@ class PlaygroundActivity : ComponentActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = PlaygroundLayoutBinding.inflate(layoutInflater)

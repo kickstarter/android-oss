@@ -10,7 +10,7 @@ class
 BetaMessagingBottomSheetKtTest : KSRobolectricTestCase() {
 
     private val backedProjectsButton =
-        composeTestRule.onNodeWithTag(BetaMessagingBottomSheetTestTag.BACKED_PROJECTS_BUTTON.name)
+        composeTestRule.onNodeWithTag(BetaMessagingBottomSheetTestTag.BACKED_PROJECTS_BUTTON.name, useUnmergedTree = true)
 
     @Test
     fun `test tapping see all backed projects button, should register click and dismiss`() {

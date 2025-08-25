@@ -10,6 +10,7 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
@@ -42,13 +43,13 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             PaymentScheduleTestTags.EXPAND_ICON.name,
         )
     private val dateText
-        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.DATE_TEXT.name)
+        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.DATE_TEXT.name, useUnmergedTree = true)
     private val amountText
-        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.AMOUNT_TEXT.name)
+        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.AMOUNT_TEXT.name, useUnmergedTree = true)
     private val badgeText
-        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.BADGE_TEXT.name)
+        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.BADGE_TEXT.name, useUnmergedTree = true)
     private val termsOfUseText
-        get() = composeTestRule.onNodeWithTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name)
+        get() = composeTestRule.onNodeWithTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name, useUnmergedTree = true)
 
     private val samplePaymentIncrements = listOf(
         PaymentIncrement(
@@ -425,6 +426,9 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         dateText.assertCountEquals(samplePaymentIncrements.size)
         amountText.assertCountEquals(samplePaymentIncrements.size)
         badgeText.assertCountEquals(samplePaymentIncrements.size)
+
+        composeTestRule
+            .onNodeWithText("Terms of Use", useUnmergedTree = true).assertIsDisplayed()
 
         termsOfUseText
             .assertIsDisplayed().assert(hasText(context.getString(R.string.profile_settings_about_terms)))

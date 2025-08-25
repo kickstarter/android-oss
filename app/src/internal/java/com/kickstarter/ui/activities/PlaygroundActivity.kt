@@ -1,12 +1,14 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.RefTag
@@ -35,7 +37,6 @@ class PlaygroundActivity : ComponentActivity() {
     private lateinit var binding: PlaygroundLayoutBinding
     private lateinit var view: View
     private lateinit var viewModelFactory: Factory
-    private var stripePaymentMethod: String = ""
     val viewModel: PlaygroundViewModel by viewModels { viewModelFactory }
 
     private lateinit var flowController: PaymentSheet.FlowController
@@ -43,6 +44,7 @@ class PlaygroundActivity : ComponentActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = PlaygroundLayoutBinding.inflate(layoutInflater)

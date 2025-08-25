@@ -171,20 +171,17 @@ class PushNotifications(
     private fun createNotificationChannels() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (ApiCapabilities.canCreateNotificationChannels()) {
-            val channels = listOfNotificationChannels
-            // Register the channels with the system; you can't change the importance
-            // or other notification behaviors after this
-            val notificationManager = context.getSystemService(
-                NotificationManager::class.java
-            )
-            if (notificationManager.isNotNull<NotificationManager>()) {
-                notificationManager.createNotificationChannels(channels)
-            }
+        val channels = listOfNotificationChannels
+        // Register the channels with the system; you can't change the importance
+        // or other notification behaviors after this
+        val notificationManager = context.getSystemService(
+            NotificationManager::class.java
+        )
+        if (notificationManager.isNotNull<NotificationManager>()) {
+            notificationManager.createNotificationChannels(channels)
         }
     }
 
-    @get:TargetApi(Build.VERSION_CODES.O)
     private val listOfNotificationChannels: List<NotificationChannel>
         get() {
             val channels: MutableList<NotificationChannel> = ArrayList(NOTIFICATION_CHANNELS.size)

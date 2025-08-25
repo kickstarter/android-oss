@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import android.webkit.HttpAuthHandler
@@ -17,7 +16,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kickstarter.libs.utils.extensions.getEnvironment

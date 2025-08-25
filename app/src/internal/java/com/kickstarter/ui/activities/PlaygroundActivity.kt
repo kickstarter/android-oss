@@ -1,14 +1,12 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import com.kickstarter.R
 import com.kickstarter.databinding.PlaygroundLayoutBinding
 import com.kickstarter.libs.RefTag

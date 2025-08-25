@@ -232,7 +232,7 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals(false, input.appData.iOSConsent)
         assertEquals("a2", input.appData.extInfo.first())
         assertEquals(16, input.appData.extInfo.size)
-        assertEquals("9", input.appData.extInfo[4])
+        assertEquals("8.1.0", input.appData.extInfo[4])
     }
 
     @Test
@@ -416,7 +416,7 @@ class SendThirdPartyEventUseCaseV2Test : KSRobolectricTestCase() {
         assertEquals(false, input.appData.iOSConsent)
         assertEquals("a2", input.appData.extInfo.first())
         assertEquals(16, input.appData.extInfo.size)
-        assertEquals("9", input.appData.extInfo[4])
+        assertEquals("8.1.0", input.appData.extInfo[4])
     }
 
     private fun subscribeToThirdPartyEvent(

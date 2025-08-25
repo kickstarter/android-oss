@@ -37,7 +37,6 @@ class PlaygroundActivity : ComponentActivity() {
     private lateinit var binding: PlaygroundLayoutBinding
     private lateinit var view: View
     private lateinit var viewModelFactory: Factory
-    private var stripePaymentMethod: String = ""
     val viewModel: PlaygroundViewModel by viewModels { viewModelFactory }
 
     private lateinit var flowController: PaymentSheet.FlowController

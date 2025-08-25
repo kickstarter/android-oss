@@ -43,13 +43,13 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             PaymentScheduleTestTags.EXPAND_ICON.name,
         )
     private val dateText
-        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.DATE_TEXT.name, useUnmergedTree = true)
+        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.DATE_TEXT.name)
     private val amountText
-        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.AMOUNT_TEXT.name, useUnmergedTree = true)
+        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.AMOUNT_TEXT.name)
     private val badgeText
-        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.BADGE_TEXT.name, useUnmergedTree = true)
+        get() = composeTestRule.onAllNodesWithTag(PaymentScheduleTestTags.BADGE_TEXT.name)
     private val termsOfUseText
-        get() = composeTestRule.onNodeWithTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name, useUnmergedTree = true)
+        get() = composeTestRule.onNodeWithTag(PaymentScheduleTestTags.TERMS_OF_USE_TEXT.name)
 
     private val samplePaymentIncrements = listOf(
         PaymentIncrement(
@@ -426,9 +426,6 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         dateText.assertCountEquals(samplePaymentIncrements.size)
         amountText.assertCountEquals(samplePaymentIncrements.size)
         badgeText.assertCountEquals(samplePaymentIncrements.size)
-
-        composeTestRule
-            .onNodeWithText("Terms of Use", useUnmergedTree = true).assertIsDisplayed()
 
         termsOfUseText
             .assertIsDisplayed().assert(hasText(context.getString(R.string.profile_settings_about_terms)))

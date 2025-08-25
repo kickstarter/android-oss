@@ -54,9 +54,8 @@ class KSWebView@JvmOverloads constructor(
             binding.internalWebView.settings.allowFileAccess = false
             binding.internalWebView.settings.domStorageEnabled = true
 
-            // TODO: Replace `36` with `Build.VERSION_CODES.BAKLAVA` after updating `compileSdkVersion`.
             // TODO: Consider upperbound. See link in `String.maskUserAgent()`.
-            if (android.os.Build.VERSION.SDK_INT >= 36) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.BAKLAVA) {
                 binding.internalWebView.settings.apply {
                     userAgentString = userAgentString.maskUserAgent()
                 }

@@ -7,8 +7,10 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.UserPrivacy
 import io.reactivex.Observable
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 interface FeatureFlagClientType {
@@ -41,7 +43,7 @@ interface FeatureFlagClientType {
     /**
      * Will perform fetch and activate at the same time
      */
-    fun fetchAndActivate(context: Activity)
+    suspend fun fetchAndActivate() : Boolean
 
     /**
      * Will return the active status for a boolean feature flag
@@ -134,11 +136,12 @@ class FeatureFlagClient(
             }
     }
 
-    override fun fetchAndActivate(context: Activity) {
-        remoteConfig?.fetchAndActivate()
-            ?.addOnCompleteListener(context) { task ->
-                log("${this.javaClass} fetchAndActivated completed: ${task.isSuccessful} ")
-            }
+    override suspend fun fetchAndActivate() : Boolean {
+        val isInitialized = remoteConfig?.fetchAndActivate()?.await().isTrue()
+
+        log("${this.javaClass} fetchAndActivate completed: ${isInitialized}")
+
+        return isInitialized
     }
 
     override fun getBoolean(key: FlagKey): Boolean {

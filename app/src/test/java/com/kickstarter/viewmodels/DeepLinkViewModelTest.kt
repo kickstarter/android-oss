@@ -18,11 +18,18 @@ import com.kickstarter.models.Project
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
 import org.joda.time.DateTime
 import org.junit.After
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
@@ -559,6 +566,28 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testRunInitializations_whenRemoteConfigReturnsFalse_throwsException() = runTest {
+        val environment = environment().toBuilder()
+            .featureFlagClient(object : MockFeatureFlagClient() {
+                override suspend fun fetchAndActivate(): Boolean {
+                    return false
+                }
+            })
+            .build()
+
+        val url =
+            "ksr://staging.kickstarter.com/projects/polymernai/baby-spirits-plush-collection/mark_reward_fulfilled/true"
+        setUpEnvironment(environment, intentWithData(url))
+
+        backgroundScope.launch {
+            assertThrows(
+                Exception::class.java,
+                { vm.runInitializations(intent = intentWithData(url)) })
+        }
     }
 
     @Test

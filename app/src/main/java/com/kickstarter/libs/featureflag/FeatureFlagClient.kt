@@ -43,7 +43,7 @@ interface FeatureFlagClientType {
     /**
      * Will perform fetch and activate at the same time
      */
-    suspend fun fetchAndActivate() : Boolean
+    suspend fun fetchAndActivate(): Boolean
 
     /**
      * Will return the active status for a boolean feature flag
@@ -136,10 +136,10 @@ class FeatureFlagClient(
             }
     }
 
-    override suspend fun fetchAndActivate() : Boolean {
+    override suspend fun fetchAndActivate(): Boolean {
         val isInitialized = remoteConfig?.fetchAndActivate()?.await().isTrue()
 
-        log("${this.javaClass} fetchAndActivate completed: ${isInitialized}")
+        log("${this.javaClass} fetchAndActivate completed: $isInitialized")
 
         return isInitialized
     }

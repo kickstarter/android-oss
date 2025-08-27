@@ -15,7 +15,9 @@ emulator_job: &emulator_job
   executor:
     name: android/android-machine
     resource-class: xlarge
-    tag: default
+    # TODO: Check at EOY if circleci updated the android machine to support 2025.04.1
+    # https://kickstarter.atlassian.net/browse/MBL-2734
+    tag: 2024.11.1 #https://circleci.com/developer/images/image/cimg/android
   working_directory: "~/project"
   environment:
     TERM: dumb

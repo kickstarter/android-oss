@@ -111,7 +111,7 @@ class PledgedProjectsOverviewViewModel(
     private val analyticEvents = requireNotNull(environment.analytics())
     private var isV2Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
     private var isV1Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
-    private val currentUser = environment.currentUserV2()
+    private val currentUser = requireNotNull(environment.currentUserV2())
 
     private var totalAlerts: Int? = null
 
@@ -149,8 +149,8 @@ class PledgedProjectsOverviewViewModel(
     init {
         viewModelScope.launch(ioDispatcher) {
             emitCurrentState(isLoading = true)
-            currentUser?.observable()?.asFlow()
-                ?.collectLatest {
+            currentUser.observable().asFlow()
+                .collectLatest {
                     totalAlerts = it.getValue()?.backingActionCount()
                 }
         }

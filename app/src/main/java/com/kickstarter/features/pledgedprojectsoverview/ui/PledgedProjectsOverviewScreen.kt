@@ -321,17 +321,18 @@ fun PledgedProjectsOverviewScreen(
                         item {
                             if (!totalAlerts.isNullOrZero()) {
                                 Text(
+                                    modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.ALERT_COUNT.name),
                                     text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
                                     style = typographyV2.headingXL,
                                     color = colors.textPrimary
                                 )
+                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                             }
                         }
 
                         items(
                             count = ppoCards.itemCount
                         ) { index ->
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
                             ppoCards[index]?.let { ppoData ->
                                 PPOCardView(
@@ -493,4 +494,5 @@ enum class PledgedProjectsOverviewScreenTestTag {
     BACK_BUTTON,
     INFO_BUTTON,
     BOTTOM_SHEET,
+    ALERT_COUNT
 }

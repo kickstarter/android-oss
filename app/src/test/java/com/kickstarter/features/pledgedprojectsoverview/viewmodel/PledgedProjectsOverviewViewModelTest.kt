@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import kotlin.properties.Delegates.observable
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
@@ -315,7 +316,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,
                 AnalyticEvents(listOf(trackingClient)),
-                mutableTotalAlerts,
                 tierTypes = listOf(),
             )
 
@@ -339,8 +339,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `pager result returns list network call is successful`() {
         runTest {
-            val mutableTotalAlerts = MutableStateFlow<Int>(0)
-            val totalAlertsList = mutableListOf<Int>()
             val user = UserFactory.user()
             val trackingClient = MockTrackingClient(
                 MockCurrentUserV2(user),
@@ -364,7 +362,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val pagingSource = PledgedProjectsPagingSource(
                 mockApolloClientV2,
                 AnalyticEvents(listOf(trackingClient)),
-                mutableTotalAlerts,
                 tierTypes = listOf()
             )
 
@@ -373,10 +370,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
                 environment = environment()
             )
                 .create(PledgedProjectsOverviewViewModel::class.java)
-
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                mutableTotalAlerts.toList(totalAlertsList)
-            }
 
             val pager = TestPager(
                 PagingConfig(
@@ -393,11 +386,6 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
 
             val page = pager.getLastLoadedPage()
             assert(page?.data?.size == 1)
-
-            assertEquals(
-                totalAlertsList,
-                listOf(0, 10)
-            )
 
             segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
             subscription.dispose()
@@ -419,6 +407,30 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
         }
     }
+
+    @Test
+    fun `emits correct total alert count from user object when available`() =
+        runTest {
+            val currentUserV2 = UserFactory.user().toBuilder().backingActionCount(8).build()
+            val viewModel = PledgedProjectsOverviewViewModel.Factory(
+                ioDispatcher = UnconfinedTestDispatcher(testScheduler),
+                environment = environment().toBuilder()
+                    .currentUserV2(MockCurrentUserV2(currentUserV2)).build()
+            ).create(PledgedProjectsOverviewViewModel::class.java)
+
+            val uiState = mutableListOf<PledgedProjectsOverviewUIState>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.ppoUIState.toList(uiState)
+            }
+
+            assertEquals(
+                uiState,
+                listOf(
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = null),
+                    PledgedProjectsOverviewUIState(isLoading = false, isErrored = false, totalAlerts = 8),
+                )
+            )
+        }
 
 // TODO will add tests back after spike MBL-1638 completed
 //    @Test

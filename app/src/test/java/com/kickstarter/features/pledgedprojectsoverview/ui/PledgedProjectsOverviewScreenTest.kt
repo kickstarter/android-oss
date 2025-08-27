@@ -3,6 +3,7 @@ package com.kickstarter.features.pledgedprojectsoverview.ui
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
@@ -24,6 +25,8 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(PledgedProjectsOverviewScreenTestTag.INFO_BUTTON.name)
     private val bottomSheet =
         composeTestRule.onNodeWithTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name)
+    private val alertCount =
+        composeTestRule.onNodeWithTag(PledgedProjectsOverviewScreenTestTag.ALERT_COUNT.name)
     @Test
     fun testBackButtonClick() {
         var backClickedCount = 0
@@ -117,5 +120,68 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
         }
 
         infoButton.assertDoesNotExist()
+    }
+
+    @Test
+    fun `when total alert count 0, should not show alert count in header`() {
+        composeTestRule.setContent {
+            val ppoCardList = (0..10).map {
+                PPOCardFactory.confirmAddressCard()
+            }
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList)).collectAsLazyPagingItems()
+
+            KSTheme {
+                PledgedProjectsOverviewScreen(
+                    modifier = Modifier,
+                    onBackPressed = { },
+                    lazyColumnListState = rememberLazyListState(),
+                    ppoCards = ppoCardPagingList,
+                    errorSnackBarHostState = SnackbarHostState(),
+                    onSendMessageClick = { _, _, _, _, _ -> },
+                    onAddressConfirmed = { _, _ -> },
+                    onRewardReceivedChanged = { _, _ -> },
+                    onProjectPledgeSummaryClick = { _ -> },
+                    onSeeAllBackedProjectsClick = {},
+                    onPrimaryActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    totalAlerts = 0,
+                    v2Enabled = false
+                )
+            }
+        }
+
+        alertCount.assertDoesNotExist()
+    }
+
+    @Test
+    fun `when total alert count more than 0, should show alert count in header`() {
+        composeTestRule.setContent {
+            val ppoCardList = (0..10).map {
+                PPOCardFactory.confirmAddressCard()
+            }
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList)).collectAsLazyPagingItems()
+
+            KSTheme {
+                PledgedProjectsOverviewScreen(
+                    modifier = Modifier,
+                    onBackPressed = { },
+                    lazyColumnListState = rememberLazyListState(),
+                    ppoCards = ppoCardPagingList,
+                    errorSnackBarHostState = SnackbarHostState(),
+                    onSendMessageClick = { _, _, _, _, _ -> },
+                    onAddressConfirmed = { _, _ -> },
+                    onRewardReceivedChanged = { _, _ -> },
+                    onProjectPledgeSummaryClick = { _ -> },
+                    onSeeAllBackedProjectsClick = {},
+                    onPrimaryActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    totalAlerts = 10,
+                    v2Enabled = false
+                )
+            }
+        }
+
+        alertCount.assertExists()
+        alertCount.assertIsDisplayed()
     }
 }

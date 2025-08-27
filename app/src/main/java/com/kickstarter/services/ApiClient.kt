@@ -10,16 +10,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface ApiService {
     @GET("/v1/app/android/config")
-    suspend fun getConfig(): Config
-
-    @GET("/v1/app/android/config")
     suspend fun getConfigResponse(): Response<Config>
-}
-
-class MockApiClient() : ApiClientType {
-    override suspend fun getConfig(): Result<Config> {
-        TODO("Not yet implemented")
-    }
 }
 
 interface ApiClientType {
@@ -30,34 +21,52 @@ class ApiClient(
     private val service: ApiService,
     private val gson: Gson
 ) : ApiClientType {
-    // TODO: generic error handling like in Apollo, trying to use some of the
-    // defined error classes with the else branch on :54
-    private suspend fun <T> executeForResult(block: suspend () -> T): Result<T> =
+
+    override suspend fun getConfig(): Result<Config> =
+        executeHttpForResult { service.getConfigResponse() }
+
+    class EmptyBodyException(val response: Response<*>) :
+        IllegalStateException("Response body was null for a successful request")
+
+    private suspend inline fun <reified T> executeHttpForResult(
+        crossinline call: suspend () -> Response<T>
+    ): Result<T> =
         try {
-            Result.success(block())
-        } catch (cancellationException: CancellationException) {
-            throw cancellationException
+            // - execute call
+            val response = call()
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    val ex = EmptyBodyException(response)
+                    FirebaseCrashlytics.getInstance().recordException(ex)
+                    Result.failure(ex)
+                }
+            } else {
+                try {
+                    val env = gson.fromJson(response.errorBody()?.string(), ErrorEnvelope::class.java)
+                    val apiException = ApiException(env, response)
+                    FirebaseCrashlytics.getInstance().recordException(apiException)
+                    Result.failure(apiException)
+                } catch (e: Exception) {
+                    throw e
+                }
+            }
+        } catch (ce: CancellationException) {
+            throw ce // - Always relaunch Cancellation exceptions
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             Result.failure(e)
         }
+}
 
+/**
+ * Testing Mock for ApiClient, meant to be use at VM tests level
+ */
+class MockApiClient() : ApiClientType {
     override suspend fun getConfig(): Result<Config> {
-        val response = service.getConfigResponse()
-
-        return if (response.isSuccessful)
-            response.body()?.let { config ->
-                Result.success(config)
-            } ?: Result.failure(Exception())
-        else {
-            val envelope: ErrorEnvelope? = try {
-                gson.fromJson(response.errorBody()?.string(), ErrorEnvelope::class.java)
-            } catch (e: Exception) {
-                null
-            }
-            envelope?.let {
-                Result.failure(ApiException(envelope, response))
-            } ?: Result.failure(ResponseException(response))
-        }
+        TODO("Not yet implemented")
     }
 }

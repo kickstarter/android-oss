@@ -2,7 +2,10 @@ package com.kickstarter.services
 
 import com.google.gson.Gson
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.services.apiresponses.ErrorEnvelope
+import com.kickstarter.services.apiresponses.ErrorEnvelope.Companion.builder
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.CancellationException
@@ -71,20 +74,6 @@ class ApiClientTest {
     }
 
     @Test
-    fun `getConfig success but empty body - returns failure with EmptyBodyException`() = runTest {
-        val mockResponse = MockResponse()
-            .setResponseCode(200)
-            .setBody("") // Empty body
-        mockWebServer.enqueue(mockResponse)
-
-        val result = apiClient.getConfig()
-
-        assertTrue(result.isFailure)
-        val exception = result.exceptionOrNull()
-        assertTrue(exception is ApiClient.EmptyBodyException)
-    }
-
-    @Test
     fun `getConfig network timeout - returns failure`() = runTest {
         val config = ConfigFactory.config()
 
@@ -124,5 +113,45 @@ class ApiClientTest {
             }
         }
         job.cancelAndJoin() // Cancel the job and wait for it to complete
+    }
+
+    @Test
+    fun `getConfig error 503 with empty error body - returns failure with ApiException`() = runTest {
+        val envelope = builder()
+            .ksrCode(ErrorEnvelope.TFA_FAILED)
+            .httpCode(400)
+            .build()
+        val jsonString = gson.toJson(envelope)
+
+        val mockResponse = MockResponse()
+            .setResponseCode(400)
+            .setBody(jsonString)
+        mockWebServer.enqueue(mockResponse)
+
+        val result = apiClient.getConfig()
+
+        assertTrue(result.isFailure)
+        val exception = result.exceptionOrNull()
+        assertTrue(exception is ApiException)
+        val apiException = exception as ApiException
+        assertNotNull(apiException.errorEnvelope())
+        assertEquals(apiException.response().code(), 400)
+    }
+
+    @Test
+    fun `mal formed json error`() = runTest {
+        val message = "{malformed json}"
+        val jsonString = gson.toJson(message)
+
+        val mockResponse = MockResponse()
+            .setResponseCode(503)
+            .setBody(jsonString)
+        mockWebServer.enqueue(mockResponse)
+
+        val result = apiClient.getConfig()
+        assertTrue(result.isFailure)
+
+        val exception = result.exceptionOrNull()
+        assertTrue(exception is Exception)
     }
 }

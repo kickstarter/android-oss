@@ -80,7 +80,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                 val ppoUIState by viewModel.ppoUIState.collectAsStateWithLifecycle()
 
                 val lazyListState = rememberLazyListState()
-                val totalAlerts = viewModel.totalAlertsState.collectAsStateWithLifecycle().value
+                val totalAlerts = ppoUIState.totalAlerts
 
                 val ppoCardPagingSource = viewModel.ppoCardsState.collectAsLazyPagingItems()
 
@@ -99,7 +99,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         lazyColumnListState = lazyListState,
                         errorSnackBarHostState = snackbarHostState,
                         ppoCards = ppoCardPagingSource,
-                        totalAlerts = totalAlerts,
+                        totalAlerts = totalAlerts ?: 0,
                         onAddressConfirmed = { addressID, backingID -> viewModel.confirmAddress(backingID = backingID, addressID = addressID) },
                         onSendMessageClick = { projectName, projectID, ppoCards, totalAlerts, creatorID -> viewModel.onMessageCreatorClicked(projectName = projectName, projectId = projectID, creatorID = creatorID, ppoCards = ppoCards, totalAlerts = totalAlerts) },
                         onProjectPledgeSummaryClick = { projectSlug ->
@@ -115,7 +115,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                         onPrimaryActionButtonClicked = { PPOCard ->
                             when (PPOCard.viewType()) {
                                 PPOCardViewType.AUTHENTICATE_CARD -> {
-                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts ?: 0)
                                     lifecycleScope.launch {
                                         viewModel.showLoadingState(true)
                                     }
@@ -123,7 +123,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.FIX_PAYMENT -> {
-                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    env.analytics()?.trackPPOFixPaymentCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts ?: 0)
                                     openManagePledge(
                                         PPOCard.projectSlug ?: "",
                                         resultLauncher = startForResult
@@ -131,7 +131,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.OPEN_SURVEY -> {
-                                    env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts, PPOCard.surveyID ?: "")
+                                    env.analytics()?.trackPPOOpenSurveyCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts ?: 0, PPOCard.surveyID ?: "")
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
                                         toolbarTitle = R.string.Backing_details,
@@ -140,7 +140,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 }
 
                                 PPOCardViewType.PLEDGE_MANAGEMENT -> {
-                                    viewModel.sendFinalizePledgeCTAEvent(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    viewModel.sendFinalizePledgeCTAEvent(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts ?: 0)
                                     openBackingDetailsWebView(
                                         url = PPOCard.webviewUrl ?: "",
                                         toolbarTitle = R.string.Pledge_manager,
@@ -157,7 +157,7 @@ class PledgedProjectsOverviewActivity : AppCompatActivity() {
                                 PPOCardViewType.ADDRESS_CONFIRMED,
                                 PPOCardViewType.SURVEY_SUBMITTED_SHIPPABLE,
                                 -> {
-                                    env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts)
+                                    env.analytics()?.trackPPOConfirmAddressEditCTAClicked(PPOCard.projectId ?: "", ppoCardPagingSource.itemSnapshotList.items, totalAlerts ?: 0)
                                     openBackingDetailsWebView(
                                         url = PPOCard.backingDetailsUrl ?: "",
                                         toolbarTitle = R.string.Backing_details,

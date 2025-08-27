@@ -77,7 +77,6 @@ class SearchAndFilterViewModel(
 
     init {
         scope.launch {
-            environment.apiClient()?.getConfig()
             val debounced = _searchTerm
                 .debounce(debouncePeriod)
 

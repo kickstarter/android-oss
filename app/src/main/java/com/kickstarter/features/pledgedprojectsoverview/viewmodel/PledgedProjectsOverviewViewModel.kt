@@ -9,6 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import androidx.paging.cachedIn
 import androidx.paging.filter
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
@@ -49,11 +50,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
-private val PAGE_LIMIT = 25
+private val PAGE_LIMIT = 10
 class PledgedProjectsPagingSource(
     private val apolloClient: ApolloClientTypeV2,
     private val analyticEvents: AnalyticEvents,
-    private var totalAlerts: MutableStateFlow<Int>,
     private val limit: Int = PAGE_LIMIT,
     private val tierTypes: List<PledgeTierType>,
 
@@ -77,7 +77,6 @@ class PledgedProjectsPagingSource(
                     result = LoadResult.Error(it)
                 }
                 .collect { envelope ->
-                    totalAlerts.emit(envelope.totalCount ?: 0)
                     analyticEvents.trackPledgedProjectsOverviewPageViewed(envelope.pledges() ?: emptyList(), envelope.totalCount() ?: 0)
                     ppoCardsList = envelope.pledges() ?: emptyList()
                     nextPageEnvelope = if (envelope.pageInfoEnvelope?.hasNextPage == true) envelope.pageInfoEnvelope else null
@@ -97,7 +96,9 @@ class PledgedProjectsPagingSource(
 data class PledgedProjectsOverviewUIState(
     val isLoading: Boolean = false,
     val isErrored: Boolean = false,
+    val totalAlerts: Int? = null,
 )
+
 class PledgedProjectsOverviewViewModel(
     environment: Environment,
     private val ioDispatcher: CoroutineDispatcher
@@ -110,8 +111,9 @@ class PledgedProjectsOverviewViewModel(
     private val analyticEvents = requireNotNull(environment.analytics())
     private var isV2Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW_V2) ?: false
     private var isV1Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
-    private val mutableTotalAlerts = MutableStateFlow<Int>(0)
-    val totalAlertsState = mutableTotalAlerts.asStateFlow()
+    private val currentUser = environment.currentUserV2()
+
+    private var totalAlerts : Int? = null
 
     private val mutablePPOUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
     val ppoCardsState: StateFlow<PagingData<PPOCard>> = mutablePpoCards.asStateFlow()
@@ -123,7 +125,6 @@ class PledgedProjectsOverviewViewModel(
     private var pagingSource = PledgedProjectsPagingSource(
         apolloClient = apolloClient,
         analyticEvents = analyticEvents,
-        totalAlerts = mutableTotalAlerts,
         limit = PAGE_LIMIT,
         tierTypes = getAllowedTierTypes()
     )
@@ -146,6 +147,13 @@ class PledgedProjectsOverviewViewModel(
             )
 
     init {
+        viewModelScope.launch(ioDispatcher) {
+            emitCurrentState(isLoading = true)
+            currentUser?.observable()?.asFlow()
+                ?.collectLatest {
+                    totalAlerts = it.getValue()?.backingActionCount()
+                }
+        }
         getPledgedProjects()
     }
 
@@ -162,6 +170,7 @@ class PledgedProjectsOverviewViewModel(
                     pagingSource
                 }
                     .flow
+                    .cachedIn(viewModelScope)
                     .map { pagingData ->
                         pagingData.filter {
                             if (!isV2Enabled) !(it.viewType ?: PPOCardViewType.UNKNOWN).isTier2Type() else true
@@ -171,7 +180,8 @@ class PledgedProjectsOverviewViewModel(
                         emitCurrentState(isLoading = true)
                     }.catch {
                         emitCurrentState(isErrored = true)
-                    }.collectLatest { pagingData ->
+                    }
+                    .collectLatest { pagingData ->
                         mutablePpoCards.value = pagingData
                         emitCurrentState()
                     }
@@ -253,6 +263,7 @@ class PledgedProjectsOverviewViewModel(
             PledgedProjectsOverviewUIState(
                 isLoading = isLoading,
                 isErrored = isErrored,
+                totalAlerts = totalAlerts
             )
         )
     }

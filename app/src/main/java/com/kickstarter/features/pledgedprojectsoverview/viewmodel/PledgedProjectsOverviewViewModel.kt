@@ -113,7 +113,7 @@ class PledgedProjectsOverviewViewModel(
     private var isV1Enabled = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_PLEDGED_PROJECTS_OVERVIEW) ?: false
     private val currentUser = environment.currentUserV2()
 
-    private var totalAlerts : Int? = null
+    private var totalAlerts: Int? = null
 
     private val mutablePPOUIState = MutableStateFlow(PledgedProjectsOverviewUIState())
     val ppoCardsState: StateFlow<PagingData<PPOCard>> = mutablePpoCards.asStateFlow()

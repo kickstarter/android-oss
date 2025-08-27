@@ -326,10 +326,9 @@ fun PledgedProjectsOverviewScreen(
                                     style = typographyV2.headingXL,
                                     color = colors.textPrimary
                                 )
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                             }
                         }
-
 
                         items(
                             count = ppoCards.itemCount

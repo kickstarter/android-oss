@@ -12,7 +12,7 @@ open class MockFeatureFlagClient : FeatureFlagClientType {
 
     override fun activate(context: Activity) {}
 
-    override fun fetchAndActivate(context: Activity) {}
+    override suspend fun fetchAndActivate(): Boolean { return true }
 
     override fun getBoolean(FlagKey: FlagKey) = false
 

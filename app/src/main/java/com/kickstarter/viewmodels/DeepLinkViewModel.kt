@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
@@ -42,6 +43,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -109,7 +113,7 @@ interface DeepLinkViewModel {
         private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
-        private val ffClient = requireNotNull(environment.featureFlagClient())
+        private val ffClient = environment.featureFlagClient()
 
         private val disposables = CompositeDisposable()
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
@@ -347,6 +351,25 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
+        }
+
+        fun runInitializations(intent: Intent) {
+            viewModelScope.launch {
+                try {
+                    val ffClientInitialization = async { initializeFeatureFlagClient() }
+                    val isInitialized = awaitAll(ffClientInitialization)
+
+                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                        // parse intent and determine user navigation
+                    } else {
+                        throw Exception()
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+
+        private suspend fun initializeFeatureFlagClient(): Boolean? {
+            return ffClient?.fetchAndActivate()
         }
 
         private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {

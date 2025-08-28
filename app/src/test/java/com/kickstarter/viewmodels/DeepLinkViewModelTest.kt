@@ -687,7 +687,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch {
             assertThrows(
                 Exception::class.java,
-                { vm.runInitializations() }
+                { vm.runInitializations(intent = intentWithData(url)) }
             )
         }
     }

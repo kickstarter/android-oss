@@ -240,11 +240,11 @@ dependencies {
     implementation "com.jakewharton.timber:timber:5.0.1"
     implementation 'com.stripe:stripe-android:20.47.3'
 
-    final okhttp_version = '4.10.+'
+    final okhttp_version = '5.1.0'
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
 
-    final retrofit_version = "2.9.+"
+    final retrofit_version = "3.0.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
@@ -270,7 +270,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:33.1.0')
+    implementation platform('com.google.firebase:firebase-bom:34.1.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
@@ -320,6 +320,7 @@ dependencies {
     def mockkVersion = '1.13.4'
     testImplementation "io.mockk:mockk-android:$mockkVersion"
     testImplementation "io.mockk:mockk-agent:$mockkVersion"
+    testImplementation "com.squareup.okhttp3:mockwebserver:5.1.0"
 
     def espresso = '3.4.0'
     androidTestImplementation ('androidx.test.espresso:espresso-contrib:' + espresso) {

@@ -61,6 +61,7 @@ object RewardFactory {
             .estimatedDeliveryOn(ESTIMATED_DELIVERY)
             .minimum(20.0)
             .pledgeAmount(20.0)
+            .image(PhotoFactory.photo())
             .latePledgeAmount(30.0)
             .shippingPreference("unrestricted")
             .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)

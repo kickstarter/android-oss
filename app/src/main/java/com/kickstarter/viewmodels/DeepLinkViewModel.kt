@@ -44,8 +44,8 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filter
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -344,6 +344,21 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
+        }
+
+        fun runInitializations(intent: Intent) {
+            viewModelScope.launch {
+                try {
+                    val ffClientInitialization = async { initializeFeatureFlagClient() }
+                    val isInitialized = awaitAll(ffClientInitialization)
+
+                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                        // parse intent and determine user navigation
+                    } else {
+                        throw Exception()
+                    }
+                } catch (e: Exception) { }
+            }
         }
 
         private suspend fun initializeFeatureFlagClient(): Boolean? {

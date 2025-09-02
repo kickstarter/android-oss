@@ -309,6 +309,11 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.6.7'
     implementation "com.airbnb.android:lottie-compose:6.6.7"
 
+    // Jetpack Media3 for Compose
+    implementation "androidx.media3:media3-exoplayer:1.7.1"
+    implementation "androidx.media3:media3-ui:1.7.1"
+    implementation "androidx.media3:media3-common:1.7.1"
+
     // Testing
     testImplementation "junit:junit:4.13.2"
     testImplementation 'org.mockito:mockito-core:5.18.0'

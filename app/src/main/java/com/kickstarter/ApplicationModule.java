@@ -53,6 +53,7 @@ import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
+import com.kickstarter.libs.qualifiers.ApiRetrofit;
 import com.kickstarter.libs.qualifiers.ApiRetrofitV2;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
@@ -65,7 +66,9 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiClientTypeV2;
+import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
@@ -112,6 +115,7 @@ public class ApplicationModule {
   @Singleton
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull ApiClientTypeV2 apiClientV2,
+    final @NonNull ApiClientType apiClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
@@ -139,6 +143,7 @@ public class ApplicationModule {
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
       .apiClientV2(apiClientV2)
+      .apiClient(apiClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
       .cookieManager(cookieManager)
@@ -246,6 +251,16 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @ApiRetrofit
+  @NonNull
+  static Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
+                                       final @NonNull Gson gson,
+                                       final @NonNull OkHttpClient okHttpClient) {
+    return createRetrofit(apiEndpoint.url(), gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(
           final @NonNull String clientId, final @NonNull CurrentUserTypeV2 currentUser,
@@ -266,6 +281,13 @@ public class ApplicationModule {
   @NonNull
   static ApiServiceV2 provideApiServiceV2(final @ApiRetrofitV2 @NonNull Retrofit retrofit) {
     return retrofit.create(ApiServiceV2.class);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
+    return retrofit.create(ApiService.class);
   }
 
   @Provides
@@ -316,6 +338,14 @@ public class ApplicationModule {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .build();
+  }
+
+  private static @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
+    return new Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
   }
 

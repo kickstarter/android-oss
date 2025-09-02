@@ -2,7 +2,7 @@ package com.kickstarter.libs.featureflag
 
 import android.app.Activity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL

@@ -47,6 +47,8 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import androidx.core.net.toUri
+import com.google.firebase.FirebaseApp
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -86,7 +88,7 @@ interface DeepLinkViewModel {
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
     }
 
-    class DeepLinkViewModel(environment: Environment, private val intent: Intent?, externalCall: CustomNetworkClient) :
+    class DeepLinkViewModel(environment: Environment, private val intent: Intent?, private val externalCall: CustomNetworkClient) :
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
@@ -104,7 +106,7 @@ interface DeepLinkViewModel {
         private val apiClientType = requireNotNull(environment.apiClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
-        private val projectObservable: Observable<Project>
+//        private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
         private val ffClient = environment.featureFlagClient()
@@ -114,9 +116,23 @@ interface DeepLinkViewModel {
 
         val outputs: Outputs = this
 
-        init {
+        fun runInitializations() {
+            viewModelScope.launch {
+                try {
+                    val ffClientInitialization = async { initializeFeatureFlagClient() }
+                    val isInitialized = awaitAll(ffClientInitialization)
 
-            val uriFromIntent = intent()
+                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                        processIntent(externalCall = externalCall)
+                    } else {
+                        throw Exception()
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+
+        private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
+            val uriFromIntent = intent
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
 
@@ -130,16 +146,16 @@ interface DeepLinkViewModel {
 
             // TODO: on following tickets recognize discovery with category_id links, for now if not project URL, open discovery
             val isKSDomainUriFromEmail = uriFromEmailDomain
-                .map { Uri.parse(it.request.url.toString()) }
+                .map { it.request.url.toString().toUri() }
                 .filter { !it.isProjectUri() && it.isKSDomain() }
 
             // - The redirected URI is a project URI
             val projectFromEmail = uriFromEmailDomain
                 .filter {
-                    Uri.parse(it.request.url.toString()).isProjectUri()
+                    it.request.url.toString().toUri().isProjectUri()
                 }
                 .map {
-                    Uri.parse(it.request.url.toString())
+                    it.request.url.toString().toUri()
                 }
 
             // - Take URI from main page Open button with URL - ksr://www.kickstarter.com/?app_banner=1&ref=nav
@@ -168,7 +184,7 @@ interface DeepLinkViewModel {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
 
-            projectObservable = uriFromIntent
+            val projectObservable : Observable<Project> = uriFromIntent
                 .filter { ProjectIntentMapper.paramFromUri(it).isNotNull() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
                 .switchMap {
@@ -328,21 +344,6 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
-        }
-
-        fun runInitializations(intent: Intent) {
-            viewModelScope.launch {
-                try {
-                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-                    val isInitialized = awaitAll(ffClientInitialization)
-
-                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                        // parse intent and determine user navigation
-                    } else {
-                        throw Exception()
-                    }
-                } catch (e: Exception) { }
-            }
         }
 
         private suspend fun initializeFeatureFlagClient(): Boolean? {

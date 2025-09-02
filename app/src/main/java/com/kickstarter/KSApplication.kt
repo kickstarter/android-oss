@@ -144,7 +144,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
         get() = false
 
     private fun setVisitorCookie() {
-        val deviceId = identifier
+        val deviceId = identifier.value
         val uniqueIdentifier =
             if (TextUtils.isEmpty(deviceId)) UUID.randomUUID().toString() else deviceId
         val cookie = HttpCookie("vis", uniqueIdentifier)

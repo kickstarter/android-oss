@@ -49,6 +49,10 @@ import okhttp3.Request
 import okhttp3.Response
 import androidx.core.net.toUri
 import com.google.firebase.FirebaseApp
+import com.kickstarter.libs.FirebaseHelper
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -119,14 +123,18 @@ interface DeepLinkViewModel {
         fun runInitializations() {
             viewModelScope.launch {
                 try {
-                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-                    val isInitialized = awaitAll(ffClientInitialization)
+                    FirebaseHelper.identifier
+                        .filter { it.isNotBlank() }
+                        .collect {
+                            val ffClientInitialization = async { initializeFeatureFlagClient() }
+                            val isInitialized = awaitAll(ffClientInitialization)
 
-                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                        processIntent(externalCall = externalCall)
-                    } else {
-                        throw Exception()
-                    }
+                            if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                                processIntent(externalCall = externalCall)
+                            } else {
+                                throw Exception()
+                            }
+                        }
                 } catch (e: Exception) { }
             }
         }
@@ -377,7 +385,7 @@ interface DeepLinkViewModel {
             val url = uri.toString()
             val ref = refTag(url)
             return if (ref.isNull()) {
-                Uri.parse(appendRefTag(url, RefTag.deepLink().tag()))
+                appendRefTag(url, RefTag.deepLink().tag()).toUri()
             } else uri
         }
 

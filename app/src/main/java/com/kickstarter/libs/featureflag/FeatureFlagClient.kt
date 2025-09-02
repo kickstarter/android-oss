@@ -1,6 +1,7 @@
 package com.kickstarter.libs.featureflag
 
 import android.app.Activity
+import androidx.compose.runtime.MutableState
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import com.kickstarter.libs.Build
@@ -8,9 +9,14 @@ import com.kickstarter.libs.Build.isInternal
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.INTERNAL_INTERVAL
 import com.kickstarter.libs.featureflag.FeatureFlagClient.Companion.RELEASE_INTERVAL
+import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.UserPrivacy
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOf
@@ -141,7 +147,7 @@ class FeatureFlagClient(
     }
 
     override suspend fun fetchAndActivate(): Boolean {
-        val isInitialized = remoteConfig?.fetchAndActivate()?.await().isTrue()
+        val isInitialized = remoteConfig?.fetchAndActivate()?.await().isNotNull()
 
         log("${this.javaClass} fetchAndActivate completed: $isInitialized")
 

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -20,7 +19,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okhttp3.HttpUrl
@@ -80,22 +78,22 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testNonDeepLink_startsBrowser() {
 //        runTest {
-            val url =
-                "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comment"
+        val url =
+            "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comment"
 
-            var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
-            setUpEnvironment(intent = intentWithData(url), environment = environment)
+        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
 
-            vm.runInitializations()
+        vm.runInitializations()
 
-            startBrowser.assertValue(url)
-            startDiscoveryActivity.assertNoValues()
-            startProjectActivity.assertNoValues()
-            startProjectActivityForCheckout.assertNoValues()
-            startProjectActivityForComment.assertNoValues()
-            startProjectActivityToSave.assertNoValues()
-            startPreLaunchProjectActivity.assertNoValues()
-            startProjectSurveyActivity.assertNoValues()
+        startBrowser.assertValue(url)
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
 //        }
     }
 
@@ -794,7 +792,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, intentWithData(url))
 
         vm.runInitializations()
-        
+
         startProjectActivityToSave.assertNoValues()
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()

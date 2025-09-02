@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
-import androidx.annotation.VisibleForTesting
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -44,16 +44,11 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import androidx.core.net.toUri
-import com.google.firebase.FirebaseApp
-import com.kickstarter.libs.FirebaseHelper
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -124,14 +119,14 @@ interface DeepLinkViewModel {
         fun runInitializations() {
             viewModelScope.launch {
                 try {
-                            val ffClientInitialization = async { initializeFeatureFlagClient() }
-                            val isInitialized = awaitAll(ffClientInitialization)
+                    val ffClientInitialization = async { initializeFeatureFlagClient() }
+                    val isInitialized = awaitAll(ffClientInitialization)
 
-                            if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                                processIntent(externalCall = externalCall)
-                            } else {
-                                throw Exception()
-                            }
+                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                        processIntent(externalCall = externalCall)
+                    } else {
+                        throw Exception()
+                    }
                 } catch (e: Exception) { }
             }
         }
@@ -189,7 +184,7 @@ interface DeepLinkViewModel {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
 
-            val projectObservable : Observable<Project> = uriFromIntent
+            val projectObservable: Observable<Project> = uriFromIntent
                 .filter { ProjectIntentMapper.paramFromUri(it).isNotNull() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
                 .switchMap {

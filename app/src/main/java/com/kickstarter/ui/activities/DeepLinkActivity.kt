@@ -74,7 +74,13 @@ class DeepLinkActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.runInitializations()
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                FirebaseHelper.identifier
+                    .filter { !it.isBlank() }
+                    .collect {
+                        viewModel.runInitializations()
+                    }
+            }
         }
 
         viewModel.outputs.startBrowser()

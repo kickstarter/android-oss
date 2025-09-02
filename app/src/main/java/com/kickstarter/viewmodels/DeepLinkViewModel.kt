@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -123,9 +124,6 @@ interface DeepLinkViewModel {
         fun runInitializations() {
             viewModelScope.launch {
                 try {
-                    FirebaseHelper.identifier
-                        .filter { it.isNotBlank() }
-                        .collect {
                             val ffClientInitialization = async { initializeFeatureFlagClient() }
                             val isInitialized = awaitAll(ffClientInitialization)
 
@@ -134,7 +132,6 @@ interface DeepLinkViewModel {
                             } else {
                                 throw Exception()
                             }
-                        }
                 } catch (e: Exception) { }
             }
         }

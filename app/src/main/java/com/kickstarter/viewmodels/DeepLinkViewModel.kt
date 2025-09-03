@@ -8,8 +8,6 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.remoteconfig.remoteConfig
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FirebaseHelper
@@ -48,7 +46,6 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -138,7 +135,6 @@ interface DeepLinkViewModel {
                             }
                         } catch (e: Exception) { }
                     }
-
             }
         }
 

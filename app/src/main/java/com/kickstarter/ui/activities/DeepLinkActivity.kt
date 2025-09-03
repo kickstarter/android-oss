@@ -9,12 +9,9 @@ import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -34,7 +31,6 @@ import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class DeepLinkActivity : AppCompatActivity() {

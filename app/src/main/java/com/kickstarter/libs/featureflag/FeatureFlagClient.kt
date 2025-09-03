@@ -137,11 +137,11 @@ class FeatureFlagClient(
     }
 
     override suspend fun fetchAndActivate(): Boolean {
-        val isInitialized = remoteConfig?.fetchAndActivate()?.await().isNotNull()
+        val fetchAndActivateComplete = remoteConfig?.fetchAndActivate()?.await().isNotNull()
 
-        log("${this.javaClass} fetchAndActivate completed: $isInitialized")
+        log("${this.javaClass} fetchAndActivate completed: $fetchAndActivateComplete")
 
-        return isInitialized
+        return fetchAndActivateComplete
     }
 
     override fun getBoolean(key: FlagKey): Boolean {

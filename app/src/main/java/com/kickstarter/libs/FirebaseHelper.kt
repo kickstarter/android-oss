@@ -13,8 +13,6 @@ import com.kickstarter.libs.utils.extensions.isKSApplication
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 
 class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback: () -> Boolean) {
 
@@ -38,20 +36,20 @@ class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback
     }
 
     init {
-            if (context.isKSApplication()) {
-                if (FirebaseApp.getApps(context).isEmpty()) {
-                    FirebaseApp.initializeApp(context)
-                    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
-                    FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
-                }
-                // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
-                ffClient.initialize(Firebase.remoteConfig)
-                FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
-                    mutableIdentifier.value = s
-                    callback()
-                }
-            } else {
-                mutableIdentifier.value = "Test Id"
+        if (context.isKSApplication()) {
+            if (FirebaseApp.getApps(context).isEmpty()) {
+                FirebaseApp.initializeApp(context)
+                FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+                FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
             }
+            // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
+            ffClient.initialize(Firebase.remoteConfig)
+            FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
+                mutableIdentifier.value = s
+                callback()
+            }
+        } else {
+            mutableIdentifier.value = "Test Id"
         }
     }
+}

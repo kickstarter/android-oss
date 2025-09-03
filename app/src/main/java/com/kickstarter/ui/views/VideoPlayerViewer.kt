@@ -30,7 +30,7 @@ class VideoPlayerViewer @JvmOverloads constructor(
     private val videoPlayerView = binding.playerView
     private var element: VideoModelElement? = null
 
-    private var player: ExoPlayer? = null
+    private var player: ExoPlayer = context.initializeExoplayer()
     private var fullscreenButton: ImageView? = null
 
     private var playWhenReady = false
@@ -63,10 +63,13 @@ class VideoPlayerViewer @JvmOverloads constructor(
 
     fun setPlayerSeekPosition(seekPosition: Long) {
         videoPlayerView.player?.seekTo(seekPosition)
+        playWhenReady = true
         playbackPosition = seekPosition
+        player.play()
     }
 
     fun setPlayerPlayWhenReadyFlag(playWhenReady: Boolean) {
+        this.playWhenReady = playWhenReady
         if (playWhenReady)
             initializePlayer()
     }
@@ -74,9 +77,12 @@ class VideoPlayerViewer @JvmOverloads constructor(
     @OptIn(UnstableApi::class)
     fun initializePlayer() {
         if (element == null || element?.sourceUrl == null) return
+        if (player.isReleased) {
+            playWhenReady = false
+            player = context.initializeExoplayer()
+        }
+        player?.playWhenReady = playWhenReady
         fullscreenButton = videoPlayerView.findViewById(R.id.exo_fullscreen_icon)
-
-        player = context.initializeExoplayer()
 
         val mediaItem = MediaItem.Builder()
             .setUri(element?.sourceUrl ?: "")
@@ -90,7 +96,6 @@ class VideoPlayerViewer @JvmOverloads constructor(
         element?.seekPosition?.let {
             player?.seekTo(it)
         }
-        player?.playWhenReady = true
 
         fullscreenButton?.setOnClickListener {
             element?.sourceUrl?.let { url ->
@@ -106,11 +111,10 @@ class VideoPlayerViewer @JvmOverloads constructor(
     fun releasePlayer() {
         player?.let {
             playbackPosition = it.currentPosition
-            playWhenReady = it.playWhenReady
+            playWhenReady = false
             it.removeListener(playbackStateListener)
             it.release()
         }
-        player = null
     }
 
     fun setOnFullScreenClickedListener(listener: OnFullScreenOpenedClickedListener) {

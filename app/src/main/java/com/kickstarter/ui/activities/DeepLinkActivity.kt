@@ -67,9 +67,7 @@ class DeepLinkActivity : AppCompatActivity() {
             }
         }
 
-        lifecycleScope.launch {
-            viewModel.runInitializations()
-        }
+        viewModel.runInitializations()
 
         viewModel.outputs.startBrowser()
             .observeOn(AndroidSchedulers.mainThread())

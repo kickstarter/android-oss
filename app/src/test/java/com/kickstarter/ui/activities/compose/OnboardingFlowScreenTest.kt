@@ -117,24 +117,6 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `Test save projects page next button click skips notifications page if device doesn't need notification permissions`() {
-        setupOnboardingScreen(deviceNeedsNotificationPermissions = false)
-
-        primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
-        primaryButton.performClick() // Save -> Activity Tracking
-
-        pageTitle.assertIsDisplayed()
-        pageTitle.assertTextEquals(activityTrackingPageTitleText)
-        pageDescription.assertIsDisplayed()
-        pageDescription.assertTextEquals(activityTrackingPageDescriptionText)
-        composeTestRule.onNodeWithText(activityTrackingPageButtonText)
-            .assertExists()
-        composeTestRule.onNodeWithText(activityTrackingPageSecondaryButtonText)
-            .assertExists()
-    }
-
-    @Test
     fun `Test activity tracking page primary button click invokes allowTracking`() {
         setupOnboardingScreen()
 
@@ -155,6 +137,27 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
 
         primaryButton.performClick()
         assertTrue(allowTrackingCalled)
+    }
+
+    @Test
+    fun `Test activity tracking page next button click skips notifications page if device doesn't need notification permissions`() {
+        setupOnboardingScreen(deviceNeedsNotificationPermissions = false)
+
+        primaryButton.performClick() // Welcome -> Save
+        Thread.sleep(500)
+        primaryButton.performClick() // Save -> Activity Tracking
+        Thread.sleep(500)
+        secondaryButton.performClick() // Activity Tracking -> Login/Signup
+
+        pageTitle.assertIsDisplayed()
+        pageTitle.assertTextEquals(loginOrSignupPageTitleText)
+        pageDescription.assertIsDisplayed()
+        pageDescription.assertTextEquals(loginOrSignupPageDescriptionText)
+        primaryButton.assertIsDisplayed()
+        composeTestRule.onNodeWithText(loginOrSignupPageButtonText)
+            .assertExists()
+        composeTestRule.onNodeWithText(loginOrSignupPageSecondaryButtonText)
+            .assertExists()
     }
 
     @Test

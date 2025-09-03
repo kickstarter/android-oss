@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -68,6 +69,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.finishDeeplinkActivity().subscribe { finishDeeplinkActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
+        FirebaseHelper.mutableIdentifier().value = "Test"
     }
 
     @After

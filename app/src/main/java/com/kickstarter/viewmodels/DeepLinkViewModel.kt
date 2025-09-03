@@ -8,8 +8,11 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -45,6 +48,7 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -118,16 +122,23 @@ interface DeepLinkViewModel {
 
         fun runInitializations() {
             viewModelScope.launch {
-                try {
-                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-                    val isInitialized = awaitAll(ffClientInitialization)
+                FirebaseHelper.identifier
+                    .filter { it.isNotBlank() }
+                    .collect {
+                        try {
+                            val ffClientInitialization = async {
+                                initializeFeatureFlagClient()
+                            }
+                            val isInitialized = awaitAll(ffClientInitialization)
 
-                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                        processIntent(externalCall = externalCall)
-                    } else {
-                        throw Exception()
+                            if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                                processIntent(externalCall = externalCall)
+                            } else {
+                                throw Exception()
+                            }
+                        } catch (e: Exception) { }
                     }
-                } catch (e: Exception) { }
+
             }
         }
 

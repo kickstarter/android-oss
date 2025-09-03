@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -20,6 +21,7 @@ class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback
     companion object {
         @JvmStatic private val mutableIdentifier = MutableStateFlow("")
         @JvmStatic val identifier: StateFlow<String> = mutableIdentifier.asStateFlow()
+
         // - Should be called just one time
         @JvmStatic fun initialize(
             context: Context,
@@ -29,26 +31,27 @@ class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback
             return FirebaseHelper(context, ffClient, callback)
         }
 
+        @VisibleForTesting
+        fun mutableIdentifier() = mutableIdentifier
+
         @JvmStatic fun delete() = FirebaseInstallations.getInstance().delete()
     }
 
     init {
-        // not sure if runBlocking is the correct coroutine launcher we want here, but it seems to work on normal app bootstrap
-        runBlocking {
             if (context.isKSApplication()) {
                 if (FirebaseApp.getApps(context).isEmpty()) {
                     FirebaseApp.initializeApp(context)
                     FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                     FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
                 }
-
                 // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
                 ffClient.initialize(Firebase.remoteConfig)
-                mutableIdentifier.value = FirebaseInstallations.getInstance().id.await().toString()
-                callback()
+                FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
+                    mutableIdentifier.value = s
+                    callback()
+                }
             } else {
                 mutableIdentifier.value = "Test Id"
             }
         }
     }
-}

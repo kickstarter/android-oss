@@ -67,8 +67,8 @@ import com.kickstarter.ui.fragments.ConsentManagementDialogFragment
 enum class OnboardingPage(val analyticsSectionName: String) {
     WELCOME("welcome"),
     SAVE_PROJECTS("save_projects"),
-    ENABLE_NOTIFICATIONS("enable_notifications"),
     ACTIVITY_TRACKING("activity_tracking"),
+    ENABLE_NOTIFICATIONS("enable_notifications"),
     SIGNUP_LOGIN("signup_login"),
 }
 
@@ -124,19 +124,19 @@ fun OnboardingScreen(
             buttonText = stringResource(R.string.project_checkout_navigation_next)
         ),
         OnboardingPageData(
-            page = OnboardingPage.ENABLE_NOTIFICATIONS,
-            title = stringResource(R.string.onboarding_stay_in_the_know_title),
-            description = stringResource(R.string.onboarding_stay_in_the_know_subtitle),
-            animationRes = R.raw.android_onboarding_flow_enable_notifications,
-            buttonText = stringResource(R.string.Get_notified),
-            secondaryButtonText = stringResource(R.string.Not_right_now),
-        ),
-        OnboardingPageData(
             page = OnboardingPage.ACTIVITY_TRACKING,
             title = stringResource(R.string.onboarding_personalize_your_experience_title),
             description = stringResource(R.string.onboarding_personalize_your_experience_subtitle),
             animationRes = R.raw.android_onboarding_flow_activity_tracking,
             buttonText = stringResource(R.string.Use_personalization),
+            secondaryButtonText = stringResource(R.string.Not_right_now),
+        ),
+        OnboardingPageData(
+            page = OnboardingPage.ENABLE_NOTIFICATIONS,
+            title = stringResource(R.string.onboarding_stay_in_the_know_title),
+            description = stringResource(R.string.onboarding_stay_in_the_know_subtitle),
+            animationRes = R.raw.android_onboarding_flow_enable_notifications,
+            buttonText = stringResource(R.string.Get_notified),
             secondaryButtonText = stringResource(R.string.Not_right_now),
         ),
         OnboardingPageData(
@@ -244,14 +244,14 @@ fun OnboardingScreen(
                                     analyticEvents?.trackOnboardingNextCTAClicked(filteredPages[currentPage].page.analyticsSectionName)
                                     if (currentPage < filteredPages.lastIndex) currentPage++
                                 }
-                                OnboardingPage.ENABLE_NOTIFICATIONS -> {
-                                    activity?.let {
-                                        turnOnNotifications(permissionLauncher)
-                                    }
-                                }
                                 OnboardingPage.ACTIVITY_TRACKING -> {
                                     activity?.let {
                                         allowTracking(fragmentManager)
+                                    }
+                                }
+                                OnboardingPage.ENABLE_NOTIFICATIONS -> {
+                                    activity?.let {
+                                        turnOnNotifications(permissionLauncher)
                                     }
                                 }
                                 OnboardingPage.SIGNUP_LOGIN -> {

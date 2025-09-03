@@ -135,37 +135,12 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `Test notifications page primary button click invokes turnOnNotifications`() {
-        setupOnboardingScreen()
-
-        primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
-        primaryButton.performClick() // Save -> Notifications
-        Thread.sleep(500)
-
-        pageTitle.assertIsDisplayed()
-        pageTitle.assertTextEquals(notificationsPageTitleText)
-        pageDescription.assertIsDisplayed()
-        pageDescription.assertTextEquals(notificationsPageDescriptionText)
-        primaryButton.assertIsDisplayed()
-        composeTestRule.onNodeWithText(notificationsPageButtonText)
-            .assertExists()
-        composeTestRule.onNodeWithText(notificationsPageSecondaryButtonText)
-            .assertExists()
-
-        primaryButton.performClick()
-        assertTrue(turnOnNotificationsCalled)
-    }
-
-    @Test
     fun `Test activity tracking page primary button click invokes allowTracking`() {
         setupOnboardingScreen()
 
         primaryButton.performClick() // Welcome -> Save
         Thread.sleep(500)
-        primaryButton.performClick() // Save -> Notifications
-        Thread.sleep(500)
-        secondaryButton.performClick() // Notifications -> Activity Tracking
+        primaryButton.performClick() // Save -> Activity Tracking
         Thread.sleep(500)
 
         pageTitle.assertIsDisplayed()
@@ -183,16 +158,41 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `Test notifications page primary button click invokes turnOnNotifications`() {
+        setupOnboardingScreen()
+
+        primaryButton.performClick() // Welcome -> Save
+        Thread.sleep(500)
+        primaryButton.performClick() // Save -> Activity Tracking
+        Thread.sleep(500)
+        secondaryButton.performClick() // Activity Tracking -> Notifications
+        Thread.sleep(500)
+
+        pageTitle.assertIsDisplayed()
+        pageTitle.assertTextEquals(notificationsPageTitleText)
+        pageDescription.assertIsDisplayed()
+        pageDescription.assertTextEquals(notificationsPageDescriptionText)
+        primaryButton.assertIsDisplayed()
+        composeTestRule.onNodeWithText(notificationsPageButtonText)
+            .assertExists()
+        composeTestRule.onNodeWithText(notificationsPageSecondaryButtonText)
+            .assertExists()
+
+        primaryButton.performClick()
+        assertTrue(turnOnNotificationsCalled)
+    }
+
+    @Test
     fun `Test activity tracking page secondary button click navigates to loginOrSignup page if user is not logged in`() {
         setupOnboardingScreen(isUserLoggedIn = false)
 
         primaryButton.performClick() // Welcome -> Save
         Thread.sleep(500)
-        primaryButton.performClick() // Save -> Notifications
+        primaryButton.performClick() // Save -> Activity Tracking
         Thread.sleep(500)
-        secondaryButton.performClick() // Notifications -> Activity Tracking
+        secondaryButton.performClick() // Activity Tracking -> Notifications
         Thread.sleep(500)
-        secondaryButton.performClick() // Activity Tracking -> Login/Signup
+        secondaryButton.performClick() // Notifications -> Login/Signup
         Thread.sleep(500)
 
         pageTitle.assertIsDisplayed()

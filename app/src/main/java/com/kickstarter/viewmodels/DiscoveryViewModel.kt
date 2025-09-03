@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.net.Uri
 import android.util.Pair
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
@@ -39,7 +40,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import androidx.core.content.edit
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {

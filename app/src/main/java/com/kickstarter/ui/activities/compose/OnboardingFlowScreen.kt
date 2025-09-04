@@ -52,9 +52,11 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.kickstarter.R
 import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.utils.Clock
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ALLOW
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DENY
+import com.kickstarter.libs.utils.SystemClock
 import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSButtonType
 import com.kickstarter.ui.compose.designsystem.KSIconButton
@@ -99,6 +101,7 @@ fun OnboardingScreenPreview() {
 
 @Composable
 fun OnboardingScreen(
+    clock: Clock = SystemClock,
     isUserLoggedIn: Boolean = false,
     deviceNeedsNotificationPermissions: Boolean = false,
     onboardingCompleted: () -> Unit = {},
@@ -231,7 +234,7 @@ fun OnboardingScreen(
                 KSPrimaryBlackButton(
                     text = filteredPages[currentPage].buttonText,
                     onClickAction = {
-                        val currentTime = System.currentTimeMillis()
+                        val currentTime = clock.now()
                         if (currentTime - lastClickTime > debounceInterval) {
                             lastClickTime = currentTime
 

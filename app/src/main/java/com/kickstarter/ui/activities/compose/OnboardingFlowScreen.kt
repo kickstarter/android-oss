@@ -234,7 +234,6 @@ fun OnboardingScreen(
                 KSPrimaryBlackButton(
                     text = filteredPages[currentPage].buttonText,
                     onClickAction = {
-
                         val currentTime = clock.now()
                         if (currentTime - lastClickTime > debounceInterval) {
                             lastClickTime = currentTime

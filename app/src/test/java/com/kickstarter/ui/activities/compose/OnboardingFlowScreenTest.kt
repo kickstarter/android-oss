@@ -170,9 +170,9 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
 
         primaryButton.performClick() // Welcome -> Save
         fakeClock.advanceBy(600)
-        primaryButton.performClick() // Save -> Notifications
+        primaryButton.performClick() // Save -> Activity Tracking
         fakeClock.advanceBy(600)
-        secondaryButton.performClick() // Notifications -> Activity Tracking
+        secondaryButton.performClick() // Activity Tracking -> Notifications
         fakeClock.advanceBy(600)
 
         pageTitle.assertIsDisplayed()
@@ -195,11 +195,11 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
 
         primaryButton.performClick() // Welcome -> Save
         fakeClock.advanceBy(600)
-        primaryButton.performClick() // Save -> Notifications
+        primaryButton.performClick() // Save -> Activity Tracking
         fakeClock.advanceBy(600)
-        secondaryButton.performClick() // Notifications -> Activity Tracking
+        secondaryButton.performClick() // Activity Tracking -> Notifications
         fakeClock.advanceBy(600)
-        secondaryButton.performClick() // Activity Tracking -> Login/Signup
+        secondaryButton.performClick() // Notifications -> Login/Signup
         fakeClock.advanceBy(600)
 
         pageTitle.assertIsDisplayed()
@@ -220,14 +220,13 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     fun `Test activity tracking page secondary button click navigates to Discovery page if user is already logged in`() {
         setupOnboardingScreen(isUserLoggedIn = true)
 
-        // Navigate to Notifications Page (Welcome -> Save -> Notifications)
         primaryButton.performClick() // Welcome -> Save
         fakeClock.advanceBy(600)
-        primaryButton.performClick() // Save -> Notifications
+        primaryButton.performClick() // Save -> Activity Tracking
         fakeClock.advanceBy(600)
-        secondaryButton.performClick() // Notifications -> Activity Tracking
+        secondaryButton.performClick() // Activity Tracking -> Notifications
         fakeClock.advanceBy(600)
-        secondaryButton.performClick() // Activity Tracking -> Login/Signup
+        secondaryButton.performClick() // Notifications -> Login/Signup
         fakeClock.advanceBy(600)
 
         // Assert that signupOrLogin callback was NOT called

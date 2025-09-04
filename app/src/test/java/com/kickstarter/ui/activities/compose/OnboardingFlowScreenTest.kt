@@ -226,7 +226,7 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         fakeClock.advanceBy(600)
         secondaryButton.performClick() // Activity Tracking -> Notifications
         fakeClock.advanceBy(600)
-        secondaryButton.performClick() // Notifications -> Login/Signup
+        secondaryButton.performClick() // Notifications -> Discovery page
         fakeClock.advanceBy(600)
 
         // Assert that signupOrLogin callback was NOT called

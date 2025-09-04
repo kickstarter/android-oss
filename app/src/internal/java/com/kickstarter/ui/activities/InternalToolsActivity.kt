@@ -230,7 +230,7 @@ class InternalToolsActivity : AppCompatActivity() {
         binding.apiEndpoint.text = apiEndpointPreference?.get()
         binding.buildDate.text = build?.buildDate()?.toString(DateTimeFormat.forPattern("MMM dd, yyyy h:mm:ss aa zzz"))
         binding.commitSha.text = build?.sha()
-        binding.deviceId.text = FirebaseHelper.identifier
+        binding.deviceId.text = FirebaseHelper.identifier.value
         binding.variant.text = build?.variant()
         binding.versionCode.text = build?.versionCode().toString()
         binding.versionName.text = build?.versionName()

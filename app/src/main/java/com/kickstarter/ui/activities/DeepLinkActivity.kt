@@ -65,6 +65,8 @@ class DeepLinkActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.runInitializations()
+
         viewModel.outputs.startBrowser()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { url: String -> startBrowser(url) }

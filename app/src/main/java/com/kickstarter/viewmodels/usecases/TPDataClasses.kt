@@ -72,7 +72,7 @@ interface BuildInput {
 
         val eventName = eventName.value
         val userId = rawData.first.second?.id().toString()
-        val deviceId = FirebaseHelper.identifier
+        val deviceId = FirebaseHelper.identifier.value
         val projectId = encodeRelayId(rawData.first.first)
         var items: List<TPEventItemInputData> = emptyList()
         var pAmount: Double? = null

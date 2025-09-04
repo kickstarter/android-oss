@@ -87,7 +87,7 @@ abstract class TrackingClient(
 
     override fun currentVariants(): Array<String>? = this.config?.currentVariants()
 
-    override fun deviceDistinctId(): String = FirebaseHelper.identifier
+    override fun deviceDistinctId(): String = FirebaseHelper.identifier.value
 
     override fun deviceFormat(): String =
         if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet"

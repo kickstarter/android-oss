@@ -35,7 +35,7 @@ class ApiRequestInterceptor(
 
         val builder: Request.Builder = initialRequest.newBuilder()
             .addHeader("Accept", "application/json")
-            .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
+            .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier.value)
             .addHeader("User-Agent", userAgent(build))
 
         this.currentUser.accessToken?.let { token ->

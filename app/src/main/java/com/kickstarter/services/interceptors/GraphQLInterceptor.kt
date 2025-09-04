@@ -27,7 +27,7 @@ class GraphQLInterceptor(
 
         builder.addHeader("User-Agent", WebUtils.userAgent(this.build))
             .addHeader("X-KICKSTARTER-CLIENT", this.clientId)
-            .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier)
+            .addHeader("Kickstarter-Android-App-UUID", FirebaseHelper.identifier.value)
 
         return chain.proceed(builder.build())
     }

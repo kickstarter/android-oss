@@ -10,6 +10,8 @@
         <activity android:name=".ui.activities.InternalToolsActivity" />
         <activity android:name=".ui.activities.PlaygroundActivity" />
         <activity android:name=".ui.activities.DesignSystemActivity" />
+        <activity android:name=".ui.activities.BottomNavWithNavigation" />
+        <activity android:name=".ui.activities.BottomNavManualActivity" />
     </application>
 
 </manifest>

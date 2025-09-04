@@ -86,6 +86,14 @@ class InternalToolsActivity : AppCompatActivity() {
             pushNotificationsButtonClick()
         }
 
+        binding.bottomNavWithNavigation.setOnClickListener {
+            openBottomNavSampleWithNav()
+        }
+
+        binding.bottomNavManual.setOnClickListener {
+            openBottomNavManual()
+        }
+
         binding.changeEndpointCustomButton.setOnClickListener {
             changeEndpointCustomButton()
         }
@@ -148,6 +156,16 @@ class InternalToolsActivity : AppCompatActivity() {
             .setTitle("Push notifications")
             .setView(view)
             .show()
+    }
+
+    private fun openBottomNavManual() {
+        val intent = Intent(this, BottomNavManualActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openBottomNavSampleWithNav() {
+        val intent = Intent(this, BottomNavWithNavigation::class.java)
+        startActivity(intent)
     }
 
     private fun changeEndpointCustomButton() {

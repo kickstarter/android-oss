@@ -1,107 +1,109 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-  <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
-  <string name="A_request_has_been_made_to_download_the_latest_build">
+    <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
+    <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
     unknown sources in the security settings of your device.
   </string>
-  <string name="API_Endpoint">API Endpoint</string>
-  <string name="Base_URL">Base URL</string>
-  <string name="Build">Build</string>
-  <string name="Build_date">Build Date</string>
-  <string name="Build_information">Build Information</string>
-  <string name="Commit_SHA">Commit SHA</string>
-  <string name="Changelog">Changelog</string>
-  <string name="Change_endpoint">Change API endpoint</string>
-  <string name="Config">Config</string>
-  <string name="Custom">Custom</string>
-  <string name="Development_settings">Development Settings</string>
-  <string name="Device_ID">Device ID</string>
-  <string name="debug_push_notifications_register_device">Register device</string>
-  <string name="debug_push_notifications_device_registration">Device registration</string>
-  <string name="debug_push_notifications_errored_pldege">Errored pledge</string>
-  <string name="debug_push_notifications_friend_backing">Friend backing</string>
-  <string name="debug_push_notifications_friend_follow">Friend follow</string>
-  <string name="debug_push_notifications_message">Message</string>
-  <string name="debug_push_notifications_project_cancellation">Project cancellation</string>
-  <string name="debug_push_notifications_project_failure">Project failure</string>
-  <string name="debug_push_notifications_project_launch">Project launch</string>
-  <string name="debug_push_notifications_project_reminder">Project reminder</string>
-  <string name="debug_push_notifications_project_update">Project update</string>
-  <string name="debug_push_notifications_project_success">Project success</string>
-  <string name="debug_push_notifications_project_survey">Project survey</string>
-  <string name="debug_push_notifications_simulate_burst">Simulate burst</string>
-  <string name="debug_push_notifications_simulate_notifications">Simulate notifications</string>
-  <string name="debug_push_notifications_unregister_device">Unregister device</string>
-  <string name="debug_push_notifications_pledge_redemption">Pledge Redemption</string>
-  <string name="Endpoint">Endpoint</string>
-  <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API</string>
-  <string name="Enter_Hivequeen_name">Enter Hivequeen name (e.g.: christopher)</string>
-  <string name="Feature_flags">Feature flags</string>
-  <string name="Force_a_crash">Force a crash 💥</string>
-  <string name="Hivequeen">Hivequeen</string>
-  <string name="Instructions">Instructions</string>
-  <string name="internal_tools_internal_tools">Internal tools</string>
-  <string name="internal_tools_playground">Playground</string>
-  <string name="internal_tools_onboarding_flow">Onboarding flow</string>
-  <string name="internal_tools_design_system">Design System</string>
-  <string name="internal_tools_push_notifications">Push notifications</string>
-  <string name="Logged_Out">Logged Out</string>
-  <string name="mailto">mailto:</string>
-  <string name="Network">Network</string>
-  <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
-  <string name="Open_downloads_folder">Open Downloads folder</string>
-  <string name="Optimizely">Optimizely</string>
-  <string name="Overrides">Overrides</string>
-  <string name="payment_method_last_four">•••• %{last_four}</string>
-  <string name="playground_playground">Playground</string>
-  <string name="Production">Production</string>
-  <string name="Reset">Reset</string>
-  <string name="Select_email_application">Select email application:</string>
-  <string name="Staging">Staging</string>
-  <string name="Submit_feedback">Submit feedback</string>
-  <string name="Upgrade_app">Upgrade app</string>
-  <string name="Variant">Variant</string>
-  <string name="verification_email_sent_inbox" formatted="false">Verification email sent</string>
-  <string name="Version_code">Version Code</string>
-  <string name="Version_name">Version Name</string>
-  <string name="we_couldnt_resend_this_email_please_try_again" formatted="false">We couldn\'t resend this email — please try again</string>
+    <string name="API_Endpoint">API Endpoint</string>
+    <string name="Base_URL">Base URL</string>
+    <string name="Build">Build</string>
+    <string name="Build_date">Build Date</string>
+    <string name="Build_information">Build Information</string>
+    <string name="Commit_SHA">Commit SHA</string>
+    <string name="Changelog">Changelog</string>
+    <string name="Change_endpoint">Change API endpoint</string>
+    <string name="Config">Config</string>
+    <string name="Custom">Custom</string>
+    <string name="Development_settings">Development Settings</string>
+    <string name="Device_ID">Device ID</string>
+    <string name="debug_push_notifications_register_device">Register device</string>
+    <string name="debug_push_notifications_device_registration">Device registration</string>
+    <string name="debug_push_notifications_errored_pldege">Errored pledge</string>
+    <string name="debug_push_notifications_friend_backing">Friend backing</string>
+    <string name="debug_push_notifications_friend_follow">Friend follow</string>
+    <string name="debug_push_notifications_message">Message</string>
+    <string name="debug_push_notifications_project_cancellation">Project cancellation</string>
+    <string name="debug_push_notifications_project_failure">Project failure</string>
+    <string name="debug_push_notifications_project_launch">Project launch</string>
+    <string name="debug_push_notifications_project_reminder">Project reminder</string>
+    <string name="debug_push_notifications_project_update">Project update</string>
+    <string name="debug_push_notifications_project_success">Project success</string>
+    <string name="debug_push_notifications_project_survey">Project survey</string>
+    <string name="debug_push_notifications_simulate_burst">Simulate burst</string>
+    <string name="debug_push_notifications_simulate_notifications">Simulate notifications</string>
+    <string name="debug_push_notifications_unregister_device">Unregister device</string>
+    <string name="debug_push_notifications_pledge_redemption">Pledge Redemption</string>
+    <string name="Endpoint">Endpoint</string>
+    <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API</string>
+    <string name="Enter_Hivequeen_name">Enter Hivequeen name (e.g.: christopher)</string>
+    <string name="Feature_flags">Feature flags</string>
+    <string name="Force_a_crash">Force a crash 💥</string>
+    <string name="Hivequeen">Hivequeen</string>
+    <string name="Instructions">Instructions</string>
+    <string name="internal_tools_internal_tools">Internal tools</string>
+    <string name="internal_tools_playground">Playground</string>
+    <string name="internal_tools_onboarding_flow">Onboarding flow</string>
+    <string name="internal_tools_design_system">Design System</string>
+    <string name="internal_tools_bottom_nav_with_nav">Bottom Navigation with Navigation Library</string>
+    <string name="internal_tools_bottom_nav_manual">Bottom Navigation Manual (Opening Activities)</string>
+    <string name="internal_tools_push_notifications">Push notifications</string>
+    <string name="Logged_Out">Logged Out</string>
+    <string name="mailto">mailto:</string>
+    <string name="Network">Network</string>
+    <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
+    <string name="Open_downloads_folder">Open Downloads folder</string>
+    <string name="Optimizely">Optimizely</string>
+    <string name="Overrides">Overrides</string>
+    <string name="payment_method_last_four">•••• %{last_four}</string>
+    <string name="playground_playground">Playground</string>
+    <string name="Production">Production</string>
+    <string name="Reset">Reset</string>
+    <string name="Select_email_application">Select email application:</string>
+    <string name="Staging">Staging</string>
+    <string name="Submit_feedback">Submit feedback</string>
+    <string name="Upgrade_app">Upgrade app</string>
+    <string name="Variant">Variant</string>
+    <string name="verification_email_sent_inbox" formatted="false">Verification email sent</string>
+    <string name="Version_code">Version Code</string>
+    <string name="Version_name">Version Name</string>
+    <string name="we_couldnt_resend_this_email_please_try_again" formatted="false">We couldn\'t resend this email — please try again</string>
 
-  <bool name="isTablet">false</bool>
+    <bool name="isTablet">false</bool>
 
-  <string name="stripe_publishable_key">pk_live_zjuK52lEUYcvBhIXEUnOEJzk</string>
-  <string name="stripe_version" tools:ignore="TypographyDashes">2015-08-07</string>
+    <string name="stripe_publishable_key">pk_live_zjuK52lEUYcvBhIXEUnOEJzk</string>
+    <string name="stripe_version" tools:ignore="TypographyDashes">2015-08-07</string>
 
-  <!--  Interstitial Internal Tools -->
-  <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
+    <!--  Interstitial Internal Tools -->
+    <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
 
-  <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
+    <string name="estimated_delivery_data" formatted="false">%{title} %{estimated_delivery_data}</string>
 
-  <!-- Campaign -->
-  <string name="Story">Story</string>
+    <!-- Campaign -->
+    <string name="Story">Story</string>
 
-  <!-- Risks Mock String-->
-  <string name="risk_description">"The largest risk comes from the creation/manufacturing of the pins at the pin factory. We are working with a vendor in China, who has lots of experience in projects for us. Still, there is a chance that something may go wrong during the manufacturing process and if that happens it could cause a delay in shipping. It can be common in the pin-making world that manus are delayed or make mistakes with an order. However, we don’t anticipate this being an issue, as our vendor has done many similar projects with us, but there is always a possibility. These items are handmade! If anything does happen, we will make sure to keep everyone informed and up to date regarding where we are in the process. The timeline for shipping is NOT solid due to these factors but we will keep all backers updated each step of the way. Also- Please be aware, there might be a delay due to the situation with the COVID-19 virus. This is causing delays all over the world as shipping gets limited, cities shutting down services and other issues arise. At this point, we do not think this will impact our project timeline. However, we cannot predict how things will go and our pin factory is located in China (they are all back at work now and we have gotten pins from them within the last month, so things appear to be going well now.) If this will affect our production, I will inform everyone through an update as soon as I know."</string>
+    <!-- Risks Mock String-->
+    <string name="risk_description">"The largest risk comes from the creation/manufacturing of the pins at the pin factory. We are working with a vendor in China, who has lots of experience in projects for us. Still, there is a chance that something may go wrong during the manufacturing process and if that happens it could cause a delay in shipping. It can be common in the pin-making world that manus are delayed or make mistakes with an order. However, we don’t anticipate this being an issue, as our vendor has done many similar projects with us, but there is always a possibility. These items are handmade! If anything does happen, we will make sure to keep everyone informed and up to date regarding where we are in the process. The timeline for shipping is NOT solid due to these factors but we will keep all backers updated each step of the way. Also- Please be aware, there might be a delay due to the situation with the COVID-19 virus. This is causing delays all over the world as shipping gets limited, cities shutting down services and other issues arise. At this point, we do not think this will impact our project timeline. However, we cannot predict how things will go and our pin factory is located in China (they are all back at work now and we have gotten pins from them within the last month, so things appear to be going well now.) If this will affect our production, I will inform everyone through an update as soon as I know."</string>
 
-  <string name="app_theme">App Theme</string>
-  <string name="match_system">Match System</string>
-  <string name="light">Light</string>
-  <string name="dark">Dark</string>
+    <string name="app_theme">App Theme</string>
+    <string name="match_system">Match System</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
 
-  <!-- TODO: Get translations for this and put it in i18n, then remove  -->
-  <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
-
-
-  <!-- FPO's for reward shipment tracking -->
-  <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
-  <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
-  <string name="fpo_track_shipment" formatted="false">Track shipment</string>
+    <!-- TODO: Get translations for this and put it in i18n, then remove  -->
+    <string name="project_status_project_was_successfully_funded_on_deadline_but_you_can_still_pledge_for_available_rewards" formatted="false">This project was successfully funded on %{deadline}, but you can still pledge for available rewards.</string>
 
 
-  <!-- Content descriptions -->
-  <string name="Close" formatted="false">Close</string>
+    <!-- FPO's for reward shipment tracking -->
+    <string name="fpo_your_reward_has_shipped" formatted="false">Your reward has shipped!</string>
+    <string name="fpo_tracking_number" formatted="false">Tracking #: %{tracking_number}</string>
+    <string name="fpo_track_shipment" formatted="false">Track shipment</string>
 
-  <!-- FPO's for PPO v2 -->
-  <string name="fpo_the_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue" formatted="false">The creator has not collected your address. Please contact them to resolve the issue.</string>
+
+    <!-- Content descriptions -->
+    <string name="Close" formatted="false">Close</string>
+
+    <!-- FPO's for PPO v2 -->
+    <string name="fpo_the_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue" formatted="false">The creator has not collected your address. Please contact them to resolve the issue.</string>
 
 </resources>

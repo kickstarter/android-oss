@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import android.net.Uri
 import android.util.Pair
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.R
@@ -422,10 +423,9 @@ interface DiscoveryViewModel {
                 - the onboarding flow feature switch is true,
                 - the onboarding flow hasn't been shown already,
                 - and the user is a "new user",
-             New user heuristic: user has not seen consent management or notifications permission dialog
+             New user heuristic: user has not seen consent management dialog
              */
-            val newUserHeuristic = !sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE) ||
-                !sharedPreferences.getBoolean(HAS_SEEN_NOTIF_PERMISSIONS, false)
+            val newUserHeuristic = !sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE)
 
             Observable.just(ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW))
                 .filter { it }
@@ -435,7 +435,7 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
 
             hasSeenOnboarding
-                .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_ONBOARDING, it).apply() }
+                .subscribe { sharedPreferences.edit { putBoolean(HAS_SEEN_ONBOARDING, it) } }
                 .addToDisposable(disposables)
 
             // Old logic for consent management and notification permissions dialogs
@@ -449,7 +449,7 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
 
             hasSeenNotificationsPermission
-                .subscribe { sharedPreferences.edit().putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it).apply() }
+                .subscribe { sharedPreferences.edit { putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it) } }
                 .addToDisposable(disposables)
 
             Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))

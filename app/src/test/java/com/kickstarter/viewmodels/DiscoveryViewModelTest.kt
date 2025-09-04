@@ -870,9 +870,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(false)
 
-        // New user heuristic: has not seen consent management or notification permissions
-        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(false)
+        // New user heuristic: has not seen consent management
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {
@@ -905,9 +904,8 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
         val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_ONBOARDING, false)).thenReturn(false)
 
-        // NOT a new user, because user has seen both notification permissions and consent management
+        // NOT a new user, because user has seen consent management
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
-        Mockito.`when`(sharedPreferences.getBoolean(SharedPreferenceKey.HAS_SEEN_NOTIF_PERMISSIONS, false)).thenReturn(true)
 
         val mockFeatureFlagClient: MockFeatureFlagClient =
             object : MockFeatureFlagClient() {

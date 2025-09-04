@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.utils.FakeClock
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -30,6 +31,8 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
     private var turnOnNotificationsCalled = false
     private var allowTrackingCalled = false
     private var signupOrLoginCalled = false
+
+    private val fakeClock = FakeClock(12345) // Start at some greater than 0 time
 
     private val welcomePageTitleText by lazy { context.getString(R.string.onboarding_welcome_to_kickstarter_title) }
     private val welcomePageDescriptionText by lazy { context.getString(R.string.onboarding_welcome_to_kickstarter_subtitle) }
@@ -64,6 +67,7 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 OnboardingScreen(
+                    clock = fakeClock,
                     isUserLoggedIn = isUserLoggedIn,
                     deviceNeedsNotificationPermissions = deviceNeedsNotificationPermissions,
                     onboardingCompleted = { onboardingCompletedCalled = true },
@@ -121,9 +125,9 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen()
 
         primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
         primaryButton.performClick() // Save -> Activity Tracking
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
 
         pageTitle.assertIsDisplayed()
         pageTitle.assertTextEquals(activityTrackingPageTitleText)
@@ -144,9 +148,9 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen(deviceNeedsNotificationPermissions = false)
 
         primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
         primaryButton.performClick() // Save -> Activity Tracking
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
         secondaryButton.performClick() // Activity Tracking -> Login/Signup
 
         pageTitle.assertIsDisplayed()
@@ -165,11 +169,11 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen()
 
         primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
-        primaryButton.performClick() // Save -> Activity Tracking
-        Thread.sleep(500)
-        secondaryButton.performClick() // Activity Tracking -> Notifications
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
+        primaryButton.performClick() // Save -> Notifications
+        fakeClock.advanceBy(600)
+        secondaryButton.performClick() // Notifications -> Activity Tracking
+        fakeClock.advanceBy(600)
 
         pageTitle.assertIsDisplayed()
         pageTitle.assertTextEquals(notificationsPageTitleText)
@@ -190,13 +194,13 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
         setupOnboardingScreen(isUserLoggedIn = false)
 
         primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
-        primaryButton.performClick() // Save -> Activity Tracking
-        Thread.sleep(500)
-        secondaryButton.performClick() // Activity Tracking -> Notifications
-        Thread.sleep(500)
-        secondaryButton.performClick() // Notifications -> Login/Signup
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
+        primaryButton.performClick() // Save -> Notifications
+        fakeClock.advanceBy(600)
+        secondaryButton.performClick() // Notifications -> Activity Tracking
+        fakeClock.advanceBy(600)
+        secondaryButton.performClick() // Activity Tracking -> Login/Signup
+        fakeClock.advanceBy(600)
 
         pageTitle.assertIsDisplayed()
         pageTitle.assertTextEquals(loginOrSignupPageTitleText)
@@ -218,13 +222,13 @@ class OnboardingFlowScreenTest : KSRobolectricTestCase() {
 
         // Navigate to Notifications Page (Welcome -> Save -> Notifications)
         primaryButton.performClick() // Welcome -> Save
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
         primaryButton.performClick() // Save -> Notifications
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
         secondaryButton.performClick() // Notifications -> Activity Tracking
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
         secondaryButton.performClick() // Activity Tracking -> Login/Signup
-        Thread.sleep(500)
+        fakeClock.advanceBy(600)
 
         // Assert that signupOrLogin callback was NOT called
         assertFalse("signupOrLogin callback should NOT have been called", signupOrLoginCalled)

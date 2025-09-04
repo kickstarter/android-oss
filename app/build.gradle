@@ -211,6 +211,7 @@ dependencies {
     // Fonts
     implementation 'androidx.compose.ui:ui-text-google-fonts:1.8.3'
     implementation 'com.google.android.gms:play-services-base:18.7.2'
+    implementation("androidx.compose.material3:material3:1.3.2")
 
     // Architecture components
     def lifecycle_version = "2.2.0"

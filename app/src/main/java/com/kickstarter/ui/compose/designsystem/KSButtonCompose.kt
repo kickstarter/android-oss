@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,7 +81,7 @@ fun KsButton(
 
     Button(
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.fab_radius)),
         border = BorderStroke(1.dp, buttonBorderColors),
         contentPadding = PaddingValues(

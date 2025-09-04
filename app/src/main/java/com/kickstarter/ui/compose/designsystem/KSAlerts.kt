@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,7 +59,7 @@ fun KSErrorSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.backgroundDangerBold,
+        containerColor = colors.backgroundDangerBold,
         content = {
             KSErrorRoundedText(text = text, padding = padding)
         }
@@ -72,7 +72,7 @@ fun KSHeadsupSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.backgroundActionPressed,
+        containerColor = colors.backgroundActionPressed,
         content = {
             KSHeadsUpRoundedText(text = text, padding = padding)
         }
@@ -85,7 +85,7 @@ fun KSSuccessSnackbar(
     padding: PaddingValues = PaddingValues(dimensions.none)
 ) {
     Snackbar(
-        backgroundColor = colors.backgroundAccentGreenSubtle,
+        containerColor = colors.backgroundAccentGreenSubtle,
         content = {
             KSSuccessRoundedText(text = text, padding = padding)
         }
@@ -299,9 +299,9 @@ fun KSDialogVisual(
                     },
                     colors =
                     ButtonDefaults.buttonColors(
-                        backgroundColor = leftButtonColor ?: colors.backgroundSurfacePrimary
+                        containerColor = leftButtonColor ?: colors.backgroundSurfacePrimary
                     ),
-                    elevation = ButtonDefaults.elevation(dimensions.none)
+                    elevation = ButtonDefaults.buttonElevation(dimensions.none)
                 ) {
                     Text(
                         text = text,
@@ -327,9 +327,9 @@ fun KSDialogVisual(
                     },
                     colors =
                     ButtonDefaults.buttonColors(
-                        backgroundColor = rightButtonColor ?: colors.backgroundSurfacePrimary
+                        containerColor = rightButtonColor ?: colors.backgroundSurfacePrimary
                     ),
-                    elevation = ButtonDefaults.elevation(dimensions.none)
+                    elevation = ButtonDefaults.buttonElevation(dimensions.none)
                 ) {
                     Text(
                         text = text,

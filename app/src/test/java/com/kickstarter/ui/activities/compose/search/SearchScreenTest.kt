@@ -60,7 +60,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         showEmptyView = true,
                         categories = listOf(),
                         onSearchTermChanged = {},
-                        onItemClicked = {}
+                        onItemClicked = {},
                     )
                 }
             }
@@ -87,9 +87,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         onBackClicked = { },
                         scaffoldState = rememberScaffoldState(),
                         isLoading = false,
-                        lazyColumnListState = rememberLazyListState(),
-                        showEmptyView = false,
-                        isDefaultList = true,
                         itemsList = List(20) {
                             Project.builder()
                                 .name("This is a test $it")
@@ -98,9 +95,11 @@ class SearchScreenTest : KSRobolectricTestCase() {
                                 .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                                 .build()
                         },
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
                         categories = listOf(),
                         onSearchTermChanged = {},
-                        onItemClicked = {}
+                        onItemClicked = {},
                     )
                 }
             }
@@ -137,10 +136,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     SearchScreen(
                         onBackClicked = { },
                         scaffoldState = rememberScaffoldState(),
-                        isLoading = false,
-                        lazyColumnListState = rememberLazyListState(),
-                        showEmptyView = false,
                         isDefaultList = false,
+                        isLoading = false,
                         itemsList = List(20) {
                             Project.builder()
                                 .name("This is a test $it")
@@ -149,9 +146,11 @@ class SearchScreenTest : KSRobolectricTestCase() {
                                 .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                                 .build()
                         },
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
                         categories = listOf(),
                         onSearchTermChanged = {},
-                        onItemClicked = {}
+                        onItemClicked = {},
                     )
                 }
             }
@@ -190,7 +189,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         showEmptyView = false,
                         categories = listOf(),
                         onSearchTermChanged = {},
-                        onItemClicked = {}
+                        onItemClicked = {},
                     )
                 }
             }
@@ -216,10 +215,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     SearchScreen(
                         onBackClicked = { },
                         scaffoldState = rememberScaffoldState(),
-                        isLoading = true,
-                        lazyColumnListState = rememberLazyListState(),
-                        showEmptyView = false,
                         isDefaultList = false,
+                        isLoading = true,
                         itemsList = List(20) {
                             Project.builder()
                                 .name("This is a test $it")
@@ -228,9 +225,11 @@ class SearchScreenTest : KSRobolectricTestCase() {
                                 .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                                 .build()
                         },
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
                         categories = listOf(),
                         onSearchTermChanged = {},
-                        onItemClicked = {}
+                        onItemClicked = {},
                     )
                 }
             }
@@ -268,10 +267,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     SearchScreen(
                         onBackClicked = { backClickedCount++ },
                         scaffoldState = rememberScaffoldState(),
-                        isLoading = false,
-                        lazyColumnListState = rememberLazyListState(),
-                        showEmptyView = false,
                         isDefaultList = false,
+                        isLoading = false,
                         itemsList = List(20) {
                             Project.builder()
                                 .name("This is a test $it")
@@ -280,9 +277,11 @@ class SearchScreenTest : KSRobolectricTestCase() {
                                 .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                                 .build()
                         },
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
                         categories = listOf(),
                         onSearchTermChanged = {},
-                        onItemClicked = { itemClickedCount++ }
+                        onItemClicked = { itemClickedCount++ },
                     )
                 }
             }
@@ -316,10 +315,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                     SearchScreen(
                         onBackClicked = { },
                         scaffoldState = rememberScaffoldState(),
-                        isLoading = false,
-                        lazyColumnListState = rememberLazyListState(),
-                        showEmptyView = false,
                         isDefaultList = false,
+                        isLoading = false,
                         itemsList = List(20) {
                             Project.builder()
                                 .name("This is a test $it")
@@ -328,11 +325,13 @@ class SearchScreenTest : KSRobolectricTestCase() {
                                 .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
                                 .build()
                         },
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
                         categories = listOf(),
                         onSearchTermChanged = {
                             currentSearchTerm = it
                         },
-                        onItemClicked = { }
+                        onItemClicked = { },
                     )
                 }
             }

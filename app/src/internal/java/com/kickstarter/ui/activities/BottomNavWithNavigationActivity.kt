@@ -45,9 +45,10 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 
 // ---------- Routes ----------
-sealed interface Screen { val route: String
-    data object Home    : Screen { override val route = "home" }
-    data object Search  : Screen { override val route = "search" }
+sealed interface Screen {
+    val route: String
+    data object Home : Screen { override val route = "home" }
+    data object Search : Screen { override val route = "search" }
     data object Profile : Screen { override val route = "profile" }
 
     // Non–bottom-bar destinations
@@ -66,9 +67,9 @@ data class TopLevelDestination(
 )
 
 val TopLevelDestinations = listOf(
-    TopLevelDestination(Screen.Home,   "Home",   Icons.Outlined.Home,   Icons.Filled.Home),
+    TopLevelDestination(Screen.Home, "Home", Icons.Outlined.Home, Icons.Filled.Home),
     TopLevelDestination(Screen.Search, "Search", Icons.Outlined.Search, Icons.Filled.Search),
-    TopLevelDestination(Screen.Profile,"Profile",Icons.Outlined.Person, Icons.Filled.Person)
+    TopLevelDestination(Screen.Profile, "Profile", Icons.Outlined.Person, Icons.Filled.Person)
 )
 
 private val BottomBarRoutes = TopLevelDestinations.map { it.screen.route }
@@ -77,7 +78,6 @@ class BottomNavWithNavigation : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
 
         this.getEnvironment()?.let { env ->
             setContent {
@@ -147,7 +147,6 @@ class BottomNavWithNavigation : AppCompatActivity() {
                         }
                     }
                 }
-
             }
         }
     }

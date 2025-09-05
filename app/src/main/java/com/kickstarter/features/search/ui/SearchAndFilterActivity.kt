@@ -45,6 +45,7 @@ import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import kotlinx.coroutines.launch
+import androidx.lifecycle.compose.currentStateAsState
 
 // TODO: Improve error message
 val LocalFilterMenuViewModel = staticCompositionLocalOf<FilterMenuViewModel> {
@@ -89,6 +90,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                 KickstarterApp(useDarkTheme = darModeEnabled) {
                     CompositionLocalProvider(LocalFilterMenuViewModel provides filterMenuViewModel) {
                         SearchScreen(
+                            intent = intent,
                             environment = env,
                             onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                             scaffoldState = rememberScaffoldState(),
@@ -148,7 +150,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                 }
 
                 val lifecycleOwner = LocalLifecycleOwner.current
-                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentState, isLoading, hasMorePages) {
+                LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentStateAsState().value, isLoading, hasMorePages) {
                     if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !isLoading && hasMorePages) {
                         viewModel.loadMore()
                     }

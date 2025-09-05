@@ -20,22 +20,21 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.kickstarter.features.search.ui.SearchAndFilterActivity
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.models.Activity
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 
 enum class Tab { HOME, SEARCH, PROFILE }
 
 fun Context.intentFor(tab: Tab) = when (tab) {
-    Tab.HOME    -> Intent(this, LoginToutActivity::class.java)
-    Tab.SEARCH  -> Intent(this, SearchAndFilterActivity::class.java)
+    Tab.HOME -> Intent(this, BottomNavManualActivity::class.java)
+    Tab.SEARCH -> Intent(this, SearchAndFilterActivity::class.java)
     Tab.PROFILE -> Intent(this, ProfileActivity::class.java)
 }
-
 
 const val EXTRA_TAB = "ks.extra.TAB"
 fun Context.launchTab(tab: Tab) {
@@ -80,7 +79,12 @@ class BottomNavManualActivity : AppCompatActivity() {
                             }
                         }
                     ) { inner ->
-                        Box(Modifier.padding(inner).fillMaxSize())
+                        Box(
+                            Modifier.fillMaxSize().padding(inner),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Home")
+                        }
                     }
                 }
             }

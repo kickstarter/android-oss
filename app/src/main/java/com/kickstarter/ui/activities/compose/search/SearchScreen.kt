@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities.compose.search
 
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,8 +33,15 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -47,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -69,6 +78,9 @@ import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
+import com.kickstarter.ui.activities.EXTRA_TAB
+import com.kickstarter.ui.activities.Tab
+import com.kickstarter.ui.activities.launchTab
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
 import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
@@ -129,9 +141,7 @@ fun SearchScreenPreviewNonEmpty() {
         SearchScreen(
             onBackClicked = { },
             scaffoldState = rememberScaffoldState(),
-            errorSnackBarHostState = SnackbarHostState(),
             isLoading = false,
-            isDefaultList = true,
             itemsList = List(100) {
                 Project.builder()
                     .name("This is a test $it")
@@ -145,7 +155,7 @@ fun SearchScreenPreviewNonEmpty() {
             showEmptyView = false,
             categories = listOf(),
             onSearchTermChanged = {},
-            onItemClicked = { project -> }
+            onItemClicked = { project -> },
         )
     }
 }
@@ -158,14 +168,12 @@ fun SearchScreenPreviewEmpty() {
         SearchScreen(
             onBackClicked = { },
             scaffoldState = rememberScaffoldState(),
-            errorSnackBarHostState = SnackbarHostState(),
             isLoading = true,
-            itemsList = listOf(),
             lazyColumnListState = rememberLazyListState(),
             showEmptyView = true,
             categories = listOf(),
             onSearchTermChanged = {},
-            onItemClicked = { project -> }
+            onItemClicked = { project -> },
         )
     }
 }
@@ -235,7 +243,8 @@ fun SearchScreen(
         DiscoveryParams.GoalBuckets?
     ) -> Unit = { _, _, _, _, _, _, _, _, _, _, _ ->
     },
-    shouldShowPhase: Boolean = true
+    shouldShowPhase: Boolean = true,
+    intent: Intent = Intent()
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
@@ -346,6 +355,25 @@ fun SearchScreen(
                         }
                     }
                 )
+            },
+            bottomBar = {
+                NavigationBar {
+                    val ctx = LocalContext.current
+                    val currentTab = intent.getStringExtra(EXTRA_TAB)?.let { Tab.valueOf(it) } ?: Tab.HOME
+                    @Composable
+                    fun Item(tab: Tab, icon: ImageVector, label: String) =
+                        NavigationBarItem(
+                            selected = currentTab == tab,
+                            onClick = { if (currentTab != tab) ctx.launchTab(tab) },
+                            icon = { Icon(icon, null) },
+                            label = { androidx.compose.material3.Text(label) },
+                            alwaysShowLabel = false
+                        )
+
+                    Item(Tab.HOME, Icons.Default.Home, "Home")
+                    Item(Tab.SEARCH, Icons.Default.Search, "Search")
+                    Item(Tab.PROFILE, Icons.Default.Person, "Profile")
+                }
             },
             topBar = {
                 Surface(elevation = 3.dp) {

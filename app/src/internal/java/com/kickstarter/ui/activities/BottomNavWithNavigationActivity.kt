@@ -122,6 +122,12 @@ class BottomNavWithNavigation : AppCompatActivity() {
                                 )
                             }
                             composable(Screen.Search.route) {
+                                // Option A (preferred)
+                                // Need to refactor current SearchAndFilter, to
+                                // only load a huge composable that receives as parameter the VM as well
+
+                                // Option B
+                                // Converte SearchAndFilter activity to a fragment, load fragments with
                                 SearchScreen(onOpenDetails = { id ->
                                     nav.navigate(
                                         Screen.Details.createRoute(id)

@@ -58,6 +58,9 @@ class BottomNavManualActivity : AppCompatActivity() {
             setContent {
                 KickstarterApp(useDarkTheme = true) {
                     val ctx = LocalContext.current
+
+                    // to get the current tab, instead of using intent, could probably just use the Activity name
+                    // make it "smart" that way, so no need to go Activity by Activity reading/writing the intent
                     val currentTab = intent.getStringExtra(EXTRA_TAB)?.let { Tab.valueOf(it) } ?: Tab.HOME
 
                     Scaffold(

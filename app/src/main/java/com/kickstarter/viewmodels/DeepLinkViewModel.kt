@@ -116,6 +116,7 @@ interface DeepLinkViewModel {
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
         val outputs: Outputs = this
+        var initializationsProcessing = true
 
         fun runInitializations() {
             viewModelScope.launch {
@@ -139,6 +140,14 @@ interface DeepLinkViewModel {
         }
 
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
+            intent()
+                .filter { it.action == Intent.ACTION_MAIN || it.categories.contains(Intent.CATEGORY_LAUNCHER)}
+                .subscribe {
+                    initializationsProcessing = false
+                    startDiscoveryActivity.onNext(Unit)
+                }
+                .addToDisposable(disposables)
+
             val uriFromIntent = intent
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)

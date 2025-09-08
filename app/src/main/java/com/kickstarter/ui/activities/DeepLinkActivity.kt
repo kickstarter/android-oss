@@ -9,6 +9,7 @@ import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
@@ -41,6 +42,18 @@ class DeepLinkActivity : AppCompatActivity() {
     private lateinit var statsigClient: StatsigClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        this.getEnvironment()?.let {
+            viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
+            it.statsigClient()?.let { stClient ->
+                statsigClient = stClient
+            }
+        }
+
+        installSplashScreen().setKeepOnScreenCondition {
+            //replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) true ?: false
+            viewModel.initializationsProcessing
+        }
+
         super.onCreate(savedInstanceState)
         setUpConnectivityStatusCheck(lifecycle)
 
@@ -55,13 +68,6 @@ class DeepLinkActivity : AppCompatActivity() {
                 )
                 slideUp.interpolator = AnticipateInterpolator()
                 slideUp.duration = 100L
-            }
-        }
-
-        this.getEnvironment()?.let {
-            viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
-            it.statsigClient()?.let { stClient ->
-                statsigClient = stClient
             }
         }
 

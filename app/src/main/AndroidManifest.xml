@@ -246,13 +246,13 @@
         <activity android:name=".ui.activities.DeepLinkActivity"
             android:theme="@style/SplashTheme"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:exported="true">
             <!-- Marketing Emails Domains  -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

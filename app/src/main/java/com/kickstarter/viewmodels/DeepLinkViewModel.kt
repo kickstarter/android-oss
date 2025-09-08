@@ -362,20 +362,20 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
         }
 
-        fun runInitializations(intent: Intent) {
-            viewModelScope.launch {
-                try {
-                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-                    val isInitialized = awaitAll(ffClientInitialization)
-
-                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                        // parse intent and determine user navigation
-                    } else {
-                        throw Exception()
-                    }
-                } catch (e: Exception) { }
-            }
-        }
+//        fun runInitializations(intent: Intent) {
+//            viewModelScope.launch {
+//                try {
+//                    val ffClientInitialization = async { initializeFeatureFlagClient() }
+//                    val isInitialized = awaitAll(ffClientInitialization)
+//
+//                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+//                        // parse intent and determine user navigation
+//                    } else {
+//                        throw Exception()
+//                    }
+//                } catch (e: Exception) { }
+//            }
+//        }
 
         private suspend fun initializeFeatureFlagClient(): Boolean? {
             return ffClient?.fetchAndActivate()

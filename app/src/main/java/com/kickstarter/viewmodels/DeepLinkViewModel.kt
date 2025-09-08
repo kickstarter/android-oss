@@ -34,6 +34,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.requireNonNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -41,10 +42,12 @@ import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -134,14 +137,27 @@ interface DeepLinkViewModel {
                             } else {
                                 throw Exception()
                             }
-                        } catch (e: Exception) { }
+                        } catch (e: Exception) {
+                            //log here comment
+                            processIntent(externalCall = externalCall)
+                        }
                     }
             }
         }
 
+        private inline fun <T> Observable<T>.dropBreadcrumb(): Observable<T> {
+            val breadcrumb = BreadcrumbException()
+            return this.onErrorResumeNext { error: Throwable ->
+                throw CompositeException(error, breadcrumb)
+            }
+        }
+
+        class BreadcrumbException : Exception()
+
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
                 .filter { it.action == Intent.ACTION_MAIN || it.categories.contains(Intent.CATEGORY_LAUNCHER)}
+                .dropBreadcrumb()
                 .subscribe {
                     initializationsProcessing = false
                     startDiscoveryActivity.onNext(Unit)
@@ -150,10 +166,14 @@ interface DeepLinkViewModel {
 
             val uriFromIntent = intent
                 .map { obj: Intent -> obj.data }
+                .filter { it.isNotNull() }
                 .ofType(Uri::class.java)
 
             // - Takes URI from Marketing email domain, executes network call that and redirection took place
             val uriFromEmailDomain = uriFromIntent
+                .map {
+                    it
+                }
                 .filter { it.isEmailDomain() }
                 .switchMap {
                     externalCall.obtainUriFromRedirection(it)
@@ -178,29 +198,31 @@ interface DeepLinkViewModel {
             val mainPageUri = uriFromIntent
                 .filter { it.isMainPage() }
 
-            mainPageUri
+            mainPageUri.dropBreadcrumb()
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
-            projectFromEmail
+            projectFromEmail.dropBreadcrumb()
                 .subscribe {
                     startProjectActivity.onNext(it)
                 }.addToDisposable(disposables)
 
-            isKSDomainUriFromEmail
+            isKSDomainUriFromEmail.dropBreadcrumb()
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { lastPathSegmentIsProjects(it) }
-                .compose(Transformers.ignoreValuesV2())
+                .compose(Transformers.ignoreValuesV2()).dropBreadcrumb()
                 .subscribe {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
 
             val projectObservable: Observable<Project> = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { ProjectIntentMapper.paramFromUri(it).isNotNull() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
                 .switchMap {
@@ -213,6 +235,7 @@ interface DeepLinkViewModel {
                 .map { it.value }
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     !it.isProjectSaveUri(webEndpoint)
                 }
@@ -238,63 +261,67 @@ interface DeepLinkViewModel {
                     it.isProjectUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                .compose(Transformers.combineLatestPair(projectObservable))
+                .compose(Transformers.combineLatestPair(projectObservable)).dropBreadcrumb()
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivity)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectSaveUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                .compose(Transformers.combineLatestPair(projectObservable))
+                .compose(Transformers.combineLatestPair(projectObservable)).dropBreadcrumb()
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivityToSave)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectCommentUri(webEndpoint)
                 }
-                .map { appendRefTagIfNone(it) }
+                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
                 .subscribe {
                     startProjectActivityForComment.onNext(it)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateUri(webEndpoint)
                 }
                 .filter {
                     !it.isProjectUpdateCommentsUri(webEndpoint)
                 }
-                .map { appendRefTagIfNone(it) }
+                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
                 .subscribe {
                     startProjectActivityForUpdate.onNext(it)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
-                .map { appendRefTagIfNone(it) }
+                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
                 .subscribe {
                     startProjectActivityForCommentToUpdate.onNext(it)
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isSettingsUrl() }
                 .subscribe {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isProjectSurveyUri(webEndpoint) }
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
-                }
+                }.dropBreadcrumb()
                 .subscribe {
                     startProjectSurvey.onNext(it)
                 }.addToDisposable(disposables)
@@ -307,18 +334,20 @@ interface DeepLinkViewModel {
                     updateSettings(it.first, apiClientType)
                 }
                 .compose(Transformers.valuesV2())
-                .distinctUntilChanged()
+                .distinctUntilChanged().dropBreadcrumb()
                 .subscribe {
                     refreshUserAndFinishActivity(it, currentUser)
                 }.addToDisposable(disposables)
 
             projectObservable
-                .filter { it.backing() == null || !it.canUpdateFulfillment() }
+                .filter { it.isNotNull() }
+                .filter { it.backing() == null || !it.canUpdateFulfillment() }.dropBreadcrumb()
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             projectObservable
+                .filter { it.isNotNull() }
                 .filter { it.canUpdateFulfillment() }
                 .switchMap {
                     postBacking(it)
@@ -326,22 +355,25 @@ interface DeepLinkViewModel {
                             finishDeeplinkActivity.onNext(Unit)
                         }
                         .distinctUntilChanged()
-                }
+                }.dropBreadcrumb()
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isCheckoutUri(webEndpoint) }
-                .map { appendRefTagIfNone(it) }
+                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
                 .subscribe {
                     startProjectActivityWithCheckout.onNext(it)
                 }.addToDisposable(disposables)
 
             val projectPreview = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isProjectPreviewUri(webEndpoint) }
 
             val unsupportedDeepLink = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
                 .filter { !it.isProjectSaveUri(webEndpoint) }
@@ -355,8 +387,9 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectSurveyUri(webEndpoint) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
+                .filter { it.isNotNull() }
                 .map { obj: Uri -> obj.toString() }
-                .filter { !TextUtils.isEmpty(it) }
+                .filter { !TextUtils.isEmpty(it) }.dropBreadcrumb()
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
@@ -474,3 +507,4 @@ interface DeepLinkViewModel {
         }
     }
 }
+

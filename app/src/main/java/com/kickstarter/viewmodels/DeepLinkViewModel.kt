@@ -165,8 +165,8 @@ interface DeepLinkViewModel {
                 .addToDisposable(disposables)
 
             val uriFromIntent = intent
+                .filter { it.data.isNotNull() }
                 .map { obj: Intent -> obj.data }
-                .filter { it.isNotNull() }
                 .ofType(Uri::class.java)
 
             // - Takes URI from Marketing email domain, executes network call that and redirection took place
@@ -316,8 +316,12 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
-                .filter { it.isProjectSurveyUri(webEndpoint) }
+                .filter {
+                    it.isNotNull()
+                }
+                .filter {
+                    it.isProjectSurveyUri(webEndpoint)
+                }
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
@@ -340,8 +344,9 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             projectObservable
-                .filter { it.isNotNull() }
-                .filter { it.backing() == null || !it.canUpdateFulfillment() }.dropBreadcrumb()
+                .filter {
+                    it.backing() == null || !it.canUpdateFulfillment()
+                }.dropBreadcrumb()
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -361,7 +366,6 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isNotNull() }
                 .filter { it.isCheckoutUri(webEndpoint) }
                 .map { appendRefTagIfNone(it) }.dropBreadcrumb()
                 .subscribe {
@@ -387,7 +391,6 @@ interface DeepLinkViewModel {
                 .filter { !it.isProjectSurveyUri(webEndpoint) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
-                .filter { it.isNotNull() }
                 .map { obj: Uri -> obj.toString() }
                 .filter { !TextUtils.isEmpty(it) }.dropBreadcrumb()
                 .subscribe {

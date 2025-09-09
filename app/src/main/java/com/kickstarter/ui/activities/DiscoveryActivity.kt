@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.rx.transformers.Transformers

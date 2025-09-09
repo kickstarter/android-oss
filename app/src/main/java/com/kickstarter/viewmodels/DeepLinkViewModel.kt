@@ -116,7 +116,7 @@ interface DeepLinkViewModel {
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
         val outputs: Outputs = this
-        var initializationsProcessing = true //todo: temporary value to dismiss splash screen, will replace with nav state flows
+        var initializationsProcessing = true // todo: temporary value to dismiss splash screen, will replace with nav state flows
 
         fun runInitializations() {
             viewModelScope.launch {
@@ -136,7 +136,7 @@ interface DeepLinkViewModel {
                                 throw Exception()
                             }
                         } catch (e: Exception) {
-                            //todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
+                            // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
                             initializationsProcessing = false
                             processIntent(externalCall = externalCall)
                         }
@@ -146,7 +146,7 @@ interface DeepLinkViewModel {
 
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
-                .filter { it.action == Intent.ACTION_MAIN || it.categories.contains(Intent.CATEGORY_LAUNCHER)}
+                .filter { it.action == Intent.ACTION_MAIN || it.categories.contains(Intent.CATEGORY_LAUNCHER) }
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }
@@ -483,4 +483,3 @@ interface DeepLinkViewModel {
         }
     }
 }
-

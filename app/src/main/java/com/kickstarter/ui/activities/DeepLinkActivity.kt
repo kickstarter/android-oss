@@ -1,18 +1,11 @@
 package com.kickstarter.ui.activities
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.LaunchedEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
-import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.StatsigClient
@@ -33,7 +26,6 @@ import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.launch
 
 class DeepLinkActivity : AppCompatActivity() {
 
@@ -53,7 +45,7 @@ class DeepLinkActivity : AppCompatActivity() {
         }
 
         installSplashScreen().setKeepOnScreenCondition {
-            //replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) false ?: true
+            // replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) false ?: true
             viewModel.initializationsProcessing
         }
 

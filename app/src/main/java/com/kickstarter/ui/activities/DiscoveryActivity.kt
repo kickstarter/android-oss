@@ -71,10 +71,6 @@ class DiscoveryActivity : AppCompatActivity() {
         getEnvironment()?.let { env ->
             viewModelFactory = DiscoveryViewModel.Factory(env)
 
-            if (savedInstanceState == null) {
-                activateFeatureFlags(env)
-            }
-
             internalTools = env.internalTools()
             statsigClient = requireNotNull(env.statsigClient())
         }
@@ -255,10 +251,6 @@ class DiscoveryActivity : AppCompatActivity() {
             .addToDisposable(disposables)
 
         statsigClient.updateExperimentUser()
-    }
-
-    private fun activateFeatureFlags(environment: Environment) {
-        environment.featureFlagClient()?.activate(this)
     }
 
     fun discoveryLayout(): DrawerLayout {

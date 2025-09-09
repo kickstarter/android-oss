@@ -9,7 +9,9 @@ import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
@@ -31,6 +33,7 @@ import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 
 class DeepLinkActivity : AppCompatActivity() {
 
@@ -50,26 +53,12 @@ class DeepLinkActivity : AppCompatActivity() {
         }
 
         installSplashScreen().setKeepOnScreenCondition {
-            //replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) true ?: false
+            //replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) false ?: true
             viewModel.initializationsProcessing
         }
 
         super.onCreate(savedInstanceState)
         setUpConnectivityStatusCheck(lifecycle)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            splashScreen.setSplashScreenTheme(R.style.SplashTheme)
-            splashScreen.setOnExitAnimationListener { splashScreenView ->
-                val slideUp = ObjectAnimator.ofFloat(
-                    splashScreenView,
-                    View.TRANSLATION_Y,
-                    0f,
-                    -splashScreenView.height.toFloat()
-                )
-                slideUp.interpolator = AnticipateInterpolator()
-                slideUp.duration = 100L
-            }
-        }
 
         viewModel.runInitializations()
 

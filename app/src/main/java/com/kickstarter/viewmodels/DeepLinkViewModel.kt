@@ -34,7 +34,6 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.libs.utils.extensions.isTrue
-import com.kickstarter.libs.utils.extensions.requireNonNull
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -42,12 +41,11 @@ import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import io.reactivex.Notification
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.exceptions.CompositeException
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -110,7 +108,6 @@ interface DeepLinkViewModel {
         private val apiClientType = requireNotNull(environment.apiClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
-//        private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
         private val ffClient = environment.featureFlagClient()
@@ -119,7 +116,7 @@ interface DeepLinkViewModel {
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
         val outputs: Outputs = this
-        var initializationsProcessing = true
+        var initializationsProcessing = true //todo: temporary value to dismiss splash screen, will replace with nav state flows
 
         fun runInitializations() {
             viewModelScope.launch {
@@ -127,39 +124,30 @@ interface DeepLinkViewModel {
                     .filter { it.isNotBlank() }
                     .collect {
                         try {
-                            val ffClientInitialization = async {
+                            val ffClientInitialization = async(SupervisorJob()) {
                                 initializeFeatureFlagClient()
                             }
                             val isInitialized = awaitAll(ffClientInitialization)
 
                             if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                                initializationsProcessing = false
                                 processIntent(externalCall = externalCall)
                             } else {
                                 throw Exception()
                             }
                         } catch (e: Exception) {
-                            //log here comment
+                            //todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
+                            initializationsProcessing = false
                             processIntent(externalCall = externalCall)
                         }
                     }
             }
         }
 
-        private inline fun <T> Observable<T>.dropBreadcrumb(): Observable<T> {
-            val breadcrumb = BreadcrumbException()
-            return this.onErrorResumeNext { error: Throwable ->
-                throw CompositeException(error, breadcrumb)
-            }
-        }
-
-        class BreadcrumbException : Exception()
-
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
                 .filter { it.action == Intent.ACTION_MAIN || it.categories.contains(Intent.CATEGORY_LAUNCHER)}
-                .dropBreadcrumb()
                 .subscribe {
-                    initializationsProcessing = false
                     startDiscoveryActivity.onNext(Unit)
                 }
                 .addToDisposable(disposables)
@@ -198,17 +186,17 @@ interface DeepLinkViewModel {
             val mainPageUri = uriFromIntent
                 .filter { it.isMainPage() }
 
-            mainPageUri.dropBreadcrumb()
+            mainPageUri
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
-            projectFromEmail.dropBreadcrumb()
+            projectFromEmail
                 .subscribe {
                     startProjectActivity.onNext(it)
                 }.addToDisposable(disposables)
 
-            isKSDomainUriFromEmail.dropBreadcrumb()
+            isKSDomainUriFromEmail
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -216,7 +204,7 @@ interface DeepLinkViewModel {
             uriFromIntent
                 .filter { it.isNotNull() }
                 .filter { lastPathSegmentIsProjects(it) }
-                .compose(Transformers.ignoreValuesV2()).dropBreadcrumb()
+                .compose(Transformers.ignoreValuesV2())
                 .subscribe {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
@@ -261,7 +249,7 @@ interface DeepLinkViewModel {
                     it.isProjectUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                .compose(Transformers.combineLatestPair(projectObservable)).dropBreadcrumb()
+                .compose(Transformers.combineLatestPair(projectObservable))
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivity)
                 }.addToDisposable(disposables)
@@ -272,7 +260,7 @@ interface DeepLinkViewModel {
                     it.isProjectSaveUri(webEndpoint)
                 }
                 .map { appendRefTagIfNone(it) }
-                .compose(Transformers.combineLatestPair(projectObservable)).dropBreadcrumb()
+                .compose(Transformers.combineLatestPair(projectObservable))
                 .subscribe {
                     onDeepLinkToProjectPage(it, startProjectActivityToSave)
                 }.addToDisposable(disposables)
@@ -282,7 +270,7 @@ interface DeepLinkViewModel {
                 .filter {
                     it.isProjectCommentUri(webEndpoint)
                 }
-                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
+                .map { appendRefTagIfNone(it) }
                 .subscribe {
                     startProjectActivityForComment.onNext(it)
                 }.addToDisposable(disposables)
@@ -295,7 +283,7 @@ interface DeepLinkViewModel {
                 .filter {
                     !it.isProjectUpdateCommentsUri(webEndpoint)
                 }
-                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
+                .map { appendRefTagIfNone(it) }
                 .subscribe {
                     startProjectActivityForUpdate.onNext(it)
                 }.addToDisposable(disposables)
@@ -305,7 +293,7 @@ interface DeepLinkViewModel {
                 .filter {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
-                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
+                .map { appendRefTagIfNone(it) }
                 .subscribe {
                     startProjectActivityForCommentToUpdate.onNext(it)
                 }.addToDisposable(disposables)
@@ -325,7 +313,7 @@ interface DeepLinkViewModel {
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
-                }.dropBreadcrumb()
+                }
                 .subscribe {
                     startProjectSurvey.onNext(it)
                 }.addToDisposable(disposables)
@@ -338,7 +326,7 @@ interface DeepLinkViewModel {
                     updateSettings(it.first, apiClientType)
                 }
                 .compose(Transformers.valuesV2())
-                .distinctUntilChanged().dropBreadcrumb()
+                .distinctUntilChanged()
                 .subscribe {
                     refreshUserAndFinishActivity(it, currentUser)
                 }.addToDisposable(disposables)
@@ -346,7 +334,7 @@ interface DeepLinkViewModel {
             projectObservable
                 .filter {
                     it.backing() == null || !it.canUpdateFulfillment()
-                }.dropBreadcrumb()
+                }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
@@ -360,14 +348,14 @@ interface DeepLinkViewModel {
                             finishDeeplinkActivity.onNext(Unit)
                         }
                         .distinctUntilChanged()
-                }.dropBreadcrumb()
+                }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             uriFromIntent
                 .filter { it.isCheckoutUri(webEndpoint) }
-                .map { appendRefTagIfNone(it) }.dropBreadcrumb()
+                .map { appendRefTagIfNone(it) }
                 .subscribe {
                     startProjectActivityWithCheckout.onNext(it)
                 }.addToDisposable(disposables)
@@ -392,26 +380,11 @@ interface DeepLinkViewModel {
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
-                .filter { !TextUtils.isEmpty(it) }.dropBreadcrumb()
+                .filter { !TextUtils.isEmpty(it) }
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
         }
-
-//        fun runInitializations(intent: Intent) {
-//            viewModelScope.launch {
-//                try {
-//                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-//                    val isInitialized = awaitAll(ffClientInitialization)
-//
-//                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-//                        // parse intent and determine user navigation
-//                    } else {
-//                        throw Exception()
-//                    }
-//                } catch (e: Exception) { }
-//            }
-//        }
 
         private suspend fun initializeFeatureFlagClient(): Boolean? {
             return ffClient?.fetchAndActivate()

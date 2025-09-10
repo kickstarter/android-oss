@@ -297,6 +297,8 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
+                .filter { it.isSettingsUrl() }
                 .subscribe {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)

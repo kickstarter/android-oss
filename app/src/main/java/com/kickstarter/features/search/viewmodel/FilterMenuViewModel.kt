@@ -1,5 +1,6 @@
 package com.kickstarter.features.search.viewmodel
 
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,11 @@ data class LocationsUIState(
     val nearLocations: List<Location> = emptyList(),
     val searchedLocations: List<Location> = emptyList()
 )
+
+// TODO: Improve error message
+val LocalFilterMenuViewModel = staticCompositionLocalOf<FilterMenuViewModel> {
+    error("No FilterMenuViewModel provided")
+}
 
 open class FilterMenuViewModel(
     private val environment: Environment,

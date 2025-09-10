@@ -2,10 +2,15 @@ package com.kickstarter.ui.activities.compose.search
 
 import android.content.Intent
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +20,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -22,6 +28,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -37,14 +44,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Surface
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +71,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -62,13 +82,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.SearchAndFilterActivity
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.LocalFilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
+import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isLatePledgesActive
+import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.mock.factories.CategoryFactory
@@ -214,6 +245,155 @@ fun getCardProjectState(project: Project): CardProjectState {
     }
 }
 
+@Composable
+fun SearchAndFilterScreen(
+    env: Environment,
+    sfVm: SearchAndFilterViewModel,
+    fmVm: FilterMenuViewModel,
+    intent: Intent,
+) {
+    fmVm.getRootCategories()
+
+    val phaseff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
+
+    var currentSearchTerm by rememberSaveable { mutableStateOf("") }
+    val lazyListState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val searchUIState by sfVm.searchUIState.collectAsStateWithLifecycle()
+    val popularProjects = searchUIState.popularProjectsList
+    val searchedProjects = searchUIState.searchList
+    val isLoading = searchUIState.isLoading
+    val hasMorePages = searchUIState.hasMore
+
+    val categoriesState by fmVm.filterMenuUIState.collectAsStateWithLifecycle()
+    val categories = categoriesState.categoriesList
+
+    val context = LocalContext.current
+    if (context is SearchAndFilterActivity)
+        (context as SearchAndFilterActivity).SetUpErrorActions(snackbarHostState, sfVm, fmVm)
+
+    CompositionLocalProvider(LocalFilterMenuViewModel provides fmVm) {
+        SearchScreen(
+            intent = intent,
+            environment = env,
+            onBackClicked = {
+                if (context is SearchAndFilterActivity)
+                    (context as SearchAndFilterActivity).onBackPressedDispatcher.onBackPressed()
+                            },
+            scaffoldState = rememberScaffoldState(),
+            errorSnackBarHostState = snackbarHostState,
+            isLoading = isLoading,
+            isDefaultList = currentSearchTerm.isTrimmedEmpty(),
+            itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
+                popularProjects
+            } else {
+                searchedProjects
+            },
+            lazyColumnListState = lazyListState,
+            showEmptyView = !isLoading && (searchedProjects.isEmpty() && popularProjects.isEmpty()),
+            categories = categories,
+            onSearchTermChanged = { searchTerm ->
+                currentSearchTerm = searchTerm
+                sfVm.updateSearchTerm(searchTerm)
+            },
+            onItemClicked = { project ->
+                val projAndRef = sfVm.getProjectAndRefTag(project)
+                if (project.displayPrelaunch().isTrue()) {
+                    if (context is SearchAndFilterActivity)
+                        (context as SearchAndFilterActivity).startPreLaunchProjectActivity(project, projAndRef.second)
+                } else {
+                    if (context is SearchAndFilterActivity)
+                        (context as SearchAndFilterActivity).startProjectActivity(projAndRef)
+                }
+            },
+            onApplySearchWithParams = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
+                sfVm.updateParamsToSearchWith(
+                    category = category,
+                    projectSort = sort
+                        ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
+                    projectState = projectState,
+                    percentageBucket = percentageBucket,
+                    location = location,
+                    amountBucket = amountRaisedBucket,
+                    goalBucket = goalBucket,
+                    recommended = recomended,
+                    projectsLoved = projectsLoved,
+                    savedProjects = saved,
+                    social = social
+                )
+            },
+            shouldShowPhase = phaseff
+        )
+    }
+
+    // Load more when scroll to the end
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val layoutInfo = lazyListState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+            lastVisibleItemIndex >= (totalItems - 5) && totalItems > 0
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentStateAsState().value, isLoading, hasMorePages) {
+        if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !isLoading && hasMorePages) {
+            sfVm.loadMore()
+        }
+    }
+}
+
+
+@Composable
+fun NavItem(
+    tab: Tab,
+    icon: ImageVector? = null,
+    avatar: Painter? = null,
+    contentDescription: String? = null,
+    selected: Boolean,
+    onClick: (Tab) -> Unit
+) {
+    val color = if (selected) MaterialTheme.colorScheme.primary else LocalContentColor.current
+    val background = if (selected) {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+    } else {
+        Color.Transparent
+    }
+
+    androidx.compose.material3.Surface(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(bounded = true, radius = 24.dp),
+                onClick = { onClick(tab) }
+            ),
+        color = background
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            when {
+                icon != null -> Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                    tint = color
+                )
+
+                avatar != null -> Image(
+                    painter = avatar,
+                    contentDescription = contentDescription,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
@@ -356,25 +536,67 @@ fun SearchScreen(
                     }
                 )
             },
-            bottomBar = {
-                NavigationBar {
-                    val ctx = LocalContext.current
-                    val currentTab = intent.getStringExtra(EXTRA_TAB)?.let { Tab.valueOf(it) } ?: Tab.HOME
-                    @Composable
-                    fun Item(tab: Tab, icon: ImageVector, label: String) =
-                        NavigationBarItem(
-                            selected = currentTab == tab,
-                            onClick = { if (currentTab != tab) ctx.launchTab(tab) },
-                            icon = { Icon(icon, null) },
-                            label = { androidx.compose.material3.Text(label) },
-                            alwaysShowLabel = false
-                        )
+//            bottomBar = {
+//                val ctx = LocalContext.current
+//                val currentTab = intent.getStringExtra(EXTRA_TAB)?.let { Tab.valueOf(it) } ?: Tab.HOME
+//
+//                    Box(Modifier
+//                        .height(90.dp)
+//                        .fillMaxWidth()
+//                        .background(Color.Transparent)
+//                        .navigationBarsPadding()
+//                    ) {
+//                        Surface(
+//                            modifier = Modifier
+//                                .background(Color.Transparent)
+//                                .align(Alignment.BottomCenter)
+//                                .padding(16.dp)
+//                                .clip(RoundedCornerShape(28.dp)),
+//                            //tonalElevation = 6.dp
+//                        ) {
+//                            Row(
+//                                Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+//                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+//                            ) {
+//                                NavItem(
+//                                    Tab.HOME,
+//                                    icon = Icons.Outlined.Home,
+//                                    selected = currentTab == Tab.HOME,
+//                                    onClick = { tab -> if (currentTab != tab) ctx.launchTab(tab) })
+//                                NavItem(
+//                                    Tab.SEARCH,
+//                                    icon = Icons.Outlined.Search,
+//                                    selected = currentTab == Tab.SEARCH,
+//                                    onClick = { tab -> if (currentTab != tab) ctx.launchTab(tab) })
+//                                NavItem(
+//                                    Tab.PROFILE,
+//                                    Icons.Outlined.Person,
+//                                    selected = currentTab == Tab.PROFILE,
+//                                    onClick = { tab -> if (currentTab != tab) ctx.launchTab(tab) })
+//                            }
+//                        }
+//                    }
 
-                    Item(Tab.HOME, Icons.Default.Home, "Home")
-                    Item(Tab.SEARCH, Icons.Default.Search, "Search")
-                    Item(Tab.PROFILE, Icons.Default.Person, "Profile")
-                }
-            },
+//                if (ctx is SearchAndFilterActivity) {
+//                    NavigationBar {
+//
+//
+//                        @Composable
+//                        fun Item(tab: Tab, icon: ImageVector, label: String) =
+//                            NavigationBarItem(
+//                                selected = currentTab == tab,
+//                                onClick = { if (currentTab != tab) ctx.launchTab(tab) },
+//                                icon = { Icon(icon, null) },
+//                                label = { androidx.compose.material3.Text(label) },
+//                                alwaysShowLabel = false
+//                            )
+//
+//                        Item(Tab.HOME, Icons.Default.Home, "Home")
+//                        Item(Tab.SEARCH, Icons.Default.Search, "Search")
+//                        Item(Tab.PROFILE, Icons.Default.Person, "Profile")
+//                    }
+//                }
+            //},
             topBar = {
                 Surface(elevation = 3.dp) {
                     SearchTopBar(

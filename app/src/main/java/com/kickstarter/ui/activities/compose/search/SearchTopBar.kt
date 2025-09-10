@@ -41,8 +41,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.R
-import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.LocalFilterMenuViewModel
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.KsOptional

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -41,8 +42,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.activities.compose.search.SearchAndFilterScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import kotlin.getValue
 
 // ---------- Routes ----------
 sealed interface Screen {
@@ -75,6 +80,12 @@ val TopLevelDestinations = listOf(
 private val BottomBarRoutes = TopLevelDestinations.map { it.screen.route }
 
 class BottomNavWithNavigation : AppCompatActivity() {
+
+    lateinit var viewModelFactory: SearchAndFilterViewModel.Factory
+    lateinit var filterMenuViewModelFactory: FilterMenuViewModel.Factory
+    val viewModel: SearchAndFilterViewModel by viewModels { viewModelFactory }
+    val filterMenuViewModel: FilterMenuViewModel by viewModels { filterMenuViewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -127,12 +138,16 @@ class BottomNavWithNavigation : AppCompatActivity() {
                                 // only load a huge composable that receives as parameter the VM as well
 
                                 // Option B
-                                // Converte SearchAndFilter activity to a fragment, load fragments with
-                                SearchScreen(onOpenDetails = { id ->
-                                    nav.navigate(
-                                        Screen.Details.createRoute(id)
-                                    )
-                                })
+                                // Convert SearchAndFilter activity to a fragment, load fragments with
+                                viewModelFactory = SearchAndFilterViewModel.Factory(env)
+                                filterMenuViewModelFactory = FilterMenuViewModel.Factory(env)
+
+                                SearchAndFilterScreen(
+                                    env = env,
+                                    sfVm = viewModel,
+                                    fmVm = filterMenuViewModel,
+                                    intent = intent // for manual option, does not belong to search
+                                )
                             }
                             composable(Screen.Profile.route) {
                                 ProfileScreen(onOpenSettings = {

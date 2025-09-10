@@ -159,9 +159,7 @@ interface DeepLinkViewModel {
 
             // - Takes URI from Marketing email domain, executes network call that and redirection took place
             val uriFromEmailDomain = uriFromIntent
-                .map {
-                    it
-                }
+                .filter { it.isNotNull() }
                 .filter { it.isEmailDomain() }
                 .switchMap {
                     externalCall.obtainUriFromRedirection(it)

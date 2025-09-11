@@ -1,15 +1,11 @@
 package com.kickstarter.ui.activities
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.animation.AnticipateInterpolator
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.kickstarter.R
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.StatsigClient
@@ -42,29 +38,20 @@ class DeepLinkActivity : AppCompatActivity() {
     private lateinit var statsigClient: StatsigClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setUpConnectivityStatusCheck(lifecycle)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            splashScreen.setSplashScreenTheme(R.style.SplashTheme)
-            splashScreen.setOnExitAnimationListener { splashScreenView ->
-                val slideUp = ObjectAnimator.ofFloat(
-                    splashScreenView,
-                    View.TRANSLATION_Y,
-                    0f,
-                    -splashScreenView.height.toFloat()
-                )
-                slideUp.interpolator = AnticipateInterpolator()
-                slideUp.duration = 100L
-            }
-        }
-
         this.getEnvironment()?.let {
             viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
             it.statsigClient()?.let { stClient ->
                 statsigClient = stClient
             }
         }
+
+        installSplashScreen().setKeepOnScreenCondition {
+            // replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) false ?: true
+            viewModel.initializationsProcessing
+        }
+
+        super.onCreate(savedInstanceState)
+        setUpConnectivityStatusCheck(lifecycle)
 
         viewModel.runInitializations()
 

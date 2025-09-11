@@ -45,6 +45,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.filter
@@ -113,7 +114,6 @@ interface DeepLinkViewModel {
         private val apiClientType = requireNotNull(environment.apiClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
-//        private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
         private val ffClient = environment.featureFlagClient()
@@ -122,6 +122,7 @@ interface DeepLinkViewModel {
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
         val outputs: Outputs = this
+        var initializationsProcessing = true // todo: temporary value to dismiss splash screen, will replace with nav state flows
 
         fun runInitializations() {
             viewModelScope.launch {
@@ -129,28 +130,42 @@ interface DeepLinkViewModel {
                     .filter { it.isNotBlank() }
                     .collect {
                         try {
-                            val ffClientInitialization = async {
+                            val ffClientInitialization = async(SupervisorJob()) {
                                 initializeFeatureFlagClient()
                             }
                             val isInitialized = awaitAll(ffClientInitialization)
 
                             if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                                initializationsProcessing = false
                                 processIntent(externalCall = externalCall)
                             } else {
                                 throw Exception()
                             }
-                        } catch (e: Exception) { }
+                        } catch (e: Exception) {
+                            // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
+                            initializationsProcessing = false
+                            processIntent(externalCall = externalCall)
+                        }
                     }
             }
         }
 
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
+            intent()
+                .filter { it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER) }
+                .subscribe {
+                    startDiscoveryActivity.onNext(Unit)
+                }
+                .addToDisposable(disposables)
+
             val uriFromIntent = intent
+                .filter { it.data.isNotNull() }
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
 
             // - Takes URI from Marketing email domain, executes network call that and redirection took place
             val uriFromEmailDomain = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isEmailDomain() }
                 .switchMap {
                     externalCall.obtainUriFromRedirection(it)
@@ -191,6 +206,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { lastPathSegmentIsProjects(it) }
                 .compose(Transformers.ignoreValuesV2())
                 .subscribe {
@@ -198,6 +214,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             val projectObservable: Observable<Project> = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { ProjectIntentMapper.paramFromUri(it).isNotNull() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
                 .switchMap {
@@ -210,6 +227,7 @@ interface DeepLinkViewModel {
                 .map { it.value }
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     !it.isProjectSaveUri(webEndpoint)
                 }
@@ -241,6 +259,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectSaveUri(webEndpoint)
                 }
@@ -251,6 +270,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectCommentUri(webEndpoint)
                 }
@@ -260,6 +280,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateUri(webEndpoint)
                 }
@@ -272,6 +293,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
@@ -281,13 +303,19 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isSettingsUrl() }
                 .subscribe {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isProjectSurveyUri(webEndpoint) }
+                .filter {
+                    it.isNotNull()
+                }
+                .filter {
+                    it.isProjectSurveyUri(webEndpoint)
+                }
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
@@ -321,12 +349,15 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             projectObservable
-                .filter { it.backing() == null || !it.canUpdateFulfillment() }
+                .filter {
+                    it.backing() == null || !it.canUpdateFulfillment()
+                }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             projectObservable
+                .filter { it.isNotNull() }
                 .filter { it.canUpdateFulfillment() }
                 .switchMap {
                     postBacking(it)
@@ -347,9 +378,11 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             val projectPreview = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isProjectPreviewUri(webEndpoint) }
 
             val unsupportedDeepLink = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
                 .filter { !it.isProjectSaveUri(webEndpoint) }

@@ -17,16 +17,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -430,11 +429,11 @@ fun KSIconTextButton(
             .fillMaxWidth()
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.backgroundActionDisabled
+            containerColor = backgroundColor,
+            disabledContainerColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
-        elevation = ButtonDefaults.elevation(),
+        elevation = ButtonDefaults.buttonElevation(),
         enabled = isEnabled,
         shape = shapes.medium
     ) {
@@ -531,11 +530,11 @@ fun KSSmallButton(
     Button(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.backgroundActionDisabled
+            containerColor = backgroundColor,
+            disabledContainerColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
-        elevation = ButtonDefaults.elevation(),
+        elevation = ButtonDefaults.buttonElevation(),
         enabled = isEnabled,
         shape = radius?.let { RoundedCornerShape(radius) } ?: shapes.medium
     ) {
@@ -634,7 +633,7 @@ fun KSPillButton(
         onClick = onClick,
         modifier = modifier,
         colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = Color.Transparent,
+            containerColor = Color.Transparent,
             contentColor = colors.textAccentGrey
         ),
         border = if (isSelected) BorderStroke(
@@ -642,7 +641,7 @@ fun KSPillButton(
             colors.borderActive
         ) else BorderStroke(dimensions.borderThickness, colors.borderBold),
         shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
-        elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
+        elevation = ButtonDefaults.buttonElevation(dimensions.none, dimensions.none, dimensions.none)
     ) {
         if (shouldShowLeadingIcon) {
             Icon(
@@ -683,7 +682,7 @@ fun KSOutlinedButton(
     OutlinedButton(
         modifier = modifier,
         colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = backgroundColor,
+            containerColor = backgroundColor,
             contentColor = textColor
         ),
         enabled = isEnabled,
@@ -692,7 +691,7 @@ fun KSOutlinedButton(
     ) {
         Text(
             style = typographyV2.buttonLabel,
-            color = if (isEnabled) textColor else textColor.copy(alpha = ContentAlpha.disabled),
+            color = if (isEnabled) textColor else textColor.copy(alpha = 0.38f),
             text = text
         )
     }
@@ -718,11 +717,11 @@ fun KSButton(
         modifier = mod
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.backgroundActionDisabled
+            containerColor = backgroundColor,
+            disabledContainerColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
-        elevation = ButtonDefaults.elevation(),
+        elevation = ButtonDefaults.buttonElevation(),
         enabled = isEnabled,
         shape = shape ?: shapes.medium
     ) {

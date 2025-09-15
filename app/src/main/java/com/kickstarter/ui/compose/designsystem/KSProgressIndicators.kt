@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,9 +43,9 @@ fun KSLinearProgressIndicator(
 ) {
     if (progress != null) {
         LinearProgressIndicator(
-            progress = progress,
             modifier = modifier,
-            color = colors.kds_create_700
+            color = colors.kds_create_700,
+            progress = { progress }
         )
     } else {
         LinearProgressIndicator(modifier = modifier, color = colors.kds_create_700)
@@ -59,7 +59,7 @@ fun KSCircularProgressIndicator(
 ) {
     if (progress != null) {
         CircularProgressIndicator(
-            progress = progress,
+            progress = { progress },
             modifier = modifier,
             color = colors.kds_create_700
         )

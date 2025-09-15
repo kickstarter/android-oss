@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -86,12 +86,12 @@ fun KSStepper(
                 bottomEnd = dimensions.none
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = enabledButtonBackgroundColor,
-                disabledBackgroundColor = colors.backgroundActionDisabled
+                containerColor = enabledButtonBackgroundColor,
+                disabledContainerColor = colors.backgroundActionDisabled
             ),
             onClick = onMinusClicked,
             enabled = isMinusEnabled,
-            elevation = ButtonDefaults.elevation(dimensions.none)
+            elevation = ButtonDefaults.buttonElevation(dimensions.none)
         ) {
             Image(
                 painter = painterResource(
@@ -115,12 +115,12 @@ fun KSStepper(
                 bottomEnd = dimensions.radiusMediumSmall
             ),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = enabledButtonBackgroundColor,
-                disabledBackgroundColor = colors.backgroundActionDisabled
+                containerColor = enabledButtonBackgroundColor,
+                disabledContainerColor = colors.backgroundActionDisabled
             ),
             onClick = onPlusClicked,
             enabled = isPlusEnabled,
-            elevation = ButtonDefaults.elevation(dimensions.none)
+            elevation = ButtonDefaults.buttonElevation(dimensions.none)
         ) {
             Image(
                 painter = painterResource(

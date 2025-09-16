@@ -24,6 +24,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
+import com.kickstarter.viewmodels.SplashUIState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -45,8 +46,7 @@ class DeepLinkActivity : AppCompatActivity() {
         }
 
         installSplashScreen().setKeepOnScreenCondition {
-            // replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) false ?: true
-            viewModel.initializationsProcessing
+            viewModel.uiState.value == SplashUIState.Loading
         }
 
         super.onCreate(savedInstanceState)

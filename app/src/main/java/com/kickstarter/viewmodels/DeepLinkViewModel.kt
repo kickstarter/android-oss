@@ -46,11 +46,24 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+
+sealed class SplashUIState {
+    object Loading : SplashUIState()
+    object NoInternet: SplashUIState()
+    object Errored: SplashUIState()
+    object Finished : SplashUIState() // todo update to dataclass in future to pass in navigation target
+}
+sealed class NavigationTarget {
+    object Discovery : NavigationTarget()
+}
 
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
@@ -115,8 +128,10 @@ interface DeepLinkViewModel {
         private val disposables = CompositeDisposable()
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
+        private val mutableUiState = MutableStateFlow<SplashUIState>(SplashUIState.Loading)
+        val uiState: StateFlow<SplashUIState> = mutableUiState.asStateFlow()
+
         val outputs: Outputs = this
-        var initializationsProcessing = true // todo: temporary value to dismiss splash screen, will replace with nav state flows
 
         fun runInitializations() {
             viewModelScope.launch {
@@ -130,14 +145,14 @@ interface DeepLinkViewModel {
                             val isInitialized = awaitAll(ffClientInitialization)
 
                             if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                                initializationsProcessing = false
+                                mutableUiState.emit(SplashUIState.Finished)
                                 processIntent(externalCall = externalCall)
                             } else {
                                 throw Exception()
                             }
                         } catch (e: Exception) {
                             // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
-                            initializationsProcessing = false
+                            mutableUiState.emit(SplashUIState.Finished)
                             processIntent(externalCall = externalCall)
                         }
                     }
@@ -146,7 +161,7 @@ interface DeepLinkViewModel {
 
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
-                .filter { it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER) }
+                .filter { it.action == Intent.ACTION_MAIN || it.categories.contains(Intent.CATEGORY_LAUNCHER) }
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }

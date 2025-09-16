@@ -1,9 +1,11 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewUIState
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.MockCurrentUserV2
@@ -20,7 +22,9 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -79,7 +83,6 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testNonDeepLink_startsBrowser() {
-//        runTest {
         val url =
             "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comment"
 
@@ -96,20 +99,70 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
-//        }
     }
 
     @Test
-    fun testMainPageDeeplink_OpensDiscovery() {
+    fun testMainPageDeeplink_OpensDiscovery() = runTest {
         val url =
             "ksr://www.kickstarter.com/?app_banner=1&ref=nav"
 
         var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
         setUpEnvironment(intent = intentWithData(url), environment = environment)
 
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiState = mutableListOf<SplashUIState>()
+
+        backgroundScope.launch(unconfinedDispatcher) {
+            vm.uiState.toList(uiState)
+        }
+
         vm.runInitializations()
 
+        assertEquals(
+            uiState,
+            listOf(
+                SplashUIState.Loading,
+                SplashUIState.Finished
+            )
+        )
+
         startBrowser.assertValue(url)
+        startDiscoveryActivity.assertValue(Unit)
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+    }
+
+    @Test
+    fun `test deeplink activity intent launcher category`() = runTest {
+
+        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = Intent().addCategory(CATEGORY_LAUNCHER), environment = environment)
+
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiState = mutableListOf<SplashUIState>()
+
+        backgroundScope.launch(unconfinedDispatcher) {
+            vm.uiState.toList(uiState)
+        }
+
+        vm.runInitializations()
+
+        assertEquals(
+            uiState,
+            listOf(
+                SplashUIState.Loading,
+                SplashUIState.Finished
+            )
+        )
+
+        startBrowser.assertNoValues()
         startDiscoveryActivity.assertValue(Unit)
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
@@ -675,7 +728,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
             .featureFlagClient(object : MockFeatureFlagClient() {
                 override suspend fun fetchAndActivate(): Boolean {
-                    return false
+                    return true
                 }
             })
             .build()
@@ -684,12 +737,28 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             "ksr://staging.kickstarter.com/projects/polymernai/baby-spirits-plush-collection/mark_reward_fulfilled/true"
         setUpEnvironment(environment, intentWithData(url))
 
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        val uiState = mutableListOf<SplashUIState>()
+        backgroundScope.launch(unconfinedDispatcher) {
+            vm.uiState.toList(uiState)
+        }
+
         backgroundScope.launch {
             assertThrows(
                 Exception::class.java,
                 { vm.runInitializations() }
             )
         }
+
+        vm.runInitializations()
+
+        assertEquals(
+            uiState,
+            listOf(
+                SplashUIState.Loading,
+                SplashUIState.Finished
+            )
+        )
     }
 
     @Test

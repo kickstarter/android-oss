@@ -13,19 +13,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.models.Photo
 import com.kickstarter.ui.activities.compose.search.CardProjectState
@@ -157,12 +160,15 @@ fun KSProjectCardLarge(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        backgroundColor = colors.backgroundSurfaceRaised,
+        modifier = modifier.fillMaxWidth(),
+        onClick = onClick, // clickable overload (omit if non-clickable)
         shape = shapes.medium,
-        elevation = dimensionResource(id = R.dimen.grid_2),
-        onClick = onClick
+        colors = CardDefaults.cardColors(
+            containerColor = colors.backgroundSurfaceRaised
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = dimensionResource(id = R.dimen.grid_2)
+        )
     ) {
         Column {
             if (photo != null) {
@@ -212,9 +218,13 @@ fun KSProjectCardSmall(
     Card(
         modifier = modifier
             .fillMaxWidth(),
-        backgroundColor = colors.backgroundSurfaceRaised,
+        colors = CardDefaults.cardColors(
+            containerColor = colors.backgroundSurfaceRaised
+        ),
         shape = shapes.small,
-        elevation = dimensionResource(id = R.dimen.grid_2),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = dimensionResource(id = R.dimen.grid_2)
+        ),
         onClick = onClick
     ) {
         Column {
@@ -321,21 +331,25 @@ fun StateFundingInfoRow(
 fun KSFundingProgressIndicator(progress: Float, state: CardProjectState) {
     if (state == CardProjectState.ENDED_UNSUCCESSFUL) {
         LinearProgressIndicator(
-            progress = progress,
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensions.linearProgressBarHeight),
             color = colors.borderBold,
-            backgroundColor = colors.borderDisabled
+            trackColor = colors.borderDisabled,
+            gapSize = 0.dp,
+            strokeCap = StrokeCap.Butt
         )
     } else {
         LinearProgressIndicator(
-            progress = progress,
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensions.linearProgressBarHeight),
             color = colors.backgroundAccentGreenBrand,
-            backgroundColor = colors.borderSubtle
+            trackColor = colors.borderSubtle,
+            gapSize = 0.dp,
+            strokeCap = StrokeCap.Butt
         )
     }
 }

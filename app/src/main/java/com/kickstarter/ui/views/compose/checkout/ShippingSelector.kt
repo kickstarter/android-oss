@@ -19,8 +19,9 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,7 +98,7 @@ fun ShippingSelector(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CountryInputWithDropdown(
     interactionSource: MutableInteractionSource,
@@ -140,19 +141,23 @@ fun CountryInputWithDropdown(
                 textStyle = typographyV2.subHeadlineMedium.copy(color = colors.textAccentGreenBold),
                 singleLine = false
             ) { innerTextField ->
-                TextFieldDefaults.TextFieldDecorationBox(
+                TextFieldDefaults.DecorationBox(
                     value = countryInput,
                     innerTextField = innerTextField,
                     enabled = true,
                     singleLine = false,
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
+                    // isError = false, // optional
                     contentPadding = PaddingValues(
                         start = dimensions.paddingMedium,
                         top = dimensions.paddingSmall,
                         bottom = dimensions.paddingSmall,
                         end = dimensions.paddingMedium
                     ),
+                    // Optional: supply your theme colors instead of defaults
+                    colors = TextFieldDefaults.colors()
+                    // Optional: container = { TextFieldDefaults.Container(...) } // customize container/indicator
                 )
             }
 

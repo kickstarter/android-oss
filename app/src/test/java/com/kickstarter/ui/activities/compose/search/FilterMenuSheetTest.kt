@@ -1,7 +1,7 @@
 package com.kickstarter.ui.activities.compose.search
 
 import android.content.Context
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsOff

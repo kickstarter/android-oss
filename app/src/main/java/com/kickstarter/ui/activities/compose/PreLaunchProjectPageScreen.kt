@@ -12,11 +12,12 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -278,8 +279,12 @@ fun PreLaunchProjectPageScreen(
                     topStart = dimensionResource(id = R.dimen.grid_5),
                     topEnd = dimensionResource(id = R.dimen.grid_5)
                 ),
-                elevation = dimensionResource(id = R.dimen.grid_2),
-                backgroundColor = colors.kds_white
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.kds_white
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = dimensionResource(id = R.dimen.grid_2)
+                )
             ) {
                 ConstraintLayout(
                     modifier = Modifier

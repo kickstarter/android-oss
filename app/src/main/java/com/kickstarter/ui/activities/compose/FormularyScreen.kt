@@ -12,14 +12,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,12 +31,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import io.reactivex.Observable
 
@@ -93,12 +96,14 @@ fun FormularyScreen(
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
                 color = colors.kds_create_700,
-                backgroundColor = colors.kds_create_300
+                trackColor = colors.kds_create_300,
+                gapSize = 0.dp,
+                strokeCap = StrokeCap.Butt
             )
         } else {
             Spacer(
                 modifier = Modifier
-                    .height(ProgressIndicatorDefaults.StrokeWidth)
+                    .height(dimensions.linearProgressBarHeight)
                     .background(colors.kds_white)
             )
         }
@@ -115,18 +120,22 @@ fun FormularyScreen(
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.Email)) },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
                 focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.kds_support_700,
+                errorLabelColor = colors.kds_alert,
                 focusedIndicatorColor = colors.kds_create_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                errorIndicatorColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             )
         )
 
@@ -145,18 +154,22 @@ fun FormularyScreen(
                     text = stringResource(id = R.string.Project_url)
                 )
             },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
                 focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.kds_support_700,
+                errorLabelColor = colors.kds_alert,
                 focusedIndicatorColor = colors.kds_create_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                errorIndicatorColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             )
         )
 
@@ -176,18 +189,19 @@ fun FormularyScreen(
                 details = it
             },
             label = { Text(stringResource(id = R.string.Tell_us_more_details)) },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
-                focusedLabelColor = colors.kds_create_700,
-                focusedIndicatorColor = colors.kds_create_700,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
+                focusedBorderColor = colors.kds_create_700,
+                unfocusedBorderColor = colors.kds_support_700,
+                errorBorderColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             ),
         )
         LaunchedEffect(Unit) {
@@ -198,7 +212,7 @@ fun FormularyScreen(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.kds_create_700,
+                containerColor = colors.kds_create_700,
                 contentColor = colors.kds_white
             ),
             enabled = details.isNotEmpty(),

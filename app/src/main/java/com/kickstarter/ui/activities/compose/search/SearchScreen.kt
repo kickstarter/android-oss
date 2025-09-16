@@ -30,10 +30,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -348,7 +348,10 @@ fun SearchScreen(
                 )
             },
             topBar = {
-                Surface(elevation = 3.dp) {
+                Surface(
+                    shadowElevation = 3.dp, // - replaces elevation
+                    tonalElevation = 0.dp
+                ) {
                     SearchTopBar(
                         countApiIsReady = countApiIsReady,
                         categoryPillText = categoryPillText.value,

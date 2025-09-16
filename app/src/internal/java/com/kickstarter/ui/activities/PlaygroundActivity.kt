@@ -86,6 +86,10 @@ class PlaygroundActivity : ComponentActivity() {
         this.binding.pledgeButton.setOnClickListener {
             flowController.confirm()
         }
+
+        this.binding.startActivity.setOnClickListener {
+            startProjectActivity(Pair(ProjectFactory.project(), RefTag.searchFeatured()))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {

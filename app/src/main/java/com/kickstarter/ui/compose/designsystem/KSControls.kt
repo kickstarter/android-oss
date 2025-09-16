@@ -12,16 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -106,14 +107,25 @@ fun KSSwitch(
         checked = checked,
         onCheckedChange = onCheckChanged,
         colors = SwitchDefaults.colors(
+            // Unchecked
             uncheckedThumbColor = colors.kds_support_100,
-            uncheckedTrackColor = colors.kds_support_500,
-            uncheckedTrackAlpha = 0.38f,
+            uncheckedTrackColor = colors.kds_support_500.copy(alpha = 0.38f),
+            uncheckedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+
+            // Checked
             checkedThumbColor = colors.kds_create_700,
-            checkedTrackColor = colors.kds_create_700,
-            checkedTrackAlpha = 0.38f,
+            checkedTrackColor = colors.kds_create_700.copy(alpha = 0.38f),
+            checkedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+
+            // Disabled (checked)
             disabledCheckedThumbColor = colors.kds_support_300,
-            disabledCheckedTrackColor = colors.kds_support_700,
+            disabledCheckedTrackColor = colors.kds_support_700, // add .copy(alpha=...) if you used transparency before
+            disabledCheckedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+
+            // Disabled (unchecked) — new in M3; choose to mirror your unchecked palette
+            disabledUncheckedThumbColor = colors.kds_support_100,
+            disabledUncheckedTrackColor = colors.kds_support_500.copy(alpha = 0.38f),
+            disabledUncheckedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
         ),
         enabled = enabled
     )
@@ -131,7 +143,8 @@ fun KSRadioButton(
         colors = RadioButtonDefaults.colors(
             selectedColor = colors.kds_create_700,
             unselectedColor = colors.kds_create_700,
-            disabledColor = colors.kds_support_300
+            disabledSelectedColor = colors.kds_support_300,
+            disabledUnselectedColor = colors.kds_support_300
         ),
         enabled = enabled
     )
@@ -150,13 +163,14 @@ fun KSCheckbox(
             checkedColor = colors.kds_create_700,
             uncheckedColor = colors.kds_create_700,
             checkmarkColor = colors.kds_white,
-            disabledColor = kds_support_500,
+            disabledCheckedColor = colors.kds_support_500,
+            disabledUncheckedColor = colors.kds_support_500
         ),
         enabled = enabled
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KSStringDropdown(
     @SuppressLint("ModifierParameter")
@@ -214,12 +228,19 @@ fun KSStringDropdown(
                     modifier = Modifier.background(color = colors.kds_white),
                     onClick = {
                         onItemSelected(index, item)
-                        selectedItem = Pair(index, item)
+                        selectedItem = index to item
                         expanded = false
-                    }
-                ) {
-                    Text(text = item, style = typographyV2.bodyMD, color = colors.kds_support_700)
-                }
+                    },
+                    text = {
+                        Text(
+                            text = item,
+                            style = typographyV2.bodyMD
+                        )
+                    },
+                    colors = MenuDefaults.itemColors(
+                        textColor = colors.kds_support_700
+                    )
+                )
             }
         }
     }

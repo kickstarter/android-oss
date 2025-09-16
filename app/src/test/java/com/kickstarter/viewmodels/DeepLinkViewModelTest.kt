@@ -5,7 +5,6 @@ import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.features.pledgedprojectsoverview.viewmodel.PledgedProjectsOverviewUIState
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.MockCurrentUserV2

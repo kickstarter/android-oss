@@ -57,8 +57,8 @@ import okhttp3.Response
 
 sealed class SplashUIState {
     object Loading : SplashUIState()
-    object NoInternet: SplashUIState()
-    object Errored: SplashUIState()
+    object NoInternet : SplashUIState()
+    object Errored : SplashUIState()
     object Finished : SplashUIState() // todo update to dataclass in future to pass in navigation target
 }
 sealed class NavigationTarget {

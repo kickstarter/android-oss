@@ -12,7 +12,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
@@ -59,9 +58,7 @@ abstract class TrackingClient(
     }
 
     override fun isEnabled(): Boolean {
-        return if (ffClient.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT)) {
-            sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false)
-        } else true
+        return sharedPreferences.getBoolean(CONSENT_MANAGEMENT_PREFERENCE, false)
     }
 
     override fun reset() {

@@ -454,7 +454,6 @@ interface DiscoveryViewModel {
 
             Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
                 .filter { !it }
-                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
                 .subscribe { showConsentManagementDialog.onNext(Unit) }
                 .addToDisposable(disposables)
         }

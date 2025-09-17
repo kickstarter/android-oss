@@ -158,7 +158,7 @@ fun KSProjectCardLarge(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        onClick = onClick, // clickable overload (omit if non-clickable)
+        onClick = onClick,
         shape = shapes.medium,
         colors = CardDefaults.cardColors(
             containerColor = colors.backgroundSurfaceRaised

@@ -17,7 +17,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -98,7 +97,7 @@ fun ShippingSelector(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountryInputWithDropdown(
     interactionSource: MutableInteractionSource,
@@ -148,16 +147,13 @@ fun CountryInputWithDropdown(
                     singleLine = false,
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
-                    // isError = false, // optional
                     contentPadding = PaddingValues(
                         start = dimensions.paddingMedium,
                         top = dimensions.paddingSmall,
                         bottom = dimensions.paddingSmall,
                         end = dimensions.paddingMedium
                     ),
-                    // Optional: supply your theme colors instead of defaults
                     colors = TextFieldDefaults.colors()
-                    // Optional: container = { TextFieldDefaults.Container(...) } // customize container/indicator
                 )
             }
 

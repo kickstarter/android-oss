@@ -107,22 +107,15 @@ fun KSSwitch(
         checked = checked,
         onCheckedChange = onCheckChanged,
         colors = SwitchDefaults.colors(
-            // Unchecked
             uncheckedThumbColor = colors.kds_support_100,
             uncheckedTrackColor = colors.kds_support_500.copy(alpha = 0.38f),
             uncheckedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-
-            // Checked
             checkedThumbColor = colors.kds_create_700,
             checkedTrackColor = colors.kds_create_700.copy(alpha = 0.38f),
             checkedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-
-            // Disabled (checked)
             disabledCheckedThumbColor = colors.kds_support_300,
-            disabledCheckedTrackColor = colors.kds_support_700, // add .copy(alpha=...) if you used transparency before
+            disabledCheckedTrackColor = colors.kds_support_700,
             disabledCheckedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-
-            // Disabled (unchecked) — new in M3; choose to mirror your unchecked palette
             disabledUncheckedThumbColor = colors.kds_support_100,
             disabledUncheckedTrackColor = colors.kds_support_500.copy(alpha = 0.38f),
             disabledUncheckedBorderColor = androidx.compose.ui.graphics.Color.Transparent,

@@ -11,7 +11,6 @@ import com.google.android.gms.common.GoogleApiAvailabilityLight
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
-import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.extensions.currentVariants
@@ -26,7 +25,6 @@ abstract class TrackingClient(
     @set:Inject var currentUser: CurrentUserTypeV2,
     @set:Inject var build: Build,
     @set:Inject var currentConfig: CurrentConfigTypeV2,
-    @set:Inject var ffClient: FeatureFlagClientType,
     @set:Inject var sharedPreferences: SharedPreferences
 ) : TrackingClientType() {
 

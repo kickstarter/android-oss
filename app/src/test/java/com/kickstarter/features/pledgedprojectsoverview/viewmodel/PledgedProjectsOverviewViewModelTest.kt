@@ -14,7 +14,6 @@ import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockCurrentConfigV2
-import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -31,7 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import kotlin.properties.Delegates.observable
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
@@ -303,8 +301,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val trackingClient = MockTrackingClient(
                 MockCurrentUserV2(user),
                 MockCurrentConfigV2(),
-                TrackingClientType.Type.SEGMENT,
-                MockFeatureFlagClient()
+                TrackingClientType.Type.SEGMENT
             )
 
             val mockApolloClientV2 = object : MockApolloClientV2() {
@@ -343,8 +340,7 @@ class PledgedProjectsOverviewViewModelTest : KSRobolectricTestCase() {
             val trackingClient = MockTrackingClient(
                 MockCurrentUserV2(user),
                 MockCurrentConfigV2(),
-                TrackingClientType.Type.SEGMENT,
-                MockFeatureFlagClient()
+                TrackingClientType.Type.SEGMENT
             )
             val mockApolloClientV2 = object : MockApolloClientV2() {
 

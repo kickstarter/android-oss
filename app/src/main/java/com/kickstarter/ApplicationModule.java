@@ -14,12 +14,14 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kickstarter.libs.AnalyticEvents;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AttributionEvents;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentConfigTypeV2;
+import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentUserTypeV2;
+import com.kickstarter.libs.CurrentUserV2;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
@@ -30,8 +32,6 @@ import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.AnalyticEvents;
-import com.kickstarter.libs.CurrentUserV2;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
@@ -415,9 +415,8 @@ public class ApplicationModule {
           final @ApplicationContext @NonNull Context context,
           final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build,
-          final @NonNull CurrentConfigTypeV2 currentConfig,
-          final @NonNull FeatureFlagClientType featureFlagClient) {
-    return new SegmentTrackingClient(build, context, currentConfig, currentUser, featureFlagClient, PreferenceManager.getDefaultSharedPreferences(context));
+          final @NonNull CurrentConfigTypeV2 currentConfig) {
+    return new SegmentTrackingClient(build, context, currentConfig, currentUser, PreferenceManager.getDefaultSharedPreferences(context));
   }
 
   @Provides

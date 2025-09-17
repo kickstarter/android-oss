@@ -173,7 +173,8 @@ fun CountryInputWithDropdown(
                         text = {
                             Text(
                                 text = rule.location()?.displayableName().orEmpty(),
-                                style = typographyV2.subHeadlineMedium
+                                style = typographyV2.subHeadlineMedium,
+                                color = colors.textAccentGreenBold
                             )
                         },
                         colors = MenuDefaults.itemColors(

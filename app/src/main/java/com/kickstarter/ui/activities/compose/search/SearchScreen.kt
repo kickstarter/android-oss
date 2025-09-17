@@ -349,7 +349,7 @@ fun SearchScreen(
             },
             topBar = {
                 Surface(
-                    shadowElevation = 3.dp, // - replaces elevation
+                    shadowElevation = 3.dp,
                     tonalElevation = 0.dp
                 ) {
                     SearchTopBar(

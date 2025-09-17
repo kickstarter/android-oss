@@ -427,7 +427,7 @@ private fun InputSearchComposable(
                 errorCursorColor = colors.kds_alert,
                 focusedBorderColor = colors.borderActive,
                 unfocusedBorderColor = colors.borderBold,
-                disabledBorderColor = colors.borderBold, // choose a subtler tone if you prefer
+                disabledBorderColor = colors.borderBold,
                 errorBorderColor = colors.kds_alert
             ),
             label = {

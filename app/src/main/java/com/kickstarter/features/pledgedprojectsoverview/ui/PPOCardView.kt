@@ -357,7 +357,7 @@ fun PPOCardView(
             shape = shapes.small,
             colors = CardDefaults.cardColors(
                 containerColor = colors.backgroundSurfacePrimary,
-                contentColor = colors.backgroundSurfacePrimary // same as your M1 setup
+                contentColor = colors.backgroundSurfacePrimary
             ),
             border = BorderStroke(width = dimensions.borderThickness, color = colors.borderSubtle),
         ) {

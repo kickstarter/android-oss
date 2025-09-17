@@ -41,6 +41,7 @@ import com.kickstarter.models.Update
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.toolbars.compose.TopToolBar
 import kotlinx.coroutines.flow.flowOf
 
 class PaginationActivity : ComponentActivity() {
@@ -86,10 +87,17 @@ fun Screen(
     pullRefreshCallback: () -> Unit = {}
 ) {
     Scaffold(
-        topBar = { /* ... */ },
+        topBar = {
+            TopToolBar(
+                title = "Project Updates",
+                titleColor = KSTheme.colors.kds_black,
+                leftIconColor = KSTheme.colors.kds_black,
+                backgroundColor = KSTheme.colors.kds_white
+            )
+        },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        val isLoading = !updatesPagingSource.loadState.isIdle // keep your logic
+        val isLoading = !updatesPagingSource.loadState.isIdle
         val lazyListState = rememberLazyListState()
 
         Text(modifier = Modifier.padding(innerPadding), text = " Complete collection of items $total")
@@ -98,7 +106,7 @@ fun Screen(
             modifier = Modifier.padding(innerPadding),
             listState = lazyListState,
             isRefreshing = isLoading,
-            onRefresh = pullRefreshCallback, // or { updatesPagingSource.refresh() }
+            onRefresh = pullRefreshCallback,
             updates = updatesPagingSource
         )
     }

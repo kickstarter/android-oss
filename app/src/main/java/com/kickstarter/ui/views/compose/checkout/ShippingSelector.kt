@@ -152,8 +152,7 @@ fun CountryInputWithDropdown(
                         top = dimensions.paddingSmall,
                         bottom = dimensions.paddingSmall,
                         end = dimensions.paddingMedium
-                    ),
-                    colors = TextFieldDefaults.colors()
+                    )
                 )
             }
 

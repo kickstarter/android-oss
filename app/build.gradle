@@ -99,6 +99,10 @@ android {
             } else {
                 signingConfig signingConfigs.debug
             }
+
+            firebaseCrashlytics {
+                mappingFileUploadEnabled true
+            }
         }
         debug {
             minifyEnabled false

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,8 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
@@ -114,15 +111,9 @@ fun CountryInputWithDropdown(
     ) {
         Box(contentAlignment = Alignment.TopStart) {
             BasicTextField(
-                modifier = Modifier
-                    .background(color = colors.backgroundSurfacePrimary)
-                    .fillMaxWidth(0.6f),
+                modifier = Modifier.fillMaxWidth(0.6f),
                 value = countryInput,
-                onValueChange = {
-                    countryInput = it
-                    countryListExpanded = true
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+                onValueChange = { countryInput = it; countryListExpanded = true },
                 textStyle = typographyV2.subHeadlineMedium.copy(color = colors.textAccentGreenBold),
                 singleLine = false
             ) { innerTextField ->
@@ -138,6 +129,16 @@ fun CountryInputWithDropdown(
                         top = dimensions.paddingSmall,
                         bottom = dimensions.paddingSmall,
                         end = dimensions.paddingMedium
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = colors.backgroundSurfacePrimary,
+                        unfocusedContainerColor = colors.backgroundSurfacePrimary,
+                        disabledContainerColor = colors.backgroundSurfacePrimary,
+                        errorContainerColor = colors.backgroundSurfacePrimary,
+                        focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        disabledIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        errorIndicatorColor = androidx.compose.ui.graphics.Color.Transparent
                     )
                 )
             }

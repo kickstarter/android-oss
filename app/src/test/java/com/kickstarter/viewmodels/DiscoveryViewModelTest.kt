@@ -810,53 +810,14 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConsentManagementDialog_whenFFOff_shouldNotEmit() {
+    fun testConsentManagementDialog_preferenceDoesNotContainKeyValue_shouldEmit() {
         val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
-
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    return false
-                }
-            }
 
         setUpEnvironment(
             environment()
                 .toBuilder()
                 .sharedPreferences(sharedPreferences)
-                .featureFlagClient(mockFeatureFlagClient)
-                .build()
-        )
-
-        vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
-
-        showConsentManagementDialog.assertNoValues()
-    }
-
-    @Test
-    fun testConsentManagementDialog_preferenceDoesNotContainKeyValueAndFFOn_shouldEmit() {
-        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
-        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
-
-        val mockFeatureFlagClient: MockFeatureFlagClient =
-            object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean {
-                    if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
-                        return true
-                    } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        return false
-                    } else {
-                        return false
-                    }
-                }
-            }
-
-        setUpEnvironment(
-            environment()
-                .toBuilder()
-                .sharedPreferences(sharedPreferences)
-                .featureFlagClient(mockFeatureFlagClient)
                 .build()
         )
 
@@ -877,8 +838,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        true
-                    } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
                         true
                     } else {
                         false
@@ -911,8 +870,6 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
             object : MockFeatureFlagClient() {
                 override fun getBoolean(FlagKey: FlagKey): Boolean {
                     return if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) {
-                        true
-                    } else if (FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_CONSENT_MANAGEMENT) {
                         true
                     } else {
                         false

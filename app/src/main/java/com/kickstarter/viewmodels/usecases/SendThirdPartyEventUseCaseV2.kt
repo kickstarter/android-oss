@@ -19,8 +19,7 @@ class SendThirdPartyEventUseCaseV2(
     ffClient: FeatureFlagClientType,
 ) : BuildInput {
     private val canSendEventFlag = (
-        ffClient.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) &&
-            sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false) &&
+        sharedPreferences.getBoolean(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE, false) &&
             (ffClient.getBoolean(FlagKey.ANDROID_CAPI_INTEGRATION) || ffClient.getBoolean(FlagKey.ANDROID_GOOGLE_ANALYTICS))
         )
 

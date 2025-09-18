@@ -99,12 +99,11 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
         )
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
 
-        val onboardingResult = registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()) {
-                if(it.resultCode == RESULT_OK){
-                    viewModel.inputs.hasExitedOnboarding()
-                }
+        val onboardingResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                viewModel.inputs.hasExitedOnboarding()
             }
+        }
 
         drawerLayoutManager = LinearLayoutManager(this)
 

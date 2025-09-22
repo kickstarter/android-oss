@@ -26,12 +26,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue.Hidden
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -128,7 +126,6 @@ fun SearchScreenPreviewNonEmpty() {
     KSTheme {
         SearchScreen(
             onBackClicked = { },
-            scaffoldState = rememberScaffoldState(),
             errorSnackBarHostState = SnackbarHostState(),
             isLoading = false,
             isDefaultList = true,
@@ -157,7 +154,6 @@ fun SearchScreenPreviewEmpty() {
     KSTheme {
         SearchScreen(
             onBackClicked = { },
-            scaffoldState = rememberScaffoldState(),
             errorSnackBarHostState = SnackbarHostState(),
             isLoading = true,
             itemsList = listOf(),
@@ -211,7 +207,6 @@ fun getCardProjectState(project: Project): CardProjectState {
 fun SearchScreen(
     environment: Environment? = null,
     onBackClicked: () -> Unit,
-    scaffoldState: ScaffoldState,
     errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     isDefaultList: Boolean = true,
     isLoading: Boolean,
@@ -333,16 +328,15 @@ fun SearchScreen(
     ) {
         Scaffold(
             modifier = Modifier.systemBarsPadding(),
-            scaffoldState = scaffoldState,
             snackbarHost = {
                 SnackbarHost(
                     modifier = Modifier.padding(dimensions.paddingSmall),
                     hostState = errorSnackBarHostState,
                     snackbar = { data ->
-                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                            KSErrorSnackbar(text = data.message)
+                        if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                            KSErrorSnackbar(text = data.visuals.message)
                         } else {
-                            KSHeadsupSnackbar(text = data.message)
+                            KSHeadsupSnackbar(text = data.visuals.message)
                         }
                     }
                 )
@@ -409,7 +403,7 @@ fun SearchScreen(
                     )
                 }
             },
-            backgroundColor = colors.kds_white
+            containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             if (showEmptyView) {
                 var numbersActive = 0
@@ -419,8 +413,9 @@ fun SearchScreen(
 
                 SearchEmptyView(
                     modifier = Modifier
+                        .padding(top = padding.calculateTopPadding())
                         .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
-                        .background(colors.backgroundSurfaceSecondary),
+                        .background(colors.backgroundSurfacePrimary),
                     environment = environment,
                     currentSearchTerm = currentSearchTerm,
                     activeFilters = numbersActive > 0,

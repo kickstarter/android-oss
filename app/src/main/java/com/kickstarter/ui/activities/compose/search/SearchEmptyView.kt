@@ -54,7 +54,7 @@ fun SearchEmptyView(
     activeFilters: Boolean = false
 ) {
 
-    var title = if (currentSearchTerm.isNotEmpty()) {
+    val title = if (currentSearchTerm.isNotEmpty()) {
         environment?.ksString()?.format(
             stringResource(id = R.string.No_results_for),
             "query",
@@ -67,7 +67,7 @@ fun SearchEmptyView(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = colors.kds_white),
+            .background(color = colors.backgroundSurfacePrimary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

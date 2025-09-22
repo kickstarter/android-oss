@@ -40,7 +40,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import timber.log.Timber
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
@@ -465,15 +464,6 @@ interface DiscoveryViewModel {
                 .addToDisposable(disposables)
 
             val onboardingTrigger = if (ffOnboarding) hasExitedOnboarding else Observable.just(true)
-            Timber.d("onboardingTrigger = ${if (ffOnboarding) "hasExitedOnboarding" else "true"}")
-
-            Observable.combineLatest(onboardingTrigger, hasSeenConsentManagement) {
-                    a, b -> listOf(a, b)
-            }
-                .subscribe {
-                    Timber.d("onboardingTrigger: ${it[0]}, hasSeenConsentManagement: ${it[1]}")
-                }
-                .addToDisposable(disposables)
 
             onboardingTrigger
                 .switchMap { hasSeenConsentManagement }

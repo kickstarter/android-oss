@@ -810,7 +810,7 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConsentManagementDialog_preferenceDoesNotContainKeyValue_shouldEmit() {
+    fun testConsentManagementDialog_exitedOnboardingAndPreferenceDoesNotContainKeyValue_shouldEmit() {
         val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
         Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(false)
 
@@ -821,9 +821,32 @@ class DiscoveryViewModelTest : KSRobolectricTestCase() {
                 .build()
         )
 
+        vm.inputs.hasExitedOnboarding()
+
         vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
 
         showConsentManagementDialog.assertValue(Unit)
+    }
+
+    @Test
+    fun testConsentManagementDialog_exitedOnboardingAndPreferenceDoesContainsKeyValue_shouldNotEmit() {
+        val sharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
+        Mockito.`when`(sharedPreferences.contains(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)).thenReturn(true)
+
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .sharedPreferences(sharedPreferences)
+                .build()
+        )
+
+        // User saw consent management dialog during onboarding flow
+        vm.hasSeenConsentManagement(true)
+        vm.inputs.hasExitedOnboarding()
+
+        vm.outputs.showConsentManagementDialog().subscribe { showConsentManagementDialog.onNext(it) }.addToDisposable(disposables)
+
+        showConsentManagementDialog.assertNoValues()
     }
 
     @Test

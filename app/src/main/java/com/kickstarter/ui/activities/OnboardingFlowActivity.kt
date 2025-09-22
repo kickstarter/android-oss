@@ -12,7 +12,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kickstarter.R
-import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENABLE_NOTIFICATIONS_PROMPT
 import com.kickstarter.libs.utils.extensions.checkPermissions
@@ -59,12 +58,18 @@ class OnboardingFlowActivity : AppCompatActivity() {
     }
 
     fun onboardingCompleted() {
-        ApplicationUtils.resumeDiscoveryActivity(this)
+        returnToDiscovery()
     }
 
     fun onboardingCancelled(onboardingPage: OnboardingPage) {
         viewModel.trackOnboardingCancelled(onboardingPage)
-        ApplicationUtils.resumeDiscoveryActivity(this)
+        returnToDiscovery()
+    }
+
+    fun returnToDiscovery() {
+        val returnIntent = Intent(this, DiscoveryActivity::class.java)
+        setResult(RESULT_OK, returnIntent)
+        finish()
     }
 
     fun turnOnNotifications(permissionLauncher: ActivityResultLauncher<String>) {
@@ -90,8 +95,13 @@ class OnboardingFlowActivity : AppCompatActivity() {
 
     fun signupOrLogin() {
         viewModel.trackSignUpOrLoginCtaClicked()
+
+        val returnIntent = Intent(this, DiscoveryActivity::class.java)
+        setResult(RESULT_OK, returnIntent)
+
         val intent = Intent().getLoginActivityIntent(this, null, LoginReason.COMPLETED_ONBOARDING)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
+
         finish()
     }
 }

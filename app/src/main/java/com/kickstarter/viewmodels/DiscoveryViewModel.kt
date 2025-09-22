@@ -40,6 +40,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
@@ -175,7 +176,7 @@ interface DiscoveryViewModel {
         private val settingsClick = PublishSubject.create<Unit>()
         private val pledgedProjectsClick = PublishSubject.create<Unit>()
         private val sortClicked = PublishSubject.create<Int>()
-        private val hasSeenConsentManagement = BehaviorSubject.createDefault<Boolean>(false)
+        private val hasSeenConsentManagement = BehaviorSubject.create<Boolean>()
         private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
         private val hasSeenOnboarding = PublishSubject.create<Boolean>()
         private val hasExitedOnboarding = PublishSubject.create<Unit>()
@@ -434,8 +435,11 @@ interface DiscoveryViewModel {
              New user heuristic: user has not seen consent management dialog
              */
             val newUserHeuristic = !sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE)
+            val ffOnboarding = ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW) ?: false
 
-            Observable.just(ffClient?.getBoolean(FlagKey.ANDROID_NATIVE_ONBOARDING_FLOW))
+            hasSeenConsentManagement.onNext(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
+
+            Observable.just(ffOnboarding)
                 .filter { it }
                 .filter { !sharedPreferences.getBoolean(HAS_SEEN_ONBOARDING, false) }
                 .filter { newUserHeuristic }
@@ -460,7 +464,18 @@ interface DiscoveryViewModel {
                 .subscribe { sharedPreferences.edit { putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it) } }
                 .addToDisposable(disposables)
 
-            hasExitedOnboarding
+            val onboardingTrigger = if (ffOnboarding) hasExitedOnboarding else Observable.just(true)
+            Timber.d("onboardingTrigger = ${if (ffOnboarding) "hasExitedOnboarding" else "true"}")
+
+            Observable.combineLatest(onboardingTrigger, hasSeenConsentManagement) {
+                    a, b -> listOf(a, b)
+            }
+                .subscribe {
+                    Timber.d("onboardingTrigger: ${it[0]}, hasSeenConsentManagement: ${it[1]}")
+                }
+                .addToDisposable(disposables)
+
+            onboardingTrigger
                 .switchMap { hasSeenConsentManagement }
                 .filter { !it }
                 .subscribe { showConsentManagementDialog.onNext(Unit) }

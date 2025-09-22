@@ -44,6 +44,7 @@ import com.kickstarter.viewmodels.DiscoveryViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -362,6 +363,7 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
         sharedPreferences: SharedPreferences?,
         key: String?
     ) {
+        Timber.d("onSharedPreferenceChanged: $key")
         if (key.equals(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)) {
             viewModel.inputs.hasSeenConsentManagement(true)
         }

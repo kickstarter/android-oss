@@ -97,8 +97,7 @@ class SetPasswordActivity : AppCompatActivity() {
                     onTermsOfUseClicked = { startDisclaimerScreen(DisclaimerItems.TERMS) },
                     onPrivacyPolicyClicked = { startDisclaimerScreen(DisclaimerItems.PRIVACY) },
                     onCookiePolicyClicked = { startDisclaimerScreen(DisclaimerItems.COOKIES) },
-                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) },
-                    scaffoldState = scaffoldState
+                    onHelpClicked = { startDisclaimerScreen(DisclaimerItems.HELP) }
                 )
             }
         }

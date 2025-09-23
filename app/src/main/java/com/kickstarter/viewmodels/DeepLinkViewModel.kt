@@ -183,8 +183,8 @@ interface DeepLinkViewModel {
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
                 .filter {
-                    (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER))
-                            || (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
+                    (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER)) ||
+                        (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
                 }
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)

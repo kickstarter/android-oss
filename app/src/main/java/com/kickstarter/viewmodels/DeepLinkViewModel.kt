@@ -23,7 +23,6 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isEmailDomain
-import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isKSDomain
 import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -53,13 +52,11 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import javax.annotation.meta.When
 
 sealed class SplashUIState {
     object Loading : SplashUIState()

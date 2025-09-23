@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,13 +67,15 @@ fun FormularyScreenPreview() {
         FormularyScreen(
             callback = {},
             inputs = inputs,
-            outputs = outputs
+            outputs = outputs,
+            padding = PaddingValues()
         )
     }
 }
 
 @Composable
 fun FormularyScreen(
+    padding: PaddingValues = PaddingValues(),
     callback: () -> Unit = {},
     inputs: ReportProjectViewModel.Inputs,
     outputs: ReportProjectViewModel.Outputs
@@ -86,6 +89,7 @@ fun FormularyScreen(
             .systemBarsPadding()
             .animateContentSize()
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .background(colors.kds_white),
         horizontalAlignment = Alignment.End
@@ -112,8 +116,7 @@ fun FormularyScreen(
             Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_3)
+                    horizontal = dimensionResource(id = R.dimen.grid_3)
                 ),
             value = outputs.email().subscribeAsState(initial = "").value,
             onValueChange = {},
@@ -143,7 +146,7 @@ fun FormularyScreen(
                 .fillMaxWidth()
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_1)
+                    vertical = dimensionResource(id = R.dimen.grid_2)
                 ),
             value = outputs.projectUrl().subscribeAsState(initial = "").value,
             onValueChange = {},

@@ -319,7 +319,6 @@ fun CheckoutScreen(
                 }
             }
         ) { padding ->
-
             val totalAmountConvertedString =
                 if (project.currentCurrency() == project.currency()) "" else {
                     environment.ksCurrency()?.formatWithUserPreference(
@@ -375,7 +374,6 @@ fun CheckoutScreen(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(padding)
             ) {
 
                 Text(

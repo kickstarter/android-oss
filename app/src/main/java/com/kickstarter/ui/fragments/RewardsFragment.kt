@@ -67,7 +67,6 @@ class RewardsFragment : Fragment() {
                     useDarkTheme = true
                 ) {
                     KSTheme {
-
                         val rewardSelectionUIState by viewModel.rewardSelectionUIState.collectAsStateWithLifecycle()
                         val shippingUIState by viewModel.shippingUIState.collectAsStateWithLifecycle()
                         val projectData = rewardSelectionUIState.project

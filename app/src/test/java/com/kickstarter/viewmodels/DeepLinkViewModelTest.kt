@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
@@ -36,7 +37,7 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
-class yDeepLinkViewModelTest : KSRobolectricTestCase() {
+class DeepLinkViewModelTest : KSRobolectricTestCase() {
     lateinit var vm: DeepLinkViewModel.DeepLinkViewModel
     private val startBrowser = TestSubscriber<String>()
     private val startDiscoveryActivity = TestSubscriber<Unit>()
@@ -184,7 +185,7 @@ class yDeepLinkViewModelTest : KSRobolectricTestCase() {
     fun `test deeplink activity intent launcher category`() = runTest {
 
         var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
-        setUpEnvironment(intent = Intent().addCategory(CATEGORY_LAUNCHER), environment = environment)
+        setUpEnvironment(intent = Intent().addCategory(CATEGORY_LAUNCHER).setAction(ACTION_MAIN), environment = environment)
 
         val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
         val uiState = mutableListOf<SplashUIState>()

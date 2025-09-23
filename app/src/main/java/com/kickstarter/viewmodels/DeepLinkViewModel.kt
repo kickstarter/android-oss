@@ -151,8 +151,8 @@ interface DeepLinkViewModel {
 
             viewModelScope.launch {
                 // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
-                val remoteConfig = runCatching { Firebase.remoteConfig }.getOrNull()
-                ffClient?.initialize(Firebase.remoteConfig)
+                val remoteConfig = runCatching { Firebase.remoteConfig }.getOrNull() //TODO: Inject or set FirebaseRemoteConfig. Currently this just makes remoteConfig null in tests
+                ffClient?.initialize(remoteConfig)
 
                 FirebaseHelper.identifier
                     .filter { it.isNotBlank() }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.kickstarter.KSApplication
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -26,9 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.yield
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response

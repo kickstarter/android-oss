@@ -42,8 +42,7 @@ class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                 FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
             }
-            // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
-            ffClient.initialize(Firebase.remoteConfig)
+
             FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
                 mutableIdentifier.value = s
                 callback()

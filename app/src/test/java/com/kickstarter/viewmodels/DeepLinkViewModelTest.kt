@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
+import com.kickstarter.KSApplication
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FirebaseHelper
@@ -73,6 +74,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
         FirebaseHelper.mutableIdentifier().value = "Test"
+        KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.NOT_STARTED
     }
 
     @After
@@ -122,6 +124,45 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             listOf(
                 SplashUIState.Loading,
                 SplashUIState.Finished
+            )
+        )
+
+        startBrowser.assertValue(url)
+        startDiscoveryActivity.assertValue(Unit)
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+    }
+
+    @Test
+    fun testMainPageDeeplink_OpensDiscovery_() = runTest {
+        val url =
+            "ksr://www.kickstarter.com/?app_banner=1&ref=nav"
+
+        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
+
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        val initState = mutableListOf<KSApplication.InitializationState>()
+
+        backgroundScope.launch(unconfinedDispatcher) {
+            KSApplication.finishedInitializing.toList(initState)
+        }
+
+        vm.runInitializations()
+
+        assertEquals(
+            initState,
+            listOf(
+                KSApplication.InitializationState.NOT_STARTED,
+                KSApplication.InitializationState.RUNNING,
+                KSApplication.InitializationState.FINISHED
             )
         )
 

@@ -8,6 +8,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
+import com.kickstarter.KSApplication
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FirebaseHelper
@@ -20,6 +23,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isEmailDomain
+import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isKSDomain
 import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -49,11 +53,13 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import javax.annotation.meta.When
 
 sealed class SplashUIState {
     object Loading : SplashUIState()
@@ -134,7 +140,22 @@ interface DeepLinkViewModel {
         val outputs: Outputs = this
 
         fun runInitializations() {
+            when (KSApplication.finishedInitializing.value) {
+                KSApplication.InitializationState.FINISHED,
+                KSApplication.InitializationState.RUNNING -> {
+                    processIntent(externalCall = externalCall)
+                    mutableUiState.value = SplashUIState.Finished
+                    return
+                }
+                else -> {}
+            }
+
+            KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.RUNNING
+
             viewModelScope.launch {
+                // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
+                ffClient?.initialize(Firebase.remoteConfig)
+
                 FirebaseHelper.identifier
                     .filter { it.isNotBlank() }
                     .collect {
@@ -146,6 +167,7 @@ interface DeepLinkViewModel {
 
                             if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
                                 mutableUiState.emit(SplashUIState.Finished)
+                                KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.FINISHED
                                 processIntent(externalCall = externalCall)
                             } else {
                                 throw Exception()
@@ -153,6 +175,7 @@ interface DeepLinkViewModel {
                         } catch (e: Exception) {
                             // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
                             mutableUiState.emit(SplashUIState.Finished)
+                            KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.FINISHED
                             processIntent(externalCall = externalCall)
                         }
                     }

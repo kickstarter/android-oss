@@ -151,7 +151,8 @@ interface DeepLinkViewModel {
 
             viewModelScope.launch {
                 // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
-                ffClient?.initialize(Firebase.remoteConfig)
+                val remoteConfig = runCatching { Firebase.remoteConfig }.getOrNull()
+                ffClient?.initialize(remoteConfig)
 
                 FirebaseHelper.identifier
                     .filter { it.isNotBlank() }
@@ -419,21 +420,6 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
-        }
-
-        fun runInitializations(intent: Intent) {
-            viewModelScope.launch {
-                try {
-                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-                    val isInitialized = awaitAll(ffClientInitialization)
-
-                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                        // parse intent and determine user navigation
-                    } else {
-                        throw Exception()
-                    }
-                } catch (e: Exception) { }
-            }
         }
 
         private suspend fun initializeFeatureFlagClient(): Boolean? {

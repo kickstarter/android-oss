@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.kickstarter.KSApplication
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -25,7 +26,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import okhttp3.HttpUrl
 import okhttp3.Request
 import okhttp3.Response
@@ -36,7 +39,7 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
-class DeepLinkViewModelTest : KSRobolectricTestCase() {
+class yDeepLinkViewModelTest : KSRobolectricTestCase() {
     lateinit var vm: DeepLinkViewModel.DeepLinkViewModel
     private val startBrowser = TestSubscriber<String>()
     private val startDiscoveryActivity = TestSubscriber<Unit>()
@@ -141,7 +144,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testMainPageDeeplink_OpensDiscovery_() = runTest {
+    fun `test initialization states update correctly when firebase is initialized`() = runTest {
         val url =
             "ksr://www.kickstarter.com/?app_banner=1&ref=nav"
 
@@ -158,12 +161,13 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.runInitializations()
 
         assertEquals(
-            initState,
+
             listOf(
                 KSApplication.InitializationState.NOT_STARTED,
                 KSApplication.InitializationState.RUNNING,
                 KSApplication.InitializationState.FINISHED
-            )
+            ),
+            initState
         )
 
         startBrowser.assertValue(url)

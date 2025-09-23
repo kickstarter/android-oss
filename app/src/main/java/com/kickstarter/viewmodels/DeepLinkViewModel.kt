@@ -152,7 +152,7 @@ interface DeepLinkViewModel {
             viewModelScope.launch {
                 // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
                 val remoteConfig = runCatching { Firebase.remoteConfig }.getOrNull()
-                ffClient?.initialize(remoteConfig)
+                ffClient?.initialize(Firebase.remoteConfig)
 
                 FirebaseHelper.identifier
                     .filter { it.isNotBlank() }

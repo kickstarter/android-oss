@@ -8,6 +8,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
+import com.kickstarter.KSApplication
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FirebaseHelper
@@ -48,16 +51,29 @@ import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
+sealed class SplashUIState {
+    object Loading : SplashUIState()
+    object NoInternet : SplashUIState()
+    object Errored : SplashUIState()
+    object Finished : SplashUIState() // todo update to dataclass in future to pass in navigation target
+}
+sealed class NavigationTarget {
+    object Discovery : NavigationTarget()
+}
+
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
 }
-interface DeepLinkViewModel {
+interface SplashScreenViewModel {
     interface Outputs {
         /** Emits when we should start an external browser because we don't want to deep link.  */
         fun startBrowser(): Observable<String>
@@ -121,11 +137,29 @@ interface DeepLinkViewModel {
         private val disposables = CompositeDisposable()
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
+        private val mutableUiState = MutableStateFlow<SplashUIState>(SplashUIState.Loading)
+        val uiState: StateFlow<SplashUIState> = mutableUiState.asStateFlow()
+
         val outputs: Outputs = this
-        var initializationsProcessing = true // todo: temporary value to dismiss splash screen, will replace with nav state flows
 
         fun runInitializations() {
+            when (KSApplication.finishedInitializing.value) {
+                KSApplication.InitializationState.FINISHED,
+                KSApplication.InitializationState.RUNNING -> {
+                    processIntent(externalCall = externalCall)
+                    mutableUiState.value = SplashUIState.Finished
+                    return
+                }
+                else -> {}
+            }
+
+            KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.RUNNING
+
             viewModelScope.launch {
+                // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
+                val remoteConfig = runCatching { Firebase.remoteConfig }.getOrNull() // TODO: Inject or set FirebaseRemoteConfig. Currently this just makes remoteConfig null in tests
+                ffClient?.initialize(remoteConfig)
+
                 FirebaseHelper.identifier
                     .filter { it.isNotBlank() }
                     .collect {
@@ -136,14 +170,16 @@ interface DeepLinkViewModel {
                             val isInitialized = awaitAll(ffClientInitialization)
 
                             if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                                initializationsProcessing = false
+                                mutableUiState.emit(SplashUIState.Finished)
+                                KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.FINISHED
                                 processIntent(externalCall = externalCall)
                             } else {
                                 throw Exception()
                             }
                         } catch (e: Exception) {
                             // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
-                            initializationsProcessing = false
+                            mutableUiState.emit(SplashUIState.Finished)
+                            KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.FINISHED
                             processIntent(externalCall = externalCall)
                         }
                     }
@@ -152,7 +188,10 @@ interface DeepLinkViewModel {
 
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
-                .filter { it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER) }
+                .filter {
+                    (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER)) ||
+                        (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
+                }
                 .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }
@@ -407,21 +446,6 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
-        }
-
-        fun runInitializations(intent: Intent) {
-            viewModelScope.launch {
-                try {
-                    val ffClientInitialization = async { initializeFeatureFlagClient() }
-                    val isInitialized = awaitAll(ffClientInitialization)
-
-                    if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
-                        // parse intent and determine user navigation
-                    } else {
-                        throw Exception()
-                    }
-                } catch (e: Exception) { }
-            }
         }
 
         private suspend fun initializeFeatureFlagClient(): Boolean? {

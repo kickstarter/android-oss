@@ -25,6 +25,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.joda.time.DateTime
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
@@ -61,6 +63,17 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
 
     @Inject
     lateinit var statsigClient: StatsigClient
+
+    companion object {
+        val mutableFinishedInitializing = MutableStateFlow(InitializationState.NOT_STARTED)
+        val finishedInitializing = mutableFinishedInitializing.asStateFlow()
+    }
+
+    enum class InitializationState {
+        NOT_STARTED,
+        RUNNING,
+        FINISHED
+    }
 
     /**
      * - A CoroutineScope tied to the Application lifecycle

@@ -1,6 +1,6 @@
 package com.kickstarter.ui.activities.compose
 
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
@@ -57,7 +57,6 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 ResetPasswordScreen(
-                    scaffoldState = rememberScaffoldState(),
                     onBackClicked = { },
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
@@ -65,7 +64,8 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
                     onHelpClicked = { },
                     onResetPasswordButtonClicked = { },
                     resetButtonEnabled = true,
-                    showProgressBar = false
+                    showProgressBar = false,
+                    snackBarState = SnackbarHostState()
                 )
             }
         }
@@ -98,7 +98,6 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 ResetPasswordScreen(
-                    scaffoldState = rememberScaffoldState(),
                     onBackClicked = { backCLickedCount++ },
                     onTermsOfUseClicked = { termsClickedCount++ },
                     onPrivacyPolicyClicked = { privacyClickedCount++ },
@@ -106,7 +105,8 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
                     onHelpClicked = { helpClickedCount++ },
                     onResetPasswordButtonClicked = { },
                     resetButtonEnabled = true,
-                    showProgressBar = false
+                    showProgressBar = false,
+                    snackBarState = SnackbarHostState()
                 )
             }
         }
@@ -139,7 +139,6 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 ResetPasswordScreen(
-                    scaffoldState = rememberScaffoldState(),
                     title = "TestTitle",
                     hintText = "TestHint",
                     initialEmail = "test@test.test",
@@ -150,7 +149,8 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
                     onHelpClicked = { },
                     onResetPasswordButtonClicked = { },
                     resetButtonEnabled = true,
-                    showProgressBar = false
+                    showProgressBar = false,
+                    snackBarState = SnackbarHostState()
                 )
             }
         }
@@ -170,7 +170,6 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 ResetPasswordScreen(
-                    scaffoldState = rememberScaffoldState(),
                     onBackClicked = { },
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
@@ -178,7 +177,8 @@ class ResetPasswordScreenTest : KSRobolectricTestCase() {
                     onHelpClicked = { },
                     onResetPasswordButtonClicked = { clickCount++ },
                     resetButtonEnabled = true,
-                    showProgressBar = false
+                    showProgressBar = false,
+                    snackBarState = SnackbarHostState()
                 )
             }
         }

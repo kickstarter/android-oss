@@ -903,6 +903,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "Thanks for bringing this project one step closer to becoming a reality.",
       "The_backer_canceled_their_pledge_for_this_project": "The backer canceled their pledge for this project.",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "The creator canceled this project, so your payment method was never charged.",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "The creator has not collected your address. Please contact them to resolve the issue.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "The email associated with this Facebook account is already registered to another Kickstarter user.",
       "The_replay_will_start_soon": "The replay will start soon",
       "The_live_stream_failed_to_connect": "The live stream failed to connect",
@@ -3596,6 +3597,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "Dank deiner Unterstützung ist dieses Projekt seiner Verwirklichung einen Schritt näher.",
       "The_backer_canceled_their_pledge_for_this_project": "Der Unterstützer hat den Finanzierungsbeitrag zurückgezogen.",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "Der Projektgründer hat das Projekt abgebrochen. Daher wurde deine Zahlungsmethode nicht belastet.",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "Der Projektgründer hat deine Adresse nicht erfasst. Bitte kontaktiere ihn, um das Problem zu lösen.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "Diese E-Mail-Adresse ist bereits einem anderen Kickstarter-Nutzer zugeordnet.",
       "The_replay_will_start_soon": "Wiedergabe started in Kürze",
       "The_live_stream_failed_to_connect": "Keine Verbindungn zu Live-Stream",
@@ -5940,7 +5942,7 @@
       "No_replay_is_available_for_this_live_stream": "Este Live Stream no cuenta con repetición.",
       "No_Results": "Sin resultados",
       "No_results": "Sin resultados",
-      "No_results_for": "No hay resultados para %{query}",
+      "No_results_for": "No hay resultados para “%{query}”",
       "No_saved_projects": "No hay proyectos guardados",
       "No_unread_messages": "No hay mensajes no leídos",
       "Not_available": "No disponible",
@@ -6289,6 +6291,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "Gracias por llevar este proyecto un paso más cerca de convertirse en realidad.",
       "The_backer_canceled_their_pledge_for_this_project": "El patrocinador canceló su contribución a este proyecto.",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "El creador canceló el proyecto, así que tu método de pago nunca recibió ningún cargo.",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "El creador no recopiló tu dirección. Contáctalo para resolver el problema.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "Esta cuenta de correo electrónico ya está asociada a otro usuario de Kickstarter.",
       "The_replay_will_start_soon": "Repetición comienza en breve",
       "The_live_stream_failed_to_connect": "No se pudo conectar la transmisión en directo",
@@ -8982,6 +8985,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "Grâce à votre soutien, ce créateur se rapproche un peu plus de son objectif.",
       "The_backer_canceled_their_pledge_for_this_project": "Le contributeur a annulé son engagement.",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "Ce projet a été annulé par le créateur, donc votre moyen de paiement n'a pas été débité.",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "Le créateur n'a pas récupéré votre adresse. Veuillez le contacter pour résoudre ce problème.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "L'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.",
       "The_replay_will_start_soon": "La rediffusion sera bientôt disponible",
       "The_live_stream_failed_to_connect": "Échec de connexion à la diffusion en direct",
@@ -11675,6 +11679,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "Thanks for bringing this project one step closer to becoming a reality.",
       "The_backer_canceled_their_pledge_for_this_project": "The backer canceled their pledge for this project.",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "The creator canceled this project, so your payment method was never charged.",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "The creator has not collected your address. Please contact them to resolve the issue.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "The email associated with this Facebook account is already registered to another Kickstarter user.",
       "The_replay_will_start_soon": "The replay will start soon",
       "The_live_stream_failed_to_connect": "The live stream failed to connect",
@@ -14368,6 +14373,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "ありがとうございます！プロジェクトの実現に一歩近づきました。",
       "The_backer_canceled_their_pledge_for_this_project": "バッカーがこのプロジェクトのプレッジをキャンセルしました。",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "クリエイターがこのプロジェクトをキャンセルしたため、お支払い方法への請求は行われませんでした。",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "クリエイターがまだあなたの住所を収集していません。クリエイターに連絡して、この問題を解決してください。",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "このFacebookのメールアドレスは他のKickstarterユーザーが使用中",
       "The_replay_will_start_soon": "リプレイが始まります",
       "The_live_stream_failed_to_connect": "ライブ配信に接続できませんでした",
@@ -14763,7 +14769,7 @@
           "buttons": {
             "login": "ログイン",
             "learn_more": "さらにみる",
-            "signup_or_login": "サインアップ or ログイン\n"
+            "signup_or_login": "サインアップまたはログイン"
           }
         },
         "survey": {
@@ -15085,7 +15091,7 @@
           "traditional_title": "メールアドレスを使用：",
           "traditional_login_button": "ログイン",
           "traditional_signup_button": "サインアップ",
-          "traditional_signup_or_login_button": "サインアップ or ログイン\n"
+          "traditional_signup_or_login_button": "サインアップまたはログイン"
         },
         "errors": {
           "facebook": {
@@ -17061,6 +17067,7 @@
       "Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality": "Thanks for bringing this project one step closer to becoming a reality.",
       "The_backer_canceled_their_pledge_for_this_project": "The backer canceled their pledge for this project.",
       "The_creator_canceled_this_project_so_your_payment_method_was_never_charged": "The creator canceled this project, so your payment method was never charged.",
+      "The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue": "The creator has not collected your address. Please contact them to resolve the issue.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "The email associated with this Facebook account is already registered to another Kickstarter user.",
       "The_replay_will_start_soon": "The replay will start soon",
       "The_live_stream_failed_to_connect": "The live stream failed to connect",

@@ -808,6 +808,7 @@
   <string name="Thanks_youve_successfully_verified_your_email_address" formatted="false">ありがとうございます。メールアドレスの認証が完了しました。</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">バッカーがこのプロジェクトのプレッジをキャンセルしました。</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">クリエイターがこのプロジェクトをキャンセルしたため、お支払い方法への請求は行われませんでした。</string>
+  <string name="The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue" formatted="false">クリエイターがまだあなたの住所を収集していません。クリエイターに連絡して、この問題を解決してください。</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">このFacebookのメールアドレスは他のKickstarterユーザーが使用中</string>
   <string name="The_first_charge_will_occur_when_the_project_ends_successfully" formatted="false">最初の請求はプロジェクトが成功裏に終わった時点で行われます。その後は全額が支払われるまで、2週間おきに請求が行われます。このオプションを選択すると、その後はプレッジを編集することはできなくなります。</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">ライブ配信に接続できませんでした</string>
@@ -1515,8 +1516,7 @@
   <string name="discovery_nearby" formatted="false">近くにいる人</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">さらにみる</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">ログイン</string>
-  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">サインアップ or ログイン\n
-</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">サインアップまたはログイン</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">か</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="discovery_popular" formatted="false">人気</string>
@@ -1644,8 +1644,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="login_tout_generic_intent_title" formatted="false">続行するにはアカウントにログインが必要です。 メールアドレス、Facebookアカウントで登録するか、ログインしてください。</string>
   <string name="login_tout_generic_intent_traditional_login_button" formatted="false">ログイン</string>
   <string name="login_tout_generic_intent_traditional_signup_button" formatted="false">サインアップ</string>
-  <string name="login_tout_generic_intent_traditional_signup_or_login_button" formatted="false">サインアップ or ログイン\n
-</string>
+  <string name="login_tout_generic_intent_traditional_signup_or_login_button" formatted="false">サインアップまたはログイン</string>
   <string name="login_tout_generic_intent_traditional_title" formatted="false">メールアドレスを使用：</string>
   <string name="login_tout_help_sheet_cancel" formatted="false">キャンセル</string>
   <string name="login_tout_help_sheet_contact" formatted="false">お問い合わせ</string>

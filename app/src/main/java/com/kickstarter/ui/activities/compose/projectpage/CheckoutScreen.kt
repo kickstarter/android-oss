@@ -499,10 +499,12 @@ fun CheckoutScreen(
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(
-                                top = dimensions.paddingMedium,
-                                bottom = dimensions.paddingMedium
-                            )
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = dimensions.paddingMedium,
+                                    bottom = dimensions.paddingMedium
+                                )
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_add_rounded),

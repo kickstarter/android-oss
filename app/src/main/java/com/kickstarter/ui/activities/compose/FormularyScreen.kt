@@ -12,9 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -37,9 +36,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import io.reactivex.Observable
 
@@ -213,25 +214,19 @@ fun FormularyScreen(
             focusRequester.requestFocus()
         }
 
-        Button(
+        KSButton(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colors.kds_create_700,
-                contentColor = colors.kds_white
-            ),
-            enabled = details.isNotEmpty(),
-            onClick = {
+            textColor = colors.kds_white,
+            isEnabled = details.isNotEmpty(),
+            onClickAction = {
                 inputs.createFlagging()
-            }
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.grid_2)
-                    ),
-                text = stringResource(id = R.string.Send)
-            )
-        }
+            },
+            shape = RoundedCornerShape(size = dimensions.radiusExtraSmall),
+            textStyle = typographyV2.buttonLabel,
+            text = stringResource(id = R.string.Send),
+            backgroundColor = colors.backgroundSurfaceSecondary,
+            shouldWrapContentWidth = true
+        )
     }
 }

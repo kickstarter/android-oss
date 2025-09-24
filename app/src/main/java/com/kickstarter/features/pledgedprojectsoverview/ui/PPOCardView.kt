@@ -18,10 +18,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Badge
-import androidx.compose.material.BadgedBox
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -345,7 +346,7 @@ fun PPOCardView(
             if (viewType.isTier1Alert() || viewType == PPOCardViewType.PLEDGE_MANAGEMENT) {
                 Badge(
                     modifier = Modifier.testTag(PPOCardViewTestTag.ALERT_NOTIFICATION_DOT.name),
-                    backgroundColor = colors.backgroundDangerBold
+                    containerColor = colors.backgroundDangerBold
                 )
             }
         }
@@ -354,8 +355,10 @@ fun PPOCardView(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = shapes.small,
-            contentColor = colors.backgroundSurfacePrimary,
-            backgroundColor = colors.backgroundSurfacePrimary,
+            colors = CardDefaults.cardColors(
+                containerColor = colors.backgroundSurfacePrimary,
+                contentColor = colors.backgroundSurfacePrimary
+            ),
             border = BorderStroke(width = dimensions.borderThickness, color = colors.borderSubtle),
         ) {
             Column(

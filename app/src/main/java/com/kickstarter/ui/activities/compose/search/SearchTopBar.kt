@@ -15,14 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
@@ -626,17 +626,23 @@ fun SearchTopBar(
                         }
                     }
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    backgroundColor = colors.backgroundSurfacePrimary,
-                    errorLabelColor = colors.kds_alert,
-                    unfocusedLabelColor = colors.textSecondary,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = colors.backgroundSurfacePrimary,
+                    unfocusedContainerColor = colors.backgroundSurfacePrimary,
+                    disabledContainerColor = colors.backgroundSurfacePrimary,
+                    errorContainerColor = colors.backgroundSurfacePrimary,
+                    focusedTextColor = colors.textAccentGrey,
+                    unfocusedTextColor = colors.textAccentGrey,
+                    disabledTextColor = colors.textDisabled,
                     focusedLabelColor = colors.borderActive,
+                    unfocusedLabelColor = colors.textSecondary,
+                    errorLabelColor = colors.kds_alert,
                     cursorColor = colors.kds_create_700,
                     errorCursorColor = colors.kds_alert,
-                    textColor = colors.textAccentGrey,
-                    disabledTextColor = colors.textDisabled,
                     focusedBorderColor = colors.borderActive,
-                    unfocusedBorderColor = colors.borderBold
+                    unfocusedBorderColor = colors.borderBold,
+                    disabledBorderColor = colors.borderBold,
+                    errorBorderColor = colors.kds_alert
                 ),
                 label = {
                     Text(text = stringResource(id = R.string.tabbar_search))

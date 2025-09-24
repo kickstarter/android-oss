@@ -346,6 +346,7 @@ fun ReportProjectCategoryScreen(
         modifier = Modifier
             .systemBarsPadding()
             .animateContentSize()
+            .padding(padding)
             .fillMaxSize()
     ) {
 

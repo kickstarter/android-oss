@@ -17,8 +17,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +69,7 @@ enum class RewardCarouselTestTag(val tag: String) {
 fun RewardCarouselScreenPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+            containerColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             RewardCarouselScreen(
                 modifier = Modifier
@@ -155,7 +155,7 @@ fun RewardCarouselScreen(
 
     Scaffold(
         modifier = modifier,
-        backgroundColor = KSTheme.colors.backgroundAccentGraySubtle,
+        containerColor = KSTheme.colors.backgroundAccentGraySubtle,
         bottomBar = {
             Column {
                 Text(
@@ -208,8 +208,7 @@ fun RewardCarouselScreen(
                 modifier = Modifier
                     .testTag(RewardCarouselTestTag.REWARD_CAROUSEL.name)
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(paddingValues = padding),
+                    .fillMaxHeight(),
                 state = lazyRowState,
                 contentPadding =
                 PaddingValues(

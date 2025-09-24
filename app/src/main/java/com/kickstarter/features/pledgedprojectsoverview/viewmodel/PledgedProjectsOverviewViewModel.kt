@@ -1,6 +1,6 @@
 package com.kickstarter.features.pledgedprojectsoverview.viewmodel
 
-import androidx.compose.material.SnackbarDuration
+import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope

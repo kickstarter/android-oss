@@ -20,8 +20,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -164,7 +164,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                 )
             },
             color = colors.backgroundSurfacePrimary,
-            elevation = dimensions.elevationLarge,
+            tonalElevation = dimensions.elevationLarge,
         ) {
             AnimatedVisibility(
                 visible = !expanded,

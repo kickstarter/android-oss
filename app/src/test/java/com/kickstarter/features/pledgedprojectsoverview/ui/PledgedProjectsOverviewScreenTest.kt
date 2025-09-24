@@ -1,7 +1,7 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.SnackbarHostState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed

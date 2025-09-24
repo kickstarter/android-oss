@@ -5,7 +5,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue.Hidden
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
@@ -54,7 +53,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = true,
@@ -85,7 +83,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -136,7 +133,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -184,7 +180,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = true,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -215,7 +210,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = true,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -267,7 +261,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { backClickedCount++ },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -315,7 +308,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,

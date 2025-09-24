@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose
 
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -74,8 +73,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
                     onCookiePolicyClicked = { },
-                    onHelpClicked = { },
-                    scaffoldState = rememberScaffoldState()
+                    onHelpClicked = { }
                 )
             }
         }
@@ -110,8 +108,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
                     onCookiePolicyClicked = { },
-                    onHelpClicked = { },
-                    scaffoldState = rememberScaffoldState()
+                    onHelpClicked = { }
                 )
             }
         }
@@ -166,8 +163,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
                     onTermsOfUseClicked = { termsClickedCount++ },
                     onPrivacyPolicyClicked = { privacyClickedCount++ },
                     onCookiePolicyClicked = { cookieClickedCount++ },
-                    onHelpClicked = { helpClickedCount++ },
-                    scaffoldState = rememberScaffoldState()
+                    onHelpClicked = { helpClickedCount++ }
                 )
             }
         }
@@ -206,8 +202,7 @@ class SetPasswordScreenTest : KSRobolectricTestCase() {
                     onTermsOfUseClicked = { },
                     onPrivacyPolicyClicked = { },
                     onCookiePolicyClicked = { },
-                    onHelpClicked = { },
-                    scaffoldState = rememberScaffoldState()
+                    onHelpClicked = { }
                 )
             }
         }

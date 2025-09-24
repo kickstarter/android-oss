@@ -15,15 +15,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,8 +58,7 @@ fun SetPasswordPreview() {
             onTermsOfUseClicked = { },
             onPrivacyPolicyClicked = { },
             onCookiePolicyClicked = { },
-            onHelpClicked = { },
-            scaffoldState = rememberScaffoldState()
+            onHelpClicked = { }
         )
     }
 }
@@ -85,8 +83,7 @@ fun SetPasswordScreen(
     onTermsOfUseClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit,
     onCookiePolicyClicked: () -> Unit,
-    onHelpClicked: () -> Unit,
-    scaffoldState: ScaffoldState
+    onHelpClicked: () -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -117,10 +114,10 @@ fun SetPasswordScreen(
     }
 
     val focusManager = LocalFocusManager.current
+    val snackbarHostState = SnackbarHostState()
 
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
-        scaffoldState = scaffoldState,
         topBar = {
             TopToolBar(
                 title = stringResource(id = R.string.Set_your_password),
@@ -159,9 +156,9 @@ fun SetPasswordScreen(
         },
         snackbarHost = {
             SnackbarHost(
-                hostState = scaffoldState.snackbarHostState,
+                hostState = snackbarHostState,
                 snackbar = { data ->
-                    KSErrorSnackbar(text = data.message)
+                    KSErrorSnackbar(text = data.visuals.message)
                 }
             )
         }

@@ -231,7 +231,7 @@
             android:exported="false"
             android:theme="@style/KSTheme" />
 
-        <activity android:name=".ui.activities.DeepLinkActivity"
+        <activity android:name=".ui.activities.SplashScreenActivity"
             android:theme="@style/SplashTheme"
             android:label="@string/app_name"
             android:launchMode="singleTop"

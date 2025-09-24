@@ -2,12 +2,10 @@ package com.kickstarter.libs
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
-import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.installations.FirebaseInstallations
-import com.google.firebase.remoteconfig.remoteConfig
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.extensions.isKSApplication
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,8 +40,7 @@ class FirebaseHelper(context: Context, ffClient: FeatureFlagClientType, callback
                 FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
                 FirebaseAnalytics.getInstance(context).setAnalyticsCollectionEnabled(true)
             }
-            // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
-            ffClient.initialize(Firebase.remoteConfig)
+
             FirebaseInstallations.getInstance().id.addOnSuccessListener { s: String ->
                 mutableIdentifier.value = s
                 callback()

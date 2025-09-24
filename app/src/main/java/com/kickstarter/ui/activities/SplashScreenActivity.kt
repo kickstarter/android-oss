@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -23,14 +24,16 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
-import com.kickstarter.viewmodels.DeepLinkViewModel
+import com.kickstarter.viewmodels.SplashScreenViewModel
+import com.kickstarter.viewmodels.SplashUIState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class DeepLinkActivity : AppCompatActivity() {
+@SuppressLint("CustomSplashScreen")
+class SplashScreenActivity : AppCompatActivity() {
 
-    private lateinit var viewModelFactory: DeepLinkViewModel.Factory
-    private val viewModel: DeepLinkViewModel.DeepLinkViewModel by viewModels { viewModelFactory }
+    private lateinit var viewModelFactory: SplashScreenViewModel.Factory
+    private val viewModel: SplashScreenViewModel.DeepLinkViewModel by viewModels { viewModelFactory }
 
     private var disposables = CompositeDisposable()
 
@@ -38,15 +41,14 @@ class DeepLinkActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         this.getEnvironment()?.let {
-            viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
+            viewModelFactory = SplashScreenViewModel.Factory(it, intent = intent)
             it.statsigClient()?.let { stClient ->
                 statsigClient = stClient
             }
         }
 
         installSplashScreen().setKeepOnScreenCondition {
-            // replace with consuming vm state in subsequent work -> if (state == SplashState.Finished) false ?: true
-            viewModel.initializationsProcessing
+            viewModel.uiState.value == SplashUIState.Loading
         }
 
         super.onCreate(savedInstanceState)

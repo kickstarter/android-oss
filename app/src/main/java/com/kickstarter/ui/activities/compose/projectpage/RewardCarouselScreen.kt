@@ -208,8 +208,7 @@ fun RewardCarouselScreen(
                 modifier = Modifier
                     .testTag(RewardCarouselTestTag.REWARD_CAROUSEL.name)
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(paddingValues = padding),
+                    .fillMaxHeight(),
                 state = lazyRowState,
                 contentPadding =
                 PaddingValues(

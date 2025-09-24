@@ -71,7 +71,7 @@ sealed class NavigationTarget {
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
 }
-interface DeepLinkViewModel {
+interface SplashScreenViewModel {
     interface Outputs {
         /** Emits when we should start an external browser because we don't want to deep link.  */
         fun startBrowser(): Observable<String>

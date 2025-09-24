@@ -12,7 +12,7 @@ import androidx.core.view.isGone
 import com.kickstarter.databinding.MessageViewBinding
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Message
-import com.kickstarter.ui.activities.DeepLinkActivity
+import com.kickstarter.ui.activities.SplashScreenActivity
 import com.kickstarter.ui.extensions.loadCircleImage
 import com.kickstarter.viewmodels.MessageHolderViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -75,7 +75,7 @@ class MessageViewHolder(private val binding: MessageViewBinding) : KSViewHolder(
             for (urlSpan in urls) {
                 val clickableSpan = object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        val intent = Intent(view.context, DeepLinkActivity::class.java)
+                        val intent = Intent(view.context, SplashScreenActivity::class.java)
                         intent.data = Uri.parse(urlSpan.url)
                         startActivity(view.context, intent, null)
                     }

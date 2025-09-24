@@ -38,7 +38,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class DeepLinkViewModelTest : KSRobolectricTestCase() {
-    lateinit var vm: DeepLinkViewModel.DeepLinkViewModel
+    lateinit var vm: SplashScreenViewModel.DeepLinkViewModel
     private val startBrowser = TestSubscriber<String>()
     private val startDiscoveryActivity = TestSubscriber<Unit>()
     private val startProjectActivity = TestSubscriber<Uri>()
@@ -57,11 +57,11 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         intent: Intent,
         externalCall: CustomNetworkClient? = null
     ) {
-        this.vm = DeepLinkViewModel.Factory(
+        this.vm = SplashScreenViewModel.Factory(
             environment ?: environment(),
             intent,
             externalCall
-        ).create(DeepLinkViewModel.DeepLinkViewModel::class.java)
+        ).create(SplashScreenViewModel.DeepLinkViewModel::class.java)
 
         vm.outputs.startBrowser().subscribe { startBrowser.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startDiscoveryActivity().subscribe { startDiscoveryActivity.onNext(it) }.addToDisposable(disposables)

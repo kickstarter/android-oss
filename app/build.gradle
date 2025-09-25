@@ -94,7 +94,6 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            debuggable true
             if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
             } else {

@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
+@androidx.annotation.Keep
 class ErroredBacking private constructor(
     private val project: Project
 ) : Parcelable {

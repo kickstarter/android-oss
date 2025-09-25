@@ -7,6 +7,7 @@ import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class DiscoverEnvelope private constructor(
     private val projects: List<Project>,
     /**

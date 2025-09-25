@@ -13,7 +13,6 @@ import com.kickstarter.services.ApiClientV2;
 import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSApolloClientV2;
-import com.kickstarter.services.MockApiClient;
 
 import javax.inject.Singleton;
 

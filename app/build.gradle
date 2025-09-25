@@ -92,7 +92,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            debuggable true
             if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
             } else {
@@ -100,15 +102,13 @@ android {
             }
         }
         debug {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
 
             proguardFiles(
-                    getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
+                getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             )
 
             FirebasePerformance {

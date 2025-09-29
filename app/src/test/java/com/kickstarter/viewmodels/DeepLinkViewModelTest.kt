@@ -66,7 +66,6 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPMOrderEditWebview().subscribe { startPMOrderEditWebview.onNext(it) }.addToDisposable(disposables)
-
     }
 
     @After

@@ -16,14 +16,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarHost
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +52,6 @@ import com.kickstarter.ui.toolbars.compose.TopToolBar
 fun ResetPasswordScreenPreview() {
     KSTheme {
         ResetPasswordScreen(
-            scaffoldState = rememberScaffoldState(),
             hintText = "Hey, this is some text that could tell you something",
             onBackClicked = { },
             onTermsOfUseClicked = { },
@@ -62,7 +60,8 @@ fun ResetPasswordScreenPreview() {
             onHelpClicked = { },
             onResetPasswordButtonClicked = { },
             resetButtonEnabled = true,
-            showProgressBar = false
+            showProgressBar = false,
+            snackBarState = SnackbarHostState()
         )
     }
 }
@@ -79,7 +78,6 @@ enum class ResetPasswordTestTag {
 
 @Composable
 fun ResetPasswordScreen(
-    scaffoldState: ScaffoldState,
     title: String = stringResource(id = R.string.forgot_password_title),
     hintText: String = "",
     initialEmail: String = "",
@@ -90,7 +88,8 @@ fun ResetPasswordScreen(
     onHelpClicked: () -> Unit,
     onResetPasswordButtonClicked: (String) -> Unit,
     resetButtonEnabled: Boolean,
-    showProgressBar: Boolean
+    showProgressBar: Boolean,
+    snackBarState: SnackbarHostState
 ) {
 
     var emailInput by remember { mutableStateOf("") }
@@ -138,13 +137,12 @@ fun ResetPasswordScreen(
         },
         snackbarHost = {
             SnackbarHost(
-                hostState = scaffoldState.snackbarHostState,
+                hostState = snackBarState,
                 snackbar = { data ->
-                    KSErrorSnackbar(text = data.message)
+                    KSErrorSnackbar(text = data.visuals.message)
                 }
             )
-        },
-        scaffoldState = scaffoldState
+        }
     ) { padding ->
         Column(
             Modifier

@@ -23,11 +23,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -241,7 +242,7 @@ fun CheckoutScreen(
         contentAlignment = Alignment.Center
     ) {
         Scaffold(
-            backgroundColor = colors.backgroundAccentGraySubtle,
+            containerColor = colors.backgroundAccentGraySubtle,
             modifier = Modifier
                 .background(kds_white)
                 .fillMaxWidth(),
@@ -255,7 +256,7 @@ fun CheckoutScreen(
                             topEnd = dimensions.radiusLarge
                         ),
                         color = colors.backgroundSurfacePrimary,
-                        elevation = dimensions.elevationLarge,
+                        tonalElevation = dimensions.elevationLarge,
                     ) {
                         Column(
                             modifier = Modifier
@@ -318,7 +319,6 @@ fun CheckoutScreen(
                 }
             }
         ) { padding ->
-
             val totalAmountConvertedString =
                 if (project.currentCurrency() == project.currency()) "" else {
                     environment.ksCurrency()?.formatWithUserPreference(
@@ -374,7 +374,6 @@ fun CheckoutScreen(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(padding)
             ) {
 
                 Text(
@@ -432,7 +431,10 @@ fun CheckoutScreen(
                         val isAvailable =
                             project.acceptedCardType(card.type()) || card.isFromPaymentSheet()
                         Card(
-                            backgroundColor = colors.kds_white,
+                            colors = CardDefaults.cardColors(
+                                containerColor = colors.backgroundSurfacePrimary,
+                                contentColor = colors.backgroundSurfaceSecondary
+                            ),
                             modifier = Modifier
                                 .padding(
                                     start = dimensions.paddingMedium,
@@ -485,7 +487,10 @@ fun CheckoutScreen(
                     }
 
                     Card(
-                        backgroundColor = colors.kds_white,
+                        colors = CardDefaults.cardColors(
+                            containerColor = colors.backgroundSurfacePrimary,
+                            contentColor = colors.backgroundSurfaceSecondary
+                        ),
                         modifier = Modifier
                             .padding(start = dimensions.paddingMedium, end = dimensions.paddingMedium)
                             .clickable { newPaymentMethodClicked.invoke() }
@@ -494,10 +499,12 @@ fun CheckoutScreen(
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(
-                                top = dimensions.paddingMedium,
-                                bottom = dimensions.paddingMedium
-                            )
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = dimensions.paddingMedium,
+                                    bottom = dimensions.paddingMedium
+                                )
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_add_rounded),
@@ -532,7 +539,9 @@ fun CheckoutScreen(
                         topStart = dimensions.radiusMediumLarge,
                         topEnd = dimensions.radiusMediumLarge
                     ),
-                    backgroundColor = colors.kds_support_200,
+                    colors = CardDefaults.cardColors(
+                        containerColor = colors.kds_support_200,
+                    )
                 ) {
                     Row(modifier = Modifier.padding(dimensions.paddingSmall)) {
                         Icon(
@@ -953,7 +962,9 @@ fun KSEstimatedShippingCheckoutView(
     Card(
         modifier = Modifier.padding(dimensions.paddingMediumLarge),
         shape = shapes.medium,
-        backgroundColor = colors.backgroundSurfacePrimary
+        colors = CardDefaults.cardColors(
+            containerColor = colors.backgroundSurfacePrimary
+        )
     ) {
         // TODO: Get these strings translations in place
         Row {

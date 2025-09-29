@@ -129,6 +129,7 @@ fun LoginToutScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(
                     PaddingValues(
+                        top = padding.calculateTopPadding(),
                         start = dimensions.paddingLarge,
                         end = dimensions.paddingLarge
                     )

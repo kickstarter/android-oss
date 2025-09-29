@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -36,9 +36,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import io.reactivex.Observable
 
@@ -66,13 +68,15 @@ fun FormularyScreenPreview() {
         FormularyScreen(
             callback = {},
             inputs = inputs,
-            outputs = outputs
+            outputs = outputs,
+            padding = PaddingValues()
         )
     }
 }
 
 @Composable
 fun FormularyScreen(
+    padding: PaddingValues = PaddingValues(),
     callback: () -> Unit = {},
     inputs: ReportProjectViewModel.Inputs,
     outputs: ReportProjectViewModel.Outputs
@@ -86,6 +90,7 @@ fun FormularyScreen(
             .systemBarsPadding()
             .animateContentSize()
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .background(colors.kds_white),
         horizontalAlignment = Alignment.End
@@ -112,8 +117,7 @@ fun FormularyScreen(
             Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_3)
+                    horizontal = dimensionResource(id = R.dimen.grid_3)
                 ),
             value = outputs.email().subscribeAsState(initial = "").value,
             onValueChange = {},
@@ -143,7 +147,7 @@ fun FormularyScreen(
                 .fillMaxWidth()
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_1)
+                    vertical = dimensionResource(id = R.dimen.grid_2)
                 ),
             value = outputs.projectUrl().subscribeAsState(initial = "").value,
             onValueChange = {},
@@ -210,25 +214,19 @@ fun FormularyScreen(
             focusRequester.requestFocus()
         }
 
-        Button(
+        KSButton(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colors.kds_create_700,
-                contentColor = colors.kds_white
-            ),
-            enabled = details.isNotEmpty(),
-            onClick = {
+            textColor = colors.kds_white,
+            isEnabled = details.isNotEmpty(),
+            onClickAction = {
                 inputs.createFlagging()
-            }
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.grid_2)
-                    ),
-                text = stringResource(id = R.string.Send)
-            )
-        }
+            },
+            shape = RoundedCornerShape(size = dimensions.radiusExtraSmall),
+            textStyle = typographyV2.buttonLabel,
+            text = stringResource(id = R.string.Send),
+            backgroundColor = colors.backgroundSurfaceSecondary,
+            shouldWrapContentWidth = true
+        )
     }
 }

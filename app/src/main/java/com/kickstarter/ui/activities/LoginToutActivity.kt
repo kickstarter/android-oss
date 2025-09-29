@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -18,7 +17,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -26,12 +24,12 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.coalesceWithV2
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getResetPasswordIntent
+import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.showAlertDialog
 import com.kickstarter.models.chrome.ChromeTabsHelper
 import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.compose.login.LoginToutScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
@@ -55,9 +53,7 @@ class LoginToutActivity : ComponentActivity() {
         viewModelFactory
     }
 
-    private var theme = AppThemes.MATCH_SYSTEM.ordinal
-
-    private var environment: Environment? = null
+    private lateinit var environment: Environment
 
     private val disposables = CompositeDisposable()
 
@@ -80,34 +76,17 @@ class LoginToutActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var darkModeEnabled = false
 
         this.getEnvironment()?.let { env ->
             environment = env
             viewModelFactory = LoginToutViewModel.Factory(env)
             oAuthViewModelFactory = OAuthViewModelFactory(environment = env)
             this.ksString = requireNotNull(env.ksString())
-            darkModeEnabled =
-                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
-            theme = env.sharedPreferences()
-                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
-                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         setContent {
-            KickstarterApp(
-                useDarkTheme =
-                if (darkModeEnabled) {
-                    when (theme) {
-                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
-                        AppThemes.DARK.ordinal -> true
-                        AppThemes.LIGHT.ordinal -> false
-                        else -> false
-                    }
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    isSystemInDarkTheme() // Force dark mode uses system theme
-                } else false
-            ) {
+            val darModeEnabled = this.isDarkModeEnabled(env = environment)
+            KickstarterApp(useDarkTheme = darModeEnabled) {
                 LoginToutScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onFacebookButtonClicked = { facebookLoginClick() },

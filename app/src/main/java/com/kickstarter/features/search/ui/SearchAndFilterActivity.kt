@@ -7,9 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -91,7 +90,6 @@ class SearchAndFilterActivity : ComponentActivity() {
                         SearchScreen(
                             environment = env,
                             onBackClicked = { onBackPressedDispatcher.onBackPressed() },
-                            scaffoldState = rememberScaffoldState(),
                             errorSnackBarHostState = snackbarHostState,
                             isLoading = isLoading,
                             isDefaultList = currentSearchTerm.isTrimmedEmpty(),

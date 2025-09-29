@@ -39,6 +39,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startProjectActivityForCommentToUpdate = TestSubscriber<Uri>()
     private val startPreLaunchProjectActivity = TestSubscriber<Pair<Uri, Project>>()
     private val startProjectSurveyActivity = TestSubscriber<Pair<Uri, Boolean>>()
+    private val startPMOrderEditWebview = TestSubscriber<Pair<Uri, Boolean>>()
     private val finishDeeplinkActivity = TestSubscriber<Unit>()
     private val disposables = CompositeDisposable()
 
@@ -64,6 +65,8 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.finishDeeplinkActivity().subscribe { finishDeeplinkActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startPMOrderEditWebview().subscribe { startPMOrderEditWebview.onNext(it) }.addToDisposable(disposables)
+
     }
 
     @After
@@ -86,6 +89,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -105,6 +109,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startPreLaunchProjectActivity.assertNoValues()
         finishDeeplinkActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -138,6 +143,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -172,6 +178,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -187,6 +194,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -202,6 +210,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -217,6 +226,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -234,6 +244,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -250,6 +261,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -267,6 +279,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -283,6 +296,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -301,6 +315,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -318,6 +333,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -333,6 +349,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertValueCount(1)
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -348,6 +365,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertValueCount(1)
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -363,6 +381,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertValueCount(1)
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -378,6 +397,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertValueCount(1)
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -393,6 +413,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertValueCount(1)
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -418,6 +439,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -442,6 +464,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -456,6 +479,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -473,6 +497,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -490,6 +515,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -505,6 +531,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -532,6 +559,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -559,6 +587,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -584,6 +613,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -601,6 +631,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     @Test
@@ -624,6 +655,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
         startBrowser.assertNoValues()
     }
 
@@ -657,8 +689,24 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startBrowser.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
         finishDeeplinkActivity.assertValueCount(1)
         startPreLaunchProjectActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testPMOrderEditDeeplink_startsPMOrderEditWebview() {
+        val url = "https://www.kickstarter.com/projects/1768690592/reclaimed-coffee-video-game/order_edits/5/checkout"
+        setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertValueCount(1)
     }
 
     private fun mockApiSetBacking(backing: Backing, completed: Boolean): MockApiClientV2 {

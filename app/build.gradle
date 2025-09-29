@@ -92,21 +92,15 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
             }
-
-            firebaseCrashlytics {
-                mappingFileUploadEnabled true
-            }
         }
         debug {
             minifyEnabled false
-            shrinkResources false
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug

@@ -1,25 +1,23 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.res.stringResource
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getLoginActivityIntent
-import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.activities.compose.login.ResetPasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.LoginReason
@@ -35,52 +33,33 @@ class ResetPasswordActivity : ComponentActivity() {
     private lateinit var viewModelFactory: ResetPasswordViewModel.Factory
     private val viewModel: ResetPasswordViewModel.ResetPasswordViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
-    private var theme = AppThemes.MATCH_SYSTEM.ordinal
     private var currentEmail = ""
 
-    private var environment: Environment? = null
+    private lateinit var environment: Environment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var darkModeEnabled = false
         this.getEnvironment()?.let { env ->
             environment = env
             viewModelFactory = ResetPasswordViewModel.Factory(env)
-            darkModeEnabled =
-                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
-            theme = env.sharedPreferences()
-                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
-                ?: AppThemes.MATCH_SYSTEM.ordinal
         }
 
         setContent {
-            var error = viewModel.outputs.resetError().subscribeAsState(initial = "").value
+            val error = viewModel.outputs.resetError().subscribeAsState(initial = "").value
 
-            var scaffoldState = rememberScaffoldState()
+            val snackBarState = remember { SnackbarHostState() }
 
-            var showProgressbar =
+            val showProgressbar =
                 viewModel.outputs.isFormSubmitting().subscribeAsState(initial = false).value
 
-            var initialValue = viewModel.outputs.prefillEmail().subscribeAsState(initial = "").value
+            val initialValue = viewModel.outputs.prefillEmail().subscribeAsState(initial = "").value
 
-            var titleAndHint =
+            val titleAndHint =
                 viewModel.outputs.resetPasswordScreenStatus().subscribeAsState(initial = null).value
 
-            KickstarterApp(
-                useDarkTheme =
-                if (darkModeEnabled) {
-                    when (theme) {
-                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
-                        AppThemes.DARK.ordinal -> true
-                        AppThemes.LIGHT.ordinal -> false
-                        else -> false
-                    }
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    isSystemInDarkTheme() // Force dark mode uses system theme
-                } else false
-            ) {
+            val darModeEnabled = this.isDarkModeEnabled(env = environment)
+            KickstarterApp(useDarkTheme = darModeEnabled) {
                 ResetPasswordScreen(
-                    scaffoldState = scaffoldState,
                     title = titleAndHint?.title?.let { titleId ->
                         stringResource(id = titleId)
                     } ?: stringResource(id = R.string.forgot_password_title),
@@ -99,14 +78,15 @@ class ResetPasswordActivity : ComponentActivity() {
                         viewModel.inputs.resetPasswordClick()
                     },
                     resetButtonEnabled = !showProgressbar,
-                    showProgressBar = showProgressbar
+                    showProgressBar = showProgressbar,
+                    snackBarState = snackBarState
                 )
             }
 
             when {
                 error.isNotEmpty() -> {
-                    LaunchedEffect(scaffoldState) {
-                        scaffoldState.snackbarHostState.showSnackbar(error)
+                    LaunchedEffect(snackBarState) {
+                        snackBarState.showSnackbar(error)
                         viewModel.resetErrorMessage()
                     }
                 }

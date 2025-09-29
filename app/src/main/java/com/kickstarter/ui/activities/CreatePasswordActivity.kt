@@ -1,21 +1,20 @@
 package com.kickstarter.ui.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.Logout
-import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.SharedPreferenceKey
+import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.activities.compose.login.CreatePasswordScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.viewmodels.CreatePasswordViewModel
@@ -27,59 +26,41 @@ class CreatePasswordActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: CreatePasswordViewModel.Factory
     private val viewModel: CreatePasswordViewModel.CreatePasswordViewModel by viewModels { viewModelFactory }
     private var logout: Logout? = null
+    private lateinit var environment: Environment
     private val disposables = CompositeDisposable()
-    private var theme = AppThemes.MATCH_SYSTEM.ordinal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var darkModeEnabled = false
 
-        val environment = this.getEnvironment()?.let { env ->
+        this.getEnvironment()?.let { env ->
             viewModelFactory = CreatePasswordViewModel.Factory(env)
-            darkModeEnabled =
-                env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
-            theme = env.sharedPreferences()
-                ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
-                ?: AppThemes.MATCH_SYSTEM.ordinal
-            env
+            environment = env
         }
 
         setContent {
-            var showProgressBar =
+            val showProgressBar =
                 viewModel.outputs.progressBarIsVisible().subscribeAsState(initial = false).value
 
-            var error = viewModel.outputs.error().subscribeAsState(initial = "").value
+            val error = viewModel.outputs.error().subscribeAsState(initial = "").value
 
-            var scaffoldState = rememberScaffoldState()
+            val snackbarHostState = remember { SnackbarHostState() }
 
-            KickstarterApp(
-                useDarkTheme =
-                if (darkModeEnabled) {
-                    when (theme) {
-                        AppThemes.MATCH_SYSTEM.ordinal -> isSystemInDarkTheme()
-                        AppThemes.DARK.ordinal -> true
-                        AppThemes.LIGHT.ordinal -> false
-                        else -> false
-                    }
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    isSystemInDarkTheme() // Force dark mode uses system theme
-                } else false
-            ) {
+            val darModeEnabled = this.isDarkModeEnabled(env = environment)
+            KickstarterApp(useDarkTheme = darModeEnabled) {
                 CreatePasswordScreen(
                     onBackClicked = { onBackPressedDispatcher.onBackPressed() },
                     onAcceptButtonClicked = { new ->
                         viewModel.updatePasswordData(new)
                         viewModel.createPasswordClicked()
                     },
-                    showProgressBar = showProgressBar,
-                    scaffoldState = scaffoldState
+                    showProgressBar = showProgressBar
                 )
             }
 
             when {
                 error.isNotEmpty() -> {
-                    LaunchedEffect(scaffoldState) {
-                        scaffoldState.snackbarHostState.showSnackbar(error)
+                    LaunchedEffect(snackbarHostState) {
+                        snackbarHostState.showSnackbar(error)
                         viewModel.resetError()
                     }
                 }

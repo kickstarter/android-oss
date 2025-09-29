@@ -22,15 +22,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue.Hidden
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 private fun PledgedProjectsOverviewScreenPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = colors.backgroundSurfacePrimary
+            containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             val ppoCardList1 = (0..10).map {
                 PPOCardFactory.fixPaymentCard()
@@ -109,7 +109,7 @@ private fun PledgedProjectsOverviewScreenPreview() {
 private fun PledgedProjectsOverviewScreenErrorPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = colors.backgroundSurfacePrimary
+            containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             val ppoCardList1 = (0..10).map {
                 PPOCardFactory.confirmAddressCard()
@@ -141,7 +141,7 @@ private fun PledgedProjectsOverviewScreenErrorPreview() {
 private fun PledgedProjectsOverviewScreenEmptyPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = colors.backgroundSurfacePrimary
+            containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             val ppoCardPagingList = flowOf(PagingData.from(listOf<PPOCard>())).collectAsLazyPagingItems()
             PledgedProjectsOverviewScreen(
@@ -169,7 +169,7 @@ private fun PledgedProjectsOverviewScreenEmptyPreview() {
 private fun PledgedProjectsOverviewScreenV2Preview() {
     KSTheme {
         Scaffold(
-            backgroundColor = colors.backgroundSurfacePrimary
+            containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             val ppoCardList1 = (0..10).map {
                 PPOCardFactory.fixPaymentCard()
@@ -255,10 +255,10 @@ fun PledgedProjectsOverviewScreen(
                     snackbar = { data ->
                         // Action label is typically for the action on a snackbar, but we can
                         // leverage it and show different visuals depending on what we pass in
-                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                            KSErrorSnackbar(text = data.message)
+                        if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                            KSErrorSnackbar(text = data.visuals.message)
                         } else {
-                            KSHeadsupSnackbar(text = data.message)
+                            KSHeadsupSnackbar(text = data.visuals.message)
                         }
                     }
                 )
@@ -293,7 +293,7 @@ fun PledgedProjectsOverviewScreen(
                     },
                 )
             },
-            backgroundColor = colors.backgroundSurfacePrimary
+            containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             Box(
                 modifier = Modifier

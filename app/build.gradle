@@ -208,6 +208,9 @@ dependencies {
     // Chrome Tabs library
     implementation 'androidx.browser:browser:1.8.0'
 
+    // Webkit (Modern Webview utilities)
+    implementation 'androidx.webkit:webkit:1.14.0'
+
     // Fonts
     implementation 'androidx.compose.ui:ui-text-google-fonts:1.8.3'
     implementation 'com.google.android.gms:play-services-base:18.7.2'

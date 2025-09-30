@@ -110,7 +110,9 @@
         <activity
             android:name=".ui.activities.OAuthWebViewActivity"
             android:parentActivityName=".ui.activities.LoginToutActivity"
-            android:theme="@style/WebViewActivity" />
+            android:theme="@style/WebViewActivity"
+            android:hardwareAccelerated="true"
+        />
         <activity
             android:name=".ui.activities.ResetPasswordActivity"
             android:windowSoftInputMode="adjustResize"

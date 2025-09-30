@@ -16,8 +16,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewStartUpConfig
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -25,6 +28,8 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.text
 import com.kickstarter.viewmodels.OAuthViewModel
+import timber.log.Timber
+import java.util.concurrent.Executors
 
 /**
  * Will be used for OAuth when default Browser is not Chrome
@@ -38,34 +43,56 @@ class OAuthWebViewActivity : ComponentActivity() {
         this.setResult(Activity.RESULT_OK, intent)
         this.finish()
     }
+
+    private lateinit var webView: WebView
+
+    @OptIn(WebViewCompat.ExperimentalAsyncStartUp::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val url = intent.getStringExtra(IntentKey.URL) ?: ""
+
+        try {
+            // Warm up the provider off the UI thread *before* any WebView is constructed.
+            // Ideally should be done on Application launch
+            val executor = Executors.newSingleThreadExecutor()
+            val config = WebViewStartUpConfig.Builder(executor).build()
+            WebViewCompat.startUpWebView(applicationContext, config) { result ->
+                Timber.d("**** $result")
+            }
+
+            // WebViewCompat.prerenderUrlAsync(webView, url,null, executor) {}
+        } catch (e: Exception) {
+        }
+
+        webView = WebView(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            this.webViewClient = CustomWebViewClient(context = context, callback)
+            this.settings.domStorageEnabled = true
+            this.settings.allowFileAccess = true
+        }
+
         this.getEnvironment()?.let { env ->
             setContent {
                 val darModeEnabled = this.isDarkModeEnabled(env = env)
                 KickstarterApp(useDarkTheme = darModeEnabled) {
-                    WebView(url, this, callback)
+                    WebViewComposable(url, webView)
                 }
             }
         }
     }
 
     @Composable
-    private fun WebView(url: String, context: Context, callback: (String) -> Unit) {
-        AndroidView(factory = {
-            WebView(it).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                this.webViewClient = CustomWebViewClient(context = context, callback)
-                this.settings.allowFileAccess = true
-            }
-        }, update = {
+    private fun WebViewComposable(url: String, webView: WebView) {
+        AndroidView(
+            factory = {
+                webView
+            }, update = {
                 it.loadUrl(url)
-            })
+            }
+        )
     }
 }
 

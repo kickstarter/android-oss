@@ -2,8 +2,10 @@ package com.kickstarter
 
 import android.text.TextUtils
 import androidx.annotation.CallSuper
+import androidx.annotation.OptIn
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import androidx.webkit.WebViewCompat
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.ApiEndpoint
@@ -106,6 +108,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
     }
 
     // - Returns Boolean because incompatible Java "void" type with kotlin "Void" type for the lambda declaration
+    @OptIn(WebViewCompat.ExperimentalAsyncStartUp::class)
     private fun initializeDependencies(): Boolean {
         setVisitorCookie()
         pushNotifications.initialize()

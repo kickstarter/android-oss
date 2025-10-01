@@ -245,7 +245,6 @@ class PushNotifications(
             return channels
         }
 
-    @TargetApi(Build.VERSION_CODES.O)
     private fun getNotificationChannel(
         channelId: String,
         nameResId: Int,

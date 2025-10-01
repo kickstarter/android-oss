@@ -1,6 +1,5 @@
 package com.kickstarter.libs
 
-import android.annotation.TargetApi
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -8,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import android.util.Pair
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationCompat

@@ -92,14 +92,14 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
             if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
             }
 
+            minifyEnabled true
+            shrinkResources true
             proguardFiles(
                 getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             )

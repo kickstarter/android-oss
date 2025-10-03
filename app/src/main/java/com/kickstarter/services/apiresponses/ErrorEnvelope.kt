@@ -8,6 +8,7 @@ import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 
 @Parcelize
+@androidx.annotation.Keep
 class ErrorEnvelope private constructor(
     private val errorMessages: List<String> = emptyList(),
     private val httpCode: Int = 0,

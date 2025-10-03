@@ -6,6 +6,7 @@ import com.kickstarter.R
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class User private constructor(
     private val alumniNewsletter: Boolean,
     private val artsCultureNewsletter: Boolean,

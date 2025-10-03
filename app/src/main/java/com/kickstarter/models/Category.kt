@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class Category internal constructor(
     private val analyticsName: String,
     private val color: Int?,

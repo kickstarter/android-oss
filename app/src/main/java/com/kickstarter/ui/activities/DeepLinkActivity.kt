@@ -27,6 +27,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
+import com.kickstarter.ui.extensions.startWebViewActivity
 import com.kickstarter.viewmodels.DeepLinkViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -137,6 +138,19 @@ class DeepLinkActivity : AppCompatActivity() {
                 }
             }.addToDisposable(disposables)
 
+        viewModel.outputs.startPMOrderEditWebview()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                val uri = it.first
+                val isLoggedIn = it.second
+
+                if (isLoggedIn) {
+                    startPMOrderEditActivity(uri.toString())
+                } else {
+                    startLoginForPMOrderEdit(uri.toString())
+                }
+            }.addToDisposable(disposables)
+
         statsigClient.updateExperimentUser()
     }
 
@@ -234,6 +248,19 @@ class DeepLinkActivity : AppCompatActivity() {
         val intent = Intent(this, SurveyResponseActivity::class.java)
             .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
         startActivity(intent)
+        finish()
+    }
+
+    private fun startLoginForPMOrderEdit(url: String) {
+        val intent = Intent(this, LoginToutActivity::class.java)
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
+            .putExtra(IntentKey.DEEPLINK_PM_ORDER_EDIT, url)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+    }
+
+    private fun startPMOrderEditActivity(url: String) {
+        ApplicationUtils.startNewDiscoveryActivity(this)
+        startWebViewActivity(url, getString(R.string.fpo_review_edits))
         finish()
     }
 

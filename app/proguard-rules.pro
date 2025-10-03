@@ -5,3 +5,12 @@
   public <init>(android.content.Context, android.util.AttributeSet, int);
   public <init>(android.content.Context, android.util.AttributeSet, int, int);
 }
+
+-keep interface com.kickstarter.services.** { *; }
+-keepnames interface com.kickstarter.services.**
+
+-keep class com.kickstarter.services.apirequests.** { *; }
+-keepnames class com.kickstarter.services.apirequests.** { *; }
+
+-keep class com.kickstarter.libs.** { *; }
+-keepnames class com.kickstarter.libs.** { *; }

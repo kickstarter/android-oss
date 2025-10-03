@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
+@androidx.annotation.Keep
 class Backing private constructor(
     private val amount: Double,
     private val backer: User?,

@@ -5,6 +5,7 @@ import com.kickstarter.models.ShippingRule
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class ShippingRulesEnvelope private constructor(
     private val shippingRules: List<ShippingRule>
 ) : Parcelable {

@@ -5,6 +5,7 @@ import com.kickstarter.models.MessageThread
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class MessageThreadsEnvelope private constructor(
     private val messageThreads: List<MessageThread>,
     private val urls: UrlsEnvelope

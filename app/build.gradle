@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.5'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
         classpath "com.apollographql.apollo3:apollo-gradle-plugin:$apollo_version"
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -92,18 +92,23 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
             if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
             }
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles(
+                getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            )
         }
         debug {
             minifyEnabled false
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
+
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic monitoring of HTTP/S network requests
@@ -270,7 +275,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:34.1.0')
+    implementation platform('com.google.firebase:firebase-bom:34.3.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'

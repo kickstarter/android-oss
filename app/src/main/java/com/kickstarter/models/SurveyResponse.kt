@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
+@androidx.annotation.Keep
 class SurveyResponse private constructor(
     private val answeredAt: DateTime?,
     private val id: Long,

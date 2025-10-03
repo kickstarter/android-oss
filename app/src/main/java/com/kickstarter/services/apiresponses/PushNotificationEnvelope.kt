@@ -8,6 +8,7 @@ import com.kickstarter.models.pushdata.GCM
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class PushNotificationEnvelope private constructor(
     private val activity: Activity?,
     private val erroredPledge: ErroredPledge?,

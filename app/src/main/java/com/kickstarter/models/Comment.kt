@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
+@androidx.annotation.Keep
 class Comment private constructor(
     private val author: User,
     private val body: String,

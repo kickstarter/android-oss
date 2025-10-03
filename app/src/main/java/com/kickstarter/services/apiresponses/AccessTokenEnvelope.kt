@@ -5,6 +5,7 @@ import com.kickstarter.models.User
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class AccessTokenEnvelope private constructor(
     private val accessToken: String,
     private val user: User

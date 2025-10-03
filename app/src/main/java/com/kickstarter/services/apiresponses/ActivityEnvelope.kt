@@ -5,6 +5,7 @@ import com.kickstarter.models.Activity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class ActivityEnvelope private constructor(
     private val activities: List<Activity>,
     private val urls: UrlsEnvelope

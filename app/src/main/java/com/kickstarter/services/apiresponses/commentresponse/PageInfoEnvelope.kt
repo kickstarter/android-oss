@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class PageInfoEnvelope private constructor(
     val hasPreviousPage: Boolean?,
     val hasNextPage: Boolean?,

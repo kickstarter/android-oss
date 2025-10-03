@@ -7,6 +7,7 @@ import org.joda.time.DateTime
 import java.util.Locale
 
 @Parcelize
+@androidx.annotation.Keep
 class ProjectStatsEnvelope private constructor(
     private val cumulativeStats: CumulativeStats?,
     private val fundingDistribution: List<FundingDateStats>,

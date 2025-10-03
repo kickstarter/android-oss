@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class OAuthTokenEnvelope private constructor(
     private val token: String,
 ) : Parcelable {

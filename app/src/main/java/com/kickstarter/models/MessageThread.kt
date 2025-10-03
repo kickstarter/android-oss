@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class MessageThread private constructor(
     private val backing: Backing?,
     private val closed: Boolean,

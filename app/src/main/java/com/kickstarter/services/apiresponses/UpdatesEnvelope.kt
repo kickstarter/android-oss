@@ -5,6 +5,7 @@ import com.kickstarter.models.Update
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class UpdatesEnvelope private constructor(
     private val updates: List<Update>,
     private val urls: UrlsEnvelope

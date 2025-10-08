@@ -48,7 +48,7 @@ class GetShippingRulesUseCase(
     private val filteredRewards = mutableListOf<Reward>()
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
-    private val allAvailableRulesForProject = mutableMapOf<Long, ShippingRule>()
+    private var allAvailableRulesForProject: Map<Long, ShippingRule> = emptyMap()
 
     init {
 
@@ -85,7 +85,7 @@ class GetShippingRulesUseCase(
     // - IO dispatcher for network operations to avoid blocking main thread
     operator fun invoke() {
         scope.launch(dispatcher) {
-            val avShipMap = allAvailableRulesForProject
+            val avShipMap = allAvailableRulesForProject.toMutableMap()
             emitCurrentState(isLoading = true)
 
             if (rewardsByShippingType.isNotEmpty() && project.isAllowedToPledge()) {
@@ -101,14 +101,15 @@ class GetShippingRulesUseCase(
                             )
                         }
                     }
+                    allAvailableRulesForProject = avShipMap.toMap()
 
                     // - Filter rewards once all shipping rules have been collected
                     if (index == rewardsByShippingType.size - 1) {
                         defaultShippingRule = getDefaultShippingRule(
-                            avShipMap,
+                            allAvailableRulesForProject,
                             project
                         )
-                        filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
+                        filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
                     }
                 }
             }
@@ -117,15 +118,15 @@ class GetShippingRulesUseCase(
                 // - All rewards are digital, all rewards must be available
                 filteredRewards.clear()
                 filteredRewards.addAll(projectRewards)
-                emitCurrentState(isLoading = false)
             }
 
             // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
                 filteredRewards.clear()
                 filteredRewards.addAll(project.rewards() ?: emptyList())
-                emitCurrentState(isLoading = false)
             }
+
+            emitCurrentState(isLoading = false)
         }
     }
 
@@ -138,6 +139,7 @@ class GetShippingRulesUseCase(
             emitCurrentState(isLoading = true)
             delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
             filterRewardsByLocation(allAvailableRulesForProject, shippingRule, projectRewards)
+            emitCurrentState(isLoading = false)
         }
     }
 
@@ -176,8 +178,8 @@ class GetShippingRulesUseCase(
      * @param rule the selected shipping rule (e.g., user's chosen location)
      * @param rewards the full list of rewards associated with the project
      */
-    private suspend fun filterRewardsByLocation(
-        allAvailableShippingRules: MutableMap<Long, ShippingRule>,
+    private fun filterRewardsByLocation(
+        allAvailableShippingRules: Map<Long, ShippingRule>,
         rule: ShippingRule,
         rewards: List<Reward>
     ) {
@@ -219,8 +221,6 @@ class GetShippingRulesUseCase(
         filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
         filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
         filteredRewards.addAll(notAvailableRewards)
-
-        emitCurrentState(isLoading = false)
     }
 
     /**
@@ -228,7 +228,7 @@ class GetShippingRulesUseCase(
      * otherwise return the config default shippingRule
      */
     private fun getDefaultShippingRule(
-        shippingRules: MutableMap<Long, ShippingRule>,
+        shippingRules: Map<Long, ShippingRule>,
         project: Project
     ): ShippingRule =
         if (project.isBacking() && project.backing()?.location().isNotNull()) ShippingRule.builder()

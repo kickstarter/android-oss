@@ -85,7 +85,7 @@ class GetShippingRulesUseCase(
     // - IO dispatcher for network operations to avoid blocking main thread
     operator fun invoke() {
         scope.launch(dispatcher) {
-            val avShipMap = allAvailableRulesForProject.toMutableMap()
+            val avShipMap = mutableMapOf<Long, ShippingRule>()
             emitCurrentState(isLoading = true)
 
             if (rewardsByShippingType.isNotEmpty() && project.isAllowedToPledge()) {
@@ -101,17 +101,17 @@ class GetShippingRulesUseCase(
                             )
                         }
                     }
-                    allAvailableRulesForProject = avShipMap.toMap()
-
-                    // - Filter rewards once all shipping rules have been collected
-                    if (index == rewardsByShippingType.size - 1) {
-                        defaultShippingRule = getDefaultShippingRule(
-                            allAvailableRulesForProject,
-                            project
-                        )
-                        filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
-                    }
                 }
+
+                allAvailableRulesForProject = avShipMap.toMap()
+
+                // - Obtain default shipping rule, USA if no match
+                defaultShippingRule = getDefaultShippingRule(
+                    allAvailableRulesForProject,
+                    project
+                )
+
+                filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
@@ -172,7 +172,6 @@ class GetShippingRulesUseCase(
      * Rewards are only added if available, and the method ensures no duplicates or incorrect entries
      * by filtering and categorizing in a single pass.
      *
-     * Once filtered, the updated state is emitted via [emitCurrentState].
      *
      * @param allAvailableShippingRules map of location ID to shipping rule available for the project
      * @param rule the selected shipping rule (e.g., user's chosen location)

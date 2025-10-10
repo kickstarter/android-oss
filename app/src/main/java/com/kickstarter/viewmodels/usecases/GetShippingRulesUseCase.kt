@@ -45,7 +45,7 @@ class GetShippingRulesUseCase(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    private val filteredRewards = mutableListOf<Reward>()
+    private var filteredRewards = emptyList<Reward>()
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
     private var allAvailableRulesForProject: Map<Long, ShippingRule> = emptyMap()
@@ -116,14 +116,14 @@ class GetShippingRulesUseCase(
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
                 // - All rewards are digital, all rewards must be available
-                filteredRewards.clear()
-                filteredRewards.addAll(projectRewards)
+                filteredRewards = projectRewards
+                //filteredRewards.addAll(projectRewards) // TODO remove if working properly
             }
 
             // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
-                filteredRewards.clear()
-                filteredRewards.addAll(project.rewards() ?: emptyList())
+                filteredRewards = (project.rewards() ?: emptyList())
+               // filteredRewards.addAll(project.rewards() ?: emptyList()) // TODO remove if working properly
             }
 
             emitCurrentState(isLoading = false)
@@ -182,7 +182,6 @@ class GetShippingRulesUseCase(
         rule: ShippingRule,
         rewards: List<Reward>
     ) {
-        filteredRewards.clear()
 
         val locationId = rule.location()?.id() ?: 0L
         val validShippingRule = allAvailableShippingRules[locationId]
@@ -216,10 +215,12 @@ class GetShippingRulesUseCase(
             }
         }
 
-        noReward?.let { filteredRewards.add(it) }
-        filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
-        filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
-        filteredRewards.addAll(notAvailableRewards)
+        filteredRewards = buildList<Reward> { // - Builds a new read-only list
+            noReward?.let(::add)
+            addAll(secretRewards.sortedBy(Reward::minimum))
+            addAll(rewardGroups.sortedBy(Reward::minimum))
+            addAll(notAvailableRewards)
+        }
     }
 
     /**

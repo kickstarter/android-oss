@@ -101,29 +101,26 @@ class GetShippingRulesUseCase(
                             )
                         }
                     }
+
+                    // - Filter rewards once all shipping rules have been collected
+                    if (index == rewardsByShippingType.size - 1) {
+                        defaultShippingRule = getDefaultShippingRule(
+                            avShipMap,
+                            project
+                        )
+                        filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
+                    }
                 }
-
-                allAvailableRulesForProject = avShipMap.toMap()
-
-                // - Obtain default shipping rule, USA if no match
-                defaultShippingRule = getDefaultShippingRule(
-                    allAvailableRulesForProject,
-                    project
-                )
-
-                filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
                 // - All rewards are digital, all rewards must be available
                 filteredRewards = projectRewards
-                //filteredRewards.addAll(projectRewards) // TODO remove if working properly
             }
 
             // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
                 filteredRewards = (project.rewards() ?: emptyList())
-               // filteredRewards.addAll(project.rewards() ?: emptyList()) // TODO remove if working properly
             }
 
             emitCurrentState(isLoading = false)

@@ -101,16 +101,14 @@ class GetShippingRulesUseCase(
                             )
                         }
                     }
-
-                    // - Filter rewards once all shipping rules have been collected
-                    if (index == rewardsByShippingType.size - 1) {
-                        defaultShippingRule = getDefaultShippingRule(
-                            avShipMap,
-                            project
-                        )
-                        filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
-                    }
                 }
+
+                // - Filter rewards once all shipping rules have been collected
+                defaultShippingRule = getDefaultShippingRule(
+                    avShipMap,
+                    project
+                )
+                filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {

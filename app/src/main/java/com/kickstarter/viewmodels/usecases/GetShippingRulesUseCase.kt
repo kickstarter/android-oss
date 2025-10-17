@@ -45,7 +45,7 @@ class GetShippingRulesUseCase(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    private var filteredRewards = emptyList<Reward>()
+    private val filteredRewards = mutableListOf<Reward>()
     private var defaultShippingRule = ShippingRule.builder().build()
     private var rewardsByShippingType: List<Reward>
     private var allAvailableRulesForProject: Map<Long, ShippingRule> = emptyMap()
@@ -103,22 +103,26 @@ class GetShippingRulesUseCase(
                     }
                 }
 
-                // - Filter rewards once all shipping rules have been collected
+                allAvailableRulesForProject = avShipMap.toMap()
+
                 defaultShippingRule = getDefaultShippingRule(
-                    avShipMap,
+                    allAvailableRulesForProject,
                     project
                 )
-                filterRewardsByLocation(avShipMap, defaultShippingRule, projectRewards)
+
+                filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
                 // - All rewards are digital, all rewards must be available
-                filteredRewards = projectRewards
+                filteredRewards.clear()
+                filteredRewards.addAll(projectRewards)
             }
 
             // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
-                filteredRewards = (project.rewards() ?: emptyList())
+                filteredRewards.clear()
+                filteredRewards.addAll(project.rewards() ?: emptyList())
             }
 
             emitCurrentState(isLoading = false)
@@ -177,6 +181,7 @@ class GetShippingRulesUseCase(
         rule: ShippingRule,
         rewards: List<Reward>
     ) {
+        filteredRewards.clear()
 
         val locationId = rule.location()?.id() ?: 0L
         val validShippingRule = allAvailableShippingRules[locationId]
@@ -210,12 +215,10 @@ class GetShippingRulesUseCase(
             }
         }
 
-        filteredRewards = buildList<Reward> { // - Builds a new read-only list
-            noReward?.let(::add)
-            addAll(secretRewards.sortedBy(Reward::minimum))
-            addAll(rewardGroups.sortedBy(Reward::minimum))
-            addAll(notAvailableRewards)
-        }
+        noReward?.let { filteredRewards.add(it) }
+        filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
+        filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
+        filteredRewards.addAll(notAvailableRewards)
     }
 
     /**

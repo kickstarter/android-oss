@@ -201,7 +201,10 @@ class AddOnsViewModel(
             )
 
             if (envelopeResult.isSuccess) {
-                val addOns = envelopeResult.getOrNull()?.addOnsList
+                val addOns = envelopeResult.getOrNull()?.addOnsList?.filter { addOn ->
+                    RewardUtils.isAvailable(addOn)
+                }
+
                 // - pagination related stuff
                 nextPage = envelopeResult.getOrNull()?.pageInfo?.endCursor
                 hasMorePages = envelopeResult.getOrNull()?.pageInfo?.hasNextPage ?: false

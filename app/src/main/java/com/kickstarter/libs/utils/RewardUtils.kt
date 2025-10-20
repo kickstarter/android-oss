@@ -22,12 +22,20 @@ object RewardUtils {
     fun maxPledgeAmount(reward: Reward, project: Project): Double = Country.findByCurrencyCode(project.currency())?.maxPledge?.toDouble() ?: 0.0
 
     /**
+     * Returns `true` if the reward is within time range available (started and not expired) and limit not reached.
+     */
+    fun isAvailable(reward: Reward) = !isLimitReached(reward) && !isExpired(reward) && hasStarted(reward)
+
+    /**
      * Returns `true` if the reward has backers, `false` otherwise.
      */
     fun hasBackers(reward: Reward) = reward.backersCount().isNonZero()
 
-    fun isAvailable(project: Project, reward: Reward) =
-        (project.isLive || (project.isInPostCampaignPledgingPhase() ?: false && project.postCampaignPledgingEnabled() ?: false)) && !isLimitReached(reward) && !isExpired(reward)
+    /**
+     * Returns `true` if the reward is available for project configuration
+     */
+    fun isAvailableForProject(project: Project, reward: Reward) =
+        (project.isLive || (project.isInPostCampaignPledgingPhase() ?: false && project.postCampaignPledgingEnabled() ?: false)) && RewardUtils.isAvailable(reward)
 
     /**
      * Returns `true` if the reward has expired.

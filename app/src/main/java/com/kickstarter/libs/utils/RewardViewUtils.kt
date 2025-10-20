@@ -33,7 +33,7 @@ object RewardViewUtils {
         val backing = project.backing()
         val hasAddOnsSelected = backing?.addOns()?.isNotEmpty() ?: false
 
-        if ((backing == null || !backing.isBacked(reward)) && RewardUtils.isAvailable(project, reward)) {
+        if ((backing == null || !backing.isBacked(reward)) && RewardUtils.isAvailableForProject(project, reward)) {
             return R.string.Select
         }
 

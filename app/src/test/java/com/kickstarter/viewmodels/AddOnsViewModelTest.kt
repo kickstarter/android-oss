@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.joda.time.DateTime
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -511,5 +512,53 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         setup(env)
         assertTrue(viewModel.isUserLoggedIn())
+    }
+
+    @Test
+    fun `test addOns list displayed filters out not stated AddOns`() = runTest {
+        val addOnReward = RewardFactory.addOn().toBuilder().id(1L)
+            .startsAt(DateTime.now().plusDays(4))
+            .build()
+        val aDifferentAddOnReward = RewardFactory.addOnSingle().toBuilder().id(2L)
+            .startsAt(DateTime.now().minusHours(2))
+            .build()
+
+        val addOnsList = listOf(addOnReward, aDifferentAddOnReward)
+
+        val rw = RewardFactory.reward().toBuilder()
+            .hasAddons(true)
+            .id(99L)
+            .pledgeAmount(20.0)
+            .build()
+
+        val uiState = mutableListOf<AddOnsUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val apolloClient = object : MockApolloClientV2() {
+            override suspend fun getRewardAllowedAddOns(
+                locationId: Location,
+                rewardId: Reward,
+                cursor: String?
+            ): Result<AddOnsEnvelope> {
+                assertEquals(99L, rewardId.id())
+                return Result.success(AddOnsEnvelope(addOnsList = addOnsList))
+            }
+        }
+
+        val env = environment().toBuilder()
+            .apolloClientV2(apolloClient)
+            .build()
+        setup(env, dispatcher)
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.userRewardSelection(rw)
+            viewModel.provideSelectedShippingRule(ShippingRuleFactory.canadaShippingRule())
+            viewModel.addOnsUIState.toList(uiState)
+        }
+
+        advanceUntilIdle()
+
+        assertEquals(uiState.last().addOns.size, 1) // -  only one addOn on the list
+        assertEquals(uiState.last().addOns.first().id(), aDifferentAddOnReward.id()) // - making sure the addOn is the one started 2 hours ago
     }
 }

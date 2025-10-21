@@ -2445,6 +2445,8 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         assertTrue(callbackInvoked.get())
     }
 
+    /* TODO: 2025-10-21 Refactor the tests using a mocked Activity to use the ViewModel directly */
+
     @Test
     fun `manage pledge menu is inflated when project is backed`() {
         val project = ProjectFactory.backedProject()
@@ -2576,6 +2578,28 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
         assertTrue(options.showEditPledge)
         assertFalse(options.showChooseAnotherReward)
+    }
+
+    @Test
+    fun `manage pledge options are hidden when project is not backed`() {
+        val project = ProjectFactory.project()
+
+        val mockFeatureFlagClient = object : MockFeatureFlagClient() {
+            override fun getBoolean(flagKey: FlagKey): Boolean {
+                return when (flagKey) {
+                    FlagKey.ANDROID_PLOT_EDIT_PLEDGE -> true
+                    else -> false
+                }
+            }
+        }
+
+        val options = createManagePledgeMenuOptions(project, mockFeatureFlagClient)
+        assertFalse(options.showEditPledge)
+        assertFalse(options.showChooseAnotherReward)
+        assertFalse(options.showUpdatePayment)
+        assertFalse(options.showSeeRewards)
+        assertFalse(options.showCancelPledge)
+        assertFalse(options.showContactCreator)
     }
 
     private fun deepLinkIntent(): Intent {

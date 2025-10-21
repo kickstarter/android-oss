@@ -3,6 +3,7 @@ package com.kickstarter.ui.toolbars.compose
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -71,6 +72,7 @@ fun TopToolBar(
 ) {
     TopAppBar(
         modifier = modifier,
+        windowInsets = WindowInsets(0),
         title = {
             title?.let {
                 Text(

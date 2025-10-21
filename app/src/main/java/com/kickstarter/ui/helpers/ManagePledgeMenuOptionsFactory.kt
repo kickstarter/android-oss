@@ -24,12 +24,12 @@ fun createManagePledgeMenuOptions(
     val isFeatureFlagOn = ffClient.getBoolean(FlagKey.ANDROID_PLOT_EDIT_PLEDGE) == true
     val isPlotProject = project.isPledgeOverTimeAllowed() == true // If the project allows pledge over time, it is considered a plot project.
     val isPledgeOverTime = !backing?.paymentIncrements.isNullOrEmpty() // If the backing has payment increments, it is considered a pledge over time.
-    val showEditPledge = when {
+    val showEditPledge = project.isBacking() && when {
         isFeatureFlagOn && isPlotProject -> project.isLive && !isBackingStatusPreAuth
         else -> false
     }
 
-    val showChooseAnotherReward = when {
+    val showChooseAnotherReward = project.isBacking() && when {
         !isFeatureFlagOn -> !isPledgeOverTime
         isFeatureFlagOn -> !isPlotProject
         else -> false
@@ -38,9 +38,9 @@ fun createManagePledgeMenuOptions(
     return ManagePledgeMenuOptions(
         showEditPledge = showEditPledge,
         showChooseAnotherReward = showChooseAnotherReward,
-        showUpdatePayment = project.isLive && !isBackingStatusPreAuth,
-        showSeeRewards = !project.isLive,
-        showCancelPledge = project.isLive && !isBackingStatusPreAuth,
-        showContactCreator = true
+        showUpdatePayment = project.isBacking() && project.isLive && !isBackingStatusPreAuth,
+        showSeeRewards = project.isBacking() && !project.isLive,
+        showCancelPledge = project.isBacking() && project.isLive && !isBackingStatusPreAuth,
+        showContactCreator = project.isBacking()
     )
 }

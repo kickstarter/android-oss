@@ -231,7 +231,7 @@ fun RewardCarouselScreen(
                         !reward.hasAddons() && backing?.isBacked(reward) != true -> true
 
                         backing?.rewardId() != reward.id() &&
-                            RewardUtils.isAvailable(project, reward) -> true
+                            RewardUtils.isAvailableForProject(project, reward) -> true
 
                         reward.hasAddons() &&
                             backing?.rewardId() == reward.id() &&

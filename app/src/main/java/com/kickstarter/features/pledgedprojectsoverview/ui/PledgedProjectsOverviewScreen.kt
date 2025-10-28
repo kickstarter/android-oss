@@ -231,10 +231,7 @@ fun PledgedProjectsOverviewScreen(
     )
     val coroutineScope = rememberCoroutineScope()
     val pullRefreshState: PullToRefreshState = rememberPullToRefreshState()
-//    val pullRefreshState = rememberPullRefreshState(
-//        isLoading,
-//        pullRefreshCallback,
-//    )
+
     ModalBottomSheetLayout(
         modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name),
         sheetState = sheetState,
@@ -299,7 +296,7 @@ fun PledgedProjectsOverviewScreen(
             containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
             PullToRefreshBox(
-                modifier = Modifier.padding(padding),
+                modifier = modifier.padding(padding),
                 isRefreshing = isLoading,
                 onRefresh = pullRefreshCallback,
                 state = pullRefreshState,
@@ -331,8 +328,7 @@ fun PledgedProjectsOverviewScreen(
                                     start = dimensions.paddingMedium,
                                     end = dimensions.paddingMedium,
                                     top = dimensions.paddingMedium
-                                )
-                                .padding(paddingValues = padding),
+                                ),
                             state = lazyColumnListState
                         ) {
                             item {

@@ -301,7 +301,7 @@ fun PledgedProjectsOverviewScreen(
             PullToRefreshBox(
                 modifier = Modifier.padding(padding),
                 isRefreshing = isLoading,
-                onRefresh = { },
+                onRefresh = pullRefreshCallback,
                 state = pullRefreshState,
                 indicator = {
                     PullToRefreshDefaults.Indicator(

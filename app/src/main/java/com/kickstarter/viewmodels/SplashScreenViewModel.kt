@@ -7,7 +7,9 @@ import android.util.Pair
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.kickstarter.KSApplication
@@ -60,6 +62,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
+enum class InitializationState {
+    NOT_STARTED,
+    RUNNING,
+    FINISHED
+}
+
 sealed class SplashUIState {
     object Loading : SplashUIState()
     object NoInternet : SplashUIState()
@@ -110,7 +118,7 @@ interface SplashScreenViewModel {
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
     }
 
-    class DeepLinkViewModel(environment: Environment, private val intent: Intent?, private val externalCall: CustomNetworkClient) :
+    class DeepLinkViewModel(environment: Environment, private val application: KSApplication, private val intent: Intent?, private val externalCall: CustomNetworkClient) :
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
@@ -143,9 +151,10 @@ interface SplashScreenViewModel {
         val outputs: Outputs = this
 
         fun runInitializations() {
-            when (KSApplication.finishedInitializing.value) {
-                KSApplication.InitializationState.FINISHED,
-                KSApplication.InitializationState.RUNNING -> {
+
+            when (application.initializationState.value) {
+                InitializationState.FINISHED,
+                InitializationState.RUNNING -> {
                     processIntent(externalCall = externalCall)
                     mutableUiState.value = SplashUIState.Finished
                     return
@@ -153,7 +162,7 @@ interface SplashScreenViewModel {
                 else -> {}
             }
 
-            KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.RUNNING
+            application.mutableInitializationState.value = InitializationState.RUNNING
 
             viewModelScope.launch {
                 // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
@@ -171,7 +180,7 @@ interface SplashScreenViewModel {
 
                             if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
                                 mutableUiState.emit(SplashUIState.Finished)
-                                KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.FINISHED
+                                application.mutableInitializationState.value = InitializationState.FINISHED
                                 processIntent(externalCall = externalCall)
                             } else {
                                 throw Exception()
@@ -179,7 +188,7 @@ interface SplashScreenViewModel {
                         } catch (e: Exception) {
                             // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
                             mutableUiState.emit(SplashUIState.Finished)
-                            KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.FINISHED
+                            application.mutableInitializationState.value = InitializationState.FINISHED
                             processIntent(externalCall = externalCall)
                         }
                     }
@@ -542,8 +551,9 @@ interface SplashScreenViewModel {
                     .subscribeOn(Schedulers.io())
             }
         }
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DeepLinkViewModel(environment, intent, externalCall = customNetworkClient ?: externalCall) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+            val ksApplication = extras[APPLICATION_KEY]!! as KSApplication
+            return DeepLinkViewModel(environment, ksApplication, intent, externalCall = customNetworkClient ?: externalCall) as T
         }
     }
 }

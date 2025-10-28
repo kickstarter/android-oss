@@ -5,6 +5,8 @@ import android.content.Intent.ACTION_MAIN
 import android.content.Intent.CATEGORY_LAUNCHER
 import android.net.Uri
 import android.util.Pair
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.MutableCreationExtras
 import com.kickstarter.KSApplication
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -58,11 +60,14 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         intent: Intent,
         externalCall: CustomNetworkClient? = null
     ) {
+        val ksApplication = application() as KSApplication
+        val extras = MutableCreationExtras()
+        extras[APPLICATION_KEY] = ksApplication
         this.vm = SplashScreenViewModel.Factory(
             environment ?: environment(),
             intent,
             externalCall
-        ).create(SplashScreenViewModel.DeepLinkViewModel::class.java)
+        ).create(SplashScreenViewModel.DeepLinkViewModel::class.java, extras)
 
         vm.outputs.startBrowser().subscribe { startBrowser.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startDiscoveryActivity().subscribe { startDiscoveryActivity.onNext(it) }.addToDisposable(disposables)
@@ -77,7 +82,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPMOrderEditWebview().subscribe { startPMOrderEditWebview.onNext(it) }.addToDisposable(disposables)
         FirebaseHelper.mutableIdentifier().value = "Test"
-        KSApplication.mutableFinishedInitializing.value = KSApplication.InitializationState.NOT_STARTED
+        ksApplication.mutableInitializationState.value = InitializationState.NOT_STARTED
     }
 
     @After
@@ -153,21 +158,22 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
         setUpEnvironment(intent = intentWithData(url), environment = environment)
 
+        val ksApplication = application() as KSApplication
+
         val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
-        val initState = mutableListOf<KSApplication.InitializationState>()
+        val initState = mutableListOf<InitializationState>()
 
         backgroundScope.launch(unconfinedDispatcher) {
-            KSApplication.finishedInitializing.toList(initState)
+            ksApplication.initializationState.toList(initState)
         }
 
         vm.runInitializations()
 
         assertEquals(
-
             listOf(
-                KSApplication.InitializationState.NOT_STARTED,
-                KSApplication.InitializationState.RUNNING,
-                KSApplication.InitializationState.FINISHED
+                InitializationState.NOT_STARTED,
+                InitializationState.RUNNING,
+                InitializationState.FINISHED
             ),
             initState
         )

@@ -18,6 +18,7 @@ import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.viewmodels.InitializationState
 import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -64,23 +65,15 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
     @Inject
     lateinit var statsigClient: StatsigClient
 
-    companion object {
-        val mutableFinishedInitializing = MutableStateFlow(InitializationState.NOT_STARTED)
-        val finishedInitializing = mutableFinishedInitializing.asStateFlow()
-    }
-
-    enum class InitializationState {
-        NOT_STARTED,
-        RUNNING,
-        FINISHED
-    }
-
     /**
      * - A CoroutineScope tied to the Application lifecycle
      *  used to initialize dependencies that require coroutines and early on network calls.
      *  and experiments dependencies potentially affecting launch activities (Discovery/ProjectPage)
      */
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    val mutableInitializationState = MutableStateFlow(InitializationState.NOT_STARTED)
+    val initializationState = mutableInitializationState.asStateFlow()
 
     @CallSuper
     override fun onCreate() {

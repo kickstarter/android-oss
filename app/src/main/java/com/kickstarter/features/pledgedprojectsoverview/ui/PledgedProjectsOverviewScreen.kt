@@ -22,16 +22,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue.Hidden
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -195,7 +197,7 @@ private fun PledgedProjectsOverviewScreenV2Preview() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
@@ -228,10 +230,11 @@ fun PledgedProjectsOverviewScreen(
         skipHalfExpanded = true
     )
     val coroutineScope = rememberCoroutineScope()
-    val pullRefreshState = rememberPullRefreshState(
-        isLoading,
-        pullRefreshCallback,
-    )
+    val pullRefreshState: PullToRefreshState = rememberPullToRefreshState()
+//    val pullRefreshState = rememberPullRefreshState(
+//        isLoading,
+//        pullRefreshCallback,
+//    )
     ModalBottomSheetLayout(
         modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name),
         sheetState = sheetState,
@@ -295,102 +298,135 @@ fun PledgedProjectsOverviewScreen(
             },
             containerColor = colors.backgroundSurfacePrimary
         ) { padding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
-                contentAlignment = Alignment.TopCenter
+            PullToRefreshBox(
+                modifier = Modifier.padding(padding),
+                isRefreshing = isLoading,
+                onRefresh = { },
+                state = pullRefreshState,
+                indicator = {
+                    PullToRefreshDefaults.Indicator(
+                        isRefreshing = isLoading,
+                        state = pullRefreshState,
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        containerColor = colors.backgroundAccentGraySubtle,
+                        color = colors.backgroundAccentGreenBold
+                    )
+                }
             ) {
-                if (isErrored) {
-                    PPOScreenErrorState()
-                } else if (showEmptyState) {
-                    PPOScreenEmptyState(onSeeAllBackedProjectsClick, v2Enabled)
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .padding(
-                                start = dimensions.paddingMedium,
-                                end = dimensions.paddingMedium,
-                                top = dimensions.paddingMedium
-                            )
-                            .padding(paddingValues = padding),
-                        state = lazyColumnListState
-                    ) {
-                        item {
-                            if (!totalAlerts.isNullOrZero()) {
-                                Text(
-                                    modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.ALERT_COUNT.name),
-                                    text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
-                                    style = typographyV2.headingXL,
-                                    color = colors.textPrimary
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    if (isErrored) {
+                        PPOScreenErrorState()
+                    } else if (showEmptyState) {
+                        PPOScreenEmptyState(onSeeAllBackedProjectsClick, v2Enabled)
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .padding(
+                                    start = dimensions.paddingMedium,
+                                    end = dimensions.paddingMedium,
+                                    top = dimensions.paddingMedium
                                 )
-                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                                .padding(paddingValues = padding),
+                            state = lazyColumnListState
+                        ) {
+                            item {
+                                if (!totalAlerts.isNullOrZero()) {
+                                    Text(
+                                        modifier = Modifier.testTag(
+                                            PledgedProjectsOverviewScreenTestTag.ALERT_COUNT.name
+                                        ),
+                                        text = stringResource(id = R.string.Alerts_count).format(
+                                            "count",
+                                            totalAlerts.toString()
+                                        ),
+                                        style = typographyV2.headingXL,
+                                        color = colors.textPrimary
+                                    )
+                                    Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                                }
                             }
-                        }
 
-                        items(
-                            count = ppoCards.itemCount
-                        ) { index ->
+                            items(
+                                count = ppoCards.itemCount
+                            ) { index ->
 
-                            ppoCards[index]?.let { ppoData ->
-                                PPOCardView(
-                                    viewType = ppoData.viewType() ?: PPOCardViewType.UNKNOWN,
-                                    onCardClick = { },
-                                    onProjectPledgeSummaryClick = {
-                                        onProjectPledgeSummaryClick(ppoData.projectSlug ?: "")
-                                    },
-                                    projectName = ppoData.projectName(),
-                                    pledgeAmount = ppoData.amount?.toDoubleOrNull()?.let { amount ->
-                                        RewardViewUtils.formatCurrency(amount, ppoData.currencyCode?.rawValue, ppoData.currencySymbol)
-                                    },
-                                    imageUrl = ppoData.imageUrl(),
-                                    flags = ppoData.flags,
-                                    imageContentDescription = ppoData.imageContentDescription(),
-                                    creatorName = ppoData.creatorName(),
-                                    sendAMessageClickAction = { onSendMessageClick(ppoData.projectSlug() ?: "", ppoData.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, ppoData.creatorID() ?: "") },
-                                    shippingAddress = ppoData.deliveryAddress()?.getFormattedAddress() ?: "",
-                                    onActionButtonClicked = {
-                                        when (ppoData.viewType()) {
-                                            PPOCardViewType.CONFIRM_ADDRESS -> {
-                                                analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = ppoData.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
-                                                confirmedAddress = ppoData.deliveryAddress()?.getFormattedAddress() ?: ""
-                                                addressID = ppoData.deliveryAddress()?.addressId() ?: ""
-                                                backingID = ppoData.backingId ?: ""
-                                                projectID = ppoData.projectId ?: ""
-                                                openConfirmAddressAlertDialog.value = true
+                                ppoCards[index]?.let { ppoData ->
+                                    PPOCardView(
+                                        viewType = ppoData.viewType() ?: PPOCardViewType.UNKNOWN,
+                                        onCardClick = { },
+                                        onProjectPledgeSummaryClick = {
+                                            onProjectPledgeSummaryClick(ppoData.projectSlug ?: "")
+                                        },
+                                        projectName = ppoData.projectName(),
+                                        pledgeAmount = ppoData.amount?.toDoubleOrNull()
+                                            ?.let { amount ->
+                                                RewardViewUtils.formatCurrency(
+                                                    amount,
+                                                    ppoData.currencyCode?.rawValue,
+                                                    ppoData.currencySymbol
+                                                )
+                                            },
+                                        imageUrl = ppoData.imageUrl(),
+                                        flags = ppoData.flags,
+                                        imageContentDescription = ppoData.imageContentDescription(),
+                                        creatorName = ppoData.creatorName(),
+                                        sendAMessageClickAction = {
+                                            onSendMessageClick(
+                                                ppoData.projectSlug() ?: "",
+                                                ppoData.projectId ?: "",
+                                                ppoCards.itemSnapshotList.toList(),
+                                                totalAlerts,
+                                                ppoData.creatorID() ?: ""
+                                            )
+                                        },
+                                        shippingAddress = ppoData.deliveryAddress()
+                                            ?.getFormattedAddress() ?: "",
+                                        onActionButtonClicked = {
+                                            when (ppoData.viewType()) {
+                                                PPOCardViewType.CONFIRM_ADDRESS -> {
+                                                    analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(
+                                                        projectID = ppoData.projectId ?: "",
+                                                        ppoCards.itemSnapshotList.items,
+                                                        totalAlerts
+                                                    )
+                                                    confirmedAddress = ppoData.deliveryAddress()
+                                                        ?.getFormattedAddress() ?: ""
+                                                    addressID =
+                                                        ppoData.deliveryAddress()?.addressId() ?: ""
+                                                    backingID = ppoData.backingId ?: ""
+                                                    projectID = ppoData.projectId ?: ""
+                                                    openConfirmAddressAlertDialog.value = true
+                                                }
+
+                                                else -> {
+                                                    onPrimaryActionButtonClicked(ppoData)
+                                                }
                                             }
-                                            else -> {
-                                                onPrimaryActionButtonClicked(ppoData)
-                                            }
+                                        },
+                                        onSecondaryActionButtonClicked = {
+                                            onSecondaryActionButtonClicked(ppoData)
+                                        },
+                                        rewardReceived = ppoData.backerCompleted().isTrue(),
+                                        onRewardReceivedChanged = {
+                                            backingID = ppoData.backingId ?: ""
+                                            onRewardReceivedChanged.invoke(backingID, it)
                                         }
-                                    },
-                                    onSecondaryActionButtonClicked = {
-                                        onSecondaryActionButtonClicked(ppoData)
-                                    },
-                                    rewardReceived = ppoData.backerCompleted().isTrue(),
-                                    onRewardReceivedChanged = {
-                                        backingID = ppoData.backingId ?: ""
-                                        onRewardReceivedChanged.invoke(backingID, it)
-                                    }
-                                )
+                                    )
+                                }
                             }
-                        }
 
-                        item {
-                            Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
+                            item {
+                                Spacer(modifier = Modifier.height(dimensions.paddingDoubleLarge))
+                            }
                         }
                     }
                 }
-
-                PullRefreshIndicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    refreshing = isLoading,
-                    state = pullRefreshState,
-                    backgroundColor = colors.backgroundAccentGraySubtle,
-                    contentColor = colors.backgroundAccentGreenBold
-                )
             }
         }
 

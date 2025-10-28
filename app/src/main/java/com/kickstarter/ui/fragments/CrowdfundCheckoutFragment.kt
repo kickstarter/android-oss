@@ -146,7 +146,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                     val isPostCampaignPhase = project.isInPostCampaignPledgingPhase() == true
                     val emailForCheckout = if (isPostCampaignPhase) email else null
 
-                    val showPaymentMethodSelection = pledgeReason in listOf(PledgeReason.PLEDGE, PledgeReason.LATE_PLEDGE, PledgeReason.UPDATE_PAYMENT)
+                    val showPaymentMethodSelection = pledgeReason in listOf(
+                        PledgeReason.PLEDGE,
+                        PledgeReason.LATE_PLEDGE,
+                        PledgeReason.UPDATE_PAYMENT,
+                        PledgeReason.FIX_PLEDGE
+                    )
 
                     KSTheme {
                         CheckoutScreen(

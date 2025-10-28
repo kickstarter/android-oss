@@ -10,7 +10,7 @@ import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownUnit
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownValue
 import com.kickstarter.libs.utils.RewardUtils.hasBackers
 import com.kickstarter.libs.utils.RewardUtils.hasStarted
-import com.kickstarter.libs.utils.RewardUtils.isAvailable
+import com.kickstarter.libs.utils.RewardUtils.isAvailableForProject
 import com.kickstarter.libs.utils.RewardUtils.isExpired
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isLimitReached
@@ -73,12 +73,12 @@ class RewardUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsAvailable() {
-        assertTrue(isAvailable(ProjectFactory.project(), reward))
-        assertFalse(isAvailable(ProjectFactory.project(), rewardEnded))
-        assertFalse(isAvailable(ProjectFactory.project(), rewardLimitReached))
-        assertFalse(isAvailable(ProjectFactory.successfulProject(), reward))
-        assertFalse(isAvailable(ProjectFactory.successfulProject(), rewardEnded))
-        assertFalse(isAvailable(ProjectFactory.successfulProject(), rewardLimitReached))
+        assertTrue(isAvailableForProject(ProjectFactory.project(), reward))
+        assertFalse(isAvailableForProject(ProjectFactory.project(), rewardEnded))
+        assertFalse(isAvailableForProject(ProjectFactory.project(), rewardLimitReached))
+        assertFalse(isAvailableForProject(ProjectFactory.successfulProject(), reward))
+        assertFalse(isAvailableForProject(ProjectFactory.successfulProject(), rewardEnded))
+        assertFalse(isAvailableForProject(ProjectFactory.successfulProject(), rewardLimitReached))
     }
 
     @Test
@@ -355,7 +355,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         val isLiveProject: Project = ProjectFactory.project()
         val rewardLimitedByStart = rewardWithAddons.toBuilder().startsAt(DateTime.now()).build()
         assertEquals(true, hasStarted(rewardLimitedByStart))
-        assertEquals(true, isAvailable(isLiveProject, rewardLimitedByStart))
+        assertEquals(true, isAvailableForProject(isLiveProject, rewardLimitedByStart))
     }
 
     @Test

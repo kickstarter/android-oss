@@ -455,7 +455,7 @@ interface RewardViewHolderViewModel {
 
             return when {
                 !hasAddOns && isSelectable(project, rw) -> true
-                selectingOtherRw && RewardUtils.isAvailable(project, rw) -> true
+                selectingOtherRw && RewardUtils.isAvailableForProject(project, rw) -> true
                 hasAddOns && !selectingOtherRw && project.isLive -> true
                 else -> false
             }
@@ -486,7 +486,7 @@ interface RewardViewHolderViewModel {
                 return false
             }
 
-            return RewardUtils.isAvailable(project, reward)
+            return RewardUtils.isAvailableForProject(project, reward)
         }
 
         override fun configureWith(projectData: ProjectData, reward: Reward) {

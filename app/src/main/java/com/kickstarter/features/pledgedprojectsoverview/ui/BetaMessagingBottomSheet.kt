@@ -52,14 +52,6 @@ fun BetaMessagingBottomSheet(
             .navigationBarsPadding()
             .fillMaxWidth(),
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                modifier = Modifier.align(Alignment.Center).padding(bottom = dimensions.paddingMediumSmall),
-                imageVector = ImageVector.vectorResource(id = R.drawable.drag_handle),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
-            )
-        }
         Text(
             text = stringResource(id = R.string.Introducing_the_backings_tab),
             style = typographyV2.headingXL,

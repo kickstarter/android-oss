@@ -243,6 +243,7 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
         }
         infoButton.assertIsDisplayed()
         infoButton.performClick()
+        composeTestRule.waitForIdle()
         bottomSheet.assertIsDisplayed()
     }
 }

@@ -184,4 +184,65 @@ PledgedProjectsOverviewScreenTest : KSRobolectricTestCase() {
         alertCount.assertExists()
         alertCount.assertIsDisplayed()
     }
+
+    @Test
+    fun `Test BottomSheet layout is not added to composition hierarchy on initial state`() {
+        composeTestRule.setContent {
+            val ppoCardList = (0..10).map {
+                PPOCardFactory.confirmAddressCard()
+            }
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList)).collectAsLazyPagingItems()
+
+            KSTheme {
+                PledgedProjectsOverviewScreen(
+                    modifier = Modifier,
+                    onBackPressed = {},
+                    lazyColumnListState = rememberLazyListState(),
+                    ppoCards = ppoCardPagingList,
+                    errorSnackBarHostState = SnackbarHostState(),
+                    onSendMessageClick = { _, _, _, _, _ -> },
+                    onAddressConfirmed = { _, _ -> },
+                    onRewardReceivedChanged = { _, _ -> },
+                    onProjectPledgeSummaryClick = { _ -> },
+                    onSeeAllBackedProjectsClick = {},
+                    onPrimaryActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    v2Enabled = true
+                )
+            }
+        }
+
+        bottomSheet.assertDoesNotExist()
+    }
+
+    @Test
+    fun `Test BottomSheet layout is added to compose hierarchy when info button clicked`() {
+        composeTestRule.setContent {
+            val ppoCardList = (0..10).map {
+                PPOCardFactory.confirmAddressCard()
+            }
+            val ppoCardPagingList = flowOf(PagingData.from(ppoCardList)).collectAsLazyPagingItems()
+
+            KSTheme {
+                PledgedProjectsOverviewScreen(
+                    modifier = Modifier,
+                    onBackPressed = {},
+                    lazyColumnListState = rememberLazyListState(),
+                    ppoCards = ppoCardPagingList,
+                    errorSnackBarHostState = SnackbarHostState(),
+                    onSendMessageClick = { _, _, _, _, _ -> },
+                    onAddressConfirmed = { _, _ -> },
+                    onRewardReceivedChanged = { _, _ -> },
+                    onProjectPledgeSummaryClick = { _ -> },
+                    onSeeAllBackedProjectsClick = {},
+                    onPrimaryActionButtonClicked = {},
+                    onSecondaryActionButtonClicked = {},
+                    v2Enabled = true
+                )
+            }
+        }
+        infoButton.assertIsDisplayed()
+        infoButton.performClick()
+        bottomSheet.assertIsDisplayed()
+    }
 }

@@ -619,7 +619,7 @@ fun FilterPagerSheet(
 
     // - In case de bottomSheet is dismissed without the user pressing
     // - see results button, should return to default states
-    LaunchedEffect(!sheetState.isVisible) {
+    LaunchedEffect(sheetState.currentValue) {
         coroutineScope.launch {
             if (currentCategory != category.value) {
                 category.value = currentCategory
@@ -1221,7 +1221,7 @@ private fun SheetContent(
                         currentAmountRaised.value,
                         currentRecommended.value,
                         currentProjectsLoved.value,
-                        currentFollowing.value,
+                        currentSavedProjects.value,
                         currentFollowing.value,
                         currentGoal.value
                     )

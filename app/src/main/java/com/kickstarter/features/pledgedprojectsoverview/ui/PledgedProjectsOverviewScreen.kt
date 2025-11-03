@@ -20,18 +20,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue.Hidden
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -195,7 +196,7 @@ private fun PledgedProjectsOverviewScreenV2Preview() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PledgedProjectsOverviewScreen(
     modifier: Modifier,
@@ -223,82 +224,87 @@ fun PledgedProjectsOverviewScreen(
     var addressID by remember { mutableStateOf("") }
     var backingID by remember { mutableStateOf("") }
     var projectID by remember { mutableStateOf("") }
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = Hidden,
-        skipHalfExpanded = true
-    )
+
     val coroutineScope = rememberCoroutineScope()
-    val pullRefreshState = rememberPullRefreshState(
-        isLoading,
-        pullRefreshCallback,
+    val pullRefreshState: PullToRefreshState = rememberPullToRefreshState()
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
     )
-    ModalBottomSheetLayout(
-        modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name),
-        sheetState = sheetState,
-        sheetShape = RoundedCornerShape(
-            topStart = dimensions.paddingLarge,
-            topEnd = dimensions.paddingLarge
-        ),
-        sheetContent = {
-            BetaMessagingBottomSheet(
-                onSeeAllBackedProjectsClick = onSeeAllBackedProjectsClick,
-                dismiss = { coroutineScope.launch { sheetState.hide() } }
-            )
-        }
-    ) {
-        Scaffold(
-            modifier = Modifier.systemBarsPadding(),
-            snackbarHost = {
-                SnackbarHost(
-                    modifier = Modifier.padding(dimensions.paddingSmall),
-                    hostState = errorSnackBarHostState,
-                    snackbar = { data ->
-                        // Action label is typically for the action on a snackbar, but we can
-                        // leverage it and show different visuals depending on what we pass in
-                        if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                            KSErrorSnackbar(text = data.visuals.message)
-                        } else {
-                            KSHeadsupSnackbar(text = data.visuals.message)
-                        }
+    var isSheetOpen by remember { mutableStateOf(false) }
+
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.padding(dimensions.paddingSmall),
+                hostState = errorSnackBarHostState,
+                snackbar = { data ->
+                    // Action label is typically for the action on a snackbar, but we can
+                    // leverage it and show different visuals depending on what we pass in
+                    if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                        KSErrorSnackbar(text = data.visuals.message)
+                    } else {
+                        KSHeadsupSnackbar(text = data.visuals.message)
                     }
-                )
-            },
-            topBar = {
-                TopToolBar(
-                    title = if (v2Enabled) stringResource(id = R.string.Backings) else stringResource(id = R.string.Project_alerts),
-                    titleColor = colors.textPrimary,
-                    leftOnClickAction = onBackPressed,
-                    leftIconColor = colors.icon,
-                    leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
-                    backgroundColor = colors.backgroundSurfacePrimary,
-                    showBetaPill = true,
-                    right = {
-                        if (v2Enabled) {
-                            IconButton(
-                                modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.INFO_BUTTON.name),
-                                onClick = { coroutineScope.launch { sheetState.show() } },
-                                enabled = true
-                            ) {
-                                Box {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_info_new),
-                                        contentDescription = stringResource(
-                                            id = R.string.general_navigation_accessibility_button_help_menu_label
-                                        ),
-                                        tint = colors.kds_black
-                                    )
+                }
+            )
+        },
+        topBar = {
+            TopToolBar(
+                title = if (v2Enabled) stringResource(id = R.string.Backings) else stringResource(id = R.string.Project_alerts),
+                titleColor = colors.textPrimary,
+                leftOnClickAction = onBackPressed,
+                leftIconColor = colors.icon,
+                leftIconModifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BACK_BUTTON.name),
+                backgroundColor = colors.backgroundSurfacePrimary,
+                showBetaPill = true,
+                right = {
+                    if (v2Enabled) {
+                        IconButton(
+                            modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.INFO_BUTTON.name),
+                            onClick = {
+                                isSheetOpen = true
+                                coroutineScope.launch {
+                                    sheetState.show()
                                 }
+                            },
+                            enabled = true
+                        ) {
+                            Box {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_info_new),
+                                    contentDescription = stringResource(
+                                        id = R.string.general_navigation_accessibility_button_help_menu_label
+                                    ),
+                                    tint = colors.kds_black
+                                )
                             }
                         }
-                    },
+                    }
+                },
+            )
+        },
+        containerColor = colors.backgroundSurfacePrimary
+    ) { padding ->
+        PullToRefreshBox(
+            modifier = modifier.padding(padding),
+            isRefreshing = isLoading,
+            onRefresh = pullRefreshCallback,
+            state = pullRefreshState,
+            indicator = {
+                PullToRefreshDefaults.Indicator(
+                    isRefreshing = isLoading,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    containerColor = colors.backgroundAccentGraySubtle,
+                    color = colors.backgroundAccentGreenBold
                 )
-            },
-            containerColor = colors.backgroundSurfacePrimary
-        ) { padding ->
+            }
+        ) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
+                    .fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
             ) {
                 if (isErrored) {
@@ -314,15 +320,19 @@ fun PledgedProjectsOverviewScreen(
                                 start = dimensions.paddingMedium,
                                 end = dimensions.paddingMedium,
                                 top = dimensions.paddingMedium
-                            )
-                            .padding(paddingValues = padding),
+                            ),
                         state = lazyColumnListState
                     ) {
                         item {
                             if (!totalAlerts.isNullOrZero()) {
                                 Text(
-                                    modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.ALERT_COUNT.name),
-                                    text = stringResource(id = R.string.Alerts_count).format("count", totalAlerts.toString()),
+                                    modifier = Modifier.testTag(
+                                        PledgedProjectsOverviewScreenTestTag.ALERT_COUNT.name
+                                    ),
+                                    text = stringResource(id = R.string.Alerts_count).format(
+                                        "count",
+                                        totalAlerts.toString()
+                                    ),
                                     style = typographyV2.headingXL,
                                     color = colors.textPrimary
                                 )
@@ -342,25 +352,46 @@ fun PledgedProjectsOverviewScreen(
                                         onProjectPledgeSummaryClick(ppoData.projectSlug ?: "")
                                     },
                                     projectName = ppoData.projectName(),
-                                    pledgeAmount = ppoData.amount?.toDoubleOrNull()?.let { amount ->
-                                        RewardViewUtils.formatCurrency(amount, ppoData.currencyCode?.rawValue, ppoData.currencySymbol)
-                                    },
+                                    pledgeAmount = ppoData.amount?.toDoubleOrNull()
+                                        ?.let { amount ->
+                                            RewardViewUtils.formatCurrency(
+                                                amount,
+                                                ppoData.currencyCode?.rawValue,
+                                                ppoData.currencySymbol
+                                            )
+                                        },
                                     imageUrl = ppoData.imageUrl(),
                                     flags = ppoData.flags,
                                     imageContentDescription = ppoData.imageContentDescription(),
                                     creatorName = ppoData.creatorName(),
-                                    sendAMessageClickAction = { onSendMessageClick(ppoData.projectSlug() ?: "", ppoData.projectId ?: "", ppoCards.itemSnapshotList.toList(), totalAlerts, ppoData.creatorID() ?: "") },
-                                    shippingAddress = ppoData.deliveryAddress()?.getFormattedAddress() ?: "",
+                                    sendAMessageClickAction = {
+                                        onSendMessageClick(
+                                            ppoData.projectSlug() ?: "",
+                                            ppoData.projectId ?: "",
+                                            ppoCards.itemSnapshotList.toList(),
+                                            totalAlerts,
+                                            ppoData.creatorID() ?: ""
+                                        )
+                                    },
+                                    shippingAddress = ppoData.deliveryAddress()
+                                        ?.getFormattedAddress() ?: "",
                                     onActionButtonClicked = {
                                         when (ppoData.viewType()) {
                                             PPOCardViewType.CONFIRM_ADDRESS -> {
-                                                analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(projectID = ppoData.projectId ?: "", ppoCards.itemSnapshotList.items, totalAlerts)
-                                                confirmedAddress = ppoData.deliveryAddress()?.getFormattedAddress() ?: ""
-                                                addressID = ppoData.deliveryAddress()?.addressId() ?: ""
+                                                analyticEvents?.trackPPOConfirmAddressInitiateCTAClicked(
+                                                    projectID = ppoData.projectId ?: "",
+                                                    ppoCards.itemSnapshotList.items,
+                                                    totalAlerts
+                                                )
+                                                confirmedAddress = ppoData.deliveryAddress()
+                                                    ?.getFormattedAddress() ?: ""
+                                                addressID =
+                                                    ppoData.deliveryAddress()?.addressId() ?: ""
                                                 backingID = ppoData.backingId ?: ""
                                                 projectID = ppoData.projectId ?: ""
                                                 openConfirmAddressAlertDialog.value = true
                                             }
+
                                             else -> {
                                                 onPrimaryActionButtonClicked(ppoData)
                                             }
@@ -383,14 +414,6 @@ fun PledgedProjectsOverviewScreen(
                         }
                     }
                 }
-
-                PullRefreshIndicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    refreshing = isLoading,
-                    state = pullRefreshState,
-                    backgroundColor = colors.backgroundAccentGraySubtle,
-                    contentColor = colors.backgroundAccentGreenBold
-                )
             }
         }
 
@@ -410,6 +433,31 @@ fun PledgedProjectsOverviewScreen(
                     }
                 )
             }
+        }
+    }
+
+    if (isSheetOpen) {
+        ModalBottomSheet(
+            modifier = Modifier.testTag(PledgedProjectsOverviewScreenTestTag.BOTTOM_SHEET.name),
+            onDismissRequest = {
+                isSheetOpen = false
+            },
+            sheetState = sheetState,
+            shape = RoundedCornerShape(
+                topStart = dimensions.paddingLarge,
+                topEnd = dimensions.paddingLarge
+            ),
+            containerColor = colors.backgroundSurfacePrimary
+        ) {
+            BetaMessagingBottomSheet(
+                onSeeAllBackedProjectsClick = onSeeAllBackedProjectsClick,
+                dismiss = {
+                    coroutineScope.launch {
+                        sheetState.hide()
+                        isSheetOpen = false
+                    }
+                }
+            )
         }
     }
 }

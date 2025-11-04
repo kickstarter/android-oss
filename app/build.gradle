@@ -315,7 +315,7 @@ dependencies {
 
     // Material
     implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.compose.material:material:1.6.2'
+    implementation 'androidx.compose.material:material-icons-core:1.7.8'
     implementation 'androidx.compose.material3:material3:1.4.0'
 
     // Testing

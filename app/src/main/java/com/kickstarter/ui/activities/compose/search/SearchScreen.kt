@@ -515,7 +515,8 @@ fun SearchScreen(
             },
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             containerColor = colors.backgroundSurfacePrimary,
-            contentWindowInsets = { WindowInsets(0) }
+            contentWindowInsets = { WindowInsets(0) },
+            dragHandle = null,
         ) {
             SheetContent(
                 activeBottomSheet = activeBottomSheet,
@@ -525,7 +526,7 @@ fun SearchScreen(
                 currentProjectState = currentProjectState,
                 categories = categories,
                 categoryPillText = categoryPillText,
-                projectStatusPill,
+                projectStatusPillText = projectStatusPill,
                 initialCategoryPillText = initialCategoryPillText,
                 selectedFilterCounts = selectedFilterCounts,
                 countApiIsReady = countApiIsReady,

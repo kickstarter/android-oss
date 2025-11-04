@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -274,17 +273,13 @@ fun SearchScreen(
     val currentRecommended = remember { mutableStateOf<Boolean>(false) }
 
     val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)
     }
 
-    val sortSheetState: SheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
-    val mainFilterMenuState: SheetState = rememberModalBottomSheetState(
+    val sheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
 
@@ -331,8 +326,7 @@ fun SearchScreen(
                     onPillPressedOpensBottomSheet = onPillPressedOpensBottomSheet(
                         activeBottomSheet,
                         coroutineScope,
-                        sortSheetState,
-                        mainFilterMenuState,
+                        sheetState,
                         pagerState,
                         isSheetOpen
                     ),
@@ -515,12 +509,7 @@ fun SearchScreen(
 
     if (isSheetOpen.value.isTrue()) {
         ModalBottomSheet(
-            modifier = Modifier.navigationBarsPadding(),
-            sheetState = modalBottomSheetState(
-                activeBottomSheet,
-                sortSheetState,
-                mainFilterMenuState
-            ),
+            sheetState = sheetState,
             onDismissRequest = {
                 isSheetOpen.value = false
             },
@@ -529,21 +518,19 @@ fun SearchScreen(
             contentWindowInsets = { WindowInsets(0) }
         ) {
             SheetContent(
-                activeBottomSheet,
-                coroutineScope,
-                currentCategory,
+                activeBottomSheet = activeBottomSheet,
+                currentCategory = currentCategory,
                 onDismissBottomSheet = onApplySearchWithParams,
-                currentSort,
-                currentProjectState,
-                categories,
-                categoryPillText,
+                currentSort = currentSort,
+                currentProjectState = currentProjectState,
+                categories = categories,
+                categoryPillText = categoryPillText,
                 projectStatusPill,
-                initialCategoryPillText,
-                selectedFilterCounts,
-                countApiIsReady,
-                sortSheetState,
-                mainFilterMenuState,
-                pagerState,
+                initialCategoryPillText = initialCategoryPillText,
+                selectedFilterCounts = selectedFilterCounts,
+                countApiIsReady = countApiIsReady,
+                sheetState = sheetState,
+                pagerState = pagerState,
                 currentPercentage = currentPercentage,
                 currentLocation = currentLocation,
                 currentAmountRaised = currentAmountRaised,
@@ -556,6 +543,13 @@ fun SearchScreen(
                 isSheetOpen = isSheetOpen
             )
         }
+    }
+
+    // - Allow recomposition to happen first to draw the bottomSheet content, later on execute the animation to show/hide for smoother animation
+    LaunchedEffect(isSheetOpen.value) {
+        if (isSheetOpen.value.isTrue()) {
+            sheetState.show()
+        } else sheetState.hide()
     }
 }
 
@@ -971,24 +965,24 @@ private fun applyUserSelection(
 private fun onPillPressedOpensBottomSheet(
     activeBottomSheet: MutableState<FilterRowPillType?>,
     coroutineScope: CoroutineScope,
-    sortSheetState: SheetState,
-    mainFilterMenuState: SheetState,
+    sheetState: SheetState,
     pagerState: PagerState,
     isSheetOpen: MutableState<Boolean>
 ): (FilterRowPillType) -> Unit =
     { filterRowPillType ->
         activeBottomSheet.value = filterRowPillType
         when (filterRowPillType) {
-            FilterRowPillType.SORT -> coroutineScope.launch {
-                isSheetOpen.value = true
-                sortSheetState.show()
-            }
+            FilterRowPillType.SORT -> isSheetOpen.value = true
+//                coroutineScope.launch {
+//                isSheetOpen.value = true
+//                sortSheetState.show()
+//            }
             FilterRowPillType.FILTER,
             FilterRowPillType.PROJECT_STATUS -> {
                 coroutineScope.launch {
                     isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
 
@@ -996,7 +990,7 @@ private fun onPillPressedOpensBottomSheet(
                 coroutineScope.launch {
                     isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.CATEGORIES.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
 
@@ -1004,7 +998,7 @@ private fun onPillPressedOpensBottomSheet(
                 coroutineScope.launch {
                     isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
 
@@ -1012,7 +1006,7 @@ private fun onPillPressedOpensBottomSheet(
                 coroutineScope.launch {
                     isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.PERCENTAGE_RAISED.ordinal)
-                    mainFilterMenuState.show()
+                    //      mainFilterMenuState.show()
                 }
             }
 
@@ -1020,7 +1014,7 @@ private fun onPillPressedOpensBottomSheet(
                 coroutineScope.launch {
                     isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
-                    mainFilterMenuState.show()
+                    //      mainFilterMenuState.show()
                 }
             }
 
@@ -1028,7 +1022,7 @@ private fun onPillPressedOpensBottomSheet(
                 coroutineScope.launch {
                     isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
             FilterRowPillType.SAVED,
@@ -1044,7 +1038,6 @@ private fun onPillPressedOpensBottomSheet(
 @Composable
 private fun SheetContent(
     activeBottomSheet: MutableState<FilterRowPillType?>,
-    coroutineScope: CoroutineScope,
     currentCategory: MutableState<Category?>,
     onDismissBottomSheet: (
         Category?,
@@ -1067,8 +1060,7 @@ private fun SheetContent(
     initialCategoryPillText: String,
     selectedFilterCounts: SnapshotStateMap<String, Int>,
     countApiIsReady: Boolean,
-    sortSheetState: SheetState,
-    menuSheetState: SheetState,
+    sheetState: SheetState,
     pagerState: PagerState,
     currentPercentage: MutableState<DiscoveryParams.RaisedBuckets?>,
     currentAmountRaised: MutableState<DiscoveryParams.AmountBuckets?>,
@@ -1100,7 +1092,7 @@ private fun SheetContent(
         FilterRowPillType.GOAL,
         FilterRowPillType.FILTER -> {
             FilterPagerSheet(
-                sheetState = menuSheetState,
+                sheetState = sheetState,
                 pagerState = pagerState,
                 selectedProjectStatus = currentProjectState.value,
                 currentCategory = currentCategory.value,
@@ -1114,10 +1106,7 @@ private fun SheetContent(
                 currentGoal = currentGoal.value,
                 categories = categories,
                 onDismiss = {
-                    coroutineScope.launch {
-                        isSheetOpen.value = false
-                        menuSheetState.hide()
-                    }
+                    isSheetOpen.value = false
                 },
                 onApply = { project, category, percentageBucket, location, amountRaisedBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
                     currentProjectState.value = project
@@ -1208,10 +1197,7 @@ private fun SheetContent(
                 sorts = ProjectSort.knownValues().toDiscoveryParamsList(),
                 onDismiss = { sort ->
                     currentSort.value = sort
-                    coroutineScope.launch {
-                        isSheetOpen.value = false
-                        sortSheetState.hide()
-                    }
+                    isSheetOpen.value = false
                     onDismissBottomSheet(
                         currentCategory.value,
                         sort,
@@ -1234,29 +1220,6 @@ private fun SheetContent(
 
         null -> {}
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun modalBottomSheetState(
-    activeBottomSheet: MutableState<FilterRowPillType?>,
-    sortSheetState: SheetState,
-    mainFilterMenuState: SheetState
-) = when (activeBottomSheet.value) {
-    FilterRowPillType.SORT -> sortSheetState
-    FilterRowPillType.PROJECT_STATUS,
-    FilterRowPillType.CATEGORY,
-    FilterRowPillType.PERCENTAGE_RAISED,
-    FilterRowPillType.LOCATION,
-    FilterRowPillType.AMOUNT_RAISED,
-    FilterRowPillType.RECOMMENDED,
-    FilterRowPillType.PROJECTS_LOVED,
-    FilterRowPillType.SAVED,
-    FilterRowPillType.FOLLOWING,
-    FilterRowPillType.GOAL,
-    FilterRowPillType.FILTER -> mainFilterMenuState
-
-    null -> sortSheetState
 }
 
 @Composable

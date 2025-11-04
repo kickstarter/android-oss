@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -287,7 +288,7 @@ fun SearchScreen(
         skipPartiallyExpanded = true
     )
 
-    var isSheetOpen = remember { mutableStateOf(false) }
+    val isSheetOpen = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
@@ -418,7 +419,7 @@ fun SearchScreen(
                 modifier = Modifier
                     .testTag(SearchScreenTestTag.LIST_VIEW.name)
                     .padding(padding)
-                    .background(colors.backgroundSurfaceSecondary)
+                    .background(colors.backgroundSurfacePrimary)
                     .fillMaxWidth(),
                 contentPadding = PaddingValues(
                     start = dimensions.paddingMediumLarge,
@@ -504,7 +505,7 @@ fun SearchScreen(
                 modifier = Modifier
                     .testTag(SearchScreenTestTag.LOADING_VIEW.name)
                     .fillMaxSize()
-                    .background(color = colors.kds_black.copy(alpha = 0.1f)),
+                    .background(color = colors.backgroundSurfacePrimary.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
                 KSCircularProgressIndicator()
@@ -514,7 +515,7 @@ fun SearchScreen(
 
     if (isSheetOpen.value.isTrue()) {
         ModalBottomSheet(
-            modifier = Modifier,
+            modifier = Modifier.navigationBarsPadding(),
             sheetState = modalBottomSheetState(
                 activeBottomSheet,
                 sortSheetState,
@@ -524,7 +525,8 @@ fun SearchScreen(
                 isSheetOpen.value = false
             },
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            containerColor = colors.kds_white
+            containerColor = colors.backgroundSurfacePrimary,
+            contentWindowInsets = { WindowInsets(0) }
         ) {
             SheetContent(
                 activeBottomSheet,
@@ -650,13 +652,11 @@ fun FilterPagerSheet(
     HorizontalPager(
         modifier = Modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
             .heightIn(
                 min = dimensions.bottomSheetMinHeight,
                 max = dimensions.bottomSheetMaxHeight
             ),
-        state = pagerState,
-
+        state = pagerState
     ) { page ->
         when (page) {
             FilterPages.MAIN_FILTER.ordinal -> FilterMenuSheet(

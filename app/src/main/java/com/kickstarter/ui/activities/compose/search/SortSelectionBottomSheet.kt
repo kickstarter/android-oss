@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -66,8 +66,11 @@ fun SortSelectionBottomSheet(
         modifier = Modifier
             .background(color = colors.backgroundSurfacePrimary)
             .padding(start = dimensions.paddingLarge, end = dimensions.paddingMediumSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
-            .navigationBarsPadding()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .heightIn(
+                min = dimensions.bottomSheetMinHeight,
+                max = dimensions.bottomSheetMaxHeight
+            )
     ) {
         Row(
             modifier = Modifier
@@ -101,7 +104,9 @@ fun SortSelectionBottomSheet(
                 )
             }
         } else {
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier.padding(bottom = dimensions.paddingTripleLarge)
+            ) {
                 items(sorts.filter { !getSortString(it).isNullOrZero() }) { sort ->
                     SortItemRow(
                         sort = sort,

@@ -374,6 +374,9 @@ fun CheckoutScreen(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
+                    .padding(
+                        bottom = padding.calculateBottomPadding()
+                    ),
             ) {
 
                 Text(

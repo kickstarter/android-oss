@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -156,26 +155,6 @@ fun RewardCarouselScreen(
     Scaffold(
         modifier = modifier,
         containerColor = KSTheme.colors.backgroundAccentGraySubtle,
-        bottomBar = {
-            Column {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            bottom = KSTheme.dimensions.paddingMediumSmall,
-                            top = KSTheme.dimensions.paddingMediumSmall
-                        ),
-                    text = environment.ksString()?.let {
-                        it.format(
-                            "Rewards_count_rewards", rewards.size,
-                            "rewards_count", NumberUtils.format(rewards.size)
-                        )
-                    } ?: "",
-                    color = KSTheme.colors.kds_support_400,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
     ) { padding ->
         Column {
             if (isLoading) {
@@ -208,7 +187,8 @@ fun RewardCarouselScreen(
                 modifier = Modifier
                     .testTag(RewardCarouselTestTag.REWARD_CAROUSEL.name)
                     .fillMaxWidth()
-                    .fillMaxHeight(),
+                    .weight(1f),
+                // .fillMaxHeight(),
                 state = lazyRowState,
                 contentPadding =
                 PaddingValues(
@@ -397,6 +377,22 @@ fun RewardCarouselScreen(
                     }
                 }
             }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = KSTheme.dimensions.paddingMediumSmall,
+                        top = KSTheme.dimensions.paddingMediumSmall
+                    ),
+                text = environment.ksString()?.let {
+                    it.format(
+                        "Rewards_count_rewards", rewards.size,
+                        "rewards_count", NumberUtils.format(rewards.size)
+                    )
+                } ?: "",
+                color = KSTheme.colors.kds_support_400,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

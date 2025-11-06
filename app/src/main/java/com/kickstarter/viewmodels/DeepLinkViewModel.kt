@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
@@ -31,6 +32,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -268,11 +270,12 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isPMOrderEditUri(webEndpoint) }
+                .filter { it.isPMOrderEditUri(webEndpoint, ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER)) }
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
                 }
+                .filter { it.second.isTrue() }
                 .subscribe {
                     startPMOrderEditWebview.onNext(it)
                 }.addToDisposable(disposables)
@@ -331,7 +334,12 @@ interface DeepLinkViewModel {
                 .filter { !it.isRewardFulfilledDl() }
                 .filter { !it.isEmailDomain() }
                 .filter { !it.isProjectSurveyUri(webEndpoint) }
-                .filter { !it.isPMOrderEditUri(webEndpoint) }
+                .filter {
+                    !it.isPMOrderEditUri(
+                        webEndpoint,
+                        ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER)
+                    )
+                }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }

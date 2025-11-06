@@ -694,9 +694,37 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPMOrderEditDeeplink_startsPMOrderEditWebview() {
+    fun testPMOrderEditDeeplink_startsPMOrderEditWebview_featureFlagDisabled() {
         val url = "https://www.kickstarter.com/projects/1768690592/reclaimed-coffee-video-game/order_edits/5/checkout"
         setUpEnvironment(intent = intentWithData(url))
+        startBrowser.assertValueCount(1)
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
+    }
+
+    @Test
+    fun testPMOrderEditDeeplink_startsPMOrderEditWebview_featureFlagEnabled_UserLoggedIn() {
+        val url = "https://www.kickstarter.com/projects/1768690592/reclaimed-coffee-video-game/order_edits/5/checkout"
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(intent = intentWithData(url), environment = env)
+
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
@@ -706,6 +734,34 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
         startPMOrderEditWebview.assertValueCount(1)
+    }
+
+    @Test
+    fun testPMOrderEditDeeplink_startsPMOrderEditWebview_featureFlagEnabled_UserLoggedOut() {
+        val url = "https://www.kickstarter.com/projects/1768690592/reclaimed-coffee-video-game/order_edits/5/checkout"
+        val mockFeatureFlagClient: MockFeatureFlagClient =
+            object : MockFeatureFlagClient() {
+                override fun getBoolean(FlagKey: FlagKey): Boolean {
+                    return true
+                }
+            }
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2()) // using empty constructor means no user logged in
+            .featureFlagClient(mockFeatureFlagClient)
+            .build()
+
+        setUpEnvironment(intent = intentWithData(url), environment = env)
+
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
     }
 
     private fun mockApiSetBacking(backing: Backing, completed: Boolean): MockApiClientV2 {

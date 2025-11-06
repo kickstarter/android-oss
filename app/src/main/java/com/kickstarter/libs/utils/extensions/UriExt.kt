@@ -211,8 +211,16 @@ fun Uri.isBackingDetailsUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_BACKING_DETAILS_URL.matcher(path()).matches()
 }
 
-fun Uri.isPMOrderEditUri(webEndpoint: String): Boolean {
-    return isKickstarterUri(webEndpoint) && PM_ORDER_EDIT_CHECKOUT_PATTERN.matcher(path()).matches()
+/**
+ * Returns `true` if the URI is a post-campaign checkout URL for editing an order and the corresponding feature flag is enabled,
+ * `false` otherwise.
+ *
+ * This will match URIs with the format: `/projects/creator/project/order_edits/order_edit_id/checkout`
+ */
+fun Uri.isPMOrderEditUri(webEndpoint: String, isFFEnabled: Boolean = false): Boolean {
+    return isKickstarterUri(webEndpoint) &&
+        PM_ORDER_EDIT_CHECKOUT_PATTERN.matcher(path()).matches() &&
+        isFFEnabled
 }
 
 fun Uri.hasSecretRewardToken(): Boolean {

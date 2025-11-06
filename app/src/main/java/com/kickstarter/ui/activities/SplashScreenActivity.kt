@@ -4,9 +4,23 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.StatsigClient
@@ -21,6 +35,7 @@ import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
@@ -40,6 +55,14 @@ class SplashScreenActivity : AppCompatActivity() {
     private lateinit var statsigClient: StatsigClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /* The order of the following calls before `super.onCreate()` is important to ensure
+         * the Window theme is established correctly and consistently. */
+        val compatSplashScreen = installSplashScreen()
+        enableEdgeToEdge()
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
+        super.onCreate(savedInstanceState)
+        setUpConnectivityStatusCheck(lifecycle)
+
         this.getEnvironment()?.let {
             viewModelFactory = SplashScreenViewModel.Factory(it, intent = intent)
             it.statsigClient()?.let { stClient ->
@@ -47,12 +70,24 @@ class SplashScreenActivity : AppCompatActivity() {
             }
         }
 
-        installSplashScreen().setKeepOnScreenCondition {
+        compatSplashScreen.setKeepOnScreenCondition {
             viewModel.uiState.value == SplashUIState.Loading
         }
 
-        super.onCreate(savedInstanceState)
-        setUpConnectivityStatusCheck(lifecycle)
+        setContent {
+            Surface(color = kds_create_500) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ksr_logo_rgb_white),
+                        contentDescription = null,
+                        modifier = Modifier.size(288.dp),
+                    )
+                }
+            }
+        }
 
         viewModel.runInitializations()
 

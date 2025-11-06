@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.UrlUtils.appendRefTag
@@ -21,6 +22,7 @@ import com.kickstarter.libs.utils.extensions.isKSDomain
 import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
+import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectSaveUri
@@ -30,6 +32,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUpdateUri
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -77,6 +80,8 @@ interface DeepLinkViewModel {
 
         fun startProjectSurvey(): Observable<Pair<Uri, Boolean>>
 
+        fun startPMOrderEditWebview(): Observable<Pair<Uri, Boolean>>
+
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
     }
@@ -93,6 +98,8 @@ interface DeepLinkViewModel {
         private val startProjectActivityWithCheckout = BehaviorSubject.create<Uri>()
         private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
         private val startProjectSurvey = BehaviorSubject.create<Pair<Uri, Boolean>>()
+
+        private val startPMOrderEditWebview = BehaviorSubject.create<Pair<Uri, Boolean>>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Unit>()
         private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -262,6 +269,17 @@ interface DeepLinkViewModel {
                     startProjectSurvey.onNext(it)
                 }.addToDisposable(disposables)
 
+            uriFromIntent
+                .filter { it.isPMOrderEditUri(webEndpoint, ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER)) }
+                .map { appendRefTagIfNone(it) }
+                .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
+                    return@withLatestFrom Pair(url, isLoggedIn)
+                }
+                .filter { it.second.isTrue() }
+                .subscribe {
+                    startPMOrderEditWebview.onNext(it)
+                }.addToDisposable(disposables)
+
             currentUser.observable()
                 .filter { it.isPresent() }
                 .map { it.getValue() }
@@ -316,6 +334,12 @@ interface DeepLinkViewModel {
                 .filter { !it.isRewardFulfilledDl() }
                 .filter { !it.isEmailDomain() }
                 .filter { !it.isProjectSurveyUri(webEndpoint) }
+                .filter {
+                    !it.isPMOrderEditUri(
+                        webEndpoint,
+                        ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER)
+                    )
+                }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
@@ -394,6 +418,8 @@ interface DeepLinkViewModel {
         override fun startProjectActivityToSave(): Observable<Uri> = startProjectActivityToSave
 
         override fun startProjectSurvey(): Observable<Pair<Uri, Boolean>> = startProjectSurvey
+
+        override fun startPMOrderEditWebview(): Observable<Pair<Uri, Boolean>> = startPMOrderEditWebview
 
         override fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>> = startPreLaunchProjectActivity
     }

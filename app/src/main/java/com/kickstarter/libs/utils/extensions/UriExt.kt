@@ -211,6 +211,18 @@ fun Uri.isBackingDetailsUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && PROJECT_BACKING_DETAILS_URL.matcher(path()).matches()
 }
 
+/**
+ * Returns `true` if the URI is a post-campaign checkout URL for editing an order and the corresponding feature flag is enabled,
+ * `false` otherwise.
+ *
+ * This will match URIs with the format: `/projects/creator/project/order_edits/order_edit_id/checkout`
+ */
+fun Uri.isPMOrderEditUri(webEndpoint: String, isFFEnabled: Boolean = false): Boolean {
+    return isKickstarterUri(webEndpoint) &&
+        PM_ORDER_EDIT_CHECKOUT_PATTERN.matcher(path()).matches() &&
+        isFFEnabled
+}
+
 fun Uri.hasSecretRewardToken(): Boolean {
     return this.getQueryParameter("secret_reward_token")?.isNotEmpty() == true
 }
@@ -329,4 +341,9 @@ private val MAIN_PAGE_OPEN_BUTTON_QUERYPARAMS = Pattern.compile(
 //  /projects/:creator_param/:project_param/backing/details
 private val PROJECT_BACKING_DETAILS_URL = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/backing\\/details\\z"
+)
+
+//  /projects/:creator_param/:project_param/order_edits/:order_edit_id/checkout
+private val PM_ORDER_EDIT_CHECKOUT_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/order_edits\\/[a-zA-Z0-9_-]+\\/checkout\\z"
 )

@@ -115,6 +115,11 @@ class MessageService : FirebaseMessagingService() {
                     )
                 )
                 .survey(gson.fromJson(data["survey"], Survey::class.java))
+                .pledgeRedemption(
+                    gson.fromJson(
+                        data["order"], PushNotificationEnvelope.PledgeRedemption::class.java
+                    )
+                )
                 .build()
 
             Timber.d("Received message: %s", envelope.toString())

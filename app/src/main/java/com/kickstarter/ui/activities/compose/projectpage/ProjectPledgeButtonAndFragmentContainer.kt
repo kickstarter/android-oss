@@ -11,17 +11,17 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -151,7 +151,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
     onAccountabilityLinkClicked: () -> Unit,
     isPledgeButtonEnabled: Boolean = false
 ) {
-    Column(modifier = Modifier.systemBarsPadding()) {
+    Column {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -164,7 +164,7 @@ fun ProjectPledgeButtonAndFragmentContainer(
                 )
             },
             color = colors.backgroundSurfacePrimary,
-            elevation = dimensions.elevationLarge,
+            tonalElevation = dimensions.elevationLarge,
         ) {
             AnimatedVisibility(
                 visible = !expanded,
@@ -220,7 +220,8 @@ fun ProjectPledgeButtonAndFragmentContainer(
                             leftIconColor = colors.textPrimary,
                             backgroundColor = colors.backgroundSurfacePrimary,
                         )
-                    }
+                    },
+                    contentWindowInsets = WindowInsets(0)
                 ) { padding ->
                     Box(
                         Modifier

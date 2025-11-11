@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,18 +101,22 @@ fun KSTextInput(
                 topStart = dimensions.radiusMediumSmall,
                 topEnd = dimensions.radiusMediumSmall
             ),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
                 focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.kds_support_700,
+                errorLabelColor = colors.kds_alert,
                 focusedIndicatorColor = colors.kds_create_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                errorIndicatorColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             ),
             isError = isError,
             trailingIcon = trailingIcon,

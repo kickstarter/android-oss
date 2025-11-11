@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class ProjectNotification private constructor(
     private val project: Project,
     private val id: Long,

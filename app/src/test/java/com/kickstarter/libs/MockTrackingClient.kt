@@ -1,6 +1,5 @@
 package com.kickstarter.libs
 
-import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.models.User
@@ -12,7 +11,6 @@ class MockTrackingClient(
     currentUser: CurrentUserTypeV2,
     currentConfig: CurrentConfigTypeV2,
     private val type: Type,
-    private val ffClient: FeatureFlagClientType
 ) : TrackingClientType() {
     override var loggedInUser: User? = null
     override var config: Config? = config()

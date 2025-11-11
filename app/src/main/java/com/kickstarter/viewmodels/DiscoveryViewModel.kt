@@ -47,11 +47,17 @@ interface DiscoveryViewModel {
         /** Call when the user selects a sort tab.  */
         fun sortClicked(sortPosition: Int)
 
+        /** Call when the user has seen the consent management dialog.  */
+        fun hasSeenConsentManagement(hasShown: Boolean)
+
         /** Call when the user has seen the notifications permission request.  */
         fun hasSeenNotificationsPermission(hasShown: Boolean)
 
         /** Call when the user has seen the onboarding flow.  */
         fun hasSeenOnboarding(hasSeen: Boolean)
+
+        /** Call when the user has exited the onboarding flow.  */
+        fun hasExitedOnboarding()
     }
 
     interface Outputs {
@@ -124,7 +130,7 @@ interface DiscoveryViewModel {
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentUserType = requireNotNull(environment.currentUserV2())
         private val currentConfigType = requireNotNull(environment.currentConfigV2())
-        private val sharedPreferences = requireNotNull(environment.sharedPreferences())
+        val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val analyticEvents = requireNotNull(environment.analytics())
         private val ffClient = environment.featureFlagClient()
 
@@ -169,8 +175,10 @@ interface DiscoveryViewModel {
         private val settingsClick = PublishSubject.create<Unit>()
         private val pledgedProjectsClick = PublishSubject.create<Unit>()
         private val sortClicked = PublishSubject.create<Int>()
+        private val hasSeenConsentManagement = BehaviorSubject.createDefault<Boolean>(false)
         private val hasSeenNotificationsPermission = PublishSubject.create<Boolean>()
         private val hasSeenOnboarding = PublishSubject.create<Boolean>()
+        private val hasExitedOnboarding = PublishSubject.create<Unit>()
         private val topFilterRowClick = PublishSubject.create<NavigationDrawerData.Section.Row>()
         private val clearPages = BehaviorSubject.create<List<Int>>()
         private val drawerMenuIcon = BehaviorSubject.create<Int>()
@@ -452,9 +460,9 @@ interface DiscoveryViewModel {
                 .subscribe { sharedPreferences.edit { putBoolean(HAS_SEEN_NOTIF_PERMISSIONS, it) } }
                 .addToDisposable(disposables)
 
-            Observable.just(sharedPreferences.contains(CONSENT_MANAGEMENT_PREFERENCE))
+            hasExitedOnboarding
+                .switchMap { hasSeenConsentManagement }
                 .filter { !it }
-                .filter { ffClient?.getBoolean(FlagKey.ANDROID_CONSENT_MANAGEMENT) ?: false }
                 .subscribe { showConsentManagementDialog.onNext(Unit) }
                 .addToDisposable(disposables)
         }
@@ -485,8 +493,10 @@ interface DiscoveryViewModel {
             parentFilterRowClick.onNext(row)
         }
         override fun sortClicked(sortPosition: Int) { sortClicked.onNext(sortPosition) }
+        override fun hasSeenConsentManagement(hasShown: Boolean) { hasSeenConsentManagement.onNext(hasShown) }
         override fun hasSeenNotificationsPermission(hasShown: Boolean) { hasSeenNotificationsPermission.onNext(hasShown) }
         override fun hasSeenOnboarding(hasSeen: Boolean) { hasSeenOnboarding.onNext(hasSeen) }
+        override fun hasExitedOnboarding() { hasExitedOnboarding.onNext(Unit) }
 
         // - Outputs
         override fun clearPages(): Observable<List<Int>> { return clearPages }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,8 +16,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +68,7 @@ enum class RewardCarouselTestTag(val tag: String) {
 fun RewardCarouselScreenPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+            containerColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             RewardCarouselScreen(
                 modifier = Modifier
@@ -155,27 +154,7 @@ fun RewardCarouselScreen(
 
     Scaffold(
         modifier = modifier,
-        backgroundColor = KSTheme.colors.backgroundAccentGraySubtle,
-        bottomBar = {
-            Column {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            bottom = KSTheme.dimensions.paddingMediumSmall,
-                            top = KSTheme.dimensions.paddingMediumSmall
-                        ),
-                    text = environment.ksString()?.let {
-                        it.format(
-                            "Rewards_count_rewards", rewards.size,
-                            "rewards_count", NumberUtils.format(rewards.size)
-                        )
-                    } ?: "",
-                    color = KSTheme.colors.kds_support_400,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+        containerColor = KSTheme.colors.backgroundAccentGraySubtle,
     ) { padding ->
         Column {
             if (isLoading) {
@@ -208,8 +187,8 @@ fun RewardCarouselScreen(
                 modifier = Modifier
                     .testTag(RewardCarouselTestTag.REWARD_CAROUSEL.name)
                     .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(paddingValues = padding),
+                    .weight(1f),
+                // .fillMaxHeight(),
                 state = lazyRowState,
                 contentPadding =
                 PaddingValues(
@@ -232,7 +211,7 @@ fun RewardCarouselScreen(
                         !reward.hasAddons() && backing?.isBacked(reward) != true -> true
 
                         backing?.rewardId() != reward.id() &&
-                            RewardUtils.isAvailable(project, reward) -> true
+                            RewardUtils.isAvailableForProject(project, reward) -> true
 
                         reward.hasAddons() &&
                             backing?.rewardId() == reward.id() &&
@@ -398,6 +377,22 @@ fun RewardCarouselScreen(
                     }
                 }
             }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = KSTheme.dimensions.paddingMediumSmall,
+                        top = KSTheme.dimensions.paddingMediumSmall
+                    ),
+                text = environment.ksString()?.let {
+                    it.format(
+                        "Rewards_count_rewards", rewards.size,
+                        "rewards_count", NumberUtils.format(rewards.size)
+                    )
+                } ?: "",
+                color = KSTheme.colors.kds_support_400,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

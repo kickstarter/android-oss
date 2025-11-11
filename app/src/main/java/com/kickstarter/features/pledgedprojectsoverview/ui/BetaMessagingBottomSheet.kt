@@ -1,21 +1,17 @@
 package com.kickstarter.features.pledgedprojectsoverview.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -52,14 +48,6 @@ fun BetaMessagingBottomSheet(
             .navigationBarsPadding()
             .fillMaxWidth(),
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                modifier = Modifier.align(Alignment.Center).padding(bottom = dimensions.paddingMediumSmall),
-                imageVector = ImageVector.vectorResource(id = R.drawable.drag_handle),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(color = colors.textSecondary)
-            )
-        }
         Text(
             text = stringResource(id = R.string.Introducing_the_backings_tab),
             style = typographyV2.headingXL,

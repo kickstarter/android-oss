@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities.compose
 
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -52,8 +51,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
                 ChangePasswordScreen(
                     onBackClicked = { },
                     onAcceptButtonClicked = { _, _ -> },
-                    showProgressBar = false,
-                    scaffoldState = rememberScaffoldState()
+                    showProgressBar = false
                 )
             }
         }
@@ -82,8 +80,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
                 ChangePasswordScreen(
                     onBackClicked = { },
                     onAcceptButtonClicked = { _, _ -> },
-                    showProgressBar = false,
-                    scaffoldState = rememberScaffoldState()
+                    showProgressBar = false
                 )
             }
         }
@@ -96,8 +93,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
                 ChangePasswordScreen(
                     onBackClicked = { },
                     onAcceptButtonClicked = { _, _ -> },
-                    showProgressBar = false,
-                    scaffoldState = rememberScaffoldState()
+                    showProgressBar = false
                 )
             }
         }
@@ -159,8 +155,7 @@ class ChangePasswordScreenTest : KSRobolectricTestCase() {
                 ChangePasswordScreen(
                     onBackClicked = { },
                     onAcceptButtonClicked = { _, _ -> acceptButtonClickedCount++ },
-                    showProgressBar = false,
-                    scaffoldState = rememberScaffoldState()
+                    showProgressBar = false
                 )
             }
         }

@@ -502,7 +502,7 @@ Toca para intentar de nuevo.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
   <string name="No_results" formatted="false">Sin resultados</string>
-  <string name="No_results_for" formatted="false">No hay resultados para %{query}</string>
+  <string name="No_results_for" formatted="false">No hay resultados para “%{query}”</string>
   <string name="No_saved_projects" formatted="false">No hay proyectos guardados</string>
   <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
   <string name="Not_available" formatted="false">No disponible</string>
@@ -810,6 +810,7 @@ Toca para intentar de nuevo.</string>
   <string name="Thanks_youve_successfully_verified_your_email_address" formatted="false">Gracias, verificaste correctamente tu dirección de correo electrónico.</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">El patrocinador canceló su contribución a este proyecto.</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">El creador canceló el proyecto, así que tu método de pago nunca recibió ningún cargo.</string>
+  <string name="The_creator_has_not_collected_your_address_please_contact_them_to_resolve_the_issue" formatted="false">El creador no recopiló tu dirección. Contáctalo para resolver el problema.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">Esta cuenta de correo electrónico ya está asociada a otro usuario de Kickstarter.</string>
   <string name="The_first_charge_will_occur_when_the_project_ends_successfully" formatted="false">El primer pago se hará cuando el proyecto finalice con éxito, luego cada 2 semanas hasta el monto total de la contribución. Cuando se selecciona esta opción, no se pueden realizar más modificaciones en tu contribución.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">No se pudo conectar la transmisión en directo</string>

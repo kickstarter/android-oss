@@ -8,7 +8,6 @@ import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfigV2
-import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
 import io.reactivex.disposables.CompositeDisposable
@@ -101,8 +100,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
         MockCurrentUserV2(user),
         MockCurrentConfigV2(),
-        TrackingClientType.Type.SEGMENT,
-        MockFeatureFlagClient()
+        TrackingClientType.Type.SEGMENT
     ).apply {
         this.identifiedUser.subscribe { currentUser }
     }

@@ -1,9 +1,9 @@
 package com.kickstarter.ui.activities.compose.login
 
-import androidx.compose.foundation.background
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,62 +27,68 @@ fun KSLoginDropdownMenu(
     onPrivacyPolicyClicked: () -> Unit,
     onCookiePolicyClicked: () -> Unit,
     onHelpClicked: () -> Unit
-
 ) {
     DropdownMenu(
-        modifier = Modifier
-            .background(color = KSTheme.colors.kds_support_100)
-            .testTag(LoginDropdownTestTag.OPTIONS_MENU.name),
         expanded = expanded,
-        onDismissRequest = { onDismissed.invoke() }
+        onDismissRequest = { onDismissed.invoke() },
+        modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_MENU.name),
+        containerColor = KSTheme.colors.kds_support_100
     ) {
+        val itemColors = MenuDefaults.itemColors(
+            textColor = KSTheme.colors.kds_support_700
+        )
+
         DropdownMenuItem(
             onClick = {
                 onTermsOfUseClicked.invoke()
                 onDismissed.invoke()
+            },
+            colors = itemColors,
+            text = {
+                Text(
+                    modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_TERMS.name),
+                    text = stringResource(R.string.login_tout_help_sheet_terms)
+                )
             }
-        ) {
-            Text(
-                modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_TERMS.name),
-                text = stringResource(id = R.string.login_tout_help_sheet_terms),
-                color = KSTheme.colors.kds_support_700
-            )
-        }
+        )
         DropdownMenuItem(
             onClick = {
                 onPrivacyPolicyClicked.invoke()
                 onDismissed.invoke()
+            },
+            colors = itemColors,
+            text = {
+                Text(
+                    modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_PRIVACY_POLICY.name),
+                    text = stringResource(R.string.login_tout_help_sheet_privacy)
+                )
             }
-        ) {
-            Text(
-                modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_PRIVACY_POLICY.name),
-                text = stringResource(id = R.string.login_tout_help_sheet_privacy),
-                color = KSTheme.colors.kds_support_700
-            )
-        }
+        )
         DropdownMenuItem(
             onClick = {
                 onCookiePolicyClicked.invoke()
                 onDismissed.invoke()
+            },
+            colors = itemColors,
+            text = {
+                Text(
+                    modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_COOKIE.name),
+                    text = stringResource(R.string.login_tout_help_sheet_cookie)
+                )
             }
-        ) {
-            Text(
-                modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_COOKIE.name),
-                text = stringResource(id = R.string.login_tout_help_sheet_cookie),
-                color = KSTheme.colors.kds_support_700
-            )
-        }
+        )
         DropdownMenuItem(
             onClick = {
                 onHelpClicked.invoke()
                 onDismissed.invoke()
-            }
-        ) {
-            Text(
-                modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_HELP.name),
-                text = stringResource(id = R.string.general_navigation_buttons_help),
-                color = KSTheme.colors.kds_support_700
-            )
-        }
+            },
+            colors = itemColors,
+            text = {
+                Text(
+                    modifier = Modifier.testTag(LoginDropdownTestTag.OPTIONS_HELP.name),
+                    text = stringResource(R.string.general_navigation_buttons_help),
+                )
+            },
+        )
     }
 }

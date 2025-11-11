@@ -2,10 +2,8 @@ package com.kickstarter.ui.activities.compose.search
 
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue.Hidden
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
@@ -54,7 +52,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = true,
@@ -85,7 +82,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -136,7 +132,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -184,7 +179,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = true,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -215,7 +209,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = true,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -267,7 +260,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { backClickedCount++ },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -315,7 +307,6 @@ class SearchScreenTest : KSRobolectricTestCase() {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     SearchScreen(
                         onBackClicked = { },
-                        scaffoldState = rememberScaffoldState(),
                         isLoading = false,
                         lazyColumnListState = rememberLazyListState(),
                         showEmptyView = false,
@@ -342,7 +333,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         assertEquals(currentSearchTerm, "this is a test")
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun `pager initial State, navigates to category row, then navigate back to filter menu page`() {
         val categories = CategoryFactory.rootCategories()
@@ -358,12 +349,12 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(
                 initialPage = FilterPages.MAIN_FILTER.ordinal,
-                pageCount = { FilterPages.values().size }
+                pageCount = { FilterPages.entries.size }
             )
             val testSheetState = rememberModalBottomSheetState(
-                initialValue = Hidden,
-                skipHalfExpanded = true
+                skipPartiallyExpanded = true
             )
+
             KSTheme {
                 CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
                     FilterPagerSheet(
@@ -407,7 +398,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         assertEquals(page, FilterPages.MAIN_FILTER.ordinal)
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun `Reset button behaviour on Main filter screen`() {
 
@@ -423,8 +414,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
             val testSheetState = rememberModalBottomSheetState(
-                initialValue = Hidden,
-                skipHalfExpanded = true
+                skipPartiallyExpanded = true
             )
 
             KSTheme {
@@ -481,7 +471,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         assertEquals(selectedCounts.last(), 0)
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun `Pager with phase4, does display percentage raised row, can navigate to PercentageRaised screen then navigate back`() {
 
@@ -494,8 +484,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             val testPagerState = rememberPagerState(initialPage = FilterPages.MAIN_FILTER.ordinal, pageCount = { FilterPages.values().size })
             val testSheetState = rememberModalBottomSheetState(
-                initialValue = Hidden,
-                skipHalfExpanded = true
+                skipPartiallyExpanded = true
             )
 
             KSTheme {

@@ -7,9 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.featureflag.FlagKey
@@ -53,7 +54,7 @@ class ChangePasswordActivity : ComponentActivity() {
             val error = uiState.errorMessage
             val email = uiState.email
 
-            val scaffoldState = rememberScaffoldState()
+            val snackbarHostState = remember { SnackbarHostState() }
 
             KickstarterApp(
                 useDarkTheme =
@@ -74,13 +75,13 @@ class ChangePasswordActivity : ComponentActivity() {
                         viewModel.updatePassword(current, new)
                     },
                     showProgressBar = showProgressBar,
-                    scaffoldState = scaffoldState
+                    snackbarHostState = snackbarHostState
                 )
             }
 
             error?.let {
-                LaunchedEffect(scaffoldState) {
-                    scaffoldState.snackbarHostState.showSnackbar(it)
+                LaunchedEffect(snackbarHostState) {
+                    snackbarHostState.showSnackbar(it)
                     viewModel.resetError()
                 }
             }

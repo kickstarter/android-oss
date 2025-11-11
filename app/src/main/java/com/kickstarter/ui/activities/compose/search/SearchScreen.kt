@@ -3,14 +3,13 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -22,18 +21,15 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue.Hidden
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -82,7 +78,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -90,8 +86,7 @@ fun PagerPreview() {
     KSTheme {
         val testPagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
         val testSheetState = rememberModalBottomSheetState(
-            initialValue = Hidden,
-            skipHalfExpanded = true
+            skipPartiallyExpanded = true
         )
 
         val categories = CategoryFactory.rootCategories()
@@ -128,7 +123,6 @@ fun SearchScreenPreviewNonEmpty() {
     KSTheme {
         SearchScreen(
             onBackClicked = { },
-            scaffoldState = rememberScaffoldState(),
             errorSnackBarHostState = SnackbarHostState(),
             isLoading = false,
             isDefaultList = true,
@@ -157,7 +151,6 @@ fun SearchScreenPreviewEmpty() {
     KSTheme {
         SearchScreen(
             onBackClicked = { },
-            scaffoldState = rememberScaffoldState(),
             errorSnackBarHostState = SnackbarHostState(),
             isLoading = true,
             itemsList = listOf(),
@@ -206,12 +199,11 @@ fun getCardProjectState(project: Project): CardProjectState {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     environment: Environment? = null,
     onBackClicked: () -> Unit,
-    scaffoldState: ScaffoldState,
     errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     isDefaultList: Boolean = true,
     isLoading: Boolean,
@@ -280,162 +272,77 @@ fun SearchScreen(
     val currentRecommended = remember { mutableStateOf<Boolean>(false) }
 
     val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)
     }
 
-    val sortSheetState = rememberModalBottomSheetState(
-        initialValue = Hidden,
-        skipHalfExpanded = false
+    val sheetState: SheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
     )
 
-    val mainFilterMenuState = rememberModalBottomSheetState(
-        initialValue = Hidden,
-        skipHalfExpanded = true
-    )
+    val isSheetOpen = remember { mutableStateOf(false) }
 
-    ModalBottomSheetLayout(
-        sheetState = modalBottomSheetState(
-            activeBottomSheet,
-            sortSheetState,
-            mainFilterMenuState
-        ),
-        sheetContent = sheetContent(
-            activeBottomSheet,
-            coroutineScope,
-            currentCategory,
-            onDismissBottomSheet = onApplySearchWithParams,
-            currentSort,
-            currentProjectState,
-            categories,
-            categoryPillText,
-            projectStatusPill,
-            initialCategoryPillText,
-            selectedFilterCounts,
-            countApiIsReady,
-            sortSheetState,
-            mainFilterMenuState,
-            pagerState,
-            currentPercentage = currentPercentage,
-            currentLocation = currentLocation,
-            currentAmountRaised = currentAmountRaised,
-            currentRecommended = currentRecommended,
-            currentProjectsLoved = currentStaffPicked,
-            currentSavedProjects = currentStarred,
-            currentFollowing = currentSocial,
-            currentGoal = currentGoal,
-            shouldShowPhase = shouldShowPhase
-        ),
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetBackgroundColor = colors.kds_white
-    ) {
-        Scaffold(
-            modifier = Modifier.systemBarsPadding(),
-            scaffoldState = scaffoldState,
-            snackbarHost = {
-                SnackbarHost(
-                    modifier = Modifier.padding(dimensions.paddingSmall),
-                    hostState = errorSnackBarHostState,
-                    snackbar = { data ->
-                        if (data.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                            KSErrorSnackbar(text = data.message)
-                        } else {
-                            KSHeadsupSnackbar(text = data.message)
-                        }
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.padding(dimensions.paddingSmall),
+                hostState = errorSnackBarHostState,
+                snackbar = { data ->
+                    if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                        KSErrorSnackbar(text = data.visuals.message)
+                    } else {
+                        KSHeadsupSnackbar(text = data.visuals.message)
                     }
-                )
-            },
-            topBar = {
-                Surface(elevation = 3.dp) {
-                    SearchTopBar(
-                        countApiIsReady = countApiIsReady,
-                        categoryPillText = categoryPillText.value,
-                        onBackPressed = onBackClicked,
-                        projectStatusText = projectStatusPill.value,
-                        percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
-                        locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location),
-                        amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised),
-                        goalText = currentGoal.value?.let { textForGoalPill(it) } ?: stringResource(R.string.Goal),
-                        recommendedStatus = currentRecommended,
-                        projectsLovedStatus = currentStaffPicked,
-                        savedProjects = currentStarred,
-                        following = currentSocial,
-                        onValueChanged = {
-                            onSearchTermChanged.invoke(it)
-                            currentSearchTerm = it
-                        },
-                        selectedFilterCounts = selectedFilterCounts,
-                        onPillPressedOpensBottomSheet = onPillPressedOpensBottomSheet(
-                            activeBottomSheet,
-                            coroutineScope,
-                            sortSheetState,
-                            mainFilterMenuState,
-                            pagerState
-                        ),
-                        onPillPressedShowOnlyToggles = { rowPillType, value ->
-                            selectedFilterCounts[rowPillType.name] = if (value) 1 else 0
-                            val total = selectedFilterCounts[FilterRowPillType.FILTER.name] ?: 0
-                            selectedFilterCounts[FilterRowPillType.FILTER.name] = if (value) total + 1 else total - 1
+                }
+            )
+        },
+        topBar = {
+            Surface(
+                shadowElevation = 3.dp,
+                tonalElevation = 0.dp
+            ) {
+                SearchTopBar(
+                    countApiIsReady = countApiIsReady,
+                    categoryPillText = categoryPillText.value,
+                    onBackPressed = onBackClicked,
+                    projectStatusText = projectStatusPill.value,
+                    percentageRaisedText = currentPercentage.value?.let { textForBucket(it) } ?: stringResource(R.string.Percentage_raised),
+                    locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location),
+                    amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised),
+                    goalText = currentGoal.value?.let { textForGoalPill(it) } ?: stringResource(R.string.Goal),
+                    recommendedStatus = currentRecommended,
+                    projectsLovedStatus = currentStaffPicked,
+                    savedProjects = currentStarred,
+                    following = currentSocial,
+                    onValueChanged = {
+                        onSearchTermChanged.invoke(it)
+                        currentSearchTerm = it
+                    },
+                    selectedFilterCounts = selectedFilterCounts,
+                    onPillPressedOpensBottomSheet = onPillPressedOpensBottomSheet(
+                        activeBottomSheet,
+                        coroutineScope,
+                        sheetState,
+                        pagerState,
+                        isSheetOpen
+                    ),
+                    onPillPressedShowOnlyToggles = { rowPillType, value ->
+                        selectedFilterCounts[rowPillType.name] = if (value) 1 else 0
+                        val total = selectedFilterCounts[FilterRowPillType.FILTER.name] ?: 0
+                        selectedFilterCounts[FilterRowPillType.FILTER.name] = if (value) total + 1 else total - 1
 
-                            when (rowPillType) {
-                                FilterRowPillType.RECOMMENDED -> currentRecommended.value = value
-                                FilterRowPillType.PROJECTS_LOVED -> currentStaffPicked.value = value
-                                FilterRowPillType.SAVED -> currentStarred.value = value
-                                FilterRowPillType.FOLLOWING -> currentSocial.value = value
-                                else -> {
-                                    // Other pills open bottomSheet, handled in onPillPressed
-                                }
+                        when (rowPillType) {
+                            FilterRowPillType.RECOMMENDED -> currentRecommended.value = value
+                            FilterRowPillType.PROJECTS_LOVED -> currentStaffPicked.value = value
+                            FilterRowPillType.SAVED -> currentStarred.value = value
+                            FilterRowPillType.FOLLOWING -> currentSocial.value = value
+                            else -> {
+                                // Other pills open bottomSheet, handled in onPillPressed
                             }
-                            onApplySearchWithParams(
-                                currentCategory.value,
-                                currentSort.value,
-                                currentProjectState.value,
-                                currentPercentage.value,
-                                currentLocation.value,
-                                currentAmountRaised.value,
-                                currentRecommended.value,
-                                currentStaffPicked.value,
-                                currentStarred.value,
-                                currentSocial.value,
-                                currentGoal.value
-                            )
-                        },
-                        shouldShowPhase = shouldShowPhase
-                    )
-                }
-            },
-            backgroundColor = colors.kds_white
-        ) { padding ->
-            if (showEmptyView) {
-                var numbersActive = 0
-                selectedFilterCounts.entries.map { entry ->
-                    numbersActive += entry.value
-                }
-
-                SearchEmptyView(
-                    modifier = Modifier
-                        .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
-                        .background(colors.backgroundSurfaceSecondary),
-                    environment = environment,
-                    currentSearchTerm = currentSearchTerm,
-                    activeFilters = numbersActive > 0,
-                    onClick = {
-                        selectedFilterCounts.keys.forEach { key ->
-                            selectedFilterCounts[key] = 0
                         }
-
-                        currentCategory.value = null
-                        currentProjectState.value = null
-                        currentPercentage.value = null
-                        currentLocation.value = null
-                        currentAmountRaised.value = null
-                        currentRecommended.value = false
-                        currentStaffPicked.value = false
-                        currentStarred.value = false
-                        currentSocial.value = false
-                        currentGoal.value = null
                         onApplySearchWithParams(
                             currentCategory.value,
                             currentSort.value,
@@ -449,106 +356,200 @@ fun SearchScreen(
                             currentSocial.value,
                             currentGoal.value
                         )
-                    }
+                    },
+                    shouldShowPhase = shouldShowPhase
                 )
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .testTag(SearchScreenTestTag.LIST_VIEW.name)
-                        .padding(padding)
-                        .background(colors.backgroundSurfaceSecondary)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(
-                        start = dimensions.paddingMediumLarge,
-                        end = dimensions.paddingMediumLarge
-                    ),
-                    state = lazyColumnListState,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    itemsIndexed(itemsList) { index, project ->
-                        if (index == 0 && isDefaultList) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+            }
+        },
+        containerColor = colors.backgroundSurfacePrimary
+    ) { padding ->
+        if (showEmptyView) {
+            var numbersActive = 0
+            selectedFilterCounts.entries.map { entry ->
+                numbersActive += entry.value
+            }
 
-                            Text(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
-                                    .fillMaxWidth(),
-                                text = stringResource(id = R.string.activity_empty_state_logged_in_button),
-                                style = typographyV2.title2,
-                                color = colors.kds_support_700,
-                                textAlign = TextAlign.Start
-                            )
-                        }
-
-                        val state = getCardProjectState(project)
-                        val fundingInfoString = getFundingInfoString(state, environment, project)
-
-                        if (index == 0) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                            KSProjectCardLarge(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
-                                photo = project.photo(),
-                                title = project.name(),
-                                state = state,
-                                fundingInfoString = fundingInfoString,
-                                fundedPercentage = project.percentageFunded().toInt(),
-                            ) {
-                                onItemClicked(project)
-                            }
-
-                            if (itemsList.size > 1) {
-                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                            }
-                        } else {
-                            KSProjectCardSmall(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
-                                photo = project.photo(),
-                                title = project.name(),
-                                state = state,
-                                fundingInfoString = fundingInfoString,
-                                fundedPercentage = project.percentageFunded().toInt(),
-                            ) {
-                                onItemClicked(project)
-                            }
-
-                            if (index < itemsList.size - 1) {
-                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                            } else {
-                                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                            }
-                        }
+            SearchEmptyView(
+                modifier = Modifier
+                    .padding(top = padding.calculateTopPadding())
+                    .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
+                    .background(colors.backgroundSurfacePrimary),
+                environment = environment,
+                currentSearchTerm = currentSearchTerm,
+                activeFilters = numbersActive > 0,
+                onClick = {
+                    selectedFilterCounts.keys.forEach { key ->
+                        selectedFilterCounts[key] = 0
                     }
 
-                    item(isLoading) {
-                        if (isLoading && itemsList.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    currentCategory.value = null
+                    currentProjectState.value = null
+                    currentPercentage.value = null
+                    currentLocation.value = null
+                    currentAmountRaised.value = null
+                    currentRecommended.value = false
+                    currentStaffPicked.value = false
+                    currentStarred.value = false
+                    currentSocial.value = false
+                    currentGoal.value = null
+                    onApplySearchWithParams(
+                        currentCategory.value,
+                        currentSort.value,
+                        currentProjectState.value,
+                        currentPercentage.value,
+                        currentLocation.value,
+                        currentAmountRaised.value,
+                        currentRecommended.value,
+                        currentStaffPicked.value,
+                        currentStarred.value,
+                        currentSocial.value,
+                        currentGoal.value
+                    )
+                }
+            )
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .testTag(SearchScreenTestTag.LIST_VIEW.name)
+                    .padding(padding)
+                    .background(colors.backgroundSurfacePrimary)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(
+                    start = dimensions.paddingMediumLarge,
+                    end = dimensions.paddingMediumLarge
+                ),
+                state = lazyColumnListState,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                itemsIndexed(itemsList) { index, project ->
+                    if (index == 0 && isDefaultList) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                            KSCircularProgressIndicator(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
-                                    .size(size = dimensions.imageSizeLarge)
-                            )
+                        Text(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
+                                .fillMaxWidth(),
+                            text = stringResource(id = R.string.activity_empty_state_logged_in_button),
+                            style = typographyV2.title2,
+                            color = colors.kds_support_700,
+                            textAlign = TextAlign.Start
+                        )
+                    }
 
+                    val state = getCardProjectState(project)
+                    val fundingInfoString = getFundingInfoString(state, environment, project)
+
+                    if (index == 0) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        KSProjectCardLarge(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
+                            photo = project.photo(),
+                            title = project.name(),
+                            state = state,
+                            fundingInfoString = fundingInfoString,
+                            fundedPercentage = project.percentageFunded().toInt(),
+                        ) {
+                            onItemClicked(project)
+                        }
+
+                        if (itemsList.size > 1) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        }
+                    } else {
+                        KSProjectCardSmall(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
+                            photo = project.photo(),
+                            title = project.name(),
+                            state = state,
+                            fundingInfoString = fundingInfoString,
+                            fundedPercentage = project.percentageFunded().toInt(),
+                        ) {
+                            onItemClicked(project)
+                        }
+
+                        if (index < itemsList.size - 1) {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        } else {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
                         }
                     }
                 }
-            }
 
-            if (isLoading && itemsList.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .testTag(SearchScreenTestTag.LOADING_VIEW.name)
-                        .fillMaxSize()
-                        .background(color = colors.kds_black.copy(alpha = 0.1f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    KSCircularProgressIndicator()
+                item(isLoading) {
+                    if (isLoading && itemsList.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                        KSCircularProgressIndicator(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
+                                .size(size = dimensions.imageSizeLarge)
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    }
                 }
             }
         }
+
+        if (isLoading && itemsList.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .testTag(SearchScreenTestTag.LOADING_VIEW.name)
+                    .fillMaxSize()
+                    .background(color = colors.backgroundSurfacePrimary.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                KSCircularProgressIndicator()
+            }
+        }
+    }
+
+    if (isSheetOpen.value.isTrue()) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                isSheetOpen.value = false
+            },
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            containerColor = colors.backgroundSurfacePrimary,
+            contentWindowInsets = { WindowInsets(0) },
+            dragHandle = null,
+        ) {
+            SheetContent(
+                activeBottomSheet = activeBottomSheet,
+                currentCategory = currentCategory,
+                onDismissBottomSheet = onApplySearchWithParams,
+                currentSort = currentSort,
+                currentProjectState = currentProjectState,
+                categories = categories,
+                categoryPillText = categoryPillText,
+                projectStatusPillText = projectStatusPill,
+                initialCategoryPillText = initialCategoryPillText,
+                selectedFilterCounts = selectedFilterCounts,
+                countApiIsReady = countApiIsReady,
+                sheetState = sheetState,
+                pagerState = pagerState,
+                currentPercentage = currentPercentage,
+                currentLocation = currentLocation,
+                currentAmountRaised = currentAmountRaised,
+                currentRecommended = currentRecommended,
+                currentProjectsLoved = currentStaffPicked,
+                currentSavedProjects = currentStarred,
+                currentFollowing = currentSocial,
+                currentGoal = currentGoal,
+                shouldShowPhase = shouldShowPhase,
+                isSheetOpen = isSheetOpen
+            )
+        }
+    }
+
+    // - Allow recomposition to happen first to draw the bottomSheet content, later on execute the animation to show/hide for smoother animation
+    LaunchedEffect(isSheetOpen.value) {
+        if (isSheetOpen.value.isTrue()) {
+            sheetState.show()
+        } else sheetState.hide()
     }
 }
 
@@ -561,7 +562,7 @@ enum class FilterPages {
     GOAL
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterPagerSheet(
     selectedProjectStatus: DiscoveryParams.State?,
@@ -601,7 +602,7 @@ fun FilterPagerSheet(
         goalBucket: Int?
     ) -> Unit,
     pagerState: PagerState,
-    sheetState: ModalBottomSheetState,
+    sheetState: SheetState,
     shouldShowPhase: Boolean
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -614,7 +615,7 @@ fun FilterPagerSheet(
 
     // - In case de bottomSheet is dismissed without the user pressing
     // - see results button, should return to default states
-    LaunchedEffect(!sheetState.isVisible) {
+    LaunchedEffect(sheetState.currentValue) {
         coroutineScope.launch {
             if (currentCategory != category.value) {
                 category.value = currentCategory
@@ -645,13 +646,11 @@ fun FilterPagerSheet(
     HorizontalPager(
         modifier = Modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
             .heightIn(
                 min = dimensions.bottomSheetMinHeight,
                 max = dimensions.bottomSheetMaxHeight
             ),
-        state = pagerState,
-
+        state = pagerState
     ) { page ->
         when (page) {
             FilterPages.MAIN_FILTER.ordinal -> FilterMenuSheet(
@@ -961,61 +960,69 @@ private fun applyUserSelection(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun onPillPressedOpensBottomSheet(
     activeBottomSheet: MutableState<FilterRowPillType?>,
     coroutineScope: CoroutineScope,
-    sortSheetState: ModalBottomSheetState,
-    mainFilterMenuState: ModalBottomSheetState,
-    pagerState: PagerState
+    sheetState: SheetState,
+    pagerState: PagerState,
+    isSheetOpen: MutableState<Boolean>
 ): (FilterRowPillType) -> Unit =
     { filterRowPillType ->
         activeBottomSheet.value = filterRowPillType
         when (filterRowPillType) {
-            FilterRowPillType.SORT -> coroutineScope.launch {
-                sortSheetState.show()
-            }
+            FilterRowPillType.SORT -> isSheetOpen.value = true
+//                coroutineScope.launch {
+//                isSheetOpen.value = true
+//                sortSheetState.show()
+//            }
             FilterRowPillType.FILTER,
             FilterRowPillType.PROJECT_STATUS -> {
                 coroutineScope.launch {
+                    isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
 
             FilterRowPillType.CATEGORY -> {
                 coroutineScope.launch {
+                    isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.CATEGORIES.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
 
             FilterRowPillType.LOCATION -> {
                 coroutineScope.launch {
+                    isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.LOCATION.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
 
             FilterRowPillType.PERCENTAGE_RAISED -> {
                 coroutineScope.launch {
+                    isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.PERCENTAGE_RAISED.ordinal)
-                    mainFilterMenuState.show()
+                    //      mainFilterMenuState.show()
                 }
             }
 
             FilterRowPillType.AMOUNT_RAISED -> {
                 coroutineScope.launch {
+                    isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.AMOUNT_RAISED.ordinal)
-                    mainFilterMenuState.show()
+                    //      mainFilterMenuState.show()
                 }
             }
 
             FilterRowPillType.GOAL -> {
                 coroutineScope.launch {
+                    isSheetOpen.value = true
                     pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
-                    mainFilterMenuState.show()
+                    //     mainFilterMenuState.show()
                 }
             }
             FilterRowPillType.SAVED,
@@ -1027,11 +1034,10 @@ private fun onPillPressedOpensBottomSheet(
         }
     }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun sheetContent(
+private fun SheetContent(
     activeBottomSheet: MutableState<FilterRowPillType?>,
-    coroutineScope: CoroutineScope,
     currentCategory: MutableState<Category?>,
     onDismissBottomSheet: (
         Category?,
@@ -1054,8 +1060,7 @@ private fun sheetContent(
     initialCategoryPillText: String,
     selectedFilterCounts: SnapshotStateMap<String, Int>,
     countApiIsReady: Boolean,
-    sortSheetState: ModalBottomSheetState,
-    menuSheetState: ModalBottomSheetState,
+    sheetState: SheetState,
     pagerState: PagerState,
     currentPercentage: MutableState<DiscoveryParams.RaisedBuckets?>,
     currentAmountRaised: MutableState<DiscoveryParams.AmountBuckets?>,
@@ -1065,180 +1070,156 @@ private fun sheetContent(
     currentProjectsLoved: MutableState<Boolean> = mutableStateOf(false),
     currentSavedProjects: MutableState<Boolean> = mutableStateOf(false),
     currentFollowing: MutableState<Boolean> = mutableStateOf(false),
-    shouldShowPhase: Boolean = true
-): @Composable() (ColumnScope.() -> Unit) {
+    shouldShowPhase: Boolean = true,
+    isSheetOpen: MutableState<Boolean>
+) {
     val liveString = stringResource(R.string.Project_status_live)
     val successfulString = stringResource(R.string.Project_status_successful)
     val upcomingString = stringResource(R.string.Project_status_upcoming)
     val latePledgeString = stringResource(R.string.Project_status_late_pledge)
     val defaultString = stringResource(R.string.Project_status)
 
-    return {
-        when (activeBottomSheet.value) {
-            FilterRowPillType.CATEGORY,
-            FilterRowPillType.PROJECT_STATUS,
-            FilterRowPillType.PERCENTAGE_RAISED,
-            FilterRowPillType.LOCATION,
-            FilterRowPillType.AMOUNT_RAISED,
-            FilterRowPillType.RECOMMENDED,
-            FilterRowPillType.PROJECTS_LOVED,
-            FilterRowPillType.SAVED,
-            FilterRowPillType.FOLLOWING,
-            FilterRowPillType.GOAL,
-            FilterRowPillType.FILTER -> {
-                FilterPagerSheet(
-                    sheetState = menuSheetState,
-                    pagerState = pagerState,
-                    selectedProjectStatus = currentProjectState.value,
-                    currentCategory = currentCategory.value,
-                    currentPercentage = currentPercentage.value,
-                    currentLocation = currentLocation.value,
-                    currentAmountRaised = currentAmountRaised.value,
-                    currentRecommended = currentRecommended,
-                    currentProjectsLoved = currentProjectsLoved,
-                    currentSavedProjects = currentSavedProjects,
-                    currentFollowing = currentFollowing,
-                    currentGoal = currentGoal.value,
-                    categories = categories,
-                    onDismiss = {
-                        coroutineScope.launch { menuSheetState.hide() }
-                    },
-                    onApply = { project, category, percentageBucket, location, amountRaisedBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
-                        currentProjectState.value = project
-                        currentCategory.value = category
-                        currentPercentage.value = percentageBucket
-                        currentLocation.value = location
-                        currentAmountRaised.value = amountRaisedBucket
-                        currentRecommended.value = recommended
-                        currentProjectsLoved.value = projectsLoved
-                        currentSavedProjects.value = savedProjects
-                        currentFollowing.value = following
-                        currentGoal.value = goalBucket
-                        projectStatusPillText.value = when (project) {
-                            DiscoveryParams.State.LIVE -> liveString
-                            DiscoveryParams.State.SUCCESSFUL -> successfulString
-                            DiscoveryParams.State.UPCOMING -> upcomingString
-                            DiscoveryParams.State.LATE_PLEDGES -> latePledgeString
-                            else -> defaultString
-                        }
-                        categoryPillText.value = category?.name() ?: initialCategoryPillText
-                        onDismissBottomSheet(
-                            currentCategory.value,
-                            currentSort.value,
-                            currentProjectState.value,
-                            currentPercentage.value,
-                            currentLocation.value,
-                            currentAmountRaised.value,
-                            currentRecommended.value,
-                            currentProjectsLoved.value,
-                            currentSavedProjects.value,
-                            currentFollowing.value,
-                            currentGoal.value
-                        )
-                    },
-                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
-
-                        selectedFilterCounts[FilterRowPillType.FILTER.name] =
-                            (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0) +
-                            (location ?: 0) + (amountBucket ?: 0) +
-                            (if (currentRecommended.value.isTrue()) 1 else 0) +
-                            (if (currentProjectsLoved.value.isTrue()) 1 else 0) +
-                            (if (currentSavedProjects.value.isTrue()) 1 else 0) +
-                            (if (currentFollowing.value.isTrue()) 1 else 0) +
-                            (goalBucket ?: 0)
-
-                        statusCount?.let {
-                            selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
-                        }
-                        categoryCount?.let {
-                            selectedFilterCounts[FilterRowPillType.CATEGORY.name] = it
-                        }
-                        raisedBucket?.let {
-                            selectedFilterCounts[FilterRowPillType.PERCENTAGE_RAISED.name] = it
-                        }
-                        location?.let {
-                            selectedFilterCounts[FilterRowPillType.LOCATION.name] = it
-                        }
-                        amountBucket?.let {
-                            selectedFilterCounts[FilterRowPillType.AMOUNT_RAISED.name] = it
-                        }
-                        recommended?.let {
-                            selectedFilterCounts[FilterRowPillType.RECOMMENDED.name] =
-                                if (currentRecommended.value.isTrue()) 1 else 0
-                        }
-                        projectsLoved?.let {
-                            selectedFilterCounts[FilterRowPillType.PROJECTS_LOVED.name] =
-                                if (currentProjectsLoved.value.isTrue()) 1 else 0
-                        }
-                        savedProjects?.let {
-                            selectedFilterCounts[FilterRowPillType.SAVED.name] =
-                                if (currentSavedProjects.value.isTrue()) 1 else 0
-                        }
-                        following?.let {
-                            selectedFilterCounts[FilterRowPillType.FOLLOWING.name] =
-                                if (currentFollowing.value.isTrue()) 1 else 0
-                        }
-                        goalBucket?.let {
-                            selectedFilterCounts[FilterRowPillType.GOAL.name] = it
-                        }
-                    },
-                    shouldShowPhase = shouldShowPhase
-                )
-            }
-
-            FilterRowPillType.SORT -> {
-                SortSelectionBottomSheet(
-                    currentSelection = currentSort.value,
-                    sorts = ProjectSort.knownValues().toDiscoveryParamsList(),
-                    onDismiss = { sort ->
-                        currentSort.value = sort
-                        coroutineScope.launch { sortSheetState.hide() }
-                        onDismissBottomSheet(
-                            currentCategory.value,
-                            sort,
-                            currentProjectState.value,
-                            currentPercentage.value,
-                            currentLocation.value,
-                            currentAmountRaised.value,
-                            currentRecommended.value,
-                            currentProjectsLoved.value,
-                            currentFollowing.value,
-                            currentFollowing.value,
-                            currentGoal.value
-                        )
-
-                        selectedFilterCounts[FilterRowPillType.SORT.name] =
-                            if (sort == DiscoveryParams.Sort.MAGIC) 0 else 1
+    when (activeBottomSheet.value) {
+        FilterRowPillType.CATEGORY,
+        FilterRowPillType.PROJECT_STATUS,
+        FilterRowPillType.PERCENTAGE_RAISED,
+        FilterRowPillType.LOCATION,
+        FilterRowPillType.AMOUNT_RAISED,
+        FilterRowPillType.RECOMMENDED,
+        FilterRowPillType.PROJECTS_LOVED,
+        FilterRowPillType.SAVED,
+        FilterRowPillType.FOLLOWING,
+        FilterRowPillType.GOAL,
+        FilterRowPillType.FILTER -> {
+            FilterPagerSheet(
+                sheetState = sheetState,
+                pagerState = pagerState,
+                selectedProjectStatus = currentProjectState.value,
+                currentCategory = currentCategory.value,
+                currentPercentage = currentPercentage.value,
+                currentLocation = currentLocation.value,
+                currentAmountRaised = currentAmountRaised.value,
+                currentRecommended = currentRecommended,
+                currentProjectsLoved = currentProjectsLoved,
+                currentSavedProjects = currentSavedProjects,
+                currentFollowing = currentFollowing,
+                currentGoal = currentGoal.value,
+                categories = categories,
+                onDismiss = {
+                    isSheetOpen.value = false
+                },
+                onApply = { project, category, percentageBucket, location, amountRaisedBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
+                    currentProjectState.value = project
+                    currentCategory.value = category
+                    currentPercentage.value = percentageBucket
+                    currentLocation.value = location
+                    currentAmountRaised.value = amountRaisedBucket
+                    currentRecommended.value = recommended
+                    currentProjectsLoved.value = projectsLoved
+                    currentSavedProjects.value = savedProjects
+                    currentFollowing.value = following
+                    currentGoal.value = goalBucket
+                    projectStatusPillText.value = when (project) {
+                        DiscoveryParams.State.LIVE -> liveString
+                        DiscoveryParams.State.SUCCESSFUL -> successfulString
+                        DiscoveryParams.State.UPCOMING -> upcomingString
+                        DiscoveryParams.State.LATE_PLEDGES -> latePledgeString
+                        else -> defaultString
                     }
-                )
-            }
+                    categoryPillText.value = category?.name() ?: initialCategoryPillText
+                    onDismissBottomSheet(
+                        currentCategory.value,
+                        currentSort.value,
+                        currentProjectState.value,
+                        currentPercentage.value,
+                        currentLocation.value,
+                        currentAmountRaised.value,
+                        currentRecommended.value,
+                        currentProjectsLoved.value,
+                        currentSavedProjects.value,
+                        currentFollowing.value,
+                        currentGoal.value
+                    )
+                },
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
 
-            null -> {}
+                    selectedFilterCounts[FilterRowPillType.FILTER.name] =
+                        (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0) +
+                        (location ?: 0) + (amountBucket ?: 0) +
+                        (if (currentRecommended.value.isTrue()) 1 else 0) +
+                        (if (currentProjectsLoved.value.isTrue()) 1 else 0) +
+                        (if (currentSavedProjects.value.isTrue()) 1 else 0) +
+                        (if (currentFollowing.value.isTrue()) 1 else 0) +
+                        (goalBucket ?: 0)
+
+                    statusCount?.let {
+                        selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
+                    }
+                    categoryCount?.let {
+                        selectedFilterCounts[FilterRowPillType.CATEGORY.name] = it
+                    }
+                    raisedBucket?.let {
+                        selectedFilterCounts[FilterRowPillType.PERCENTAGE_RAISED.name] = it
+                    }
+                    location?.let {
+                        selectedFilterCounts[FilterRowPillType.LOCATION.name] = it
+                    }
+                    amountBucket?.let {
+                        selectedFilterCounts[FilterRowPillType.AMOUNT_RAISED.name] = it
+                    }
+                    recommended?.let {
+                        selectedFilterCounts[FilterRowPillType.RECOMMENDED.name] =
+                            if (currentRecommended.value.isTrue()) 1 else 0
+                    }
+                    projectsLoved?.let {
+                        selectedFilterCounts[FilterRowPillType.PROJECTS_LOVED.name] =
+                            if (currentProjectsLoved.value.isTrue()) 1 else 0
+                    }
+                    savedProjects?.let {
+                        selectedFilterCounts[FilterRowPillType.SAVED.name] =
+                            if (currentSavedProjects.value.isTrue()) 1 else 0
+                    }
+                    following?.let {
+                        selectedFilterCounts[FilterRowPillType.FOLLOWING.name] =
+                            if (currentFollowing.value.isTrue()) 1 else 0
+                    }
+                    goalBucket?.let {
+                        selectedFilterCounts[FilterRowPillType.GOAL.name] = it
+                    }
+                },
+                shouldShowPhase = shouldShowPhase
+            )
         }
+
+        FilterRowPillType.SORT -> {
+            SortSelectionBottomSheet(
+                currentSelection = currentSort.value,
+                sorts = ProjectSort.knownValues().toDiscoveryParamsList(),
+                onDismiss = { sort ->
+                    currentSort.value = sort
+                    isSheetOpen.value = false
+                    onDismissBottomSheet(
+                        currentCategory.value,
+                        sort,
+                        currentProjectState.value,
+                        currentPercentage.value,
+                        currentLocation.value,
+                        currentAmountRaised.value,
+                        currentRecommended.value,
+                        currentProjectsLoved.value,
+                        currentSavedProjects.value,
+                        currentFollowing.value,
+                        currentGoal.value
+                    )
+
+                    selectedFilterCounts[FilterRowPillType.SORT.name] =
+                        if (sort == DiscoveryParams.Sort.MAGIC) 0 else 1
+                }
+            )
+        }
+
+        null -> {}
     }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun modalBottomSheetState(
-    activeBottomSheet: MutableState<FilterRowPillType?>,
-    sortSheetState: ModalBottomSheetState,
-    mainFilterMenuState: ModalBottomSheetState
-) = when (activeBottomSheet.value) {
-    FilterRowPillType.SORT -> sortSheetState
-    FilterRowPillType.PROJECT_STATUS,
-    FilterRowPillType.CATEGORY,
-    FilterRowPillType.PERCENTAGE_RAISED,
-    FilterRowPillType.LOCATION,
-    FilterRowPillType.AMOUNT_RAISED,
-    FilterRowPillType.RECOMMENDED,
-    FilterRowPillType.PROJECTS_LOVED,
-    FilterRowPillType.SAVED,
-    FilterRowPillType.FOLLOWING,
-    FilterRowPillType.GOAL,
-    FilterRowPillType.FILTER -> mainFilterMenuState
-
-    null -> sortSheetState
 }
 
 @Composable

@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,15 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,12 +30,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import io.reactivex.Observable
 
@@ -64,13 +68,15 @@ fun FormularyScreenPreview() {
         FormularyScreen(
             callback = {},
             inputs = inputs,
-            outputs = outputs
+            outputs = outputs,
+            padding = PaddingValues()
         )
     }
 }
 
 @Composable
 fun FormularyScreen(
+    padding: PaddingValues = PaddingValues(),
     callback: () -> Unit = {},
     inputs: ReportProjectViewModel.Inputs,
     outputs: ReportProjectViewModel.Outputs
@@ -84,6 +90,7 @@ fun FormularyScreen(
             .systemBarsPadding()
             .animateContentSize()
             .fillMaxSize()
+            .padding(padding)
             .verticalScroll(rememberScrollState())
             .background(colors.kds_white),
         horizontalAlignment = Alignment.End
@@ -93,12 +100,14 @@ fun FormularyScreen(
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
                 color = colors.kds_create_700,
-                backgroundColor = colors.kds_create_300
+                trackColor = colors.kds_create_300,
+                gapSize = 0.dp,
+                strokeCap = StrokeCap.Butt
             )
         } else {
             Spacer(
                 modifier = Modifier
-                    .height(ProgressIndicatorDefaults.StrokeWidth)
+                    .height(dimensions.linearProgressBarHeight)
                     .background(colors.kds_white)
             )
         }
@@ -108,25 +117,28 @@ fun FormularyScreen(
             Modifier
                 .fillMaxWidth()
                 .padding(
-                    horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_3)
+                    horizontal = dimensionResource(id = R.dimen.grid_3)
                 ),
             value = outputs.email().subscribeAsState(initial = "").value,
             onValueChange = {},
             readOnly = true,
             label = { Text(stringResource(id = R.string.Email)) },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
                 focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.kds_support_700,
+                errorLabelColor = colors.kds_alert,
                 focusedIndicatorColor = colors.kds_create_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                errorIndicatorColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             )
         )
 
@@ -135,7 +147,7 @@ fun FormularyScreen(
                 .fillMaxWidth()
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.grid_3),
-                    vertical = dimensionResource(id = R.dimen.grid_1)
+                    vertical = dimensionResource(id = R.dimen.grid_2)
                 ),
             value = outputs.projectUrl().subscribeAsState(initial = "").value,
             onValueChange = {},
@@ -145,18 +157,22 @@ fun FormularyScreen(
                     text = stringResource(id = R.string.Project_url)
                 )
             },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
                 focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.kds_support_700,
+                errorLabelColor = colors.kds_alert,
                 focusedIndicatorColor = colors.kds_create_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                errorIndicatorColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             )
         )
 
@@ -176,43 +192,41 @@ fun FormularyScreen(
                 details = it
             },
             label = { Text(stringResource(id = R.string.Tell_us_more_details)) },
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = colors.kds_support_200,
-                errorLabelColor = colors.kds_alert,
-                errorIndicatorColor = colors.kds_alert,
-                unfocusedLabelColor = colors.kds_support_700,
-                unfocusedIndicatorColor = colors.kds_support_700,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colors.kds_support_200,
+                unfocusedContainerColor = colors.kds_support_200,
+                disabledContainerColor = colors.kds_support_200,
+                errorContainerColor = colors.kds_support_200,
+                focusedTextColor = colors.kds_support_700,
+                unfocusedTextColor = colors.kds_support_700,
+                disabledTextColor = colors.textDisabled,
                 focusedLabelColor = colors.kds_create_700,
+                unfocusedLabelColor = colors.kds_support_700,
+                errorLabelColor = colors.kds_alert,
                 focusedIndicatorColor = colors.kds_create_700,
+                unfocusedIndicatorColor = colors.kds_support_700,
+                errorIndicatorColor = colors.kds_alert,
                 cursorColor = colors.kds_create_700,
-                errorCursorColor = colors.kds_alert,
-                textColor = colors.kds_support_700,
-                disabledTextColor = colors.textDisabled
+                errorCursorColor = colors.kds_alert
             ),
         )
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
 
-        Button(
+        KSButton(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = colors.kds_create_700,
-                contentColor = colors.kds_white
-            ),
-            enabled = details.isNotEmpty(),
-            onClick = {
+            textColor = colors.kds_white,
+            isEnabled = details.isNotEmpty(),
+            onClickAction = {
                 inputs.createFlagging()
-            }
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.grid_2)
-                    ),
-                text = stringResource(id = R.string.Send)
-            )
-        }
+            },
+            shape = RoundedCornerShape(size = dimensions.radiusExtraSmall),
+            textStyle = typographyV2.buttonLabel,
+            text = stringResource(id = R.string.Send),
+            backgroundColor = colors.backgroundSurfaceSecondary,
+            shouldWrapContentWidth = true
+        )
     }
 }

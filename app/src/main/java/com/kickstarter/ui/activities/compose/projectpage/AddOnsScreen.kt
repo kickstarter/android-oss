@@ -18,9 +18,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +53,7 @@ import java.math.RoundingMode
 private fun AddOnsScreenPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = colors.backgroundAccentGraySubtle
+            containerColor = colors.backgroundAccentGraySubtle
         ) { padding ->
             AddOnsScreen(
                 modifier = Modifier
@@ -134,7 +134,7 @@ fun AddOnsScreen(
                             topEnd = dimensions.radiusLarge
                         ),
                         color = colors.backgroundSurfacePrimary,
-                        elevation = dimensions.elevationLarge,
+                        tonalElevation = dimensions.elevationLarge,
                     ) {
                         Box(
                             modifier = Modifier
@@ -189,7 +189,7 @@ fun AddOnsScreen(
                     }
                 }
             },
-            backgroundColor = colors.backgroundAccentGraySubtle
+            containerColor = colors.backgroundAccentGraySubtle
         ) { padding ->
 
             LazyColumn(

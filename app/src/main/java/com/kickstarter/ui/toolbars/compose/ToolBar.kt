@@ -2,18 +2,23 @@ package com.kickstarter.ui.toolbars.compose
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.IconToggleButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -54,6 +59,7 @@ fun ToolBarPreviewWithText() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopToolBar(
     modifier: Modifier = Modifier,
@@ -71,19 +77,25 @@ fun TopToolBar(
 ) {
     TopAppBar(
         modifier = modifier,
+        windowInsets = WindowInsets(0),
         title = {
             title?.let {
-                Text(
-                    modifier = titleModifier,
-                    text = title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = titleColor ?: colors.kds_support_700
-                )
-                if (showBetaPill) {
-                    Spacer(modifier = Modifier.width(dimensions.paddingSmall))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = titleModifier,
+                        text = title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = titleColor ?: colors.kds_support_700,
+                        style = KSTheme.typographyV2.title2,
+                    )
+                    if (showBetaPill) {
+                        Spacer(modifier = Modifier.width(dimensions.paddingSmall))
 
-                    KSBetaBadge()
+                        KSBetaBadge()
+                    }
                 }
             }
         },
@@ -106,10 +118,16 @@ fun TopToolBar(
             middle()
             right()
         },
-        backgroundColor = backgroundColor ?: colors.kds_white
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = backgroundColor ?: colors.kds_white,
+            titleContentColor = titleColor ?: colors.kds_support_700,
+            navigationIconContentColor = leftIconColor ?: colors.kds_black,
+            actionIconContentColor = colors.kds_black
+        )
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopToolBarBetaIcon(
     modifier: Modifier = Modifier,
@@ -129,17 +147,22 @@ fun TopToolBarBetaIcon(
         modifier = modifier,
         title = {
             title?.let {
-                Text(
-                    modifier = titleModifier,
-                    text = title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = titleColor ?: colors.kds_support_700
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = titleModifier,
+                        text = title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = titleColor ?: colors.kds_support_700,
+                        style = KSTheme.typographyV2.title2,
+                    )
 
-                KSGreenBadge(
-                    text = "Beta"
-                )
+                    KSGreenBadge(
+                        text = "Beta"
+                    )
+                }
             }
         },
         navigationIcon = {
@@ -161,8 +184,12 @@ fun TopToolBarBetaIcon(
             middle()
             right()
         },
-        backgroundColor = backgroundColor ?: colors.kds_white
-
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = backgroundColor ?: colors.kds_white,
+            titleContentColor = titleColor ?: colors.kds_support_700,
+            navigationIconContentColor = leftIconColor ?: colors.kds_black,
+            actionIconContentColor = colors.kds_black
+        )
     )
 }
 

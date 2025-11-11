@@ -17,19 +17,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.icons.Icons // TODO
+import androidx.compose.material.icons.filled.Close // TODO
+import androidx.compose.material.icons.filled.KeyboardArrowDown // TODO
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -266,18 +263,16 @@ fun KSPrimaryGreenButton(
     textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSButton(
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundAccentGreenBold,
-            text = text,
-            textStyle = textStyle,
-            textColor = colors.textInversePrimary
-        )
-    }
+    KSButton(
+        modifier = modifier,
+        leadingIcon = leadingIcon,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundAccentGreenBold,
+        text = text,
+        textStyle = textStyle,
+        textColor = colors.textInversePrimary
+    )
 }
 
 @Composable
@@ -289,18 +284,16 @@ fun KSPrimaryBlueButton(
     textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSButton(
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundAccentBlueBold,
-            text = text,
-            textStyle = textStyle,
-            textColor = colors.textInversePrimary
-        )
-    }
+    KSButton(
+        modifier = modifier,
+        leadingIcon = leadingIcon,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundAccentBlueBold,
+        text = text,
+        textStyle = textStyle,
+        textColor = colors.textInversePrimary
+    )
 }
 
 @Composable
@@ -312,18 +305,16 @@ fun KSPrimaryBlackButton(
     textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSButton(
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundAction,
-            text = text,
-            textStyle = textStyle,
-            textColor = colors.textInversePrimary
-        )
-    }
+    KSButton(
+        modifier = modifier,
+        leadingIcon = leadingIcon,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundAction,
+        text = text,
+        textStyle = textStyle,
+        textColor = colors.textInversePrimary
+    )
 }
 
 @Composable
@@ -335,18 +326,16 @@ fun KSSecondaryGreyButton(
     textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSButton(
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundAccentGrayBold,
-            text = text,
-            textStyle = textStyle,
-            textColor = colors.textPrimary
-        )
-    }
+    KSButton(
+        modifier = modifier,
+        leadingIcon = leadingIcon,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundAccentGrayBold,
+        text = text,
+        textStyle = textStyle,
+        textColor = colors.textPrimary
+    )
 }
 
 @Composable
@@ -358,18 +347,16 @@ fun KSSecondaryRedButton(
     textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSButton(
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundDangerBold,
-            text = text,
-            textStyle = textStyle,
-            textColor = colors.textInversePrimary
-        )
-    }
+    KSButton(
+        modifier = modifier,
+        leadingIcon = leadingIcon,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundDangerBold,
+        text = text,
+        textStyle = textStyle,
+        textColor = colors.textInversePrimary
+    )
 }
 
 @Composable
@@ -381,18 +368,16 @@ fun KSSecondaryWhiteButton(
     textStyle: TextStyle = typographyV2.body,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeGrey) {
-        KSButton(
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundSurfacePrimary,
-            text = text,
-            textStyle = textStyle,
-            textColor = colors.textAccentGreenBold
-        )
-    }
+    KSButton(
+        modifier = modifier,
+        leadingIcon = leadingIcon,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundSurfacePrimary,
+        text = text,
+        textStyle = textStyle,
+        textColor = colors.textAccentGreenBold
+    )
 }
 
 @Composable
@@ -402,17 +387,15 @@ fun KSFacebookButton(
     text: String,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSIconTextButton(
-            modifier = modifier,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.facebook_blue,
-            imageId = R.drawable.com_facebook_button_icon,
-            text = text,
-            textColor = kds_white
-        )
-    }
+    KSIconTextButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.facebook_blue,
+        imageId = R.drawable.com_facebook_button_icon,
+        text = text,
+        textColor = kds_white
+    )
 }
 
 @Composable
@@ -421,15 +404,13 @@ fun KSGooglePayButton(
     onClickAction: () -> Unit,
     isEnabled: Boolean
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSIconTextButton(
-            modifier = modifier,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = kds_black,
-            imageId = R.drawable.googlepay_button_content
-        )
-    }
+    KSIconTextButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = kds_black,
+        imageId = R.drawable.googlepay_button_content
+    )
 }
 
 @Composable
@@ -448,11 +429,11 @@ fun KSIconTextButton(
             .fillMaxWidth()
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.backgroundActionDisabled
+            containerColor = backgroundColor,
+            disabledContainerColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
-        elevation = ButtonDefaults.elevation(),
+        elevation = ButtonDefaults.buttonElevation(),
         enabled = isEnabled,
         shape = shapes.medium
     ) {
@@ -487,17 +468,15 @@ fun KSSmallBlueButton(
     isEnabled: Boolean,
     radius: Dp? = null
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSSmallButton(
-            modifier = modifier,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundAccentBlueBold,
-            text = text,
-            textColor = colors.textInversePrimary,
-            radius = radius
-        )
-    }
+    KSSmallButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundAccentBlueBold,
+        text = text,
+        textColor = colors.textInversePrimary,
+        radius = radius
+    )
 }
 
 @Composable
@@ -508,17 +487,15 @@ fun KSSmallRedButton(
     isEnabled: Boolean,
     radius: Dp? = null
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeWhite) {
-        KSSmallButton(
-            modifier = modifier,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundDangerBold,
-            text = text,
-            textColor = colors.textInversePrimary,
-            radius = radius
-        )
-    }
+    KSSmallButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundDangerBold,
+        text = text,
+        textColor = colors.textInversePrimary,
+        radius = radius
+    )
 }
 
 @Composable
@@ -529,17 +506,15 @@ fun KSSmallWhiteButton(
     isEnabled: Boolean,
     radius: Dp? = null
 ) {
-    CompositionLocalProvider(LocalRippleTheme provides KSRippleThemeGrey) {
-        KSSmallButton(
-            modifier = modifier,
-            onClickAction = onClickAction,
-            isEnabled = isEnabled,
-            backgroundColor = colors.backgroundInverse,
-            text = text,
-            textColor = colors.textAccentGreenBold,
-            radius = radius
-        )
-    }
+    KSSmallButton(
+        modifier = modifier,
+        onClickAction = onClickAction,
+        isEnabled = isEnabled,
+        backgroundColor = colors.backgroundInverse,
+        text = text,
+        textColor = colors.textAccentGreenBold,
+        radius = radius
+    )
 }
 
 @Composable
@@ -555,11 +530,11 @@ fun KSSmallButton(
     Button(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.backgroundActionDisabled
+            containerColor = backgroundColor,
+            disabledContainerColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
-        elevation = ButtonDefaults.elevation(),
+        elevation = ButtonDefaults.buttonElevation(),
         enabled = isEnabled,
         shape = radius?.let { RoundedCornerShape(radius) } ?: shapes.medium
     ) {
@@ -658,7 +633,7 @@ fun KSPillButton(
         onClick = onClick,
         modifier = modifier,
         colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = Color.Transparent,
+            containerColor = Color.Transparent,
             contentColor = colors.textAccentGrey
         ),
         border = if (isSelected) BorderStroke(
@@ -666,7 +641,7 @@ fun KSPillButton(
             colors.borderActive
         ) else BorderStroke(dimensions.borderThickness, colors.borderBold),
         shape = RoundedCornerShape(dimensions.pillButtonShapeSize),
-        elevation = ButtonDefaults.elevation(dimensions.none, dimensions.none, dimensions.none)
+        elevation = ButtonDefaults.buttonElevation(dimensions.none, dimensions.none, dimensions.none)
     ) {
         if (shouldShowLeadingIcon) {
             Icon(
@@ -707,7 +682,7 @@ fun KSOutlinedButton(
     OutlinedButton(
         modifier = modifier,
         colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = backgroundColor,
+            containerColor = backgroundColor,
             contentColor = textColor
         ),
         enabled = isEnabled,
@@ -716,7 +691,7 @@ fun KSOutlinedButton(
     ) {
         Text(
             style = typographyV2.buttonLabel,
-            color = if (isEnabled) textColor else textColor.copy(alpha = ContentAlpha.disabled),
+            color = if (isEnabled) textColor else textColor.copy(alpha = 0.38f),
             text = text
         )
     }
@@ -742,11 +717,11 @@ fun KSButton(
         modifier = mod
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor,
-            disabledBackgroundColor = colors.backgroundActionDisabled
+            containerColor = backgroundColor,
+            disabledContainerColor = colors.backgroundActionDisabled
         ),
         onClick = { onClickAction.invoke() },
-        elevation = ButtonDefaults.elevation(),
+        elevation = ButtonDefaults.buttonElevation(),
         enabled = isEnabled,
         shape = shape ?: shapes.medium
     ) {

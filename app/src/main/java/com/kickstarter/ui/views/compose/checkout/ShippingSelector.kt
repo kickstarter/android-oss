@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,8 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
@@ -49,7 +47,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 fun ShippingSelectorPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+            containerColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
 
             val interactionSource = remember {
@@ -77,8 +75,6 @@ fun ShippingSelector(
     onShippingRuleSelected: (ShippingRule) -> Unit,
 ) {
     Column(modifier = modifier) {
-        // Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-
         Text(
             text = stringResource(id = R.string.Your_shipping_location),
             style = typographyV2.subHeadlineMedium,
@@ -93,11 +89,10 @@ fun ShippingSelector(
             countryList = countryList,
             onShippingRuleSelected = onShippingRuleSelected
         )
-        // Spacer(modifier = Modifier.height(KSTheme.dimensions.paddingSmall))
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountryInputWithDropdown(
     interactionSource: MutableInteractionSource,
@@ -105,42 +100,24 @@ fun CountryInputWithDropdown(
     countryList: List<ShippingRule>,
     onShippingRuleSelected: (ShippingRule) -> Unit
 ) {
-    var countryListExpanded by remember {
-        mutableStateOf(false)
-    }
-
-    var countryInput by remember(key1 = initialCountryInput) {
-        mutableStateOf(initialCountryInput ?: "")
-    }
-
+    var countryListExpanded by remember { mutableStateOf(false) }
+    var countryInput by remember(key1 = initialCountryInput) { mutableStateOf(initialCountryInput ?: "") }
     val focusManager = LocalFocusManager.current
 
     Column(
-        modifier = Modifier
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = { countryListExpanded = false }
-            ),
+        modifier = Modifier.clickable(interactionSource = interactionSource, indication = null) {
+            countryListExpanded = false
+        }
     ) {
         Box(contentAlignment = Alignment.TopStart) {
             BasicTextField(
-                modifier = Modifier
-                    .background(color = colors.backgroundSurfacePrimary)
-                    .fillMaxWidth(0.6f),
+                modifier = Modifier.fillMaxWidth(0.6f),
                 value = countryInput,
-                onValueChange = {
-                    countryInput = it
-                    countryListExpanded = true
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
+                onValueChange = { countryInput = it; countryListExpanded = true },
                 textStyle = typographyV2.subHeadlineMedium.copy(color = colors.textAccentGreenBold),
                 singleLine = false
             ) { innerTextField ->
-                TextFieldDefaults.TextFieldDecorationBox(
+                TextFieldDefaults.DecorationBox(
                     value = countryInput,
                     innerTextField = innerTextField,
                     enabled = true,
@@ -153,71 +130,57 @@ fun CountryInputWithDropdown(
                         bottom = dimensions.paddingSmall,
                         end = dimensions.paddingMedium
                     ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = colors.backgroundSurfacePrimary,
+                        unfocusedContainerColor = colors.backgroundSurfacePrimary,
+                        disabledContainerColor = colors.backgroundSurfacePrimary,
+                        errorContainerColor = colors.backgroundSurfacePrimary,
+                        focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        disabledIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                        errorIndicatorColor = androidx.compose.ui.graphics.Color.Transparent
+                    )
                 )
             }
 
-            val shouldShowDropdown: Boolean = when {
-                countryListExpanded && countryInput.isNotEmpty() -> {
-                    countryList.filter {
-                        it.location()?.displayableName()?.lowercase()
-                            ?.contains(countryInput.lowercase()) ?: false
-                    }.isNotEmpty()
-                }
-
-                else -> countryListExpanded
+            val filtered = if (countryInput.isNotEmpty()) {
+                countryList.filter {
+                    it.location()?.displayableName()?.lowercase()?.contains(countryInput.lowercase()) == true
+                }.take(3)
+            } else {
+                countryList.take(5)
             }
+
+            val shouldShowDropdown = countryListExpanded && filtered.isNotEmpty()
 
             DropdownMenu(
                 expanded = shouldShowDropdown,
-                onDismissRequest = { },
+                onDismissRequest = { countryListExpanded = false },
                 modifier = Modifier
-                    .width(
-                        dimensions.countryInputWidth
-                    )
+                    .width(dimensions.countryInputWidth)
                     .heightIn(dimensions.none, dimensions.dropDownStandardWidth),
                 properties = PopupProperties(focusable = false)
             ) {
-                if (countryInput.isNotEmpty()) {
-                    countryList.filter {
-                        it.location()?.displayableName()?.lowercase()
-                            ?.contains(countryInput.lowercase()) ?: false
-                    }.take(3).forEach { rule ->
-                        DropdownMenuItem(
-                            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-                            onClick = {
-                                countryInput =
-                                    rule.location()?.displayableName() ?: ""
-                                countryListExpanded = false
-                                focusManager.clearFocus()
-                                onShippingRuleSelected(rule)
-                            }
-                        ) {
+                filtered.forEach { rule ->
+                    DropdownMenuItem(
+                        modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
+                        onClick = {
+                            countryInput = rule.location()?.displayableName().orEmpty()
+                            countryListExpanded = false
+                            focusManager.clearFocus()
+                            onShippingRuleSelected(rule)
+                        },
+                        text = {
                             Text(
-                                text = rule.location()?.displayableName() ?: "",
+                                text = rule.location()?.displayableName().orEmpty(),
                                 style = typographyV2.subHeadlineMedium,
                                 color = colors.textAccentGreenBold
                             )
-                        }
-                    }
-                } else {
-                    countryList.take(5).forEach { rule ->
-                        DropdownMenuItem(
-                            modifier = Modifier.background(color = colors.backgroundSurfacePrimary),
-                            onClick = {
-                                countryInput =
-                                    rule.location()?.displayableName() ?: ""
-                                countryListExpanded = false
-                                focusManager.clearFocus()
-                                onShippingRuleSelected(rule)
-                            }
-                        ) {
-                            Text(
-                                text = rule.location()?.displayableName() ?: "",
-                                style = typographyV2.subHeadlineMedium,
-                                color = colors.textAccentGreenBold
-                            )
-                        }
-                    }
+                        },
+                        colors = MenuDefaults.itemColors(
+                            textColor = colors.textAccentGreenBold
+                        )
+                    )
                 }
             }
         }

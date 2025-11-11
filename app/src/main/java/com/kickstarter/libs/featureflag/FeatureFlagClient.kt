@@ -72,7 +72,6 @@ enum class FlipperFlagKey(val key: String) {
 enum class FlagKey(val key: String) {
     ANDROID_FACEBOOK_LOGIN_REMOVE("android_facebook_login_remove"),
     ANDROID_HIDE_APP_RATING_DIALOG("android_hide_app_rating_dialog"),
-    ANDROID_CONSENT_MANAGEMENT("android_consent_management"),
     ANDROID_CAPI_INTEGRATION("android_capi_integration"),
     ANDROID_GOOGLE_ANALYTICS("android_google_analytics"),
     ANDROID_DARK_MODE_ENABLED("android_dark_mode_enabled"),
@@ -87,7 +86,8 @@ enum class FlagKey(val key: String) {
     ANDROID_COMPLETED_PM_CHECKOUT_WEBVIEW("android_completed_pm_checkout_webview"),
     ANDROID_NET_NEW_BACKER_GO_TO_PM_WEBVIEW("android_net_new_backer_go_to_pm_webview"),
     ANDROID_PLOT_EDIT_PLEDGE("android_plot_edit_pledge"),
-    ANDROID_NATIVE_ONBOARDING_FLOW("android_native_onboarding_flow")
+    ANDROID_NATIVE_ONBOARDING_FLOW("android_native_onboarding_flow"),
+    ANDROID_EDIT_ORDER("android_edit_order")
 }
 
 fun FeatureFlagClient.getFetchInterval(): Long =

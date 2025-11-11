@@ -14,12 +14,14 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kickstarter.libs.AnalyticEvents;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AttributionEvents;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentConfigTypeV2;
+import com.kickstarter.libs.CurrentConfigV2;
 import com.kickstarter.libs.CurrentUserTypeV2;
+import com.kickstarter.libs.CurrentUserV2;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
@@ -30,8 +32,6 @@ import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.AnalyticEvents;
-import com.kickstarter.libs.CurrentUserV2;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
@@ -66,9 +66,7 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiClientTypeV2;
-import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApiServiceV2;
 import com.kickstarter.services.ApolloClientTypeV2;
 import com.kickstarter.services.KSWebViewClient;
@@ -115,7 +113,6 @@ public class ApplicationModule {
   @Singleton
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull ApiClientTypeV2 apiClientV2,
-    final @NonNull ApiClientType apiClient,
     final @NonNull ApolloClientTypeV2 apolloClientV2,
     final @NonNull Build build,
     final @NonNull CookieManager cookieManager,
@@ -143,7 +140,6 @@ public class ApplicationModule {
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
       .apiClientV2(apiClientV2)
-      .apiClient(apiClient)
       .apolloClientV2(apolloClientV2)
       .build(build)
       .cookieManager(cookieManager)
@@ -174,7 +170,7 @@ public class ApplicationModule {
   @Nonnull
   @Singleton
   static FirebaseAnalyticsClientType provideFirebaseAnalyticsClientType(final @NonNull FeatureFlagClientType ffClient, final @NonNull SharedPreferences sharedPreferences, final @ApplicationContext @NonNull Context context) {
-    return new FirebaseAnalyticsClient(ffClient, sharedPreferences, FirebaseAnalytics.getInstance(context));
+    return new FirebaseAnalyticsClient(sharedPreferences, FirebaseAnalytics.getInstance(context));
   }
 
   @Provides
@@ -281,13 +277,6 @@ public class ApplicationModule {
   @NonNull
   static ApiServiceV2 provideApiServiceV2(final @ApiRetrofitV2 @NonNull Retrofit retrofit) {
     return retrofit.create(ApiServiceV2.class);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(ApiService.class);
   }
 
   @Provides
@@ -415,9 +404,8 @@ public class ApplicationModule {
           final @ApplicationContext @NonNull Context context,
           final @NonNull CurrentUserTypeV2 currentUser,
           final @NonNull Build build,
-          final @NonNull CurrentConfigTypeV2 currentConfig,
-          final @NonNull FeatureFlagClientType featureFlagClient) {
-    return new SegmentTrackingClient(build, context, currentConfig, currentUser, featureFlagClient, PreferenceManager.getDefaultSharedPreferences(context));
+          final @NonNull CurrentConfigTypeV2 currentConfig) {
+    return new SegmentTrackingClient(build, context, currentConfig, currentUser, PreferenceManager.getDefaultSharedPreferences(context));
   }
 
   @Provides

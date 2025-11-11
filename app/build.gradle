@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.5'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
         classpath "com.apollographql.apollo3:apollo-gradle-plugin:$apollo_version"
         classpath 'com.karumi:shot:5.13.0'
     }
@@ -92,18 +92,23 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
             if (isCircle && isPrivateCIEnv && isRelease) {
                 signingConfig signingConfigs.release
             } else {
                 signingConfig signingConfigs.debug
             }
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles(
+                getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            )
         }
         debug {
             minifyEnabled false
             debuggable true
             applicationIdSuffix '.debug'
             signingConfig signingConfigs.debug
+
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic monitoring of HTTP/S network requests
@@ -232,7 +237,7 @@ dependencies {
     implementation("com.google.android.play:review-ktx:2.0.2")
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation 'com.google.android.material:material:1.6.1'
+
     final dagger_version = "2.57"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
@@ -270,7 +275,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:34.1.0')
+    implementation platform('com.google.firebase:firebase-bom:34.3.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
@@ -280,7 +285,6 @@ dependencies {
 
     // Compose
     implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:1.6.2"
     implementation "androidx.compose.ui:ui-tooling:1.8.3"
     debugImplementation "androidx.compose.ui:ui-tooling:1.8.3"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
@@ -308,6 +312,11 @@ dependencies {
     // Lottie animations
     implementation 'com.airbnb.android:lottie:6.6.7'
     implementation "com.airbnb.android:lottie-compose:6.6.7"
+
+    // Material
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.compose.material:material-icons-core:1.7.8'
+    implementation 'androidx.compose.material3:material3:1.4.0'
 
     // Testing
     testImplementation "junit:junit:4.13.2"

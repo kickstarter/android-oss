@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
+@androidx.annotation.Keep
 class Project private constructor(
     private val availableCardTypes: List<String>?,
     private val backersCount: Int,

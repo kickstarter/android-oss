@@ -6,6 +6,7 @@ import com.kickstarter.models.Comment
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class CommentEnvelope(
     val comments: List<Comment>?,
     val commentableId: String?,

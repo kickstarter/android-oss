@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Build
@@ -26,6 +27,7 @@ import com.kickstarter.libs.utils.extensions.checkPermissions
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.positionFromSort
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
 import com.kickstarter.ui.data.LoginReason
@@ -43,7 +45,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class DiscoveryActivity : AppCompatActivity() {
+class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var drawerAdapter: DiscoveryDrawerAdapter
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
@@ -70,6 +72,8 @@ class DiscoveryActivity : AppCompatActivity() {
         getEnvironment()?.let { env ->
             viewModelFactory = DiscoveryViewModel.Factory(env)
 
+            viewModel.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+
             internalTools = env.internalTools()
             statsigClient = requireNotNull(env.statsigClient())
         }
@@ -89,6 +93,12 @@ class DiscoveryActivity : AppCompatActivity() {
             }
         )
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
+        val onboardingResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                viewModel.inputs.hasExitedOnboarding()
+            }
+        }
 
         drawerLayoutManager = LinearLayoutManager(this)
 
@@ -165,7 +175,9 @@ class DiscoveryActivity : AppCompatActivity() {
         viewModel.outputs.showOnboardingFlow()
             .distinctUntilChanged()
             .subscribe {
-                startActivity(Intent(this, OnboardingFlowActivity::class.java))
+                val intent = Intent(this, OnboardingFlowActivity::class.java)
+                onboardingResult.launch(intent)
+
                 viewModel.inputs.hasSeenOnboarding(true)
             }
             .addToDisposable(disposables)
@@ -252,6 +264,11 @@ class DiscoveryActivity : AppCompatActivity() {
         statsigClient.updateExperimentUser()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
     fun discoveryLayout(): DrawerLayout {
         return binding.discoveryDrawerLayout
     }
@@ -330,6 +347,15 @@ class DiscoveryActivity : AppCompatActivity() {
             0,
             0
         )
+    }
+
+    override fun onSharedPreferenceChanged(
+        sharedPreferences: SharedPreferences?,
+        key: String?
+    ) {
+        if (key.equals(SharedPreferenceKey.CONSENT_MANAGEMENT_PREFERENCE)) {
+            viewModel.inputs.hasSeenConsentManagement(true)
+        }
     }
 
     companion object {

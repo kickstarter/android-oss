@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,11 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -124,13 +123,13 @@ fun BaseButton(
         modifier = modifier
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = currentBackgroundColor,
-            disabledBackgroundColor = buttonColors.disabledColor
+            containerColor = currentBackgroundColor,
+            disabledContainerColor = buttonColors.disabledColor
         ),
         onClick = { onClickAction.invoke() },
         enabled = isEnabled && !isLoading,
         shape = RoundedCornerShape(size = dimensions.radiusExtraSmall),
-        elevation = ButtonDefaults.elevation(0.dp)
+        elevation = ButtonDefaults.buttonElevation(0.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Row(
@@ -178,7 +177,7 @@ fun FBLoginButton(
         onClick = { onClickAction.invoke() },
         modifier = modifier
             .defaultMinSize(minHeight = dimensions.minButtonHeight),
-        colors = ButtonDefaults.buttonColors(backgroundColor = currentBackgroundColor),
+        colors = ButtonDefaults.buttonColors(containerColor = currentBackgroundColor),
         shape = RoundedCornerShape(size = dimensions.radiusExtraSmall)
     ) {
         Row(

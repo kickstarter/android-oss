@@ -5,6 +5,7 @@ import com.kickstarter.models.Category
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class CategoriesEnvelope private constructor(
     private val categories: List<Category>
 ) : Parcelable {

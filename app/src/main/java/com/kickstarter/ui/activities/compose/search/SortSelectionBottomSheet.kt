@@ -8,19 +8,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,8 +66,11 @@ fun SortSelectionBottomSheet(
         modifier = Modifier
             .background(color = colors.backgroundSurfacePrimary)
             .padding(start = dimensions.paddingLarge, end = dimensions.paddingMediumSmall, bottom = dimensions.paddingLarge, top = dimensions.alertIconSize)
-            .navigationBarsPadding()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .heightIn(
+                min = dimensions.bottomSheetMinHeight,
+                max = dimensions.bottomSheetMaxHeight
+            )
     ) {
         Row(
             modifier = Modifier
@@ -101,7 +104,9 @@ fun SortSelectionBottomSheet(
                 )
             }
         } else {
-            LazyColumn(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier.padding(bottom = dimensions.paddingTripleLarge)
+            ) {
                 items(sorts.filter { !getSortString(it).isNullOrZero() }) { sort ->
                     SortItemRow(
                         sort = sort,

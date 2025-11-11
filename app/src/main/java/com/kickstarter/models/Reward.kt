@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 import org.joda.time.DateTime
 
 @Parcelize
+@androidx.annotation.Keep
 class Reward private constructor(
     private val backersCount: Int?,
     private val convertedMinimum: Double,

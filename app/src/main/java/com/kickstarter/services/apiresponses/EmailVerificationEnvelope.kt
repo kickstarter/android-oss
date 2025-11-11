@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@androidx.annotation.Keep
 class EmailVerificationEnvelope private constructor(
     private val message: String,
     private val code: Int

@@ -30,7 +30,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import kotlin.jvm.Throws
+
 @RunWith(KSRobolectricGradleTestRunner::class)
 @Config(
     shadows = [ShadowAndroidXMultiDex::class],
@@ -102,8 +102,7 @@ abstract class KSRobolectricTestCase : TestCase() {
         val segmentTrackingClient = MockTrackingClient(
             MockCurrentUserV2(),
             mockCurrentConfig,
-            TrackingClientType.Type.SEGMENT,
-            ffClient
+            TrackingClientType.Type.SEGMENT
         )
         segmentTrackingClient.eventNames.subscribe { segmentTrack.onNext(it) }.addToDisposable(disposables)
         segmentTrackingClient.identifiedUser.subscribe { segmentIdentify.onNext(it) }.addToDisposable(disposables)

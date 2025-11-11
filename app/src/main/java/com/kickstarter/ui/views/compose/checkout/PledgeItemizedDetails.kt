@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.extensions.format
 import com.kickstarter.ui.compose.designsystem.KSDividerLineGrey
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -34,7 +33,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 fun ItemizedContainerForNoRewardPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+            containerColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             ItemizedRewardListContainer(
                 modifier = Modifier.padding(paddingValues = padding),
@@ -55,7 +54,7 @@ fun ItemizedContainerForNoRewardPreview() {
 fun ItemizedRewardListContainerPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+            containerColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             ItemizedRewardListContainer(
                 modifier = Modifier
@@ -84,7 +83,7 @@ fun ItemizedRewardListContainerPreview() {
 fun ItemizedContainerForNoRewardPlotSelectedPreview() {
     KSTheme {
         Scaffold(
-            backgroundColor = KSTheme.colors.backgroundAccentGraySubtle
+            containerColor = KSTheme.colors.backgroundAccentGraySubtle
         ) { padding ->
             ItemizedRewardListContainer(
                 modifier = Modifier.padding(paddingValues = padding),

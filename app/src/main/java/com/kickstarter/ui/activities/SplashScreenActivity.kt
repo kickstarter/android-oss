@@ -39,9 +39,9 @@ import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
+import com.kickstarter.ui.extensions.startWebViewActivity
 import com.kickstarter.viewmodels.SplashScreenViewModel
 import com.kickstarter.viewmodels.SplashUIState
-import com.kickstarter.ui.extensions.startWebViewActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 

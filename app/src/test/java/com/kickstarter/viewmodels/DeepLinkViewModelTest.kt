@@ -959,6 +959,9 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     fun testPMOrderEditDeeplink_startsPMOrderEditWebview_featureFlagDisabled() {
         val url = "https://www.kickstarter.com/projects/1768690592/reclaimed-coffee-video-game/order_edits/5/checkout"
         setUpEnvironment(intent = intentWithData(url))
+
+        vm.runInitializations()
+
         startBrowser.assertValueCount(1)
         startDiscoveryActivity.assertNoValues()
         startProjectActivity.assertNoValues()
@@ -986,6 +989,8 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setUpEnvironment(intent = intentWithData(url), environment = env)
+
+        vm.runInitializations()
 
         startBrowser.assertNoValues()
         startDiscoveryActivity.assertNoValues()

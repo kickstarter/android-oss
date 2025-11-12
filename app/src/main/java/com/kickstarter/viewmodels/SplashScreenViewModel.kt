@@ -140,7 +140,7 @@ interface SplashScreenViewModel {
         private val webEndpoint = requireNotNull(environment.webEndpoint())
         private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
-        private val ffClient = environment.featureFlagClient()
+        private val ffClient = requireNotNull(environment.featureFlagClient())
 
         private val disposables = CompositeDisposable()
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()

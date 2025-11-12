@@ -4,10 +4,18 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Pair
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
+import com.kickstarter.KSApplication
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.FirebaseHelper
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -42,14 +50,38 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
+enum class InitializationState {
+    NOT_STARTED,
+    RUNNING,
+    FINISHED
+}
+
+sealed class SplashUIState {
+    object Loading : SplashUIState()
+    object NoInternet : SplashUIState()
+    object Errored : SplashUIState()
+    object Finished : SplashUIState() // todo update to dataclass in future to pass in navigation target
+}
+sealed class NavigationTarget {
+    object Discovery : NavigationTarget()
+}
+
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
 }
-interface DeepLinkViewModel {
+interface SplashScreenViewModel {
     interface Outputs {
         /** Emits when we should start an external browser because we don't want to deep link.  */
         fun startBrowser(): Observable<String>
@@ -86,7 +118,7 @@ interface DeepLinkViewModel {
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
     }
 
-    class DeepLinkViewModel(environment: Environment, private val intent: Intent?, externalCall: CustomNetworkClient) :
+    class DeepLinkViewModel(environment: Environment, private val application: KSApplication, private val intent: Intent?, private val externalCall: CustomNetworkClient) :
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
@@ -106,7 +138,6 @@ interface DeepLinkViewModel {
         private val apiClientType = requireNotNull(environment.apiClientV2())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val webEndpoint = requireNotNull(environment.webEndpoint())
-        private val projectObservable: Observable<Project>
         private val startPreLaunchProjectActivity = BehaviorSubject.create<Pair<Uri, Project>>()
 
         private val ffClient = requireNotNull(environment.featureFlagClient())
@@ -114,16 +145,75 @@ interface DeepLinkViewModel {
         private val disposables = CompositeDisposable()
         private fun intent() = intent?.let { Observable.just(it) } ?: Observable.empty()
 
+        private val mutableUiState = MutableStateFlow<SplashUIState>(SplashUIState.Loading)
+        val uiState: StateFlow<SplashUIState> = mutableUiState.asStateFlow()
+
         val outputs: Outputs = this
 
-        init {
+        fun runInitializations() {
 
-            val uriFromIntent = intent()
+            when (application.initializationState.value) {
+                InitializationState.FINISHED,
+                InitializationState.RUNNING -> {
+                    processIntent(externalCall = externalCall)
+                    mutableUiState.value = SplashUIState.Finished
+                    return
+                }
+                else -> {}
+            }
+
+            application.mutableInitializationState.value = InitializationState.RUNNING
+
+            viewModelScope.launch {
+                // - Remote config requires FirebaseApp.initializeApp(context) to be called before initializing
+                val remoteConfig = runCatching { Firebase.remoteConfig }.getOrNull() // TODO: Inject or set FirebaseRemoteConfig. Currently this just makes remoteConfig null in tests
+                ffClient?.initialize(remoteConfig)
+
+                FirebaseHelper.identifier
+                    .filter { it.isNotBlank() }
+                    .collect {
+                        try {
+                            val ffClientInitialization = async(SupervisorJob()) {
+                                initializeFeatureFlagClient()
+                            }
+                            val isInitialized = awaitAll(ffClientInitialization)
+
+                            if (isInitialized.isNotEmpty() && isInitialized.all { it.isTrue() }) {
+                                mutableUiState.emit(SplashUIState.Finished)
+                                application.mutableInitializationState.value = InitializationState.FINISHED
+                                processIntent(externalCall = externalCall)
+                            } else {
+                                throw Exception()
+                            }
+                        } catch (e: Exception) {
+                            // todo: we're bringing the user into the app anyways to emulate current behavior. in the future we'll handle errors more robustly
+                            mutableUiState.emit(SplashUIState.Finished)
+                            application.mutableInitializationState.value = InitializationState.FINISHED
+                            processIntent(externalCall = externalCall)
+                        }
+                    }
+            }
+        }
+
+        private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
+            intent()
+                .filter {
+                    (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER)) ||
+                        (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
+                }
+                .subscribe {
+                    startDiscoveryActivity.onNext(Unit)
+                }
+                .addToDisposable(disposables)
+
+            val uriFromIntent = intent
+                .filter { it.data.isNotNull() }
                 .map { obj: Intent -> obj.data }
                 .ofType(Uri::class.java)
 
             // - Takes URI from Marketing email domain, executes network call that and redirection took place
             val uriFromEmailDomain = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isEmailDomain() }
                 .switchMap {
                     externalCall.obtainUriFromRedirection(it)
@@ -132,16 +222,16 @@ interface DeepLinkViewModel {
 
             // TODO: on following tickets recognize discovery with category_id links, for now if not project URL, open discovery
             val isKSDomainUriFromEmail = uriFromEmailDomain
-                .map { Uri.parse(it.request.url.toString()) }
+                .map { it.request.url.toString().toUri() }
                 .filter { !it.isProjectUri() && it.isKSDomain() }
 
             // - The redirected URI is a project URI
             val projectFromEmail = uriFromEmailDomain
                 .filter {
-                    Uri.parse(it.request.url.toString()).isProjectUri()
+                    it.request.url.toString().toUri().isProjectUri()
                 }
                 .map {
-                    Uri.parse(it.request.url.toString())
+                    it.request.url.toString().toUri()
                 }
 
             // - Take URI from main page Open button with URL - ksr://www.kickstarter.com/?app_banner=1&ref=nav
@@ -164,13 +254,15 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { lastPathSegmentIsProjects(it) }
                 .compose(Transformers.ignoreValuesV2())
                 .subscribe {
                     startDiscoveryActivity.onNext(it)
                 }.addToDisposable(disposables)
 
-            projectObservable = uriFromIntent
+            val projectObservable: Observable<Project> = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { ProjectIntentMapper.paramFromUri(it).isNotNull() }
                 .map { ProjectIntentMapper.paramFromUri(it) }
                 .switchMap {
@@ -183,6 +275,7 @@ interface DeepLinkViewModel {
                 .map { it.value }
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     !it.isProjectSaveUri(webEndpoint)
                 }
@@ -214,6 +307,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectSaveUri(webEndpoint)
                 }
@@ -224,6 +318,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectCommentUri(webEndpoint)
                 }
@@ -233,6 +328,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateUri(webEndpoint)
                 }
@@ -245,6 +341,7 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter {
                     it.isProjectUpdateCommentsUri(webEndpoint)
                 }
@@ -254,13 +351,19 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isSettingsUrl() }
                 .subscribe {
                     updateUserPreferences.onNext(true)
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isProjectSurveyUri(webEndpoint) }
+                .filter {
+                    it.isNotNull()
+                }
+                .filter {
+                    it.isProjectSurveyUri(webEndpoint)
+                }
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
@@ -294,12 +397,15 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             projectObservable
-                .filter { it.backing() == null || !it.canUpdateFulfillment() }
+                .filter {
+                    it.backing() == null || !it.canUpdateFulfillment()
+                }
                 .subscribe {
                     finishDeeplinkActivity.onNext(Unit)
                 }.addToDisposable(disposables)
 
             projectObservable
+                .filter { it.isNotNull() }
                 .filter { it.canUpdateFulfillment() }
                 .switchMap {
                     postBacking(it)
@@ -320,9 +426,11 @@ interface DeepLinkViewModel {
                 }.addToDisposable(disposables)
 
             val projectPreview = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { it.isProjectPreviewUri(webEndpoint) }
 
             val unsupportedDeepLink = uriFromIntent
+                .filter { it.isNotNull() }
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
                 .filter { !it.isProjectSaveUri(webEndpoint) }
@@ -347,6 +455,10 @@ interface DeepLinkViewModel {
                 .subscribe {
                     startBrowser.onNext(it)
                 }.addToDisposable(disposables)
+        }
+
+        private suspend fun initializeFeatureFlagClient(): Boolean? {
+            return ffClient?.fetchAndActivate()
         }
 
         private fun onDeepLinkToProjectPage(it: Pair<Uri, Project>, startProjectPage: BehaviorSubject<Uri>) {
@@ -376,7 +488,7 @@ interface DeepLinkViewModel {
             val url = uri.toString()
             val ref = refTag(url)
             return if (ref.isNull()) {
-                Uri.parse(appendRefTag(url, RefTag.deepLink().tag()))
+                appendRefTag(url, RefTag.deepLink().tag()).toUri()
             } else uri
         }
 
@@ -439,8 +551,9 @@ interface DeepLinkViewModel {
                     .subscribeOn(Schedulers.io())
             }
         }
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return DeepLinkViewModel(environment, intent, externalCall = customNetworkClient ?: externalCall) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+            val ksApplication = extras[APPLICATION_KEY]!! as KSApplication
+            return DeepLinkViewModel(environment, ksApplication, intent, externalCall = customNetworkClient ?: externalCall) as T
         }
     }
 }

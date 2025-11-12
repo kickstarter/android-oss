@@ -68,10 +68,8 @@
             android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.DiscoveryActivity"
-            android:label="@string/app_name"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/SplashTheme">
+            android:launchMode="singleTop">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -83,21 +81,7 @@
                     android:scheme="https" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/discover"
-                    android:scheme="ksr" />
             </intent-filter>
         </activity>
         <activity
@@ -247,9 +231,17 @@
             android:exported="false"
             android:theme="@style/KSTheme" />
 
-        <activity android:name=".ui.activities.DeepLinkActivity"
+        <activity android:name=".ui.activities.SplashScreenActivity"
+            android:theme="@style/SplashTheme"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:exported="true">
             <!-- Marketing Emails Domains  -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

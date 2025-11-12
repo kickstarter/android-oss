@@ -18,6 +18,7 @@ import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.viewmodels.InitializationState
 import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
@@ -25,6 +26,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.joda.time.DateTime
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
@@ -68,6 +71,9 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
      *  and experiments dependencies potentially affecting launch activities (Discovery/ProjectPage)
      */
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    val mutableInitializationState = MutableStateFlow(InitializationState.NOT_STARTED)
+    val initializationState = mutableInitializationState.asStateFlow()
 
     @CallSuper
     override fun onCreate() {
@@ -144,7 +150,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
         get() = false
 
     private fun setVisitorCookie() {
-        val deviceId = identifier
+        val deviceId = identifier.value
         val uniqueIdentifier =
             if (TextUtils.isEmpty(deviceId)) UUID.randomUUID().toString() else deviceId
         val cookie = HttpCookie("vis", uniqueIdentifier)

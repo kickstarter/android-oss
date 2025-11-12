@@ -1,14 +1,25 @@
 package com.kickstarter.ui.activities
 
-import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.animation.AnticipateInterpolator
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.RefTag
@@ -24,47 +35,62 @@ import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startWebViewActivity
-import com.kickstarter.viewmodels.DeepLinkViewModel
+import com.kickstarter.viewmodels.SplashScreenViewModel
+import com.kickstarter.viewmodels.SplashUIState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
-class DeepLinkActivity : AppCompatActivity() {
+@SuppressLint("CustomSplashScreen")
+class SplashScreenActivity : AppCompatActivity() {
 
-    private lateinit var viewModelFactory: DeepLinkViewModel.Factory
-    private val viewModel: DeepLinkViewModel.DeepLinkViewModel by viewModels { viewModelFactory }
+    private lateinit var viewModelFactory: SplashScreenViewModel.Factory
+    private val viewModel: SplashScreenViewModel.DeepLinkViewModel by viewModels { viewModelFactory }
 
     private var disposables = CompositeDisposable()
 
     private lateinit var statsigClient: StatsigClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /* The order of the following calls before `super.onCreate()` is important to ensure
+         * the Window theme is established correctly and consistently. */
+        val compatSplashScreen = installSplashScreen()
+        enableEdgeToEdge()
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
         super.onCreate(savedInstanceState)
         setUpConnectivityStatusCheck(lifecycle)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            splashScreen.setSplashScreenTheme(R.style.SplashTheme)
-            splashScreen.setOnExitAnimationListener { splashScreenView ->
-                val slideUp = ObjectAnimator.ofFloat(
-                    splashScreenView,
-                    View.TRANSLATION_Y,
-                    0f,
-                    -splashScreenView.height.toFloat()
-                )
-                slideUp.interpolator = AnticipateInterpolator()
-                slideUp.duration = 100L
-            }
-        }
-
         this.getEnvironment()?.let {
-            viewModelFactory = DeepLinkViewModel.Factory(it, intent = intent)
+            viewModelFactory = SplashScreenViewModel.Factory(it, intent = intent)
             it.statsigClient()?.let { stClient ->
                 statsigClient = stClient
             }
         }
+
+        compatSplashScreen.setKeepOnScreenCondition {
+            viewModel.uiState.value == SplashUIState.Loading
+        }
+
+        setContent {
+            Surface(color = kds_create_500) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ksr_logo_rgb_white),
+                        contentDescription = null,
+                        modifier = Modifier.size(288.dp),
+                    )
+                }
+            }
+        }
+
+        viewModel.runInitializations()
 
         viewModel.outputs.startBrowser()
             .observeOn(AndroidSchedulers.mainThread())

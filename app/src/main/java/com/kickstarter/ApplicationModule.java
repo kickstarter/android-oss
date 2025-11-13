@@ -95,7 +95,6 @@ import javax.inject.Singleton;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import coil.memory.MemoryCache;
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
@@ -215,19 +214,19 @@ public class ApplicationModule {
     final MemoryCacheFactory cacheFactory = new MemoryCacheFactory(maxMemorySize, flashAfterMillis);
 
     final  ApolloClient.Builder apolloBuilder = new ApolloClient.Builder()
-              .serverUrl(webEndpoint + "/graph")
-              .addCustomScalarAdapter(Date.Companion.getType(), new DateAdapter())
-              .addCustomScalarAdapter(com.kickstarter.type.DateTime.Companion.getType(), new DateTimeAdapter())
-              .addCustomScalarAdapter(com.kickstarter.type.ISO8601DateTime.Companion.getType(), new Iso8601DateTimeAdapter())
-              .httpEngine(new DefaultHttpEngine(okHttpClient));
+      .serverUrl(webEndpoint + "/graph")
+      .addCustomScalarAdapter(Date.Companion.getType(), new DateAdapter())
+      .addCustomScalarAdapter(com.kickstarter.type.DateTime.Companion.getType(), new DateTimeAdapter())
+      .addCustomScalarAdapter(com.kickstarter.type.ISO8601DateTime.Companion.getType(), new Iso8601DateTimeAdapter())
+      .httpEngine(new DefaultHttpEngine(okHttpClient));
 
-      NormalizedCache.configureApolloClientBuilder(
-              apolloBuilder,
-              cacheFactory,
-              TypePolicyCacheKeyGenerator.INSTANCE,
-              FieldPolicyCacheResolver.INSTANCE,
-              true
-      );
+    NormalizedCache.configureApolloClientBuilder(
+      apolloBuilder,
+      cacheFactory,
+      TypePolicyCacheKeyGenerator.INSTANCE,
+      FieldPolicyCacheResolver.INSTANCE,
+      true
+    );
 
     return apolloBuilder
       .build();

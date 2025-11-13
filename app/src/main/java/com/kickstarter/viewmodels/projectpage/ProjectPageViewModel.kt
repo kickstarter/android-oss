@@ -7,7 +7,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.perf.FirebasePerformance
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
@@ -391,9 +391,8 @@ interface ProjectPageViewModel {
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         val disposables = CompositeDisposable()
-        private val trace = FirebasePerformance.getInstance().newTrace("ProjectPage")
         init {
-            trace.start()
+
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(
@@ -405,7 +404,8 @@ interface ProjectPageViewModel {
                         )
                     )
                     .doOnError { throwable ->
-                        trace.putAttribute("IntentMerge", throwable.stackTraceToString())
+                        FirebaseCrashlytics.getInstance().log("mappedProjectNotification")
+                        FirebaseCrashlytics.getInstance().recordException(throwable)
                     }
             ).switchMap {
                 ProjectIntentMapper.project(it, this.apolloClient)
@@ -422,7 +422,9 @@ interface ProjectPageViewModel {
                         return@withLatestFrom project.updateProjectWith(config, user.getValue())
                     }
                     .doOnError { throwable ->
-                        trace.putAttribute("ProjectIntentMapper", throwable.stackTraceToString())
+                        FirebaseCrashlytics.getInstance().log("ProjectIntentMapper.project")
+                        FirebaseCrashlytics.getInstance().recordException(throwable)
+                        // trace.putAttribute("ProjectIntentMapper", "ProjectIntentMapper")
                     }
                     .materialize()
             }
@@ -570,7 +572,8 @@ interface ProjectPageViewModel {
                                 )
                             }
                             .doOnError { throwable ->
-                                trace.putAttribute("refreshedProjectNotification", throwable.stackTraceToString())
+                                FirebaseCrashlytics.getInstance().log("refreshedProjectNotification")
+                                FirebaseCrashlytics.getInstance().recordException(throwable)
                             }
                             .materialize()
                     }
@@ -1233,7 +1236,6 @@ interface ProjectPageViewModel {
         override fun onCleared() {
             apolloClient.cleanDisposables()
             disposables.clear()
-            trace.stop()
             super.onCleared()
         }
 

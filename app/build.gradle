@@ -226,7 +226,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$activity_fragment_version"
 
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0-rc01")
 
     implementation "com.apollographql.apollo3:apollo-runtime:$apollo_version"
     implementation "com.apollographql.apollo3:apollo-adapters:$apollo_version"

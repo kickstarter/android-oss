@@ -19,7 +19,6 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
-import com.kickstarter.libs.Environment
 import com.kickstarter.libs.InternalToolsType
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -74,10 +73,6 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
             viewModelFactory = DiscoveryViewModel.Factory(env)
 
             viewModel.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-
-            if (savedInstanceState == null) {
-                activateFeatureFlags(env)
-            }
 
             internalTools = env.internalTools()
             statsigClient = requireNotNull(env.statsigClient())
@@ -272,10 +267,6 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
     override fun onDestroy() {
         super.onDestroy()
         viewModel.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
-    }
-
-    private fun activateFeatureFlags(environment: Environment) {
-        environment.featureFlagClient()?.activate(this)
     }
 
     fun discoveryLayout(): DrawerLayout {

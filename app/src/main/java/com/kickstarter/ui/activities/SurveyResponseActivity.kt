@@ -24,7 +24,6 @@ import com.kickstarter.services.RequestHandler
 import com.kickstarter.viewmodels.SurveyResponseViewModel
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Request
-import java.util.Arrays
 
 class SurveyResponseActivity : ComponentActivity() {
 
@@ -69,7 +68,7 @@ class SurveyResponseActivity : ComponentActivity() {
         }
 
         binding.surveyResponseWebView.registerRequestHandlers(
-            Arrays.asList(
+            listOf(
                 RequestHandler(
                     { uri: Uri, webEndpoint: String ->
                         uri.isProjectSurveyUri(webEndpoint)
@@ -107,11 +106,6 @@ class SurveyResponseActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.outputs.webViewUrl()
-            .take(1)
-            .compose(Transformers.observeForUIV2())
-            .subscribe { binding.surveyResponseWebView.loadUrl(it) }
-            .addToDisposable(disposables)
     }
 
     override fun onDestroy() {

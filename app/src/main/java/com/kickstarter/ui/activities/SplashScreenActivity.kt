@@ -18,10 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -32,6 +34,8 @@ import com.kickstarter.libs.utils.UrlUtils.saveFlag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
+import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
+import com.kickstarter.libs.utils.extensions.isPMUri
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
@@ -55,6 +59,8 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var statsigClient: StatsigClient
 
+    private lateinit var environment: Environment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         /* The order of the following calls before `super.onCreate()` is important to ensure
          * the Window theme is established correctly and consistently. */
@@ -65,6 +71,7 @@ class SplashScreenActivity : AppCompatActivity() {
         setUpConnectivityStatusCheck(lifecycle)
 
         this.getEnvironment()?.let {
+            environment = it
             viewModelFactory = SplashScreenViewModel.Factory(it, intent = intent)
             it.statsigClient()?.let { stClient ->
                 statsigClient = stClient
@@ -164,14 +171,14 @@ class SplashScreenActivity : AppCompatActivity() {
                 }
             }.addToDisposable(disposables)
 
-        viewModel.outputs.startPMOrderEditWebview()
+        viewModel.outputs.startPMWebview()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 val uri = it.first
                 val isLoggedIn = it.second
 
                 if (isLoggedIn) {
-                    startPMOrderEditActivity(uri.toString())
+                    startPMActivity(uri.toString())
                 } else {
                     startLoginForPMOrderEdit(uri.toString())
                 }
@@ -284,9 +291,19 @@ class SplashScreenActivity : AppCompatActivity() {
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
-    private fun startPMOrderEditActivity(url: String) {
+    private fun startPMActivity(url: String) {
         ApplicationUtils.startNewDiscoveryActivity(this)
-        startWebViewActivity(url, getString(R.string.fpo_review_edits))
+
+        val uri = url.toUri()
+        val webEndpoint = environment.webEndpoint()
+
+        val toolbarTitle = when {
+            uri.isPMUri(webEndpoint) -> getString(R.string.Pledge_manager)
+            uri.isPMOrderEditUri(webEndpoint) -> getString(R.string.fpo_review_edits)
+            else -> getString(R.string.Pledge_manager)
+        }
+
+        startWebViewActivity(url, toolbarTitle = toolbarTitle)
         finish()
     }
 

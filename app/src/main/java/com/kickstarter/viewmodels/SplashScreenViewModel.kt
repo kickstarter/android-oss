@@ -31,6 +31,7 @@ import com.kickstarter.libs.utils.extensions.isMainPage
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
+import com.kickstarter.libs.utils.extensions.isPMUri
 import com.kickstarter.libs.utils.extensions.isProjectCommentUri
 import com.kickstarter.libs.utils.extensions.isProjectPreviewUri
 import com.kickstarter.libs.utils.extensions.isProjectSaveUri
@@ -112,7 +113,7 @@ interface SplashScreenViewModel {
 
         fun startProjectSurvey(): Observable<Pair<Uri, Boolean>>
 
-        fun startPMOrderEditWebview(): Observable<Pair<Uri, Boolean>>
+        fun startPMWebview(): Observable<Pair<Uri, Boolean>>
 
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
@@ -131,7 +132,7 @@ interface SplashScreenViewModel {
         private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
         private val startProjectSurvey = BehaviorSubject.create<Pair<Uri, Boolean>>()
 
-        private val startPMOrderEditWebview = BehaviorSubject.create<Pair<Uri, Boolean>>()
+        private val startPMWebview = BehaviorSubject.create<Pair<Uri, Boolean>>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Unit>()
         private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -373,14 +374,17 @@ interface SplashScreenViewModel {
                 }.addToDisposable(disposables)
 
             uriFromIntent
-                .filter { it.isPMOrderEditUri(webEndpoint, ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER)) }
+                .filter {
+                    it.isPMUri(webEndpoint) ||
+                        it.isPMOrderEditUri(webEndpoint, ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER))
+                }
                 .map { appendRefTagIfNone(it) }
                 .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
                     return@withLatestFrom Pair(url, isLoggedIn)
                 }
                 .filter { it.second.isTrue() }
                 .subscribe {
-                    startPMOrderEditWebview.onNext(it)
+                    startPMWebview.onNext(it)
                 }.addToDisposable(disposables)
 
             currentUser.observable()
@@ -442,6 +446,7 @@ interface SplashScreenViewModel {
                 .filter { !it.isRewardFulfilledDl() }
                 .filter { !it.isEmailDomain() }
                 .filter { !it.isProjectSurveyUri(webEndpoint) }
+                .filter { !it.isPMUri(webEndpoint) }
                 .filter {
                     !it.isPMOrderEditUri(
                         webEndpoint,
@@ -531,7 +536,7 @@ interface SplashScreenViewModel {
 
         override fun startProjectSurvey(): Observable<Pair<Uri, Boolean>> = startProjectSurvey
 
-        override fun startPMOrderEditWebview(): Observable<Pair<Uri, Boolean>> = startPMOrderEditWebview
+        override fun startPMWebview(): Observable<Pair<Uri, Boolean>> = startPMWebview
 
         override fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>> = startPreLaunchProjectActivity
     }

@@ -5,6 +5,8 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -271,7 +273,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             val query = FetchProjectQuery(slug)
             this.service.query(
                 query
-            ).rxSingle()
+            )
+                .fetchPolicy(FetchPolicy.CacheAndNetwork)
+                .rxSingle()
                 .subscribeOn(Schedulers.io())
                 .doOnError { throwable ->
                     ps.onError(throwable)

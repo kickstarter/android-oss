@@ -230,6 +230,7 @@ dependencies {
 
     implementation "com.apollographql.apollo3:apollo-runtime:$apollo_version"
     implementation "com.apollographql.apollo3:apollo-adapters:$apollo_version"
+    implementation "com.apollographql.apollo3:apollo-normalized-cache:$apollo_version"
     // RxJava2 support
     implementation "com.apollographql.apollo3:apollo-rx2-support:$apollo_version"
 

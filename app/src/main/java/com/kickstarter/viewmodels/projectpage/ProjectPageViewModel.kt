@@ -7,6 +7,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
@@ -390,7 +391,6 @@ interface ProjectPageViewModel {
         val onThirdPartyEventSent = BehaviorSubject.create<Boolean?>()
 
         val disposables = CompositeDisposable()
-
         init {
 
             val progressBarIsGone = PublishSubject.create<Boolean>()
@@ -403,6 +403,10 @@ interface ProjectPageViewModel {
                             this.reloadProjectContainerClicked
                         )
                     )
+                    .doOnError { throwable ->
+                        FirebaseCrashlytics.getInstance().log("mappedProjectNotification")
+                        FirebaseCrashlytics.getInstance().recordException(throwable)
+                    }
             ).switchMap {
                 ProjectIntentMapper.project(it, this.apolloClient)
                     .doOnSubscribe {
@@ -416,6 +420,11 @@ interface ProjectPageViewModel {
                         currentUser.observable()
                     ) { project, config, user ->
                         return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                    }
+                    .doOnError { throwable ->
+                        FirebaseCrashlytics.getInstance().log("ProjectIntentMapper.project")
+                        FirebaseCrashlytics.getInstance().recordException(throwable)
+                        // trace.putAttribute("ProjectIntentMapper", "ProjectIntentMapper")
                     }
                     .materialize()
             }
@@ -561,6 +570,10 @@ interface ProjectPageViewModel {
                                     config,
                                     user.getValue()
                                 )
+                            }
+                            .doOnError { throwable ->
+                                FirebaseCrashlytics.getInstance().log("refreshedProjectNotification")
+                                FirebaseCrashlytics.getInstance().recordException(throwable)
                             }
                             .materialize()
                     }

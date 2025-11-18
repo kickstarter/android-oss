@@ -25,6 +25,6 @@ class DateTimeAdapter : Adapter<DateTime> {
         customScalarAdapters: CustomScalarAdapters,
         value: DateTime
     ) {
-        writer.value(value.toString().toLong() / 1000L)
+        writer.value(value.millis / 1000L)
     }
 }

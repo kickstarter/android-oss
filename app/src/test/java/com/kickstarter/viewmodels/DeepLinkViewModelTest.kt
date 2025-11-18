@@ -80,7 +80,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.finishDeeplinkActivity().subscribe { finishDeeplinkActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
-        vm.outputs.startPMOrderEditWebview().subscribe { startPMOrderEditWebview.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startPMWebview().subscribe { startPMOrderEditWebview.onNext(it) }.addToDisposable(disposables)
         FirebaseHelper.mutableIdentifier().value = "Test"
         ksApplication.mutableInitializationState.value = InitializationState.NOT_STARTED
     }
@@ -556,10 +556,14 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectSurveyRedeemDeeplink_startsSurveyActivity() {
+    fun testProjectSurveyRedeemDeeplink_startsWebviewActivity() {
         val url =
             "https://www.kickstarter.com/projects/alexlidell/power-of-five-collectors-edition-omnibus/backing/redeem"
-        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        val environment = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+
         setUpEnvironment(intent = intentWithData(url), environment = environment)
 
         vm.runInitializations()
@@ -571,8 +575,8 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
-        startProjectSurveyActivity.assertValueCount(1)
-        startPMOrderEditWebview.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertValueCount(1)
     }
 
     @Test

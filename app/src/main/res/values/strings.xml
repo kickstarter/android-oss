@@ -106,4 +106,5 @@
 
   <!-- FPO's for order edit -->
   <string name="fpo_review_edits" formatted="false">Review edits made to your order</string>
+    <string name="internal_tools_home_activity">Home Activity</string>
 </resources>

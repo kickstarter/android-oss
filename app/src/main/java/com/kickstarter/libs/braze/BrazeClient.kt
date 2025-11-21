@@ -95,6 +95,7 @@ open class BrazeClient(
                 // .setDefaultNotificationChannelName("General") --> TODO: Define notification channels for the new push notifications types
                 // .setDefaultNotificationChannelDescription("Braze related push")
                 .setHandlePushDeepLinksAutomatically(true)
+                .setPushDeepLinkBackStackActivityEnabled(false)
                 .build()
             Braze.configure(context, appBoyConfig)
 

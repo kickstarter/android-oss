@@ -180,7 +180,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 if (isLoggedIn) {
                     startPMActivity(uri.toString())
                 } else {
-                    startLoginForPMOrderEdit(uri.toString())
+                    startLoginForPM(uri.toString())
                 }
             }.addToDisposable(disposables)
 
@@ -284,10 +284,10 @@ class SplashScreenActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun startLoginForPMOrderEdit(url: String) {
+    private fun startLoginForPM(url: String) {
         val intent = Intent(this, LoginToutActivity::class.java)
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-            .putExtra(IntentKey.DEEPLINK_PM_ORDER_EDIT, url)
+            .putExtra(IntentKey.DEEPLINK_PLEDGE_MANAGER, url)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
@@ -303,7 +303,7 @@ class SplashScreenActivity : AppCompatActivity() {
             else -> getString(R.string.Pledge_manager)
         }
 
-        startWebViewActivity(url, toolbarTitle = toolbarTitle)
+        startWebViewActivity(url)
         finish()
     }
 

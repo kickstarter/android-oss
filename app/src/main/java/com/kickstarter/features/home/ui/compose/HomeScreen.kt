@@ -1,5 +1,6 @@
 package com.kickstarter.features.home.ui.compose
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -11,17 +12,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,13 +27,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.tabs
+import com.kickstarter.ui.compose.designsystem.KickstarterApp
 
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun AppPreview() {
+    KickstarterApp {
+        Surface {
+            val nav = rememberNavController()
+            FloatingCenterPill2(nav)
+        }
+    }
+}
 
 @Composable
 private fun FloatingPillNavItem(
@@ -50,9 +62,9 @@ private fun FloatingPillNavItem(
     val inactiveColor = Color.Transparent
 
     val targetColor = when {
-        selected -> activeColor                          // selected: solid green
-        pressed -> activeColor.copy(alpha = 0.5f)        // pressed: softer green
-        else -> inactiveColor                            // idle: transparent
+        selected -> activeColor // selected: solid green
+        pressed -> activeColor.copy(alpha = 0.5f) // pressed: softer green
+        else -> inactiveColor // idle: transparent
     }
 
     val animatedBackgroundColor by animateColorAsState(
@@ -66,10 +78,9 @@ private fun FloatingPillNavItem(
 
     Box(
         modifier = Modifier
-            .size(40.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(animatedBackgroundColor)
-            .padding(horizontal = 8.dp)
+            .padding(8.dp)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -91,8 +102,7 @@ private fun FloatingPillNavItem(
 
 @Composable
 fun FloatingCenterPill2(
-    nav: NavHostController,
-    shouldShowBottomNav: MutableState<Boolean>
+    nav: NavHostController
 ) {
     val backStack by nav.currentBackStackEntryAsState()
     val current = backStack?.destination?.route
@@ -105,14 +115,15 @@ fun FloatingCenterPill2(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center
     ) {
+        val shadow = Color(0xFFB6F36C)
         Box(
             modifier = Modifier
-                .width(182.dp)
+                .width(152.dp)
                 .shadow(
                     elevation = 2.dp,
                     shape = RoundedCornerShape(16.dp),
-                    ambientColor = Color.LightGray.copy(alpha = 0.5f),
-                    spotColor = Color.LightGray.copy(alpha = 0.5f),
+                    ambientColor = shadow.copy(alpha = 0.12f),
+                    spotColor = shadow.copy(alpha = 0.12f),
                 )
                 .background(
                     color = MaterialTheme.colorScheme.surface,
@@ -121,26 +132,29 @@ fun FloatingCenterPill2(
         ) {
             Row(
                 modifier = Modifier
-                    .height(64.dp)
-                    .widthIn(min = 260.dp)
-                    .padding(horizontal = 8.dp),
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 tabs.forEach { tab ->
                     val selected = current == tab.route
-                    FloatingPillNavItem(
-                        tab = tab,
-                        selected = selected,
-                        onClick = {
-                            if (tab == Tab.Profile) shouldShowBottomNav.value = true
-                            nav.navigate(tab.route) {
-                                popUpTo(nav.graph.findStartDestination().id) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        FloatingPillNavItem(
+                            tab = tab,
+                            selected = selected,
+                            onClick = {
+                                nav.navigate(tab.route) {
+                                    popUpTo(nav.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

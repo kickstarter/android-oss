@@ -293,16 +293,6 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun startPMActivity(url: String) {
         ApplicationUtils.startNewDiscoveryActivity(this)
-
-        val uri = url.toUri()
-        val webEndpoint = environment.webEndpoint()
-
-        val toolbarTitle = when {
-            uri.isPMUri(webEndpoint) -> getString(R.string.Pledge_manager)
-            uri.isPMOrderEditUri(webEndpoint) -> getString(R.string.fpo_review_edits)
-            else -> getString(R.string.Pledge_manager)
-        }
-
         startWebViewActivity(url)
         finish()
     }

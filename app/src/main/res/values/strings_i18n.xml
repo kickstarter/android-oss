@@ -662,6 +662,7 @@ daring ideas.</string>
   <string name="Retry" formatted="false">Retry</string>
   <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
   <string name="Reusability_and_recyclability" formatted="false">Reusability and recyclability</string>
+  <string name="Review_edits_made_to_your_order" formatted="false">Review edits made to your order</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>

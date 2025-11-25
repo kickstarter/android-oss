@@ -336,7 +336,7 @@ fun Activity.startWebViewActivity(url: String) {
     val uri = url.toUri()
     val toolbarTitle = when {
         uri.isPMUri(url) -> getString(R.string.Pledge_manager)
-        uri.isPMOrderEditUri(url) -> getString(R.string.Review_edits_made_to_your_order)
+        uri.isPMOrderEditUri(url, isFFEnabled = true) -> getString(R.string.Review_edits_made_to_your_order)
         else -> getString(R.string.Pledge_manager)
     }
 

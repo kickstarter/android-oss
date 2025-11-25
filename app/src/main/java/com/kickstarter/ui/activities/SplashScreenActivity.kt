@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.kickstarter.R
@@ -34,8 +33,6 @@ import com.kickstarter.libs.utils.UrlUtils.saveFlag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
-import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
-import com.kickstarter.libs.utils.extensions.isPMUri
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey

@@ -136,7 +136,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             )
         )
 
-        startBrowser.assertValue(url)
+        startBrowser.assertNoValues()
         startDiscoveryActivity.assertValue(Unit)
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
@@ -178,7 +178,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
             initState
         )
 
-        startBrowser.assertValue(url)
+        startBrowser.assertNoValues()
         startDiscoveryActivity.assertValue(Unit)
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()

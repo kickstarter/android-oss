@@ -435,6 +435,7 @@ interface SplashScreenViewModel {
 
             val unsupportedDeepLink = uriFromIntent
                 .filter { it.isNotNull() }
+                .filter { !it.isMainPage() }
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
                 .filter { !it.isProjectSaveUri(webEndpoint) }

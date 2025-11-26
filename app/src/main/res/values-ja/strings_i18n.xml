@@ -658,6 +658,7 @@
   <string name="Retry" formatted="false">もう一度試す</string>
   <string name="Retry_or_select_another_method" formatted="false">再試行するか別のお支払い方法を選択してください。</string>
   <string name="Reusability_and_recyclability" formatted="false">再利用可能性とリサイクル可能性</string>
+  <string name="Review_edits_made_to_your_order" formatted="false">ご注文への編集内容を確認してください</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>

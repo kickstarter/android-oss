@@ -35,6 +35,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
+import com.kickstarter.ui.extensions.startWebViewActivity
 import com.kickstarter.viewmodels.LoginToutViewModel
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory
@@ -282,7 +283,7 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun finishWithSuccessfulResult() {
         setResult(RESULT_OK)
-        goToSurveyIfSurveyPresent()
+        goToDeeplinkIfUrlPresent()
         finish()
     }
 
@@ -309,11 +310,15 @@ class LoginToutActivity : ComponentActivity() {
         viewModel.provideOnActivityResult(create(requestCode, resultCode, intent))
     }
 
-    private fun goToSurveyIfSurveyPresent() {
+    private fun goToDeeplinkIfUrlPresent() {
         val surveyResponseDeeplink = IntentCompat.getParcelableExtra(intent, IntentKey.DEEPLINK_SURVEY_RESPONSE, String::class.java)
-
         surveyResponseDeeplink?.let {
             startSurveyResponseActivity(surveyResponseDeeplink)
+        }
+
+        val pledgeManagerDeeplink = IntentCompat.getParcelableExtra(intent, IntentKey.DEEPLINK_PLEDGE_MANAGER, String::class.java)
+        pledgeManagerDeeplink?.let {
+            startPledgeManagerActivity(pledgeManagerDeeplink)
         }
     }
 
@@ -322,6 +327,12 @@ class LoginToutActivity : ComponentActivity() {
         val intent = Intent(this, SurveyResponseActivity::class.java)
             .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
         startActivity(intent)
+        finish()
+    }
+
+    private fun startPledgeManagerActivity(url: String) {
+        ApplicationUtils.startNewDiscoveryActivity(this)
+        startWebViewActivity(url)
         finish()
     }
 }

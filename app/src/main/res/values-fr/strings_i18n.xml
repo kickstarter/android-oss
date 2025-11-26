@@ -660,6 +660,7 @@ n\'ont rien soutenu.</string>
   <string name="Retry" formatted="false">Réessayer</string>
   <string name="Retry_or_select_another_method" formatted="false">Veuillez réessayer ou choisir un autre moyen de paiement.</string>
   <string name="Reusability_and_recyclability" formatted="false">Recyclage et valorisation des déchets</string>
+  <string name="Review_edits_made_to_your_order" formatted="false">Vérifions les modifications apportées à votre commande</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>

@@ -74,10 +74,10 @@ class WebViewActivity : ComponentActivity() {
     private fun observeCurrentUserEvents() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.events.collect { event ->
+                viewModel.webViewUIState.collect { event ->
                     when (event) {
-                        WebViewEvent.ShowLogin -> startLoginToutActivity()
-                        WebViewEvent.LoadWebPage -> loadUrl()
+                        WebViewEvent.SHOW_LOGIN -> startLoginToutActivity()
+                        WebViewEvent.LOAD_WEBVIEW -> loadUrl()
                     }
                 }
             }

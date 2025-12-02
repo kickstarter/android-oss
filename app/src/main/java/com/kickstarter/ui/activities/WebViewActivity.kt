@@ -4,33 +4,35 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
+import androidx.activity.viewModels
 import com.kickstarter.databinding.WebViewLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.utils.WindowInsetsUtil
-import io.reactivex.Observable
+import com.kickstarter.viewmodels.WebViewViewModel
 import io.reactivex.disposables.CompositeDisposable
 
 class WebViewActivity : ComponentActivity() {
     private lateinit var binding: WebViewLayoutBinding
+    private lateinit var viewModelFactory: WebViewViewModel.Factory
+    private val viewModel: WebViewViewModel by viewModels {
+        viewModelFactory
+    }
+
     private lateinit var environment: Environment
-    private lateinit var currentUser: Observable<KsOptional<User>>
     private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.getEnvironment()?.let { env ->
-            environment = env
+            viewModelFactory = WebViewViewModel.Factory(env)
         }
-        currentUser = requireNotNull(environment.currentUserV2()).observable()
 
         binding = WebViewLayoutBinding.inflate(layoutInflater)
         WindowInsetsUtil.manageEdgeToEdge(
@@ -66,12 +68,11 @@ class WebViewActivity : ComponentActivity() {
         observeLoginState()
     }
 
-
     // Check if the user is logged in.
     // If no, start the LoginToutActivity. Wait for its result within the same backstack.
     // Once LoginToutActivity is finished successfully WebViewActivity can proceed to load the url to the webview.
     private fun observeLoginState() {
-        currentUser
+        viewModel.currentUser
             .subscribe {
                 when (it.getValue()) {
                     null -> startLoginToutActivity()

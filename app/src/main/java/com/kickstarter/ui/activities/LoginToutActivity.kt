@@ -10,14 +10,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -35,7 +33,6 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
-import com.kickstarter.ui.extensions.startWebViewActivity
 import com.kickstarter.viewmodels.LoginToutViewModel
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory
@@ -283,7 +280,6 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun finishWithSuccessfulResult() {
         setResult(RESULT_OK)
-        goToDeeplinkIfUrlPresent()
         finish()
     }
 
@@ -308,32 +304,6 @@ class LoginToutActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         viewModel.provideOnActivityResult(create(requestCode, resultCode, intent))
-    }
-
-    private fun goToDeeplinkIfUrlPresent() {
-        val surveyResponseDeeplink = IntentCompat.getParcelableExtra(intent, IntentKey.DEEPLINK_SURVEY_RESPONSE, String::class.java)
-        surveyResponseDeeplink?.let {
-            startSurveyResponseActivity(surveyResponseDeeplink)
-        }
-
-        val pledgeManagerDeeplink = IntentCompat.getParcelableExtra(intent, IntentKey.DEEPLINK_PLEDGE_MANAGER, String::class.java)
-        pledgeManagerDeeplink?.let {
-            startPledgeManagerActivity(pledgeManagerDeeplink)
-        }
-    }
-
-    private fun startSurveyResponseActivity(surveyResponseUrl: String) {
-        ApplicationUtils.startNewDiscoveryActivity(this)
-        val intent = Intent(this, SurveyResponseActivity::class.java)
-            .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun startPledgeManagerActivity(url: String) {
-        ApplicationUtils.startNewDiscoveryActivity(this)
-        startWebViewActivity(url)
-        finish()
     }
 }
 

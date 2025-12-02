@@ -170,15 +170,9 @@ class SplashScreenActivity : AppCompatActivity() {
 
         viewModel.outputs.startPMWebview()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val uri = it.first
-                val isLoggedIn = it.second
+            .subscribe { uri ->
 
-                if (isLoggedIn) {
-                    startPMActivity(uri.toString())
-                } else {
-                    startLoginForPM(uri.toString())
-                }
+                startPMActivity(uri.toString())
             }.addToDisposable(disposables)
 
         statsigClient.updateExperimentUser()
@@ -279,13 +273,6 @@ class SplashScreenActivity : AppCompatActivity() {
             .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
         startActivity(intent)
         finish()
-    }
-
-    private fun startLoginForPM(url: String) {
-        val intent = Intent(this, LoginToutActivity::class.java)
-            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-            .putExtra(IntentKey.DEEPLINK_PLEDGE_MANAGER, url)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
     private fun startPMActivity(url: String) {

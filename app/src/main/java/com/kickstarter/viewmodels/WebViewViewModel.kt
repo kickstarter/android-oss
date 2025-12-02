@@ -4,13 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
-import com.kickstarter.ui.activities.WebViewEvent
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.rx2.asFlow
+
+sealed interface WebViewEvent {
+    data object ShowLogin : WebViewEvent
+    data object LoadWebPage : WebViewEvent
+}
 
 class WebViewViewModel(val environment: Environment) : ViewModel() {
 

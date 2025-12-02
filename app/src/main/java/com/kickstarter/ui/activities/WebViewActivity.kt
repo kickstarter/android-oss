@@ -16,6 +16,7 @@ import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.utils.WindowInsetsUtil
+import com.kickstarter.viewmodels.WebViewEvent
 import com.kickstarter.viewmodels.WebViewViewModel
 import kotlinx.coroutines.launch
 
@@ -93,9 +94,4 @@ class WebViewActivity : ComponentActivity() {
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
-}
-
-sealed interface WebViewEvent {
-    data object ShowLogin : WebViewEvent
-    data object LoadWebPage : WebViewEvent
 }

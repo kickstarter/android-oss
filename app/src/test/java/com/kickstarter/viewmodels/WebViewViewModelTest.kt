@@ -4,9 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.ui.activities.WebViewEvent
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Test
 
 class WebViewViewModelTest : KSRobolectricTestCase() {

@@ -10,12 +10,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -280,6 +282,7 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun finishWithSuccessfulResult() {
         setResult(RESULT_OK)
+        goToSurveyIfSurveyPresent() // TODO: Remove in MBL-2879
         finish()
     }
 
@@ -304,6 +307,22 @@ class LoginToutActivity : ComponentActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         viewModel.provideOnActivityResult(create(requestCode, resultCode, intent))
+    }
+
+    private fun goToSurveyIfSurveyPresent() {
+        val surveyResponseDeeplink = IntentCompat.getParcelableExtra(intent, IntentKey.DEEPLINK_SURVEY_RESPONSE, String::class.java)
+
+        surveyResponseDeeplink?.let {
+            startSurveyResponseActivity(surveyResponseDeeplink)
+        }
+    }
+
+    private fun startSurveyResponseActivity(surveyResponseUrl: String) {
+        ApplicationUtils.startNewDiscoveryActivity(this)
+        val intent = Intent(this, SurveyResponseActivity::class.java)
+            .putExtra(IntentKey.DEEPLINK_SURVEY_RESPONSE, surveyResponseUrl)
+        startActivity(intent)
+        finish()
     }
 }
 

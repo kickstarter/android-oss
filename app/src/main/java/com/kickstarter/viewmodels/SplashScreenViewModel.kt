@@ -202,7 +202,7 @@ interface SplashScreenViewModel {
                     (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER)) ||
                         (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
                 }
-                .subscribe { // TODO: does this always get called for PM? - NO
+                .subscribe {
                     startDiscoveryActivity.onNext(Unit)
                 }
                 .addToDisposable(disposables)

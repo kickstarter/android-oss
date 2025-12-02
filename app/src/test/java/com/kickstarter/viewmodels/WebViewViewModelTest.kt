@@ -19,10 +19,6 @@ class WebViewViewModelTest : KSRobolectricTestCase() {
         this.vm = WebViewViewModel.Factory(environment ?: environment()).create(WebViewViewModel::class.java)
     }
 
-    @After
-    fun clear() {
-    }
-
     @Test
     fun emitsLoginEventWhenUserIsLoggedOut() = runTest {
         val env = environment()

@@ -5,10 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.kickstarter.databinding.WebViewLayoutBinding
 import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
@@ -16,7 +17,7 @@ import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.WebViewViewModel
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 
 class WebViewActivity : ComponentActivity() {
     private lateinit var binding: WebViewLayoutBinding
@@ -24,9 +25,6 @@ class WebViewActivity : ComponentActivity() {
     private val viewModel: WebViewViewModel by viewModels {
         viewModelFactory
     }
-
-    private lateinit var environment: Environment
-    private val disposables = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,20 +63,24 @@ class WebViewActivity : ComponentActivity() {
                 finishWithAnimation()
             }
         }
-        observeLoginState()
+
+        observeCurrentUserEvents()
     }
 
     // Check if the user is logged in.
     // If no, start the LoginToutActivity. Wait for its result within the same backstack.
     // Once LoginToutActivity is finished successfully WebViewActivity can proceed to load the url to the webview.
-    private fun observeLoginState() {
-        viewModel.currentUser
-            .subscribe {
-                when (it.getValue()) {
-                    null -> startLoginToutActivity()
-                    else -> loadUrl()
+    private fun observeCurrentUserEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        WebViewEvent.ShowLogin -> startLoginToutActivity()
+                        WebViewEvent.LoadWebPage -> loadUrl()
+                    }
                 }
-            }.addToDisposable(disposables)
+            }
+        }
     }
 
     private fun loadUrl() {
@@ -91,4 +93,9 @@ class WebViewActivity : ComponentActivity() {
             .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
+}
+
+sealed interface WebViewEvent {
+    data object ShowLogin : WebViewEvent
+    data object LoadWebPage : WebViewEvent
 }

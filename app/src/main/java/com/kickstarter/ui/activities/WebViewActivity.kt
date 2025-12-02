@@ -32,13 +32,6 @@ class WebViewActivity : ComponentActivity() {
         }
         currentUser = requireNotNull(environment.currentUserV2()).observable()
 
-//        val currentUser: StateFlow<KsOptional<User>?> = requireNotNull(environment.currentUserV2()).observable()
-//            .asFlow()
-//            .stateIn(
-//                scope = lifecycleScope,
-//                started = SharingStarted.WhileSubscribed(),
-//                initialValue = null
-//            )
         binding = WebViewLayoutBinding.inflate(layoutInflater)
         WindowInsetsUtil.manageEdgeToEdge(
             window,
@@ -70,13 +63,13 @@ class WebViewActivity : ComponentActivity() {
                 finishWithAnimation()
             }
         }
-
-//         TODO: Here, check if the user is logged in. If no, start the LoginToutActivity.
-//         Wait for its result within the same backstack
-//         once LoginToutActivity is finalized successfully WebViewActivity can proceed to load the url to the webview.
         observeLoginState()
     }
 
+
+    // Check if the user is logged in.
+    // If no, start the LoginToutActivity. Wait for its result within the same backstack.
+    // Once LoginToutActivity is finished successfully WebViewActivity can proceed to load the url to the webview.
     private fun observeLoginState() {
         currentUser
             .subscribe {

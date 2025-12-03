@@ -282,7 +282,7 @@ class LoginToutActivity : ComponentActivity() {
 
     private fun finishWithSuccessfulResult() {
         setResult(RESULT_OK)
-        goToSurveyIfSurveyPresent()
+        goToSurveyIfSurveyPresent() // TODO: Remove in MBL-2879
         finish()
     }
 

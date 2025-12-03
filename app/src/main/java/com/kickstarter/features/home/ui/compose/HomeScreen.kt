@@ -80,14 +80,15 @@ private fun FloatingCenterNavItem(
 
     val targetColor = when {
         pressed -> activeColor.copy(alpha = 0.5f)
-        selected -> activeColor.copy(alpha = 0.5f)
-        else -> Color.White
+        else -> {
+            activeColor.copy(alpha = 0f)
+        }
     }
 
     val animatedBackgroundColor by animateColorAsState(
         targetValue = targetColor,
         animationSpec = tween(
-            durationMillis = 150,
+            durationMillis = 300,
             easing = LinearOutSlowInEasing
         )
     )
@@ -165,7 +166,6 @@ fun FloatingCenterBottomNav(
         ) {
             // - Using BoxWithConstraints as a canvas to draw the sliding animation
             BoxWithConstraints {
-
                 // - Sliding animated container, simulating background of FloatingPillNavItem
                 Box(
                     modifier = Modifier

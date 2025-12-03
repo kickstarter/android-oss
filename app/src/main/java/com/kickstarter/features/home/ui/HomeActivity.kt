@@ -64,10 +64,7 @@ class HomeActivity : ComponentActivity() {
         }
 
         setContent {
-            val darModeEnabled = this.isDarkModeEnabled(env = environment)
-            KickstarterApp(useDarkTheme = darModeEnabled) {
-                App()
-            }
+            App()
         }
 
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {

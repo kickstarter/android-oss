@@ -35,10 +35,14 @@ object ApplicationUtils {
      * `ACTION_MAIN` does not expect to receive any data in the intent, it should be the same intent as if a user had
      * just launched the app.
      */
-    fun startNewDiscoveryActivity(context: Context) {
+    fun startNewDiscoveryActivity(context: Context, data: Uri? = null) {
         val intent = Intent(context, DiscoveryActivity::class.java)
             .setAction(Intent.ACTION_MAIN)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        data?.let {
+            intent.setData(it)
+        }
 
         context.startActivity(intent)
     }

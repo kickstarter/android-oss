@@ -9,6 +9,7 @@ import com.kickstarter.services.ApolloClientTypeV2
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
+import timber.log.Timber
 
 object DiscoveryIntentMapper {
     @JvmStatic
@@ -17,6 +18,26 @@ object DiscoveryIntentMapper {
         client: ApiClientTypeV2,
         apolloClient: ApolloClientTypeV2
     ): Observable<DiscoveryParams> {
+        Timber.d("DiscoveryIntentMapper.params()")
+        Timber.d("- intent: ${intent.toUri(0)}")
+
+        Intent::class.java.declaredFields
+            .asSequence()
+            .filter { it.name.startsWith("FLAG_") }
+            .mapNotNull { field ->
+                try {
+                    val flag = field.getInt(null)
+                    if ((intent.flags and flag) != 0) field.name else null
+                } catch (e: IllegalAccessException) {
+                    e.printStackTrace()
+                    null
+                } catch (e: IllegalArgumentException) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+            .forEach { Timber.d(it) }
+
         val paramsFromParcel = if (paramsFromIntent(intent).isNotNull()) {
             Observable.just(paramsFromIntent(intent))
                 .filter { it.isNotNull() }
@@ -25,12 +46,21 @@ object DiscoveryIntentMapper {
 
         val paramsFromUri = if (IntentMapper.uri(intent).isNotNull()) {
             Observable.just(IntentMapper.uri(intent))
+                .doOnNext {
+                    Timber.d("IntentMapper.uri(intent): $it")
+                }
                 .filter { it.isNotNull() }
                 .map { it }
                 .map { DiscoveryParams.fromUri(it) }
+                .doOnNext {
+                    Timber.d("DiscoveryParams.fromUri(uri): $it")
+                }
                 .filter { it.isNotNull() }
                 .map { it }
                 .flatMap { paramsFromUri(it, client, apolloClient) }
+                .doOnNext {
+                    Timber.d("paramsFromUri(params, client, apolloClient): $it")
+                }
                 .filter { it.isNotNull() }
                 .map { it }
         } else Observable.empty()

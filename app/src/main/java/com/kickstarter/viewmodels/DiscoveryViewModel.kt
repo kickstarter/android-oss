@@ -40,6 +40,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 
 interface DiscoveryViewModel {
     interface Inputs : DiscoveryDrawerAdapter.Delegate, DiscoveryPagerAdapter.Delegate {
@@ -240,8 +241,14 @@ interface DiscoveryViewModel {
                 .filter { it.action.isNotNull() }
                 .map { it.action }
                 .filter { Intent.ACTION_MAIN == it }
+                .doOnNext {
+                    Timber.d("paramsFromInitialIntent")
+                }
                 .compose(Transformers.combineLatestPair(changedUser))
                 .map { DiscoveryParams.getDefaultParams(it.second) }
+                .doOnNext {
+                    Timber.d("DiscoveryParams.getDefaultParams(user): $it")
+                }
                 .share()
 
             val uriFromVerification = intentObservable
@@ -253,6 +260,9 @@ interface DiscoveryViewModel {
             val paramsFromIntent = intentObservable
                 .map { it }
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
+                .doOnNext {
+                    Timber.d("DiscoveryIntentMapper.params()...doOnNext: $it")
+                }
 
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }

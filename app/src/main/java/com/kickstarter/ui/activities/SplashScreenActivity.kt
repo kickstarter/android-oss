@@ -33,6 +33,7 @@ import com.kickstarter.libs.utils.UrlUtils.saveFlag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
+import com.kickstarter.libs.utils.extensions.isDiscoverUri
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
@@ -45,6 +46,9 @@ import com.kickstarter.viewmodels.SplashScreenViewModel
 import com.kickstarter.viewmodels.SplashUIState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import timber.log.Timber
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
@@ -75,6 +79,12 @@ class SplashScreenActivity : AppCompatActivity() {
             }
         }
 
+        intent.data.let { data ->
+            Timber.d("intent.data: $data")
+            Timber.d("intent.data.path: ${data?.path}")
+            Timber.d("intent.data uri match: ${data?.isDiscoverUri(environment.webEndpoint())}")
+        }
+
         compatSplashScreen.setKeepOnScreenCondition {
             viewModel.uiState.value == SplashUIState.Loading
         }
@@ -103,7 +113,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
         viewModel.outputs.startDiscoveryActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startDiscoveryActivity() }
+            .subscribe { startDiscoveryActivity(it) }
             .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivity()
@@ -189,8 +199,9 @@ class SplashScreenActivity : AppCompatActivity() {
         return projectIntent
     }
 
-    private fun startDiscoveryActivity() {
-        ApplicationUtils.startNewDiscoveryActivity(this)
+    private fun startDiscoveryActivity(optionalUri: Optional<Uri>) {
+        Timber.d("startDiscoveryActivity($optionalUri)")
+        ApplicationUtils.startNewDiscoveryActivity(this, optionalUri.getOrNull())
         finish()
     }
 

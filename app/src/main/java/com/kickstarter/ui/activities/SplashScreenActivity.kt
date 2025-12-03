@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.kickstarter.R
@@ -34,8 +33,6 @@ import com.kickstarter.libs.utils.UrlUtils.saveFlag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getProjectIntent
-import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
-import com.kickstarter.libs.utils.extensions.isPMUri
 import com.kickstarter.libs.utils.extensions.path
 import com.kickstarter.models.SurveyResponse
 import com.kickstarter.ui.IntentKey
@@ -173,15 +170,9 @@ class SplashScreenActivity : AppCompatActivity() {
 
         viewModel.outputs.startPMWebview()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                val uri = it.first
-                val isLoggedIn = it.second
+            .subscribe { uri ->
 
-                if (isLoggedIn) {
-                    startPMActivity(uri.toString())
-                } else {
-                    startLoginForPMOrderEdit(uri.toString())
-                }
+                startPMActivity(uri.toString())
             }.addToDisposable(disposables)
 
         statsigClient.updateExperimentUser()
@@ -284,26 +275,9 @@ class SplashScreenActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun startLoginForPMOrderEdit(url: String) {
-        val intent = Intent(this, LoginToutActivity::class.java)
-            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-            .putExtra(IntentKey.DEEPLINK_PM_ORDER_EDIT, url)
-        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-    }
-
     private fun startPMActivity(url: String) {
         ApplicationUtils.startNewDiscoveryActivity(this)
-
-        val uri = url.toUri()
-        val webEndpoint = environment.webEndpoint()
-
-        val toolbarTitle = when {
-            uri.isPMUri(webEndpoint) -> getString(R.string.Pledge_manager)
-            uri.isPMOrderEditUri(webEndpoint) -> getString(R.string.fpo_review_edits)
-            else -> getString(R.string.Pledge_manager)
-        }
-
-        startWebViewActivity(url, toolbarTitle = toolbarTitle)
+        startWebViewActivity(url)
         finish()
     }
 

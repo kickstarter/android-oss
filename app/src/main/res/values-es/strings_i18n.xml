@@ -660,6 +660,7 @@ Toca para intentar de nuevo.</string>
   <string name="Retry" formatted="false">Volver a intentar</string>
   <string name="Retry_or_select_another_method" formatted="false">Vuelve a intentarlo o selecciona otro método.</string>
   <string name="Reusability_and_recyclability" formatted="false">Reutilización y reciclabilidad</string>
+  <string name="Review_edits_made_to_your_order" formatted="false">Revisa las modificaciones realizadas en tu pedido</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>

@@ -659,6 +659,7 @@ Antippen und erneut versuchen</string>
   <string name="Retry" formatted="false">Erneut versuchen</string>
   <string name="Retry_or_select_another_method" formatted="false">Versuche es erneut oder wähle eine andere Karte.</string>
   <string name="Reusability_and_recyclability" formatted="false">Wiederverwertung und Recyclingfähigkeit</string>
+  <string name="Review_edits_made_to_your_order" formatted="false">Änderungen an deiner Bestellung prüfen</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>

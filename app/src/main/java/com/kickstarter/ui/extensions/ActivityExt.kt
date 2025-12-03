@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.google.android.play.core.review.ReviewInfo
@@ -32,6 +33,8 @@ import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.libs.utils.extensions.getSearchIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
+import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
+import com.kickstarter.libs.utils.extensions.isPMUri
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.libs.utils.extensions.withData
 import com.kickstarter.models.Project
@@ -329,7 +332,14 @@ fun Activity.startBackingDetailsWebViewActivity(url: String) {
     )
 }
 
-fun Activity.startWebViewActivity(url: String, toolbarTitle: String) {
+fun Activity.startWebViewActivity(url: String) {
+    val uri = url.toUri()
+    val toolbarTitle = when {
+        uri.isPMUri(url) -> getString(R.string.Pledge_manager)
+        uri.isPMOrderEditUri(url, isFFEnabled = true) -> getString(R.string.Review_edits_made_to_your_order)
+        else -> getString(R.string.Pledge_manager)
+    }
+
     startActivity(
         Intent(this, WebViewActivity::class.java)
             .putExtra(IntentKey.URL, url)

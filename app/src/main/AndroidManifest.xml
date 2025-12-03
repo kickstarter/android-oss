@@ -10,13 +10,11 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- RECEIVE allows the app to register to receive GCM messages -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /> <!-- Used to determine if network connection Snackbar should be shown. -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <queries>
         <intent>
-            <action android:name="android.intent.action.SEND" />
-
-            <data android:host="com.kickstarter" />
+            <action android:name="android.intent.action.SEND"/>
+            <data android:host="com.kickstarter"/>
         </intent>
     </queries>
 
@@ -30,9 +28,6 @@
         android:theme="@style/KSTheme"
         tools:replace="android:supportsRtl">
         <!-- ACTIVITIES -->
-        <activity
-            android:name=".features.home.ui.HomeActivity"
-            android:exported="false" />
         <activity android:name="androidx.activity.ComponentActivity" /> <!-- Workaround for https://github.com/robolectric/robolectric/pull/4736 -->
         <activity
             android:name=".ui.activities.AccountActivity"
@@ -41,15 +36,16 @@
             android:name=".ui.activities.ActivityFeedActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
             android:theme="@style/ActivityFeedActivity" />
-        <activity
-            android:name=".ui.activities.PreLaunchProjectPageActivity"
-            android:configChanges="screenSize|orientation"
-            android:exported="true"
+
+        <activity android:name=".ui.activities.PreLaunchProjectPageActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/ProjectActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"/>
+
         <activity
             android:name=".ui.activities.ChangeEmailActivity"
             android:theme="@style/SettingsActivity" />
@@ -57,7 +53,7 @@
         <activity
             android:name=".ui.activities.ChangePasswordActivity"
             android:theme="@style/SettingsActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ui.activities.CommentsActivity"
             android:theme="@style/WhiteActivity" />
@@ -76,7 +72,6 @@
             android:launchMode="singleTop">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -102,12 +97,12 @@
             android:theme="@style/WebViewActivity" />
         <activity
             android:name=".ui.activities.ResetPasswordActivity"
-            android:theme="@style/Login"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.SetPasswordActivity"
-            android:theme="@style/Login"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Login" />
         <activity
             android:name=".ui.activities.HelpActivity"
             android:theme="@style/HelpActivity" />
@@ -132,15 +127,14 @@
             android:parentActivityName=".ui.activities.DiscoveryActivity" />
         <activity
             android:name=".ui.activities.LoginToutActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
-            android:theme="@style/Login">
+            android:theme="@style/Login"
+            android:launchMode="singleTop"
+            android:exported="true">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data android:scheme="ksrauth2" />
                 <data android:host="authenticate" />
@@ -157,8 +151,8 @@
             android:name=".ui.activities.MessageThreadsActivity"
             android:parentActivityName=".ui.activities.ProfileActivity" />
         <activity
-            android:name=".features.pledgedprojectsoverview.ui.BackingDetailsActivity"
-            android:parentActivityName=".features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity" />
+          android:name=".features.pledgedprojectsoverview.ui.BackingDetailsActivity"
+          android:parentActivityName=".features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity" />
         <activity
             android:name=".features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity"
             android:parentActivityName=".ui.activities.DiscoveryActivity" />
@@ -169,8 +163,8 @@
             android:name=".ui.activities.NotificationsActivity"
             android:theme="@style/SettingsActivity" />
         <activity
-            android:name=".ui.activities.OnboardingFlowActivity"
-            android:theme="@style/SettingsActivity" />
+          android:name=".ui.activities.OnboardingFlowActivity"
+          android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.PaymentMethodsSettingsActivity"
             android:theme="@style/SettingsActivity" />
@@ -179,13 +173,15 @@
             android:theme="@style/SettingsActivity" />
         <activity
             android:name=".ui.activities.ProjectPageActivity"
-            android:configChanges="screenSize|orientation"
-            android:exported="true"
             android:parentActivityName=".ui.activities.DiscoveryActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/ProjectActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="adjustPan"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity" >
+
+        </activity>
         <activity
             android:name=".ui.activities.ProjectNotificationSettingsActivity"
             android:parentActivityName=".ui.activities.SettingsActivity"
@@ -231,40 +227,34 @@
         <activity android:name=".ui.activities.ReportProjectActivity" />
         <activity
             android:name=".features.pledgeredemption.ui.PledgeRedemptionActivity"
-            android:exported="false"
             android:parentActivityName=".ui.activities.ProjectPageActivity"
+            android:exported="false"
             android:theme="@style/KSTheme" />
-        <activity
-            android:name=".ui.activities.SplashScreenActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:theme="@style/SplashTheme">
 
-            <!-- Marketing Emails Domains -->
+        <activity android:name=".ui.activities.SplashScreenActivity"
+            android:theme="@style/SplashTheme"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:exported="true">
+            <!-- Marketing Emails Domains  -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="www.kickstarter.com"
                     android:scheme="https" />
             </intent-filter>
-            <!-- Website Main page deeplink -->
+            <!-- Website Main page deeplink  -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="*.kickstarter.com"
                     android:scheme="ksr" />
@@ -279,10 +269,12 @@
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/projects"
                     android:scheme="https" />
+
                 <data
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/projects"
                     android:scheme="ksr" />
+
                 <data
                     android:host="*.kickstarter.com"
                     android:pathPrefix="/settings/"
@@ -292,7 +284,8 @@
                     android:pathPrefix="/settings/"
                     android:scheme="https" />
             </intent-filter>
-        </activity> <!-- SERVICES, PROVIDERS, RECEIVERS -->
+        </activity>
+        <!-- SERVICES, PROVIDERS, RECEIVERS -->
         <!-- Receives new message events from Firebase. -->
         <service
             android:name=".services.firebase.MessageService"
@@ -300,7 +293,8 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service> <!-- Processes token refresh events from Firebase (e.g. token expired). Registers a new token. -->
+        </service>
+        <!-- Processes token refresh events from Firebase (e.g. token expired). Registers a new token. -->
         <service
             android:name=".services.firebase.TokenListenerService"
             android:exported="false">
@@ -308,18 +302,17 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
             android:exported="true"
-            tools:ignore="ExportedContentProvider" /> <!-- META-DATA -->
+            tools:ignore="ExportedContentProvider" />
+        <!-- META-DATA -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-        <meta-data
-            android:name="com.facebook.sdk.ClientToken"
-            android:value="@string/facebook_client_token" />
+        <meta-data android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"/>
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
@@ -333,5 +326,4 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="${performanceLogs}" />
     </application>
-
 </manifest>

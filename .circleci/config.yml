@@ -78,6 +78,7 @@ jobs:
           token: CODECOV_TOKEN
           
   snapshot-test:
+    <<: *base_job
     steps:
       - checkout
       - run:

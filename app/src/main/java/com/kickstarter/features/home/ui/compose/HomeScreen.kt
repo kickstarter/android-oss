@@ -34,12 +34,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
@@ -142,15 +145,18 @@ fun FloatingCenterBottomNav(
             .padding(horizontal = 16.dp, vertical = 24.dp),
         contentAlignment = Alignment.Center
     ) {
-        val shadow = Color(0xFFB6F36C)
+
         Box(
             modifier = Modifier
                 .width(152.dp)
-                .shadow(
-                    elevation = 2.dp,
+                .dropShadow(
                     shape = RoundedCornerShape(16.dp),
-                    ambientColor = shadow.copy(alpha = 0.12f),
-                    spotColor = shadow.copy(alpha = 0.12f),
+                    shadow = Shadow(
+                        radius = 16.dp,
+                        spread = 0.dp,
+                        color = Color(0x40000000),
+                        offset = DpOffset(x = 0.dp, 6.dp)
+                    )
                 )
                 .background(
                     color = Color.White,

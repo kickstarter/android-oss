@@ -79,6 +79,25 @@ class SplashScreenActivity : AppCompatActivity() {
             }
         }
 
+        Timber.d("intent: ${intent.toUri(0)}")
+
+        Intent::class.java.declaredFields
+            .asSequence()
+            .filter { it.name.startsWith("FLAG_") }
+            .mapNotNull { field ->
+                try {
+                    val flag = field.getInt(null)
+                    if ((intent.flags and flag) != 0) field.name else null
+                } catch (e: IllegalAccessException) {
+                    e.printStackTrace()
+                    null
+                } catch (e: IllegalArgumentException) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+            .forEach { Timber.d(it) }
+
         intent.data.let { data ->
             Timber.d("intent.data: $data")
             Timber.d("intent.data.path: ${data?.path}")

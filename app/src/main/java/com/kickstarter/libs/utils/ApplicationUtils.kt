@@ -43,6 +43,7 @@ object ApplicationUtils {
         data?.let {
             intent.setAction(Intent.ACTION_VIEW)
             intent.setData(it)
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
 
         context.startActivity(intent)

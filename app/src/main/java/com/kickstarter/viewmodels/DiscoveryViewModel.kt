@@ -258,7 +258,7 @@ interface DiscoveryViewModel {
                 .filter { it.isVerificationEmailUrl() }
 
             val paramsFromIntent = intentObservable
-                .filter { it.action != Intent.ACTION_MAIN }
+//                .filter { it.action != Intent.ACTION_MAIN }
                 .map { it }
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
                 .doOnNext {

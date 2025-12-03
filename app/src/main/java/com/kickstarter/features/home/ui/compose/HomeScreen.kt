@@ -8,6 +8,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,16 +17,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,24 +49,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.tabs
-import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppPreview() {
-    KickstarterApp {
-        Surface {
-            val nav = rememberNavController()
-            FloatingCenterPill(nav)
-        }
+    Box(
+        modifier = Modifier.background(Color.LightGray)
+    ) {
+        val nav = rememberNavController()
+        FloatingCenterBottomNav(nav)
     }
 }
 
 @Composable
-private fun FloatingPillNavItem(
+private fun FloatingCenterNavItem(
     modifier: Modifier = Modifier,
     tab: Tab,
     selected: Boolean,
@@ -78,22 +74,22 @@ private fun FloatingPillNavItem(
     val pressed by interactionSource.collectIsPressedAsState()
 
     val activeColor = Color(0xFFB6F36C)
-    // val inactiveColor = Color.Transparent
 
     val targetColor = when {
         pressed -> activeColor.copy(alpha = 0.5f)
-        else -> Color.Transparent
+        selected -> activeColor.copy(alpha = 0.5f)
+        else -> Color.White
     }
 
     val animatedBackgroundColor by animateColorAsState(
         targetValue = targetColor,
         animationSpec = tween(
-            durationMillis = 200,
+            durationMillis = 150,
             easing = LinearOutSlowInEasing
         )
     )
 
-    Box(
+    Image(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(animatedBackgroundColor)
@@ -103,17 +99,13 @@ private fun FloatingPillNavItem(
                 indication = null,
                 onClick = onClick
             ),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = tab.icon,
-            contentDescription = tab.route,
-        )
-    }
+        imageVector = tab.icon,
+        contentDescription = tab.route,
+    )
 }
 
-@Composable // ---> Animation working quite well but not just yet it.
-fun FloatingCenterPill(
+@Composable
+fun FloatingCenterBottomNav(
     nav: NavHostController,
 ) {
     val backStack by nav.currentBackStackEntryAsState()
@@ -124,7 +116,7 @@ fun FloatingCenterPill(
     val indicatorOffset = remember { Animatable(0f) }
     val activeColor = Color(0xFFB6F36C)
 
-    // State to store the final layout data of the items and the Row itself
+    // - State to store the final layout data of the items and the Row itself
     val itemLayouts = remember { mutableStateMapOf<Int, IntOffset>() }
     val itemWidths = remember { mutableStateMapOf<Int, Int>() }
     var rowCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -147,8 +139,7 @@ fun FloatingCenterPill(
         Modifier
             .background(Color.Transparent)
             .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 24.dp),
         contentAlignment = Alignment.Center
     ) {
         val shadow = Color(0xFFB6F36C)
@@ -162,16 +153,12 @@ fun FloatingCenterPill(
                     spotColor = shadow.copy(alpha = 0.12f),
                 )
                 .background(
-                    color = MaterialTheme.colorScheme.surface,
+                    color = Color.White,
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            // - Using BoxWithConstraints as a canvas to draw the animation
+            // - Using BoxWithConstraints as a canvas to draw the sliding animation
             BoxWithConstraints {
-                Timber.d("${this.javaClass} minHeigh: $minHeight")
-                Timber.d("${this.javaClass} minWidth: $minWidth")
-                Timber.d("${this.javaClass} maxHeigh: $maxHeight")
-                Timber.d("${this.javaClass} maxWidth: $maxWidth")
 
                 // - Sliding animated container, simulating background of FloatingPillNavItem
                 Box(
@@ -202,7 +189,7 @@ fun FloatingCenterPill(
                                     itemWidths[index] = coordinates.size.width
                                 }
                         ) {
-                            FloatingPillNavItem(
+                            FloatingCenterNavItem(
                                 tab = tab,
                                 selected = selected,
                                 onClick = {
@@ -215,6 +202,9 @@ fun FloatingCenterPill(
                                     }
                                 }
                             )
+                        }
+                        if (index < tabs.size - 1) {
+                            Spacer(modifier = Modifier.width(8.dp))
                         }
                     }
                 }

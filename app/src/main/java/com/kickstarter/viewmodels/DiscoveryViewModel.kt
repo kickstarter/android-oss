@@ -258,11 +258,14 @@ interface DiscoveryViewModel {
                 .filter { it.isVerificationEmailUrl() }
 
             val paramsFromIntent = intentObservable
+                .filter { it.action != Intent.ACTION_MAIN }
                 .map { it }
                 .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
                 .doOnNext {
                     Timber.d("DiscoveryIntentMapper.params()...doOnNext: $it")
                 }
+//                .ignoreElements()
+//                .toObservable<DiscoveryParams>()
 
             val verification = uriFromVerification
                 .map { it.getTokenFromQueryParams() }

@@ -41,6 +41,7 @@ object ApplicationUtils {
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
         data?.let {
+            intent.setAction(Intent.ACTION_VIEW)
             intent.setData(it)
         }
 

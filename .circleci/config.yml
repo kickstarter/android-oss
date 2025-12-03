@@ -2,22 +2,10 @@ aws_cli_setup: &aws_cli_setup
   role-arn: $AWS_ROLE_ARN
 
 base_job: &base_job
-  docker:
-    - image: cimg/android:2025.08.1 #https://circleci.com/developer/images/image/cimg/android
-  resource_class: xlarge
-  working_directory: "~/project"
-  environment:
-    TERM: dumb
-    ADB_INSTALL_TIMEOUT: 8
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4096m -XX:+HeapDumpOnOutOfMemoryError"'
-
-emulator_job: &emulator_job
   executor:
     name: android/android-machine
     resource-class: xlarge
-    # TODO: Check at EOY if circleci updated the android machine to support 2025.04.1
-    # https://kickstarter.atlassian.net/browse/MBL-2734
-    tag: 2024.11.1 #https://circleci.com/developer/images/image/cimg/android
+    tag: 2025.10.1 #https://circleci.com/developer/images/image/cimg/android
   working_directory: "~/project"
   environment:
     TERM: dumb
@@ -90,7 +78,6 @@ jobs:
           token: CODECOV_TOKEN
           
   snapshot-test:
-    <<: *emulator_job
     steps:
       - checkout
       - run:

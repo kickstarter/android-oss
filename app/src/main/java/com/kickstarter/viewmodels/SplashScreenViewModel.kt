@@ -117,7 +117,7 @@ interface SplashScreenViewModel {
 
         fun startProjectSurvey(): Observable<Pair<Uri, Boolean>>
 
-        fun startPMWebview(): Observable<Pair<Uri, Boolean>>
+        fun startPMWebview(): Observable<Uri>
 
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
@@ -136,7 +136,7 @@ interface SplashScreenViewModel {
         private val startProjectActivityToSave = BehaviorSubject.create<Uri>()
         private val startProjectSurvey = BehaviorSubject.create<Pair<Uri, Boolean>>()
 
-        private val startPMWebview = BehaviorSubject.create<Pair<Uri, Boolean>>()
+        private val startPMWebview = BehaviorSubject.create<Uri>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Unit>()
         private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -390,10 +390,6 @@ interface SplashScreenViewModel {
                         it.isPMOrderEditUri(webEndpoint, ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER))
                 }
                 .map { appendRefTagIfNone(it) }
-                .withLatestFrom(this.currentUser.isLoggedIn) { url, isLoggedIn ->
-                    return@withLatestFrom Pair(url, isLoggedIn)
-                }
-                .filter { it.second.isTrue() }
                 .subscribe {
                     startPMWebview.onNext(it)
                 }.addToDisposable(disposables)
@@ -548,7 +544,7 @@ interface SplashScreenViewModel {
 
         override fun startProjectSurvey(): Observable<Pair<Uri, Boolean>> = startProjectSurvey
 
-        override fun startPMWebview(): Observable<Pair<Uri, Boolean>> = startPMWebview
+        override fun startPMWebview(): Observable<Uri> = startPMWebview
 
         override fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>> = startPreLaunchProjectActivity
     }

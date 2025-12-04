@@ -161,7 +161,7 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
 //                Timber.d("delay")
                 prevDp = it
             }
-            .debounce(500, TimeUnit.MILLISECONDS)
+//            .debounce(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 Timber.d("binding.discoveryViewPager.currentItem = it.sort().positionFromSort() = ${it.sort().positionFromSort()}")

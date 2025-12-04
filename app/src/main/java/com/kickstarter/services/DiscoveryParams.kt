@@ -317,7 +317,67 @@ class DiscoveryParams private constructor(
     }
 
     override fun toString(): String {
-        return queryParams().toString()
+        val map = mutableMapOf<String, String>()
+        map.apply {
+            if (backed() != null) {
+                put("backed", backed().toString())
+            }
+            category()?.let {
+                put("category", it.name())
+            }
+            categoryParam()?.let {
+                put("category_id", it)
+            }
+            location()?.let {
+                put("woe_id", it.id().toString())
+            }
+            locationParam()?.let {
+                put("woe_id", it)
+            }
+            if (page() != null) {
+                put("page", page().toString())
+            }
+            if (perPage() != null) {
+                put("per_page", perPage().toString())
+            }
+            if (pledged() != null) {
+                put("pledged", pledged().toString())
+            }
+            if (recommended() != null) {
+                put("recommended", recommended().toString())
+            }
+            similarTo()?.let {
+                put("similar_to", it.id().toString())
+            }
+            if (starred() != null) {
+                put("starred", starred().toString())
+            }
+            if (social() != null) {
+                put("social", social().toString())
+            }
+            val sort = sort()
+            if (sort != null) {
+                put("sort", sort.toString())
+            }
+            if (staffPicks() != null) {
+                put("staff_picks", staffPicks().toString())
+            }
+            val state = state()
+            if (state != null) {
+                put("state", state.toString())
+            }
+            val tagId = tagId()
+            if (tagId != null) {
+                put("tag_id", tagId.toString())
+            }
+
+            term()?.let { put("q", it) }
+            if (shouldIncludeFeatured()) {
+                put("include_featured", "true")
+            }
+        }
+
+        return map.toString()
     }
 
     /**

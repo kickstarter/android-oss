@@ -137,6 +137,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 import kotlin.coroutines.cancellation.CancellationException
@@ -1148,6 +1149,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 query
             ).rxSingle()
                 .doOnError { throwable ->
+                    Timber.d("apolloClient Error: $throwable")
                     ps.onError(throwable)
                 }
                 .subscribe { response ->

@@ -108,17 +108,22 @@ object DiscoveryIntentMapper {
         val paramBuilders: MutableList<Observable<DiscoveryParams.Builder>> = ArrayList()
         val categoryParam = params.categoryParam()
         if (categoryParam != null) {
+            Timber.d("apolloClient.fetchCategory($categoryParam)")
             paramBuilders.add(
                 apolloClient.fetchCategory(categoryParam)
                     .compose(Transformers.neverErrorV2())
                     .filter { it.isNotNull() }
                     .map { it }
+                    .doOnNext {
+                        Timber.d("apolloClient fetched category($it)")
+                    }
                     .map { DiscoveryParams.builder().category(it) }
             )
         }
 
         val locationParam = params.locationParam()
         if (locationParam != null) {
+            Timber.d("client.fetchLocation($locationParam)")
             paramBuilders.add(
                 client
                     .fetchLocation(locationParam)

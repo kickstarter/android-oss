@@ -152,11 +152,13 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
                 Timber.d("updateParamsForPage().doOnNext")
                 Timber.d("-- prevDp: $prevDp")
                 Timber.d("-- dp: $it")
+//                Timber.d("delay")
                 prevDp = it
             }
-            .delay(200, TimeUnit.MILLISECONDS)
+            .debounce(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                Timber.d("binding.discoveryViewPager.currentItem = it.sort().positionFromSort() = ${it.sort().positionFromSort()}")
                 binding.discoveryViewPager.currentItem = it.sort().positionFromSort()
                 pagerAdapter.takeParams(it)
             }

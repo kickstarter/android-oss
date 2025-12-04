@@ -315,6 +315,12 @@ interface DiscoveryViewModel {
                 drawerParamsClicked
             )
 
+            pagerSelectedPage
+                .subscribe {
+                    Timber.d("pagerSelectedPage: $it")
+                }
+                .addToDisposable(disposables)
+
             val sortToTabOpen = Observable.merge(
                 pagerSelectedPage.map { DiscoveryUtils.sortFromPosition(it) },
                 params.filter { it.sort().isNotNull() }.map { it.sort() }
@@ -325,13 +331,25 @@ interface DiscoveryViewModel {
             val paramsWithSort = Observable.combineLatest(
                 params,
                 sortToTabOpen
-            ) { p, s -> p.toBuilder().sort(s).build() }
+            ) { p, s ->
+                Timber.d("paramsWithSort p: $p")
+                Timber.d("paramsWithSort s: $s")
+                val combo = p.toBuilder().sort(s).build()
+                Timber.d("paramsWithSort c: $combo")
+                combo
+            }
 
             paramsWithSort
                 .doOnNext {
                     Timber.d("paramsWithSort -> updateParamsForPage")
                 }
                 .subscribe { updateParamsForPage.onNext(it) }
+                .addToDisposable(disposables)
+
+            sortClicked
+                .subscribe {
+                    Timber.d("sortClicked: $it")
+                }
                 .addToDisposable(disposables)
 
             paramsWithSort

@@ -242,12 +242,12 @@ interface DiscoveryViewModel {
                 .map { it.action }
                 .filter { Intent.ACTION_MAIN == it }
                 .doOnNext {
-                    Timber.d("paramsFromInitialIntent")
+                    Timber.d("${hashCode()} paramsFromInitialIntent")
                 }
                 .compose(Transformers.combineLatestPair(changedUser))
                 .map { DiscoveryParams.getDefaultParams(it.second) }
                 .doOnNext {
-                    Timber.d("DiscoveryParams.getDefaultParams(user): $it")
+                    Timber.d("${hashCode()} DiscoveryParams.getDefaultParams(user): $it")
                 }
                 .share()
 
@@ -260,9 +260,13 @@ interface DiscoveryViewModel {
             val paramsFromIntent = intentObservable
 //                .filter { it.action != Intent.ACTION_MAIN }
                 .map { it }
-                .flatMap { DiscoveryIntentMapper.params(it, apiClient, apolloClient) }
+                .flatMap {
+                    Timber.d("${hashCode()} DiscoveryIntentMapper.params(intent, apiClient, apolloClient)" +
+                            "")
+                    DiscoveryIntentMapper.params(it, apiClient, apolloClient)
+                }
                 .doOnNext {
-                    Timber.d("DiscoveryIntentMapper.params()...doOnNext: $it")
+                    Timber.d("${hashCode()} DiscoveryIntentMapper.params()...doOnNext: $it")
                 }
 //                .ignoreElements()
 //                .toObservable<DiscoveryParams>()
@@ -335,13 +339,15 @@ interface DiscoveryViewModel {
                         it.first.toBuilder().sort(it.second).build()
                     )
                 }
-                .subscribe { analyticEvents.trackDiscoverSortCTA(it.first, it.second) }
+                .subscribe {
+//                    analyticEvents.trackDiscoverSortCTA(it.first, it.second)
+                }
                 .addToDisposable(disposables)
 
             paramsWithSort
                 .compose(Transformers.takeWhenV2(drawerParamsClicked))
                 .subscribe {
-                    analyticEvents.trackDiscoverFilterCTA(it)
+//                    analyticEvents.trackDiscoverFilterCTA(it)
                 }
                 .addToDisposable(disposables)
 

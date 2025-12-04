@@ -43,6 +43,7 @@ import com.kickstarter.viewmodels.DiscoveryViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -56,6 +57,12 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
     private lateinit var viewModelFactory: DiscoveryViewModel.Factory
     private val viewModel: DiscoveryViewModel.DiscoveryViewModel by viewModels { viewModelFactory }
     private val disposables = CompositeDisposable()
+
+    override fun onNewIntent(intent: Intent) {
+        Timber.d("super.onNewIntent()")
+        super.onNewIntent(intent)
+        Timber.d("-- intent: ${intent.toUri(0)}")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -139,129 +146,132 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
 
         viewModel.outputs.updateParamsForPage()
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext {
+                Timber.d("WTF: $it")
+            }
             .subscribe {
                 binding.discoveryViewPager.currentItem = it.sort().positionFromSort()
                 pagerAdapter.takeParams(it)
             }
             .addToDisposable(disposables)
 
-        viewModel.outputs.showNotifPermissionsRequest()
-            .distinctUntilChanged()
-            .filter {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                    this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
-            }
-            .delay(2000, TimeUnit.MILLISECONDS)
-            .subscribe {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-                viewModel.inputs.hasSeenNotificationsPermission(true)
-            }
-            .addToDisposable(disposables)
+//        viewModel.outputs.showNotifPermissionsRequest()
+//            .distinctUntilChanged()
+//            .filter {
+//                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+//                    this.checkPermissions(Manifest.permission.POST_NOTIFICATIONS)
+//            }
+//            .delay(2000, TimeUnit.MILLISECONDS)
+//            .subscribe {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+//                }
+//                viewModel.inputs.hasSeenNotificationsPermission(true)
+//            }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showConsentManagementDialog()
+//            .distinctUntilChanged()
+//            .subscribe {
+//                consentManagementDialogFragment = ConsentManagementDialogFragment()
+//                consentManagementDialogFragment.isCancelable = false
+//                consentManagementDialogFragment.show(
+//                    supportFragmentManager,
+//                    "consentManagementDialogFragment"
+//                )
+//            }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showOnboardingFlow()
+//            .distinctUntilChanged()
+//            .subscribe {
+//                val intent = Intent(this, OnboardingFlowActivity::class.java)
+//                onboardingResult.launch(intent)
+//
+//                viewModel.inputs.hasSeenOnboarding(true)
+//            }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.clearPages()
+//            .compose<List<Int?>>(Transformers.observeForUIV2())
+//            .subscribe { pagerAdapter.clearPages(it) }
+//            .addToDisposable(disposables)
 
-        viewModel.outputs.showConsentManagementDialog()
-            .distinctUntilChanged()
-            .subscribe {
-                consentManagementDialogFragment = ConsentManagementDialogFragment()
-                consentManagementDialogFragment.isCancelable = false
-                consentManagementDialogFragment.show(
-                    supportFragmentManager,
-                    "consentManagementDialogFragment"
-                )
-            }
-            .addToDisposable(disposables)
+//        viewModel.outputs.rootCategoriesAndPosition()
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { pagerAdapter.takeCategoriesForPosition(it.first, it.second) }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showActivityFeed()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startActivityFeedActivity() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showHelp()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startHelpSettingsActivity() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showInternalTools()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe {
+//                internalTools?.maybeStartInternalToolsActivity(this)
+//            }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showLoginTout()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startLoginToutActivity() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showMessages()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startMessageThreadsActivity() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showProfile()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startProfileActivity() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showPledgedProjects()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startPledgedProjectsOverview() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showSettings()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { startSettingsActivity() }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.navigationDrawerData()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { drawerAdapter.takeData(it) }
+//            .addToDisposable(disposables)
+//
+//        viewModel.closeDrawer()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { binding.discoveryDrawerLayout.closeDrawer(GravityCompat.START) }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.drawerMenuIcon()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { drawerMenuIcon: Int -> updateDrawerMenuIcon(drawerMenuIcon) }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showSuccessMessage()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { this@DiscoveryActivity.showSuccessSnackBar(binding.discoveryAnchorView, it) }
+//            .addToDisposable(disposables)
+//
+//        viewModel.outputs.showErrorMessage()
+//            .compose(Transformers.observeForUIV2())
+//            .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
+//            .addToDisposable(disposables)
 
-        viewModel.outputs.showOnboardingFlow()
-            .distinctUntilChanged()
-            .subscribe {
-                val intent = Intent(this, OnboardingFlowActivity::class.java)
-                onboardingResult.launch(intent)
-
-                viewModel.inputs.hasSeenOnboarding(true)
-            }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.clearPages()
-            .compose<List<Int?>>(Transformers.observeForUIV2())
-            .subscribe { pagerAdapter.clearPages(it) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.rootCategoriesAndPosition()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { pagerAdapter.takeCategoriesForPosition(it.first, it.second) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showActivityFeed()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startActivityFeedActivity() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showHelp()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startHelpSettingsActivity() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showInternalTools()
-            .compose(Transformers.observeForUIV2())
-            .subscribe {
-                internalTools?.maybeStartInternalToolsActivity(this)
-            }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showLoginTout()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startLoginToutActivity() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showMessages()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startMessageThreadsActivity() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showProfile()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startProfileActivity() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showPledgedProjects()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startPledgedProjectsOverview() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showSettings()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { startSettingsActivity() }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.navigationDrawerData()
-            .compose(Transformers.observeForUIV2())
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { drawerAdapter.takeData(it) }
-            .addToDisposable(disposables)
-
-        viewModel.closeDrawer()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { binding.discoveryDrawerLayout.closeDrawer(GravityCompat.START) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.drawerMenuIcon()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { drawerMenuIcon: Int -> updateDrawerMenuIcon(drawerMenuIcon) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showSuccessMessage()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { this@DiscoveryActivity.showSuccessSnackBar(binding.discoveryAnchorView, it) }
-            .addToDisposable(disposables)
-
-        viewModel.outputs.showErrorMessage()
-            .compose(Transformers.observeForUIV2())
-            .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
-            .addToDisposable(disposables)
-
-        statsigClient.updateExperimentUser()
+//        statsigClient.updateExperimentUser()
     }
 
     override fun onDestroy() {

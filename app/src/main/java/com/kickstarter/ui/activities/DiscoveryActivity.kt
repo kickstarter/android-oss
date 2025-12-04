@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -86,7 +87,12 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
             statsigClient = requireNotNull(env.statsigClient())
         }
 
-        viewModel.provideIntent(intent)
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                viewModel.provideIntent(intent)
+            }
+        })
 
         // TODO: Replace with compose implementation
         val nightModeFlags =

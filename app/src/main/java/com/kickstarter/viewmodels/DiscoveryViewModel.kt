@@ -328,6 +328,9 @@ interface DiscoveryViewModel {
             ) { p, s -> p.toBuilder().sort(s).build() }
 
             paramsWithSort
+                .doOnNext {
+                    Timber.d("paramsWithSort -> updateParamsForPage")
+                }
                 .subscribe { updateParamsForPage.onNext(it) }
                 .addToDisposable(disposables)
 

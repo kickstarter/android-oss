@@ -26,6 +26,7 @@ import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkPermissions
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.positionFromSort
+import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
@@ -144,11 +145,17 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
             .subscribe { binding.discoveryToolbar.discoveryToolbar.loadParams(it) }
             .addToDisposable(disposables)
 
+        var prevDp: DiscoveryParams? = null
+        Timber.d("onCreate(): ${hashCode()}")
         viewModel.outputs.updateParamsForPage()
-            .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
-                Timber.d("WTF: $it")
+                Timber.d("updateParamsForPage().doOnNext")
+                Timber.d("-- prevDp: $prevDp")
+                Timber.d("-- dp: $it")
+                prevDp = it
             }
+            .delay(200, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.discoveryViewPager.currentItem = it.sort().positionFromSort()
                 pagerAdapter.takeParams(it)

@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.UrlUtils.refTag
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.canUpdateFulfillment
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
+import com.kickstarter.libs.utils.extensions.isDiscoverUri
 import com.kickstarter.libs.utils.extensions.isEmailDomain
 import com.kickstarter.libs.utils.extensions.isKSDomain
 import com.kickstarter.libs.utils.extensions.isMainPage
@@ -62,6 +63,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.util.Optional
 
 enum class InitializationState {
     NOT_STARTED,
@@ -88,7 +90,7 @@ interface SplashScreenViewModel {
         fun startBrowser(): Observable<String>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.DiscoveryActivity].  */
-        fun startDiscoveryActivity(): Observable<Unit>
+        fun startDiscoveryActivity(): Observable<Optional<Uri>>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.ProjectActivity].  */
         fun startProjectActivity(): Observable<Uri>
@@ -123,7 +125,7 @@ interface SplashScreenViewModel {
         ViewModel(), Outputs {
 
         private val startBrowser = BehaviorSubject.create<String>()
-        private val startDiscoveryActivity = BehaviorSubject.create<Unit>()
+        private val startDiscoveryActivity = BehaviorSubject.create<Optional<Uri>>()
         private val startProjectActivity = BehaviorSubject.create<Uri>()
         private val startProjectActivityForComment = BehaviorSubject.create<Uri>()
         private val startProjectActivityForUpdate = BehaviorSubject.create<Uri>()
@@ -203,7 +205,7 @@ interface SplashScreenViewModel {
                         (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
                 }
                 .subscribe {
-                    startDiscoveryActivity.onNext(Unit)
+                    startDiscoveryActivity.onNext(Optional.empty<Uri>())
                 }
                 .addToDisposable(disposables)
 
@@ -241,7 +243,7 @@ interface SplashScreenViewModel {
 
             mainPageUri
                 .subscribe {
-                    startDiscoveryActivity.onNext(Unit)
+                    startDiscoveryActivity.onNext(Optional.empty<Uri>())
                 }.addToDisposable(disposables)
 
             projectFromEmail
@@ -251,15 +253,23 @@ interface SplashScreenViewModel {
 
             isKSDomainUriFromEmail
                 .subscribe {
-                    startDiscoveryActivity.onNext(Unit)
+                    startDiscoveryActivity.onNext(Optional.empty<Uri>())
                 }.addToDisposable(disposables)
 
             uriFromIntent
+                .filter { it.isDiscoverUri(webEndpoint) }
+                .subscribe {
+                    startDiscoveryActivity.onNext(Optional.of(it))
+                }
+                .addToDisposable(disposables)
+
+            uriFromIntent
                 .filter { it.isNotNull() }
+                .filter { !it.isDiscoverUri(webEndpoint) }
                 .filter { lastPathSegmentIsProjects(it) }
                 .compose(Transformers.ignoreValuesV2())
                 .subscribe {
-                    startDiscoveryActivity.onNext(it)
+                    startDiscoveryActivity.onNext(Optional.empty<Uri>())
                 }.addToDisposable(disposables)
 
             val projectObservable: Observable<Project> = uriFromIntent
@@ -432,6 +442,7 @@ interface SplashScreenViewModel {
             val unsupportedDeepLink = uriFromIntent
                 .filter { it.isNotNull() }
                 .filter { !it.isMainPage() }
+                .filter { !it.isDiscoverUri(webEndpoint) }
                 .filter { !lastPathSegmentIsProjects(it) }
                 .filter { !it.isSettingsUrl() }
                 .filter { !it.isProjectSaveUri(webEndpoint) }
@@ -515,7 +526,7 @@ interface SplashScreenViewModel {
 
         override fun startBrowser(): Observable<String> = startBrowser
 
-        override fun startDiscoveryActivity(): Observable<Unit> = startDiscoveryActivity
+        override fun startDiscoveryActivity(): Observable<Optional<Uri>> = startDiscoveryActivity
 
         override fun startProjectActivityForComment(): Observable<Uri> = startProjectActivityForComment
 

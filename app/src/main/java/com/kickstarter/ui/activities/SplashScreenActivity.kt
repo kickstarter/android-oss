@@ -103,7 +103,13 @@ class SplashScreenActivity : AppCompatActivity() {
 
         viewModel.outputs.startDiscoveryActivity()
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { startDiscoveryActivity() }
+            .subscribe {
+                if (it.isPresent) {
+                    startNewDiscoveryActivityWithData(it.get())
+                } else {
+                    startDiscoveryActivity()
+                }
+            }
             .addToDisposable(disposables)
 
         viewModel.outputs.startProjectActivity()
@@ -191,6 +197,19 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun startDiscoveryActivity() {
         ApplicationUtils.startNewDiscoveryActivity(this)
+        finish()
+    }
+
+    /*
+     * We will monitor how this Splash Screen evolves before moving this to either
+     * `ActivityExt.kt` or `ApplicationUtils.kt` for reusability.
+     */
+    private fun startNewDiscoveryActivityWithData(data: Uri) {
+        val intent = Intent(this@SplashScreenActivity, DiscoveryActivity::class.java)
+            .setAction(Intent.ACTION_VIEW)
+            .setData(data)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
         finish()
     }
 

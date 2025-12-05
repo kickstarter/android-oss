@@ -22,6 +22,7 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
+import com.kickstarter.features.home.ui.HomeActivity
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.FirebaseHelper
@@ -78,8 +79,8 @@ class InternalToolsActivity : AppCompatActivity() {
             playgroundButtonClicked()
         }
 
-        binding.onboardingFlowButton.setOnClickListener {
-            onboardingFlowButtonClicked()
+        binding.homeScreenButton.setOnClickListener {
+            homeActivityButtonClicked()
         }
 
         binding.pushNotificationsButton.setOnClickListener {
@@ -137,8 +138,8 @@ class InternalToolsActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun onboardingFlowButtonClicked() {
-        val intent = Intent(this, OnboardingFlowActivity::class.java)
+    private fun homeActivityButtonClicked() {
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
 

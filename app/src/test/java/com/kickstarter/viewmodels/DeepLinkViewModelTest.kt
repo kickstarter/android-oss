@@ -38,11 +38,12 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import java.util.Optional
 
 class DeepLinkViewModelTest : KSRobolectricTestCase() {
     lateinit var vm: SplashScreenViewModel.DeepLinkViewModel
     private val startBrowser = TestSubscriber<String>()
-    private val startDiscoveryActivity = TestSubscriber<Unit>()
+    private val startDiscoveryActivity = TestSubscriber<Optional<Uri>>()
     private val startProjectActivity = TestSubscriber<Uri>()
     private val startProjectActivityForCheckout = TestSubscriber<Uri>()
     private val startProjectActivityForComment = TestSubscriber<Uri>()
@@ -137,7 +138,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         )
 
         startBrowser.assertNoValues()
-        startDiscoveryActivity.assertValue(Unit)
+        startDiscoveryActivity.assertValue { it.isEmpty }
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
@@ -179,7 +180,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         )
 
         startBrowser.assertNoValues()
-        startDiscoveryActivity.assertValue(Unit)
+        startDiscoveryActivity.assertValue { it.isEmpty }
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
@@ -215,7 +216,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         )
 
         startBrowser.assertNoValues()
-        startDiscoveryActivity.assertValue(Unit)
+        startDiscoveryActivity.assertValue { it.isEmpty }
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
@@ -292,12 +293,83 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.runInitializations()
 
         startBrowser.assertNoValues()
-        startDiscoveryActivity.assertValue(Unit)
+        startDiscoveryActivity.assertValue { it.isEmpty }
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
+    }
+
+    @Test
+    fun testBaseDiscoverDeeplink_OpensDiscovery() = runTest {
+        val url = "https://www.kickstarter.com/discover"
+
+        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
+
+        vm.runInitializations()
+
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertValue { it.isPresent && it.get() == Uri.parse(url) }
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
+    }
+
+    @Test
+    fun testDiscoverDeeplink_OpensDiscovery() = runTest {
+        // This can be any URL whose path begins with `/discover/`
+        val url =
+            "https://www.kickstarter.com/discover/advanced?sort=newest&staff_picks=1&raised=1"
+
+        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
+
+        vm.runInitializations()
+
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertValue { it.isPresent && it.get() == Uri.parse(url) }
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
+    }
+
+    @Test
+    fun testMalformedDiscoverDeeplink_OpensBrowser() = runTest {
+        val url = "https://www.kickstarter.com/discovery/categories/games"
+
+        var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
+
+        vm.runInitializations()
+
+        startBrowser.assertValue(url)
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
         startPMOrderEditWebview.assertNoValues()
     }
@@ -658,6 +730,9 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    /* 2025-12-08 Not changing this test, but noting that this corresponds to the
+     * `lastPathSegmentIsProjects()` method in the VM. Since this now overlaps with support for
+     * other Discover deep links, we can target this case more precisely. */
     fun testDiscoveryDeepLink_startsDiscoveryActivity() {
         val url = "https://www.kickstarter.com/projects"
         var environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()

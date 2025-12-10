@@ -1,6 +1,7 @@
 package com.kickstarter.services.apiresponses
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.kickstarter.models.SurveyResponse.Urls
 import com.kickstarter.models.SurveyResponse.Urls.Web
 import com.kickstarter.models.pushdata.Activity
@@ -282,6 +283,8 @@ class PushNotificationEnvelope private constructor(
         @Parcelize
         data class Builder(
             private var id: Long = 0L,
+
+            @SerializedName("pledge_manager_path")
             private var pledgeRedemptionPath: String? = null
 
         ) : Parcelable {

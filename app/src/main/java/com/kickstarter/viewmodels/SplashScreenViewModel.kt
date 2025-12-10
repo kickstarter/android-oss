@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.remoteConfig
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.CurrentUserTypeV2
@@ -84,6 +85,10 @@ sealed class NavigationTarget {
 interface CustomNetworkClient {
     fun obtainUriFromRedirection(uri: Uri): Observable<Response>
 }
+
+/* For Crashlytics logging only */
+private class ProcessIntentException(message: String) : Exception(message)
+
 interface SplashScreenViewModel {
     interface Outputs {
         /** Emits when we should start an external browser because we don't want to deep link.  */
@@ -201,10 +206,17 @@ interface SplashScreenViewModel {
         private fun processIntent(intent: Observable<Intent> = intent(), externalCall: CustomNetworkClient) {
             intent()
                 .filter {
-                    (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_LAUNCHER)) ||
-                        (it.action == Intent.ACTION_MAIN && it.categories.contains(Intent.CATEGORY_DEFAULT))
+                    it.action == Intent.ACTION_MAIN
                 }
                 .subscribe {
+                    runCatching {
+                        if (it.categories.isNullOrEmpty()) {
+                            val strIntentUri = it.toUri(Intent.URI_INTENT_SCHEME)
+                            FirebaseCrashlytics.getInstance().setCustomKey("SplashScreenViewModel.processIntent", strIntentUri)
+                            FirebaseCrashlytics.getInstance().log(strIntentUri)
+                            FirebaseCrashlytics.getInstance().recordException(ProcessIntentException(strIntentUri))
+                        }
+                    }
                     startDiscoveryActivity.onNext(Optional.empty<Uri>())
                 }
                 .addToDisposable(disposables)

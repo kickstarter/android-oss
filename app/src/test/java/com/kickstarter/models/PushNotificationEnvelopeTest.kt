@@ -379,4 +379,23 @@ class PushNotificationEnvelopeTest : KSRobolectricTestCase() {
 
         assertTrue(isSurvey)
     }
+
+    @Test
+    fun testPushNotificationEnvelope_isPledgeManagerPushNotif() {
+        val pushNotificationEnvelope = PushNotificationEnvelope.builder().build()
+
+        assertFalse(pushNotificationEnvelope.isPledgeRedemption())
+
+        val pledgeRedemption = PushNotificationEnvelope.PledgeRedemption.builder()
+            .id(12L)
+            .pledgeRedemptionPath("/projects/blaft/india-street-lettering-a-book/backing/redeem")
+            .build()
+
+        val isPledgeRedemption = pushNotificationEnvelope.toBuilder()
+            .pledgeRedemption(pledgeRedemption)
+            .build()
+            .isPledgeRedemption()
+
+        assertTrue(isPledgeRedemption)
+    }
 }

@@ -275,6 +275,7 @@ class PushNotificationEnvelope private constructor(
     @Parcelize
     class PledgeRedemption private constructor(
         private val id: Long,
+        @SerializedName("pledge_manager_path")
         private val pledgeRedemptionPath: String?
     ) : Parcelable {
         fun id() = this.id

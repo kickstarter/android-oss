@@ -251,6 +251,9 @@ class DiscoveryParams private constructor(
                 put("backed", backed().toString())
             }
             category()?.let {
+                // TODO:
+                //  `queryParams()` is used for `DiscoveryParams.toString()` so this overlap with
+                //  `categoryParam` becomes unclear.
                 put("category_id", it.id().toString())
             }
             categoryParam()?.let {

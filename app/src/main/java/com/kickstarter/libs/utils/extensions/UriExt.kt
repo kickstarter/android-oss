@@ -77,6 +77,10 @@ fun Uri.isDiscoverPlacesPath(): Boolean {
     return DISCOVER_PLACES_PATTERN.matcher(path()).matches()
 }
 
+fun Uri.isDiscoverUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) && DISCOVER_PATTERN.matcher(path()).matches()
+}
+
 fun Uri.isHivequeenUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && Secrets.RegExpPattern.HIVEQUEEN.matcher(host()).matches()
 }
@@ -243,6 +247,10 @@ private val EMAIL_DOMAINS = Pattern.compile("\\A(?:me|ea|clicks|click|emails|ema
 private val CHECKOUT_THANKS_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z"
 )
+
+// /discover
+// /discover/.*
+private val DISCOVER_PATTERN = Pattern.compile("\\A\\/discover(?:\\/.*)?\\z")
 
 // /discover/categories/param
 private val DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/.*")

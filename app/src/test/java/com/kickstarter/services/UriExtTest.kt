@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverPlacesPath
 import com.kickstarter.libs.utils.extensions.isDiscoverScopePath
 import com.kickstarter.libs.utils.extensions.isDiscoverSortParam
+import com.kickstarter.libs.utils.extensions.isDiscoverUri
 import com.kickstarter.libs.utils.extensions.isEmailDomain
 import com.kickstarter.libs.utils.extensions.isKSFavIcon
 import com.kickstarter.libs.utils.extensions.isKickstarterUri
@@ -116,6 +117,23 @@ class UriExtTest : KSRobolectricTestCase() {
         val uri = Uri.parse("https://www.hello-world.org/goodbye")
         assertTrue(ksrUri.isKickstarterUri(webEndpoint))
         assertFalse(uri.isKickstarterUri(webEndpoint))
+    }
+
+    @Test
+    fun testUri_isDiscoverUri() {
+        val discoverBaseUri1 = Uri.parse("https://www.ksr.com/discover")
+        val discoverBaseUri2 = Uri.parse("https://www.ksr.com/discover/")
+        val discoverScopeUri = Uri.parse("https://www.ksr.com/discover/ending-soon")
+        val discoverSortUri = Uri.parse("https://www.ksr.com/discover/advanced?sort=ending-soon")
+        val discoverMalformedUri = Uri.parse("https://www.ksr.com/discovery/advanced?sort=popularity")
+        assertTrue(discoverBaseUri1.isDiscoverUri(webEndpoint))
+        assertTrue(discoverBaseUri2.isDiscoverUri(webEndpoint))
+        assertTrue(discoverScopeUri.isDiscoverUri(webEndpoint))
+        assertTrue(discoverSortUri.isDiscoverUri(webEndpoint))
+        assertTrue(discoverCategoriesUri.isDiscoverUri(webEndpoint))
+        assertTrue(discoverPlacesUri.isDiscoverUri(webEndpoint))
+        assertFalse(discoverMalformedUri.isDiscoverUri(webEndpoint))
+        assertFalse(projectUri.isDiscoverUri(webEndpoint))
     }
 
     @Test

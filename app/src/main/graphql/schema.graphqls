@@ -75,6 +75,11 @@ type Query {
   fundingCurrencies: [FundingCurrency!]!
 
   """
+  A user you're inspecting
+  """
+  inspectUser(id: ID!): User
+
+  """
   Fetches an item given its relay id.
   """
   item(id: ID!): RewardItem
@@ -83,6 +88,11 @@ type Query {
   Get a kickstarter fact
   """
   ksrFact: KsrFact
+
+  """
+  Fetches a location given its id.
+  """
+  location(id: ID!): Location
 
   """
   Searches locations.
@@ -104,9 +114,19 @@ type Query {
   """
   order(id: ID!): Order!
 
+  """
+  Fetches an order edit given its id.
+  """
+  orderEdit(id: ID!): OrderEdit!
+
   photoForEditor(id: ID!): Photo
 
   pledgeManagerOptOutReasons: [OptOutReason!]!
+
+  """
+  Pledge notifications (tier 1–3)
+  """
+  pledgeNotifications: PledgeNotifications
 
   """
   Provides an overview of pledge projects
@@ -122,6 +142,8 @@ type Query {
   Fetches a project given its slug or pid.
   """
   project(slug: String, pid: Int): Project
+
+  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [PublicProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], projectDeadlineSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, reportsCountSort: OpenSearchSort, reportsOpenCountSort: OpenSearchSort, reportsUnassignedCountSort: OpenSearchSort, zendeskTicketsCountSort: OpenSearchSort, openZendeskTicketsCountSort: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
 
   """
   Get some projects
@@ -258,6 +280,11 @@ type User implements Node {
   backedProjectsWithDummy("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackedProjectsConnection
 
   """
+  Projects a user has backed but does not have a notification entry for.
+  """
+  backedProjectsWithoutNotifications("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackedProjectsConnection
+
+  """
   Count of pledges with pending action
   """
   backingActionCount: Int
@@ -271,6 +298,11 @@ type User implements Node {
   Number of backings for this user.
   """
   backingsCount: Int!
+
+  """
+  List of names of the badges applied to a user
+  """
+  badges: [String!]
 
   """
   A description of the user's background.
@@ -338,6 +370,11 @@ type User implements Node {
   digitalAccessResources("The project for which the digital reward was provided" pid: Int!): [DigitalAccessResource!]!
 
   """
+  The user's discover saved searches
+  """
+  discoverSavedSearches: [SavedSearchSegment!]
+
+  """
   A user's email address.
   """
   email: String
@@ -361,6 +398,16 @@ type User implements Node {
   fulfillingProjects: [Project!]!
 
   """
+  Whether or not the user has confirmed Apple Id disconnect request via email auth token.
+  """
+  hasConfirmedDisconnectRequest: Boolean
+
+  """
+  Whether or not the user's Apple Id disonnect token has expired.
+  """
+  hasExpiredDisconnectToken: Boolean
+
+  """
   If the user has uploaded an avatar.
   """
   hasImage: Boolean!
@@ -369,6 +416,11 @@ type User implements Node {
   Whether or not the user has a password.
   """
   hasPassword: Boolean
+
+  """
+  Whether or not the user has a pending Apple Id disconnect request.
+  """
+  hasPendingDisconnectRequest: Boolean
 
   """
   Whether a user has their slug set.
@@ -403,9 +455,24 @@ type User implements Node {
   imageUrl("Whether or not to blur the image." blur: Boolean, "The width of the image in pixels." width: Int!): String!
 
   """
+  A URL to the user's inspect page.
+  """
+  inspectUrl: String
+
+  """
   Projects a user has been invited to collaborate on
   """
   invitedProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserInvitedProjectsConnection
+
+  """
+  Whether the user has been on our advisory council
+  """
+  isAdvisoryCouncilAlum: Boolean!
+
+  """
+  Whether the user is currently on our advisory council
+  """
+  isAdvisoryCouncilMember: Boolean!
 
   """
   Whether or not the user has authenticated with Apple.
@@ -543,6 +610,11 @@ type User implements Node {
   organizations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filter organizations by membership state." state: OrganizationMembershipState): UserOrganizationsConnection
 
   """
+  The user's pending email when changing email or disconnecting from Apple ID
+  """
+  pendingEmail: String
+
+  """
   Whether backer has any action in PPO
   """
   ppoHasAction: Boolean
@@ -551,6 +623,11 @@ type User implements Node {
   A user's project notification settings
   """
   projectNotifications: [Notification!]
+
+  """
+  The user's recent searches
+  """
+  recentSearches: [RecentSearch!]
 
   """
   Projects a user has saved.
@@ -715,6 +792,8 @@ enum Feature {
 
   project_build_rewards_explorer
 
+  project_build_intercom
+
   project_build_zendesk
 
   project_build_milestones
@@ -871,8 +950,6 @@ enum Feature {
 
   pledge_over_time_edit_pledge_2025
 
-  pledge_over_time_mid_plot_refunds_2025
-
   eufymake_backer_report
 
   multi_vat_ids_2025
@@ -897,11 +974,23 @@ enum Feature {
 
   pm_backer_preview_2025
 
+  pledge_and_order_combined_refund_charge_2025
+
   include_uk_vat_in_item_prices
 
   include_eu_vat_in_item_prices
 
   pledge_manager_eligibility_questionnaire_2025
+
+  pm_order_editing_2025
+
+  followers_only_updates
+
+  sauce_user_menu
+
+  access_pm_config_post_launch_2025
+
+  tax_education_2025
 }
 
 """
@@ -1340,6 +1429,11 @@ type Project implements Node & Commentable {
   amountCollectedForShipping: String!
 
   """
+  The customer entry point available on this project
+  """
+  availableBackerEntryPoints: [PreviewEntryPointEnum!]!
+
+  """
   Available card types.
   """
   availableCardTypes: [CreditCardTypes!]!
@@ -1367,7 +1461,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by pledge manager completed at minimum" pmCompletedAtMin: String, "Filter by pledge manager completed at maximum" pmCompletedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by pledge manager completed at minimum" pmCompletedAtMin: String, "Filter by pledge manager completed at maximum" pmCompletedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by shopify sync status" shopifySyncStatus: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
 
   """
   Backer survey for the project
@@ -1413,6 +1507,11 @@ type Project implements Node & Commentable {
   True if the current user can comment (does not consider restrictions)
   """
   canCommentSansRestrictions: Boolean!
+
+  """
+  Can user edit shipping preference of a reward?
+  """
+  canEditRewardShippingPreference: Boolean!
 
   """
   Can new user enter pledge manager checkout?
@@ -1493,6 +1592,16 @@ type Project implements Node & Commentable {
   Representation of the Project Milestones
   """
   completedMilestones: [ProjectMilestone!]
+
+  """
+  Number of post-launch watchers who went on to back the project
+  """
+  convertedPostLaunchWatchesCount: Int!
+
+  """
+  Number of pre-launch watchers who went on to back the project
+  """
+  convertedPreLaunchWatchesCount: Int!
 
   """
   Number of watchers who went on to back the project.
@@ -1665,6 +1774,11 @@ type Project implements Node & Commentable {
   hasAnsweredEligibilityQuestionnaire: Boolean!
 
   """
+  Whether the project has launched its pledge manager
+  """
+  hasLaunchedPledgeManager: Boolean!
+
+  """
   Does this project have any pledge over time config record?
   """
   hasPledgeOverTimeConfig: Boolean!
@@ -1735,6 +1849,11 @@ type Project implements Node & Commentable {
   Whether the project has stock locations outside the UK that ship to the UK
   """
   importsToUk: Boolean!
+
+  """
+  A URL to the project's inspect page.
+  """
+  inspectUrl: String
 
   """
   Is the project's submission state accepted.
@@ -2022,14 +2141,29 @@ type Project implements Node & Commentable {
   postCampaignPledgingEnabled: Boolean!
 
   """
+  Number of watchers from post-launch
+  """
+  postLaunchWatchesCount: Int!
+
+  """
   Project updates.
   """
   posts("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Scoped to draft or published posts" state: PostState, "Scoped to post type: creator_interview or freeform_post" postType: PostFormat, "Scoped to a creator’s post associated with the active prompt" forActivePrompt: Boolean): PostConnection!
 
   """
-  Whether a project has activated prelaunch.
+  Number of watchers from pre-launch
+  """
+  preLaunchWatchesCount: Int!
+
+  """
+  Whether a project has activated prelaunch (can return true if project has been launched)
   """
   prelaunchActivated: Boolean!
+
+  """
+  Whether a project is currently in active prelaunch (returns false if project has been launched)
+  """
+  prelaunchIsActive: Boolean!
 
   """
   The rich text story for a prelaunch campaign.
@@ -2044,7 +2178,7 @@ type Project implements Node & Commentable {
   """
   Return an itemized version of the prelaunch story. This feature is in BETA: types can change anytime!
   """
-  prelaunchStoryRichText: RichText!
+  prelaunchStoryRichText: RichTextComponent!
 
   """
   The project's preview url.
@@ -2085,6 +2219,11 @@ type Project implements Node & Commentable {
   Exchange rate to US Dollars (USD) for the project's currency
   """
   projectUsdExchangeRate: Float!
+
+  """
+  The project's public state.
+  """
+  publicState: PublicProjectState
 
   """
   Survey questions asked of all the project's backers
@@ -2139,9 +2278,14 @@ type Project implements Node & Commentable {
   shipWithinEuRequiredCountriesForVatIds: [Location!]
 
   """
-  Shipping destination countries on all rewards on the project
+  Shipping destination countries on all rewards on the project. Does not expand results. May return regions (like the EU). If the project has an unrestricted reward, this will not include all countries. If this project has only digital or local rewards, returns an empty array.
   """
   shippableCountries: [Location!]!
+
+  """
+  All countries in which this project has a shippable reward. Expands results to the country level (ie EU -> [ Austria, Belgium ...])Returns all countries if the project has an unrestricted reward. If this project has only digital or local rewards, returns an empty array.
+  """
+  shippableCountriesExpanded: [Location!]!
 
   """
   Details regarding how the project is set up to charge shipping
@@ -2194,7 +2338,7 @@ type Project implements Node & Commentable {
   spreadsheet: Spreadsheet
 
   """
-  The project's current state.
+  The project's current state in the state machine.
   """
   state: ProjectState!
 
@@ -2226,7 +2370,7 @@ type Project implements Node & Commentable {
   """
   Return an itemized version of the story. This feature is in BETA: types can change anytime!
   """
-  storyRichText: RichText!
+  storyRichText: RichTextComponent!
 
   """
   The Rich Text Editor version that was used to generate the project story
@@ -2279,8 +2423,7 @@ type Project implements Node & Commentable {
   timeline("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Makes any pinned post the first item in the timeline" withPinnedFirst: Boolean): ProjectTimelineConnection
 
   """
-  Locations (including countries and root) where shipping rates or shipping zones have been configured
-                    but there is no ship-from location assigned
+  Locations (including countries and root) where shipping rates or shipping zones have been configured but there is no ship-from location assigned
   """
   unassignedShippableLocations: [Location!]!
 
@@ -2552,6 +2695,11 @@ type Backing implements Node {
   Total amount pledged by the backer to the project, including shipping.
   """
   amount: Money!
+
+  """
+  The amount due on the backing.
+  """
+  amountDue: Money!
 
   """
   The amount pledged by the backer, less shipping.
@@ -3567,6 +3715,11 @@ type LineItem {
   """
   answers: [Answer!]!
 
+  """
+  Edits to the line item
+  """
+  editLineItems: [OrderEditLineItem!]!
+
   id: ID!
 
   """
@@ -3837,6 +3990,11 @@ type Reward implements Node {
   estimatedDeliveryOn: Date
 
   """
+  Returns reward items as an expanded list
+  """
+  expandedItems: [RewardItem!]!
+
+  """
   Whether or not the reward is featured
   """
   featured: Boolean!
@@ -4002,6 +4160,11 @@ type Reward implements Node {
   For post-campaign enabled rewards, the conditions under which to start offering the reward.
   """
   startCondition: Int
+
+  """
+  Is this reward only available after the project deadline?
+  """
+  startsAfterProjectDeadline: Boolean!
 
   """
   When the reward is scheduled to start
@@ -4640,6 +4803,11 @@ type OrderOrderable {
   isRemoved: Boolean!
 
   """
+  The kind of orderable represented
+  """
+  kind: OrderOrderableKindEnum!
+
+  """
   The orderable name.
   """
   name: String
@@ -4680,6 +4848,11 @@ type OrderOrderable {
   remainingCostFormatted: String!
 
   """
+  Whether or not the creator upgraded away from the order_orderable
+  """
+  supersededViaOrderEditUpgrade: Boolean!
+
+  """
   The amount of the voucher
   """
   voucherAmount: Int!
@@ -4697,6 +4870,11 @@ type OrderItem {
   id: ID!
 
   """
+  The item
+  """
+  item: RewardItem!
+
+  """
   The line item associated with the order item
   """
   lineItem: LineItem
@@ -4708,6 +4886,46 @@ type OrderItem {
 }
 
 union Orderable = Reward
+
+"""
+The kind of OrderOrderable, such as a crowdfunding base reward, crowdfunding add-on, or PM add-on
+"""
+enum OrderOrderableKindEnum {
+  """
+  crowdfunding_base
+  """
+  crowdfunding_base
+
+  """
+  crowdfunding_addon
+  """
+  crowdfunding_addon
+
+  """
+  upgrade_from_crowdfunding_base
+  """
+  upgrade_from_crowdfunding_base
+
+  """
+  order_edit_upgrade
+  """
+  order_edit_upgrade
+
+  """
+  new_base
+  """
+  new_base
+
+  """
+  new_addon
+  """
+  new_addon
+
+  """
+  order_edit_addon
+  """
+  order_edit_addon
+}
 
 """
 A question associated with a cart, composed with an answer if one is present
@@ -4722,6 +4940,51 @@ type CartQuestion {
   The cart question
   """
   question: Question!
+}
+
+"""
+Represents a line item in an order edit (either an upgrade, edit or addition line item)
+"""
+type OrderEditLineItem {
+  """
+  The creator-provided answers to any questions associated with this line item
+  """
+  answers: [OrderEditAnswer!]!
+
+  """
+  The item associated with this line item
+  """
+  item: RewardItem!
+
+  """
+  The creator-selected item variant for this line item
+  """
+  itemVariant: ItemVariant!
+
+  """
+  In the case of an edit, the original line item
+  """
+  lineItem: LineItem
+
+  """
+  The reward associated with this line item
+  """
+  rewardName: String
+}
+
+"""
+A creator-provided answer to a question about a line item or reward upgrade
+"""
+type OrderEditAnswer {
+  """
+  The question answered
+  """
+  question: Question!
+
+  """
+  The response to the question
+  """
+  response: [String!]!
 }
 
 """
@@ -5157,7 +5420,7 @@ type Order implements Node {
   address: Address
 
   """
-  Countries that the backing's reward can be shipped to. If null, the backing's reward can be shipped to any country.
+  Countries that the order's rewards can be shipped to. If null, the order's rewards can be shipped to any country.
   """
   allowedCountries: [CountryCode!]
 
@@ -5172,12 +5435,32 @@ type Order implements Node {
   availableUpgradeableRewards: [Reward!]!
 
   """
-  The associated backing
+  Base rewards available to upgrade for an order edit
   """
-  backing: Backing!
+  availableUpgradeableRewardsForOrderEdits: [Reward!]!
 
   """
-  The base reward on the order. Could be base reward from original backing or one from reward upgrade.
+  The customer entry point
+  """
+  backerEntryPoint: PreviewEntryPointEnum!
+
+  """
+  The crowdfunding base reward at the time of order creation
+  """
+  backerReward: Reward
+
+  """
+  The base order orderable if the order is finalized; otherwise, the crowdfunding base reward
+  """
+  backerRewardFinal: Reward!
+
+  """
+  The backing associated with the order
+  """
+  backing: Backing
+
+  """
+  The base reward associated with the order — it could be from the original backing, a reward upgrade, or a creator-initiated order edit.
   """
   baseOrderOrderable: OrderOrderable
 
@@ -5222,7 +5505,17 @@ type Order implements Node {
   convertedCurrencyAmounts: ConvertedOrderAmounts
 
   """
-  Add-ons selected for this order during Pledge Redemption
+  Add-ons that the creator can add to the order through an order edit
+  """
+  creatorAddableCrossSells: [Reward!]!
+
+  """
+  Can the creator upgrade the order's base reward?
+  """
+  creatorCanUpgrade: Boolean!
+
+  """
+  Add-ons selected for this order during Pledge Redemption plus add-ons through creator intiated order edits
   """
   crossSells: [OrderOrderable!]!
 
@@ -5240,6 +5533,11 @@ type Order implements Node {
   Add-ons selected for this order during Pledge Redemption with quantity
   """
   crossSellsWithQuantity: [OrderOrderableWithQuantity!]!
+
+  """
+  Crowdfunding addon rewards
+  """
+  crowdfundingAddonsFromAdjustment: [Reward!]!
 
   """
   Add-ons selected for this order during Crowdfunding with quantity
@@ -5307,6 +5605,11 @@ type Order implements Node {
   Whether the backer must acknowledge upgrades to complete checkout
   """
   mustAcknowledgeUpgrades: Boolean!
+
+  """
+  Edits to the order
+  """
+  orderEdits: [OrderEdit!]!
 
   """
   The rewards included in the order
@@ -5469,6 +5772,11 @@ type Order implements Node {
   totalTaxFormatted: String
 
   """
+  Calculates the total tax amounts in cents that will be refunded given partial refund adjustments
+  """
+  totalTaxToRefund(refundPledgeInput: RefundPledgeInput, refundOrderInput: RefundOrderInput!): RefundOrderTax!
+
+  """
   All of the user's saved addresses that match the order country
   """
   usableAddresses: [Address!]!
@@ -5515,6 +5823,26 @@ enum OrderStateEnum {
 }
 
 """
+Customer entry points to be used when previewing an order.
+"""
+enum PreviewEntryPointEnum {
+  """
+  crowdfunding
+  """
+  crowdfunding
+
+  """
+  late_pledge
+  """
+  late_pledge
+
+  """
+  pledge_manager
+  """
+  pledge_manager
+}
+
+"""
 Order amounts converted to a user's chosen currency
 """
 type ConvertedOrderAmounts {
@@ -5531,6 +5859,231 @@ type ConvertedOrderAmounts {
   total: String
 
   totalTax: String
+}
+
+"""
+An edit to an order
+"""
+type OrderEdit {
+  """
+  The addition line items included in the edit
+  """
+  additionLineItems: [OrderEditLineItem!]!
+
+  """
+  The additional add-ons included in the edit
+  """
+  additionalAddons: [Reward!]!
+
+  """
+  The additions included in the edit
+  """
+  additions: [Addition!]!
+
+  """
+  Display config for order edit badge
+  """
+  badgeConfig: UiConfig!
+
+  """
+  Display config for order edit banner
+  """
+  bannerConfig: UiConfig!
+
+  """
+  Timestamp at which edit was created
+  """
+  createdAt: DateTime!
+
+  """
+  The cross-sells total amount for the order edit
+  """
+  crossSellsTotal: Int!
+
+  """
+  The cross-sells total amount for the order edit, formatted
+  """
+  crossSellsTotalFormatted: String!
+
+  """
+  Line items that were edited as part of the edit
+  """
+  editLineItems: [OrderEditLineItem!]!
+
+  """
+  The rewards that were edited as part of the edit
+  """
+  editedRewards: [Reward!]!
+
+  id: ID!
+
+  """
+  The order modified by the order edit
+  """
+  order: Order!
+
+  """
+  The amount of shipping
+  """
+  shippingTotal: Int
+
+  """
+  The cost of shipping, formatted
+  """
+  shippingTotalFormatted: String
+
+  """
+  The state of the order edit
+  """
+  state: OrderEditStateEnum!
+
+  """
+  The total surcharge amount for the order edit
+  """
+  surchargeTotal: Int
+
+  """
+  The total surcharge amount for the order edit, formatted
+  """
+  surchargeTotalFormatted: String
+
+  """
+  The total tax amount for the order edit
+  """
+  taxTotal: Int
+
+  """
+  The total tax amount for the order edit, formatted
+  """
+  taxTotalFormatted: String
+
+  """
+  The total cost for the order edit including taxes and shipping
+  """
+  total: Int
+
+  """
+  The total cost for the order edit including taxes and shipping, formatted
+  """
+  totalFormatted: String
+
+  """
+  The reward being upgraded to in the edit
+  """
+  upgrade: Upgrade
+
+  """
+  The upgrade line items included in the edit
+  """
+  upgradeLineItems: [OrderEditLineItem!]!
+
+  """
+  A link to detailed order edit information
+  """
+  url: String!
+
+  """
+  Whether the order edit will change the deemed supplier on taxes
+  """
+  willChangeDeemedSupplier: Boolean!
+}
+
+"""
+An additional reward that is part of an order edit
+"""
+type Addition {
+  """
+  The answers to any questions associated with this addition
+  """
+  additionAnswers: [OrderEditAnswer!]!
+
+  """
+  The addition line items associated with the addition
+  """
+  additionLineItems: [OrderEditLineItem!]!
+
+  id: ID!
+
+  """
+  The reward being added
+  """
+  reward: Reward!
+}
+
+"""
+A creator-initiated upgrade to a different reward
+"""
+type Upgrade {
+  """
+  The cost of this upgrade, after voucher is applied.
+  """
+  cost: Int!
+
+  """
+  The cost of this upgrade, after voucher is applied, formatted.
+  """
+  costFormatted: String!
+
+  id: ID!
+
+  """
+  The reward being upgraded to
+  """
+  newReward: Reward!
+
+  """
+  The reward being upgrade from
+  """
+  previousReward: Reward!
+
+  """
+  The answers to any questions associated with this upgrade
+  """
+  upgradeAnswers: [OrderEditAnswer!]!
+
+  """
+  The upgrade line items associated with the upgrade
+  """
+  upgradeLineItems: [OrderEditLineItem!]!
+}
+
+"""
+Configuration for displaying UI elements
+"""
+type UiConfig {
+  copy: String!
+
+  variant: String!
+}
+
+"""
+The state of the order edit, e.g. draft, pending, completed, rejected, failed
+"""
+enum OrderEditStateEnum {
+  """
+  draft
+  """
+  draft
+
+  """
+  pending
+  """
+  pending
+
+  """
+  completed
+  """
+  completed
+
+  """
+  rejected
+  """
+  rejected
+
+  """
+  failed
+  """
+  failed
 }
 
 """
@@ -5667,6 +6220,220 @@ type AvataxTransactionLineItem {
   vatNumber: String
 }
 
+"""
+Taxes for refunding an Order.
+"""
+type RefundOrderTax {
+  """
+  Creator tax to refund in cents represented as a string
+  """
+  creatorLiableTaxAmountCents: String!
+
+  """
+  KSR tax to refund in cents represented as a string
+  """
+  ksrLiableTaxAmountCents: String!
+}
+
+"""
+Required parameters in order to refund a pledge.
+"""
+input RefundPledgeInput {
+  amount: Int
+
+  adjustmentParams: AdjustmentInput!
+}
+
+"""
+Parameters to create adjustment to a backing's order, created when issuing a refund.
+"""
+input AdjustmentInput {
+  """
+  Reason for adjustment
+  """
+  reason: RefundReasonType!
+
+  """
+  Objects to be removed from order
+  """
+  removals: [RemovalInput!]!
+
+  """
+  Refunds to be issued
+  """
+  refunds: [RefundInput!]!
+}
+
+"""
+Reasons for refunds
+"""
+enum RefundReasonType {
+  """
+  Change of reward or removal of reward item
+  """
+  CHANGE_REMOVAL
+
+  """
+  Issues with or delays in fulfillment
+  """
+  FULFILLMENT_ISSUES_DELAYS
+
+  """
+  Creator issued credit
+  """
+  CREDIT
+
+  """
+  Backer overpaid for reward
+  """
+  OVERPAYMENT
+
+  """
+  Backer requested refund
+  """
+  BACKER_REQUEST
+
+  """
+  Admin issued refund
+  """
+  ADMIN_REFUND
+
+  """
+  Other reason for refund
+  """
+  OTHER
+}
+
+"""
+An object removed as part of an adjustment
+"""
+input RemovalInput {
+  """
+  id of the reward associated with the removal
+  """
+  rewardId: Int!
+
+  """
+  id of object to be removed
+  """
+  refundItemId: ID!
+
+  """
+  type of object to be removed (reward, reward item, or order item)
+  """
+  type: RefundAdjustmentType!
+}
+
+"""
+All types of refund adjustments that can be issued
+"""
+enum RefundAdjustmentType {
+  """
+  refund for full reward tier
+  """
+  REWARD
+
+  """
+  refund for individual item in a reward tier
+  """
+  REWARD_ITEM
+
+  """
+  refund for an add-on or cross-sell in the order
+  """
+  ORDER_ITEM
+
+  """
+  refund for bonus support
+  """
+  BONUS_AMOUNT
+
+  """
+  refund for shipping fees
+  """
+  SHIPPING_CREDIT
+
+  """
+  general refund
+  """
+  GENERAL_REFUND
+}
+
+"""
+An amount to be refunded as part of an adjustment.
+"""
+input RefundInput {
+  """
+  id of object to be refunded
+  """
+  refundItemId: ID
+
+  """
+  type of refund
+  """
+  type: RefundAdjustmentType!
+
+  """
+  amount to be refunded
+  """
+  amount: Int!
+}
+
+"""
+Parameters to refund the non-voucher part of an order.
+"""
+input RefundOrderInput {
+  """
+  Shipments to be refunded
+  """
+  shipments: [ShipmentInput!]!
+
+  """
+  Cross sells to be refunded / removed
+  """
+  crossSells: [OrderOrderableInput!]!
+
+  """
+  Upgraded reward to be refunded / removed
+  """
+  upgradedReward: OrderOrderableInput
+}
+
+"""
+Parameters to refund a shipment.
+"""
+input ShipmentInput {
+  """
+  ID of the shipment
+  """
+  shipmentId: Int!
+
+  """
+  Amount to refund
+  """
+  amount: Int!
+}
+
+"""
+Parameters to refund an order orderable.
+"""
+input OrderOrderableInput {
+  """
+  ID of the order orderable
+  """
+  orderOrderableId: Int!
+
+  """
+  Whether the order orderable was removed
+  """
+  removed: Boolean!
+
+  """
+  Non-voucher amount to refund
+  """
+  amount: Int!
+}
+
 type PaymentIncrement {
   """
   The payment increment amount represented in various formats
@@ -5691,6 +6458,9 @@ type PaymentIncrement {
 
   scheduledCollection: ISO8601DateTime!
 
+  """
+  The state of the payment increment
+  """
   state: PaymentIncrementState!
 
   stateReason: PaymentIncrementStateReason
@@ -5700,6 +6470,18 @@ type PaymentIncrement {
 An ISO 8601-encoded datetime
 """
 scalar ISO8601DateTime
+
+enum PaymentIncrementStateReason {
+  """
+  The increment was adjusted due to a refund
+  """
+  REFUND_ADJUSTED
+
+  """
+  The payment source has attempted to be charged, but issuer requires additional authentication to complete the payment
+  """
+  REQUIRES_ACTION
+}
 
 enum PaymentIncrementState {
   """
@@ -5731,13 +6513,21 @@ enum PaymentIncrementState {
   Payment increment has been refunded
   """
   REFUNDED
-}
 
-enum PaymentIncrementStateReason {
   """
-  The payment source has attempted to be charged, but issuer requires additional authentication to complete the payment
+  Payment increment amount has been adjusted due to refund and is unattempted
   """
-  REQUIRES_ACTION
+  UNATTEMPTED_ADJUSTED
+
+  """
+  Payment increment amount has been adjusted due to refund and is collected
+  """
+  COLLECTED_ADJUSTED
+
+  """
+  Payment increment amount has been adjusted due to refund and is cancelled
+  """
+  CANCELLED_ADJUSTED
 }
 
 """
@@ -5845,6 +6635,11 @@ Metadata for adjustment to order
 """
 type AdjustmentMetadata {
   """
+  IDs of Payment increments affected by the refunds
+  """
+  paymentIncrementIds: [Int!]!
+
+  """
   Reason for adjustment
   """
   reason: RefundReasonType!
@@ -5866,41 +6661,6 @@ type AdjustmentMetadata {
 }
 
 """
-Reasons for refunds
-"""
-enum RefundReasonType {
-  """
-  Change of reward or removal of reward item
-  """
-  CHANGE_REMOVAL
-
-  """
-  Issues with or delays in fulfillment
-  """
-  FULFILLMENT_ISSUES_DELAYS
-
-  """
-  Creator issued credit
-  """
-  CREDIT
-
-  """
-  Backer overpaid for reward
-  """
-  OVERPAYMENT
-
-  """
-  Backer requested refund
-  """
-  BACKER_REQUEST
-
-  """
-  Other reason for refund
-  """
-  OTHER
-}
-
-"""
 An object removed as part of an adjustment.
 """
 type AdjustmentRemoval {
@@ -5913,41 +6673,6 @@ type AdjustmentRemoval {
   type of object to be removed (reward, reward item, or order item)
   """
   type: RefundAdjustmentType!
-}
-
-"""
-All types of refund adjustments that can be issued
-"""
-enum RefundAdjustmentType {
-  """
-  refund for full reward tier
-  """
-  REWARD
-
-  """
-  refund for individual item in a reward tier
-  """
-  REWARD_ITEM
-
-  """
-  refund for an add-on or cross-sell in the order
-  """
-  ORDER_ITEM
-
-  """
-  refund for bonus support
-  """
-  BONUS_AMOUNT
-
-  """
-  refund for shipping fees
-  """
-  SHIPPING_CREDIT
-
-  """
-  general refund
-  """
-  GENERAL_REFUND
 }
 
 """
@@ -6117,6 +6842,11 @@ The refund adjustment data for a backing or an order.
 """
 type RefundAdjustmentData {
   """
+  The actual refund amount (only successful refunds), if present
+  """
+  actualTotalRefundAmount: String
+
+  """
   The adjustment details for the addons
   """
   addons: [AdjustedReward!]!
@@ -6130,6 +6860,26 @@ type RefundAdjustmentData {
   The client secret for the adjustment
   """
   clientSecret: String
+
+  """
+  A list of errors from underlying refunds
+  """
+  errors: [String!]
+
+  """
+  The failed refund amount, if present
+  """
+  failedRefundAmount: String
+
+  """
+  If the refund has any underlying failures
+  """
+  hasFailures: String
+
+  """
+  The requested refund amount, if present
+  """
+  requestedTotalRefundAmount: String
 
   """
   Whether the adjustment requires action
@@ -6180,6 +6930,11 @@ type RefundAdjustmentData {
   The adjustment total
   """
   total: String!
+
+  """
+  The amount cancelled in upcoming increments
+  """
+  uncollectedAmountCancelled: String
 }
 
 """
@@ -6247,66 +7002,108 @@ scalar HTML
 """
 Itemized rich text
 """
-type RichText {
-  items: [RichTextItem]!
+type RichTextComponent {
+  items: [RichTextItem!]!
 }
 
-union RichTextItem = RichTextParagraph|RichTextHeader1|RichTextHeader2|RichTextHeader3|RichTextHeader4|RichTextList|RichTextQuote|RichTextPhoto|RichTextAudio|RichTextVideo|RichTextOembed
+union RichTextItem = RichText|RichTextHeader1|RichTextHeader2|RichTextHeader3|RichTextHeader4|RichTextListItem|RichTextListOpen|RichTextListClose|RichTextPhoto|RichTextAudio|RichTextVideo|RichTextOembed
 
 """
 A Paragraph. <p>
 """
-type RichTextParagraph {
-  html: String!
+type RichText {
+  children: [RichTextItem!]
+
+  link: String
+
+  styles: [String!]
+
+  text: String
 }
 
 """
 A Header 1. <h1>
 """
 type RichTextHeader1 {
-  html: String!
+  children: [RichTextItem!]
+
+  link: String
+
+  styles: [String!]
+
+  text: String
 }
 
 """
 A Header 2. <h2>
 """
 type RichTextHeader2 {
-  html: String!
+  children: [RichTextItem!]
+
+  link: String
+
+  styles: [String!]
+
+  text: String
 }
 
 """
 A Header 3. <h3>
 """
 type RichTextHeader3 {
-  html: String!
+  children: [RichTextItem!]
+
+  link: String
+
+  styles: [String!]
+
+  text: String
 }
 
 """
 A Header 4. <h4>
 """
 type RichTextHeader4 {
-  html: String!
-}
+  children: [RichTextItem!]
 
-"""
-A list. <ul>
-"""
-type RichTextList {
-  items: [RichTextListItem!]!
+  link: String
+
+  styles: [String!]
+
+  text: String
 }
 
 """
 A list item. <li>
 """
 type RichTextListItem {
-  html: String!
+  children: [RichTextItem!]
+
+  link: String
+
+  styles: [String!]
+
+  text: String
 }
 
 """
-A quote. <blockquote>
+Open List (ul|ol)
 """
-type RichTextQuote {
-  html: String!
+type RichTextListOpen {
+  """
+  Placeholder to avoid empty type
+  """
+  _present: Boolean!
+}
+
+"""
+Close List (ul|ol)
+"""
+type RichTextListClose {
+  """
+  Placeholder to avoid empty type
+  """
+  _present: Boolean!
 }
 
 """
@@ -10725,6 +11522,11 @@ A subscription a user has to a particular newsletter.
 """
 type NewsletterSubscriptions {
   """
+  The subscription to the AdultNewsletter newsletter
+  """
+  adultNewsletter: Boolean!
+
+  """
   The subscription to the AlumniNewsletter newsletter
   """
   alumniNewsletter: Boolean!
@@ -10827,6 +11629,61 @@ enum UserRestrictionKind {
   phone
 
   prelaunch_early
+}
+
+"""
+Recent search.
+"""
+type RecentSearch {
+  """
+  Body of the recent search
+  """
+  body: String!
+
+  """
+  ID of the recent search
+  """
+  id: ID!
+
+  """
+  Timestamp of the recent search
+  """
+  lastSearchedAt: DateTime!
+
+  """
+  Name of the recent search
+  """
+  name: String!
+}
+
+"""
+Saved search segment.
+"""
+type SavedSearchSegment implements Node {
+  """
+  ID of the saved search segment
+  """
+  id: ID!
+
+  """
+  For discover saved searches, the time stamp of the saved search
+  """
+  lastSearchedAt: DateTime
+
+  """
+  Body of the saved search segment
+  """
+  segmentBody: JSON!
+
+  """
+  Name of the saved search segment
+  """
+  segmentName: String!
+
+  """
+  Origin of the saved search segment
+  """
+  segmentOrigin: String!
 }
 
 """
@@ -12537,6 +13394,21 @@ type PledgeProjectOverviewItem {
   flags: [PledgedProjectsOverviewPledgeFlags!]
 
   """
+  Whether to display the edit address action (if address is still editable)
+  """
+  showEditAddressAction: Boolean!
+
+  """
+  Whether to display the reward received toggle (digital/no-reward survey submitted)
+  """
+  showRewardReceivedToggle: Boolean!
+
+  """
+  Whether to display the shipping address block on the card
+  """
+  showShippingAddress: Boolean!
+
+  """
   tier type
   """
   tierType: String
@@ -12674,28 +13546,13 @@ enum PledgeProjectsOverviewRewardStatusFilter {
 }
 
 """
-Saved search segment.
+Provides pledge notifications (action-required pledges)
 """
-type SavedSearchSegment implements Node {
+type PledgeNotifications {
   """
-  ID of the saved search segment
+  List of action-required pledges
   """
-  id: ID!
-
-  """
-  Body of the saved search segment
-  """
-  segmentBody: JSON!
-
-  """
-  Name of the saved search segment
-  """
-  segmentName: String!
-
-  """
-  Origin of the saved search segment
-  """
-  segmentOrigin: String!
+  pledges("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): PledgedProjectsOverviewPledgesConnection
 }
 
 """
@@ -12829,6 +13686,372 @@ enum OptOutReasonEnum {
 }
 
 """
+The connection type for ProjectInvestigation.
+"""
+type ProjectInvestigationConnection {
+  """
+  A list of edges.
+  """
+  edges: [ProjectInvestigationEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [ProjectInvestigation]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type ProjectInvestigationEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: ProjectInvestigation
+}
+
+type ProjectInvestigation implements Node {
+  """
+  The project's creator HRC tier.
+  """
+  creatorHrcTier: String
+
+  """
+  The number of flaggings in the project.
+  """
+  flaggingsCount: Int!
+
+  id: ID!
+
+  """
+  The number of open Zendesk tickets in the project.
+  """
+  openZendeskTicketsCount: Int!
+
+  """
+  The project
+  """
+  project: Project
+
+  """
+  The categories of reports in the project.
+  """
+  reportCategories: [String!]!
+
+  """
+  The statuses of reports in the project.
+  """
+  reportStatuses: [String!]!
+
+  """
+  The number of reports in the project.
+  """
+  reportsCount: Int!
+
+  """
+  The number of Zendesk tickets in the project.
+  """
+  zendeskTicketsCount: Int!
+}
+
+"""
+Task states
+"""
+enum TaskState {
+  """
+  Open task
+  """
+  open
+
+  """
+  Completed task, marked as issue
+  """
+  issue
+
+  """
+  Completed task, marked as nonissue
+  """
+  nonissue
+}
+
+"""
+Project report task categories.
+"""
+enum TaskProjectReportCategory {
+  """
+  Category: vices-drugs
+  """
+  vices_drugs
+
+  """
+  Category: vices-alcohol
+  """
+  vices_alcohol
+
+  """
+  Category: vices-weapons
+  """
+  vices_weapons
+
+  """
+  Category: health-claims
+  """
+  health_claims
+
+  """
+  Category: health-regulations
+  """
+  health_regulations
+
+  """
+  Category: health-gmos
+  """
+  health_gmos
+
+  """
+  Category: health-live-animals
+  """
+  health_live_animals
+
+  """
+  Category: health-energy-food-and-drink
+  """
+  health_energy_food_and_drink
+
+  """
+  Category: financial-contests-coupons
+  """
+  financial_contests_coupons
+
+  """
+  Category: financial-services
+  """
+  financial_services
+
+  """
+  Category: financial-political-donations
+  """
+  financial_political_donations
+
+  """
+  Category: offensive-content-hate
+  """
+  offensive_content_hate
+
+  """
+  Category: offensive-content-porn
+  """
+  offensive_content_porn
+
+  """
+  Category: prohibited-items
+  """
+  prohibited_items
+
+  """
+  Category: reselling
+  """
+  reselling
+
+  """
+  Category: plagiarism
+  """
+  plagiarism
+
+  """
+  Category: resale
+  """
+  resale
+
+  """
+  Category: misrep-support-impersonation
+  """
+  misrep_support_impersonation
+
+  """
+  Category: misrep-support-outstanding-fulfillment
+  """
+  misrep_support_outstanding_fulfillment
+
+  """
+  Category: misrep-support-suspicious-pledging
+  """
+  misrep_support_suspicious_pledging
+
+  """
+  Category: misrep-support-other
+  """
+  misrep_support_other
+
+  """
+  Category: misrep-support
+  """
+  misrep_support
+
+  """
+  Category: not-project-charity
+  """
+  not_project_charity
+
+  """
+  Category: not-project-stunt-or-hoax
+  """
+  not_project_stunt_or_hoax
+
+  """
+  Category: not-project-personal-expenses
+  """
+  not_project_personal_expenses
+
+  """
+  Category: not-project-barebones
+  """
+  not_project_barebones
+
+  """
+  Category: not-project-other
+  """
+  not_project_other
+
+  """
+  Category: not-project
+  """
+  not_project
+
+  """
+  Category: prototype-misrepresentation
+  """
+  prototype_misrepresentation
+
+  """
+  Category: false-claims
+  """
+  false_claims
+
+  """
+  Category: guidelines-spam
+  """
+  guidelines_spam
+
+  """
+  Category: guidelines-abuse
+  """
+  guidelines_abuse
+
+  """
+  Category: guidelines-violation
+  """
+  guidelines_violation
+
+  """
+  Category: undisclosed-ai-use
+  """
+  undisclosed_ai_use
+
+  """
+  Category: post-funding-reward-not-as-described
+  """
+  post_funding_reward_not_as_described
+
+  """
+  Category: post-funding-reward-delayed
+  """
+  post_funding_reward_delayed
+
+  """
+  Category: post-funding-shipped-never-received
+  """
+  post_funding_shipped_never_received
+
+  """
+  Category: post-funding-creator-selling-elsewhere
+  """
+  post_funding_creator_selling_elsewhere
+
+  """
+  Category: post-funding-creator-uncommunicative
+  """
+  post_funding_creator_uncommunicative
+
+  """
+  Category: post-funding-creator-inappropriate
+  """
+  post_funding_creator_inappropriate
+
+  """
+  Category: post-funding-suspicious-third-party
+  """
+  post_funding_suspicious_third_party
+
+  """
+  Category: post-funding-issues
+  """
+  post_funding_issues
+}
+
+"""
+Creator HRC status tiers.
+"""
+enum CreatorHrcStatusTier {
+  """
+  HRC status tier: HRC 1
+  """
+  hrc1
+
+  """
+  HRC status tier: HRC 2
+  """
+  hrc2
+
+  """
+  HRC status tier: HRC 3
+  """
+  hrc3
+
+  """
+  HRC status tier: HRC 4
+  """
+  hrc4
+
+  """
+  HRC status tier: HRC 5
+  """
+  hrc5
+
+  """
+  HRC status tier: Non-HRC
+  """
+  non_hrc
+}
+
+"""
+Sort order for OpenSearch queries
+"""
+enum OpenSearchSort {
+  """
+  Ascending order
+  """
+  asc
+
+  """
+  Descending order
+  """
+  desc
+}
+
+"""
 The mutation root of the Kickstarter GraphQL interface
 """
 type Mutation {
@@ -12836,6 +14059,11 @@ type Mutation {
   Updates an address if the user rejects or accepts a suggestion
   """
   acceptOrRejectAddressSuggestion(input: AcceptOrRejectAddressSuggestionInput!): AcceptOrRejectAddressSuggestionPayload
+
+  """
+  Confirm payment and complete the order edit process
+  """
+  acceptOrderEdit(input: AcceptOrderEditInput!): AcceptOrderEditPayload
 
   """
   Indicates that a backer has acknowledged the available upgrades step in checkout.
@@ -12888,6 +14116,11 @@ type Mutation {
   bulkEditStockLocationMappings(input: BulkEditStockLocationMappingsInput!): BulkEditStockLocationMappingsPayload
 
   """
+  Given an order edit, calculates the tax, shipping, surcharge, and other totals
+  """
+  calculateOrderEditTotals(input: CalculateOrderEditTotalsInput!): CalculateOrderEditTotalsPayload
+
+  """
   Cancel a pledged backing
   """
   cancelBacking(input: CancelBackingInput!): CancelBackingPayload
@@ -12918,6 +14151,16 @@ type Mutation {
   Complete a $0 order
   """
   completeZeroDollarOrder(input: CompleteZeroDollarOrderInput!): CompleteZeroDollarOrderPayload
+
+  """
+  Completes a $0 order edit
+  """
+  completeZeroDollarOrderEdit(input: CompleteZeroDollarOrderEditInput!): CompleteZeroDollarOrderEditPayload
+
+  """
+  Finalizes the Apple ID disconnect. Destroys apple_account and sets a new email and password
+  """
+  confirmAppleIdDisconnect(input: ConfirmAppleIdDisconnectInput!): ConfirmAppleIdDisconnectPayload
 
   """
   Confirm order address
@@ -13012,6 +14255,16 @@ type Mutation {
   createOrUpdateBackingAddress(input: CreateOrUpdateBackingAddressInput!): CreateOrUpdateBackingAddressPayload
 
   """
+  Create or update a discover saved search segment
+  """
+  createOrUpdateDiscoverSavedSearch(input: CreateOrUpdateDiscoverSavedSearchInput!): CreateOrUpdateDiscoverSavedSearchPayload
+
+  """
+  Creates or updates an order edit in a draft state
+  """
+  createOrUpdateDraftOrderEdit(input: CreateOrUpdateDraftOrderEditInput!): CreateOrUpdateDraftOrderEditPayload
+
+  """
   Creates/updates item tax config and creates/updates tax category for an item
   """
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
@@ -13020,6 +14273,11 @@ type Mutation {
   Creates or updates a preview order with given starting attributes
   """
   createOrUpdatePreviewOrder(input: CreateOrUpdatePreviewOrderInput!): CreateOrUpdatePreviewOrderPayload
+
+  """
+  Save or update a recent search
+  """
+  createOrUpdateRecentSearch(input: CreateOrUpdateRecentSearchInput!): CreateOrUpdateRecentSearchPayload
 
   """
   Creates (or updates) a shipping zone with weight ranges and locations
@@ -13089,6 +14347,11 @@ type Mutation {
   Creates a question for an object
   """
   createQuestion(input: CreateQuestionInput!): CreateQuestionPayload
+
+  """
+  Create a refund charge to fund a refund
+  """
+  createRefundCharge(input: CreateRefundChargeInput!): CreateRefundChargePayload
 
   """
   create a reward on a Kickstarter project.
@@ -13181,6 +14444,11 @@ type Mutation {
   deleteComment(input: DeleteCommentInput!): DeleteCommentPayload
 
   """
+  Delete a discover saved search
+  """
+  deleteDiscoverSavedSearch(input: DeleteDiscoverSavedSearchInput!): DeleteDiscoverSavedSearchPayload
+
+  """
   Deletes an option type and values for an item
   """
   deleteOption(input: DeleteOptionInput!): DeleteOptionPayload
@@ -13214,6 +14482,11 @@ type Mutation {
   Deletes a question
   """
   deleteQuestion(input: DeleteQuestionInput!): DeleteQuestionPayload
+
+  """
+  Delete a recent search
+  """
+  deleteRecentSearch(input: DeleteRecentSearchInput!): DeleteRecentSearchPayload
 
   """
   Delete a reward from a project
@@ -13269,6 +14542,11 @@ type Mutation {
   Feature a reward for a Kickstarter project.
   """
   featureReward(input: FeatureRewardInput!): FeatureRewardPayload
+
+  """
+  Adds the Notification update entries for a user who should have them but does not
+  """
+  fixUserMissingNotifications(input: FixUserMissingNotificationsInput!): FixUserMissingNotificationsPayload
 
   """
   Causes the current user to follow a specified user
@@ -13376,11 +14654,21 @@ type Mutation {
   refreshSpreadsheetData(input: RefreshSpreadsheetDataInput!): RefreshSpreadsheetDataPayload
 
   """
+  Reject the order edit
+  """
+  rejectOrderEdit(input: RejectOrderEditInput!): RejectOrderEditPayload
+
+  """
   Removes the spreadsheet associated to a project
   """
   removeSheetFromProject(input: RemoveSheetFromProjectInput!): RemoveSheetFromProjectPayload
 
   reportSpam(input: ReportSpamInput!): ReportSpamPayload
+
+  """
+  Requests an Apple ID disconnect email
+  """
+  requestAppleIdDisconnectEmail(input: RequestAppleIdDisconnectEmailInput!): RequestAppleIdDisconnectEmailPayload
 
   """
   Requests a password reset email.
@@ -13455,9 +14743,19 @@ type Mutation {
   setTaxCategory(input: SetTaxCategoryInput!): SetTaxCategoryPayload
 
   """
+  Sets the badges for a given user, removes those not present in the list
+  """
+  setUserBadges(input: SetUserBadgesInput!): SetUserBadgesPayload
+
+  """
   Signs in or sign up a user via the Sign in With Apple service
   """
   signInWithApple(input: SignInWithAppleInput!): SignInWithApplePayload
+
+  """
+  Submits an OrderEdit when it is done being edited
+  """
+  submitOrderEdit(input: SubmitOrderEditInput!): SubmitOrderEditPayload
 
   """
   Submits a draft pledge manager
@@ -13482,7 +14780,7 @@ type Mutation {
   submitVatNumber(input: SubmitVatNumberInput!): SubmitVatNumberPayload
 
   """
-  Confirm payment and complete the order
+  Confirm payment and complete the order or order edit
   """
   succeedOrder(input: SucceedOrderInput!): SucceedOrderPayload
 
@@ -13861,6 +15159,58 @@ Autogenerated input type of UnblockUser
 """
 input UnblockUserInput {
   blockUserId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of RequestAppleIdDisconnectEmail
+"""
+type RequestAppleIdDisconnectEmailPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of RequestAppleIdDisconnectEmail
+"""
+input RequestAppleIdDisconnectEmailInput {
+  email: Email
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of ConfirmAppleIdDisconnect
+"""
+type ConfirmAppleIdDisconnectPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of ConfirmAppleIdDisconnect
+"""
+input ConfirmAppleIdDisconnectInput {
+  email: Email!
+
+  password: String!
+
+  passwordConfirmation: String!
 
   """
   A unique identifier for the client performing the mutation.
@@ -15860,6 +17210,10 @@ input SetBackingFulfillmentStatusesInput {
 
   backerEntryPoint: [String!]
 
+  pmCompletedAtMin: String
+
+  pmCompletedAtMax: String
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -15989,6 +17343,10 @@ enum UserSetting {
   manual_play_videos
 
   superbacker_not_visible
+
+  confirmed_apple_id_disconnect_token
+
+  expired_apple_id_disconnect_token
 
   confirmed_watch_notice
 
@@ -17720,6 +19078,8 @@ input CompleteOnSessionCheckoutInput {
   """
   applePay: ApplePayInput
 
+  refParam: String
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -18694,7 +20054,12 @@ input SucceedOrderInput {
   """
   The order id
   """
-  orderId: ID!
+  orderId: ID
+
+  """
+  The order edit id
+  """
+  orderEditId: ID
 
   """
   A unique identifier for the client performing the mutation.
@@ -19657,7 +21022,7 @@ input CreateOrUpdatePreviewOrderInput {
   """
   The id of the location for the order
   """
-  locationId: ID!
+  locationId: ID
 
   """
   The type of order you are trying to preview, e.g. one with a crowdfunding backing
@@ -19681,23 +21046,280 @@ input CreateOrUpdatePreviewOrderInput {
 }
 
 """
-Customer entry points to be used when previewing an order.
+Autogenerated return type of SubmitOrderEdit
 """
-enum PreviewEntryPointEnum {
+type SubmitOrderEditPayload {
   """
-  crowdfunding
+  A unique identifier for the client performing the mutation.
   """
-  crowdfunding
+  clientMutationId: String
+
+  orderEdit: OrderEdit!
+}
+
+"""
+Autogenerated input type of SubmitOrderEdit
+"""
+input SubmitOrderEditInput {
+  """
+  The OrderEdit id
+  """
+  orderEditId: ID!
 
   """
-  late_pledge
+  A unique identifier for the client performing the mutation.
   """
-  late_pledge
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateDraftOrderEdit
+"""
+type CreateOrUpdateDraftOrderEditPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 
   """
-  pledge_manager
+  The order the edit will apply to
   """
-  pledge_manager
+  order: Order!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateDraftOrderEdit
+"""
+input CreateOrUpdateDraftOrderEditInput {
+  """
+  The id of the order that is being edited
+  """
+  orderId: ID!
+
+  """
+  The id of the existing addition to be updated
+  """
+  existingAdditionId: ID
+
+  """
+  The id of the existing upgrade to be updated
+  """
+  existingUpgradeId: ID
+
+  additions: [NewRewardInput!]
+
+  edits: [EditInput!]
+
+  upgrade: NewRewardInput
+
+  """
+  The ids of additions or upgrade to remove from the order edit
+  """
+  removalIds: [ID!]
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Data necessary to create an order edit addition or upgrade
+"""
+input NewRewardInput {
+  id: ID!
+
+  answers: [AnswerInput]
+
+  lineItemUpdates: [LineItemInput!]
+}
+
+"""
+Answer associated with a particular question and answerable.
+"""
+input AnswerInput {
+  questionId: ID!
+
+  response: [String!]
+
+  answerableId: ID
+}
+
+"""
+Line item belonging to a cart
+"""
+input LineItemInput {
+  id: ID!
+
+  optionValueIds: [ID!]
+
+  answers: [AnswerInput]
+}
+
+"""
+Data necessary to create an order edit line item edit
+"""
+input EditInput {
+  id: ID!
+
+  optionValueIds: [ID!]
+
+  answers: [EditAnswerInput]
+}
+
+input EditAnswerInput {
+  response: [String!]
+
+  answerId: ID
+}
+
+"""
+Autogenerated return type of RejectOrderEdit
+"""
+type RejectOrderEditPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The rejected order edit
+  """
+  orderEdit: OrderEdit!
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of RejectOrderEdit
+"""
+input RejectOrderEditInput {
+  """
+  The order edit id
+  """
+  orderEditId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CalculateOrderEditTotals
+"""
+type CalculateOrderEditTotalsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  order: Order!
+}
+
+"""
+Autogenerated input type of CalculateOrderEditTotals
+"""
+input CalculateOrderEditTotalsInput {
+  """
+  The OrderEdit id
+  """
+  orderEditId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AcceptOrderEdit
+"""
+type AcceptOrderEditPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The stripe payment intent client secret used to complete a payment
+  """
+  clientSecret: String!
+
+  """
+  The stripe payment intent status (if requires_action, it will be)
+  """
+  status: OnSessionPaymentIntentStatus!
+}
+
+"""
+Autogenerated input type of AcceptOrderEdit
+"""
+input AcceptOrderEditInput {
+  """
+  The order edit id
+  """
+  orderEditId: ID!
+
+  """
+  The stripe confirmation token used to complete a payment (web only)
+  """
+  stripeConfirmationTokenId: String
+
+  """
+  The stripe payment method id, starting with either `card_` or `pm_` (mobile only)
+  """
+  stripePaymentMethodId: String
+
+  """
+  Kickstarter internal payment source id. Expects a number (not the stripe id starting with `pm_`). Pass in when using a saved card (optional)
+  """
+  paymentSourceId: String
+
+  """
+  If the new payment source can be reused for future payments (optional)
+  """
+  paymentSourceReusable: Boolean
+
+  """
+  List of accepted stripe payment method types
+  """
+  paymentMethodTypes: [String!]
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CompleteZeroDollarOrderEdit
+"""
+type CompleteZeroDollarOrderEditPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Whether the state transition succeeded
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CompleteZeroDollarOrderEdit
+"""
+input CompleteZeroDollarOrderEditInput {
+  """
+  The order edit id
+  """
+  orderEditId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 }
 
 """
@@ -20084,28 +21706,6 @@ input SubmitResponsesInput {
 }
 
 """
-Line item belonging to a cart
-"""
-input LineItemInput {
-  id: ID!
-
-  optionValueIds: [ID!]
-
-  answers: [AnswerInput]
-}
-
-"""
-Answer associated with a particular question and answerable.
-"""
-input AnswerInput {
-  questionId: ID!
-
-  response: [String!]
-
-  answerableId: ID
-}
-
-"""
 Autogenerated return type of CreateBackerSurvey
 """
 type CreateBackerSurveyPayload {
@@ -20356,6 +21956,11 @@ input IssueRefundInput {
   intentClientSecret: String
 
   """
+  Refund charge id if a refund charge was issued prior to issuing refund
+  """
+  refundChargeId: ID
+
+  """
   Stripe Payment Source ID
   """
   creatorPaymentSourceId: ID
@@ -20377,127 +21982,59 @@ input IssueRefundInput {
 }
 
 """
-Required parameters in order to refund a pledge.
+Autogenerated return type of CreateRefundCharge
 """
-input RefundPledgeInput {
-  amount: Int
+type CreateRefundChargePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 
-  adjustmentParams: AdjustmentInput!
+  """
+  If `requires_action` is true, `client_secret` should be used to initiate additional client-side authentication steps
+  """
+  clientSecret: String
+
+  refundChargeId: String!
+
+  """
+  Whether this refund charge requires additional client-side authentication steps
+  """
+  requiresAction: Boolean!
+
+  state: String!
 }
 
 """
-Parameters to create adjustment to a backing's order, created when issuing a refund.
+Autogenerated input type of CreateRefundCharge
 """
-input AdjustmentInput {
+input CreateRefundChargeInput {
   """
-  Reason for adjustment
+  ID of associated backing
   """
-  reason: RefundReasonType!
+  backingId: ID!
+
+  refundAmountCents: Int!
 
   """
-  Objects to be removed from order
+  Stripe Payment Source ID
   """
-  removals: [RemovalInput!]!
+  creatorPaymentSourceId: ID
 
   """
-  Refunds to be issued
+  Stripe confirmation token ID
   """
-  refunds: [RefundInput!]!
-}
-
-"""
-An object removed as part of an adjustment
-"""
-input RemovalInput {
-  """
-  id of the reward associated with the removal
-  """
-  rewardId: Int!
+  confirmationTokenId: String
 
   """
-  id of object to be removed
+  Whether to reuse the saved payment source
   """
-  refundItemId: ID!
+  reusable: Boolean
 
   """
-  type of object to be removed (reward, reward item, or order item)
+  A unique identifier for the client performing the mutation.
   """
-  type: RefundAdjustmentType!
-}
-
-"""
-An amount to be refunded as part of an adjustment.
-"""
-input RefundInput {
-  """
-  id of object to be refunded
-  """
-  refundItemId: ID
-
-  """
-  type of refund
-  """
-  type: RefundAdjustmentType!
-
-  """
-  amount to be refunded
-  """
-  amount: Int!
-}
-
-"""
-Parameters to refund the non-voucher part of an order.
-"""
-input RefundOrderInput {
-  """
-  Shipments to be refunded
-  """
-  shipments: [ShipmentInput!]!
-
-  """
-  Cross sells to be refunded / removed
-  """
-  crossSells: [OrderOrderableInput!]!
-
-  """
-  Upgraded reward to be refunded / removed
-  """
-  upgradedReward: OrderOrderableInput
-}
-
-"""
-Parameters to refund a shipment.
-"""
-input ShipmentInput {
-  """
-  ID of the shipment
-  """
-  shipmentId: Int!
-
-  """
-  Amount to refund
-  """
-  amount: Int!
-}
-
-"""
-Parameters to refund an order orderable.
-"""
-input OrderOrderableInput {
-  """
-  ID of the order orderable
-  """
-  orderOrderableId: Int!
-
-  """
-  Whether the order orderable was removed
-  """
-  removed: Boolean!
-
-  """
-  Non-voucher amount to refund
-  """
-  amount: Int!
+  clientMutationId: String
 }
 
 """
@@ -20771,6 +22308,139 @@ input DeleteBackerReportSegmentInput {
 }
 
 """
+Autogenerated return type of CreateOrUpdateRecentSearch
+"""
+type CreateOrUpdateRecentSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: RecentSearch
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateRecentSearch
+"""
+input CreateOrUpdateRecentSearchInput {
+  """
+  The name of the search
+  """
+  name: String!
+
+  """
+  The search query as URL params
+  """
+  body: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteRecentSearch
+"""
+type DeleteRecentSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteRecentSearch
+"""
+input DeleteRecentSearchInput {
+  """
+  The ID of the recent search to delete
+  """
+  id: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateDiscoverSavedSearch
+"""
+type CreateOrUpdateDiscoverSavedSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: SavedSearchSegment
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateDiscoverSavedSearch
+"""
+input CreateOrUpdateDiscoverSavedSearchInput {
+  """
+  The name of the saved search
+  """
+  name: String
+
+  """
+  A set of search parameters to save for reëxecution
+  """
+  segmentBody: JSON
+
+  """
+  The ID of the segment to update. If null, a new segment will be created
+  """
+  segmentId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteDiscoverSavedSearch
+"""
+type DeleteDiscoverSavedSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteDiscoverSavedSearch
+"""
+input DeleteDiscoverSavedSearchInput {
+  """
+  The ID of the discover saved search segment to delete
+  """
+  segmentId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of DistributeDigitalAccessResources
 """
 type DistributeDigitalAccessResourcesPayload {
@@ -20815,6 +22485,56 @@ enum ResourcesTypeEnum {
   All backers share the same resource
   """
   SHARED
+}
+
+"""
+Autogenerated return type of SetUserBadges
+"""
+type SetUserBadgesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of SetUserBadges
+"""
+input SetUserBadgesInput {
+  badgeNames: [String!]!
+
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of FixUserMissingNotifications
+"""
+type FixUserMissingNotificationsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of FixUserMissingNotifications
+"""
+input FixUserMissingNotificationsInput {
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 }
 
 """

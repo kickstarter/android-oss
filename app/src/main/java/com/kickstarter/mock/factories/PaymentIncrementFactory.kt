@@ -100,6 +100,22 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.UNATTEMPTED,
+                    paymentIncrementableId = "1",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(15),
+                    stateReason = PaymentIncrementStateReason.REFUND_ADJUSTED
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.UNATTEMPTED_ADJUSTED,
+                    paymentIncrementableId = "1",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(15),
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
                     state = PaymentIncrementState.COLLECTED,
                     paymentIncrementableId = "2",
                     paymentIncrementableType = "pledge",
@@ -115,6 +131,14 @@ class PaymentIncrementFactory {
                     stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
                     refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$42.00", formattedAmountWithCode = "USD $70.75", amountAsFloat = "70.75", amountAsCents = "7075", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "70.75$"),
                     refundUpdatedAmountInProjectNativeCurrency = "18.00$"
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.COLLECTED_ADJUSTED,
+                    paymentIncrementableId = "2",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(30),
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
@@ -134,6 +158,14 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.CANCELLED_ADJUSTED,
+                    paymentIncrementableId = "4",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(60),
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
                     state = PaymentIncrementState.ERRORED,
                     paymentIncrementableId = "4",
                     paymentIncrementableType = "pledge",
@@ -143,6 +175,15 @@ class PaymentIncrementFactory {
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
                     state = PaymentIncrementState.REFUNDED,
+                    paymentIncrementableId = "4",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(60),
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__,
+                    refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$")
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    state = PaymentIncrementState.CHARGEBACK_LOST,
                     paymentIncrementableId = "4",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(60),

@@ -189,10 +189,16 @@ fun PaymentRow(
     ksCurrency: KSCurrency?
 ) {
     val isCollectedAdjusted =
-        paymentIncrement.state == PaymentIncrementState.COLLECTED &&
-            paymentIncrement.refundedAmount != null
+        (paymentIncrement.state == PaymentIncrementState.COLLECTED &&
+            paymentIncrement.refundedAmount != null) ||
+                (paymentIncrement.state == PaymentIncrementState.COLLECTED_ADJUSTED)
+    val isUnattemptedAdjusted =
+        (paymentIncrement.state == PaymentIncrementState.UNATTEMPTED &&
+            paymentIncrement.stateReason == PaymentIncrementStateReason.REFUND_ADJUSTED) ||
+                (paymentIncrement.state == PaymentIncrementState.UNATTEMPTED_ADJUSTED)
+
     val displayedAmount =
-        if (isCollectedAdjusted) {
+        if (isCollectedAdjusted || isUnattemptedAdjusted) {
             paymentIncrement.refundUpdatedAmountInProjectNativeCurrency
         } else if (paymentIncrement.state == PaymentIncrementState.REFUNDED) {
             paymentIncrement.refundedAmount?.amountFormattedInProjectNativeCurrency
@@ -216,7 +222,7 @@ fun PaymentRow(
                 style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
-            StatusBadge(paymentIncrement.state, paymentIncrement.stateReason, isCollectedAdjusted)
+            StatusBadge(paymentIncrement.state, paymentIncrement.stateReason, isCollectedAdjusted, isUnattemptedAdjusted)
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
@@ -270,7 +276,12 @@ private fun paymentIncrementStyledCurrency(
 }
 
 @Composable
-fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason, isCollectedAdjusted: Boolean) {
+fun StatusBadge(
+    state: PaymentIncrementState,
+    stateReason: PaymentIncrementStateReason,
+    isCollectedAdjusted: Boolean,
+    isUnattemptedAdjusted: Boolean
+    ) {
     when (state) {
         PaymentIncrementState.ERRORED -> {
             if (stateReason == PaymentIncrementStateReason.REQUIRES_ACTION) {
@@ -330,7 +341,7 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             }
         }
 
-        PaymentIncrementState.COLLECTED -> {
+        PaymentIncrementState.COLLECTED, PaymentIncrementState.COLLECTED_ADJUSTED -> {
             val isLight = !isSystemInDarkTheme()
             val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
             val textColor = if (isLight) colors.green_06 else colors.green_07
@@ -365,7 +376,12 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             }
         }
 
-        PaymentIncrementState.UNATTEMPTED -> {
+        PaymentIncrementState.UNATTEMPTED, PaymentIncrementState.UNATTEMPTED_ADJUSTED -> {
+            val labelRes = if (isUnattemptedAdjusted) {
+                R.string.fpo_scheduled_adjusted
+            } else {
+                R.string.Scheduled
+            }
             Box(
                 modifier = Modifier
                     .background(
@@ -384,14 +400,14 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             ) {
                 Text(
                     modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.Scheduled),
+                    text = stringResource(id = labelRes),
                     style = typographyV2.headingSM,
                     color = colors.blue_09
                 )
             }
         }
 
-        PaymentIncrementState.CANCELLED -> {
+        PaymentIncrementState.CANCELLED, PaymentIncrementState.CANCELLED_ADJUSTED -> {
             val isLight = !isSystemInDarkTheme()
             val backgroundColor = if (isLight) colors.grey_03 else colors.grey_05
             val textColor = colors.grey_10
@@ -445,6 +461,33 @@ fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementState
             }
         }
         PaymentIncrementState.UNKNOWN__ -> {}
-        PaymentIncrementState.CHARGEBACK_LOST -> {}
+        PaymentIncrementState.CHARGEBACK_LOST -> {
+            val isLight = !isSystemInDarkTheme()
+            val backgroundColor = if (isLight) colors.grey_03 else colors.grey_05
+            val textColor = colors.grey_10
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = backgroundColor,
+                        shape = RoundedCornerShape(
+                            topStart = dimensions.radiusSmall,
+                            topEnd = dimensions.radiusSmall,
+                            bottomStart = dimensions.radiusSmall,
+                            bottomEnd = dimensions.radiusSmall
+                        ),
+                    )
+                    .padding(
+                        horizontal = dimensions.paddingSmall,
+                        vertical = dimensions.paddingXSmall
+                    )
+            ) {
+                Text(
+                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+                    text = stringResource(id = R.string.project_view_pledge_status_dropped),
+                    style = typographyV2.headingSM,
+                    color = textColor
+                )
+            }
+        }
     }
 }

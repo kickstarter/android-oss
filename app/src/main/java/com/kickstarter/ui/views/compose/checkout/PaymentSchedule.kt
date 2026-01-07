@@ -189,10 +189,16 @@ fun PaymentRow(
     ksCurrency: KSCurrency?
 ) {
     val isCollectedAdjusted =
-        paymentIncrement.state == PaymentIncrementState.COLLECTED &&
-            paymentIncrement.refundedAmount != null
+        (paymentIncrement.state == PaymentIncrementState.COLLECTED &&
+                paymentIncrement.refundedAmount != null) ||
+                (paymentIncrement.state == PaymentIncrementState.COLLECTED_ADJUSTED)
+    val isUnattemptedAdjusted =
+        (paymentIncrement.state == PaymentIncrementState.UNATTEMPTED &&
+                paymentIncrement.stateReason == PaymentIncrementStateReason.REFUND_ADJUSTED) ||
+                (paymentIncrement.state == PaymentIncrementState.UNATTEMPTED_ADJUSTED)
+
     val displayedAmount =
-        if (isCollectedAdjusted) {
+        if (isCollectedAdjusted || isUnattemptedAdjusted) {
             paymentIncrement.refundUpdatedAmountInProjectNativeCurrency
         } else if (paymentIncrement.state == PaymentIncrementState.REFUNDED) {
             paymentIncrement.refundedAmount?.amountFormattedInProjectNativeCurrency
@@ -216,7 +222,7 @@ fun PaymentRow(
                 style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
-            StatusBadge(paymentIncrement.state, paymentIncrement.stateReason, isCollectedAdjusted)
+            StatusBadge(paymentIncrement.badgeData)
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
@@ -270,181 +276,40 @@ private fun paymentIncrementStyledCurrency(
 }
 
 @Composable
-fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason, isCollectedAdjusted: Boolean) {
-    when (state) {
-        PaymentIncrementState.ERRORED -> {
-            if (stateReason == PaymentIncrementStateReason.REQUIRES_ACTION) {
-                val isLight = !isSystemInDarkTheme()
-                val backgroundColor = if (isLight) colors.backgroundWarningSubtle else colors.yellow_03
-                val textColor = if (isLight) colors.textAccentYellowBold else colors.yellow_08
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = backgroundColor,
-                            shape = RoundedCornerShape(
-                                topStart = dimensions.radiusSmall,
-                                topEnd = dimensions.radiusSmall,
-                                bottomStart = dimensions.radiusSmall,
-                                bottomEnd = dimensions.radiusSmall
-                            ),
-                        )
-                        .padding(
-                            horizontal = dimensions.paddingSmall,
-                            vertical = dimensions.paddingXSmall
-                        )
-                ) {
-                    Text(
-                        modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                        text = stringResource(id = R.string.Authentication_required),
-                        style = typographyV2.headingSM,
-                        color = textColor
-                    )
-                }
-            } else {
-                val isLight = !isSystemInDarkTheme()
-                val backgroundColor = if (isLight) colors.red_light else colors.red_03
-                val textColor = if (isLight) colors.kds_alert else colors.red_07
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = backgroundColor,
-                            shape = RoundedCornerShape(
-                                topStart = dimensions.radiusSmall,
-                                topEnd = dimensions.radiusSmall,
-                                bottomStart = dimensions.radiusSmall,
-                                bottomEnd = dimensions.radiusSmall
-                            ),
-                        )
-                        .padding(
-                            horizontal = dimensions.paddingSmall,
-                            vertical = dimensions.paddingXSmall
-                        )
-                ) {
-                    Text(
-                        modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                        text = stringResource(id = R.string.Errored_payment),
-                        style = typographyV2.headingSM,
-                        color = textColor
-                    )
-                }
-            }
-        }
+fun StatusBadge(badgeData: PlotBadgeData) {
 
-        PaymentIncrementState.COLLECTED -> {
-            val isLight = !isSystemInDarkTheme()
-            val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
-            val textColor = if (isLight) colors.green_06 else colors.green_07
-            val labelRes = if (isCollectedAdjusted) {
-                R.string.Collected_adjusted
-            } else {
-                R.string.project_view_pledge_status_collected
-            }
+    val colors = mapStyleToColors(badgeData.style)
+    val backgroundColor = colors.first
+    val textColor = colors.second
 
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = backgroundColor,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = labelRes),
-                    style = typographyV2.headingSM,
-                    color = textColor
-                )
-            }
-        }
+    Box(
+        modifier = Modifier
+            .background(
+                color = backgroundColor,
+                shape = RoundedCornerShape(
+                    topStart = dimensions.radiusSmall,
+                    topEnd = dimensions.radiusSmall,
+                    bottomStart = dimensions.radiusSmall,
+                    bottomEnd = dimensions.radiusSmall
+                ),
+            )
+            .padding(
+                horizontal = dimensions.paddingSmall,
+                vertical = dimensions.paddingXSmall
+            )
+    ) {
+        Text(
+            modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+            text = badgeData.stateBadgeName,
+            style = typographyV2.headingSM,
+            color = textColor
+        )
+    }
+}
 
-        PaymentIncrementState.UNATTEMPTED -> {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = colors.blue_03,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.Scheduled),
-                    style = typographyV2.headingSM,
-                    color = colors.blue_09
-                )
-            }
-        }
-
-        PaymentIncrementState.CANCELLED -> {
-            val isLight = !isSystemInDarkTheme()
-            val backgroundColor = if (isLight) colors.grey_03 else colors.grey_05
-            val textColor = colors.grey_10
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = backgroundColor,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.project_view_pledge_status_canceled),
-                    style = typographyV2.headingSM,
-                    color = textColor
-                )
-            }
-        }
-        PaymentIncrementState.REFUNDED -> {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = colors.purple_03,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.Refunded),
-                    style = typographyV2.headingSM,
-                    color = colors.purple_08
-                )
-            }
-        }
-        PaymentIncrementState.UNKNOWN__ -> {}
-        PaymentIncrementState.CHARGEBACK_LOST -> {}
+fun mapStyleToColors(style: String): Pair<Color, Color> {
+    val isLight = !isSystemInDarkTheme()
+    when (style) {
+        // Logic to return Android colors for badge background and text
     }
 }

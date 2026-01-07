@@ -71,8 +71,10 @@ val green_07 = Color(0xFF025A34)
 val green_08 = Color(0xFF024629)
 val green_09 = Color(0xFF01321D)
 val green_10 = Color(0xFF011E11)
+val green_100 = Color(0xFFDAFFBB)
 val green_200 = Color(0xFFA3FF55)
 val green_400 = Color(0xFF71F701)
+val green_800 = Color(0xFF244F00)
 
 // Yellows
 val yellow_01 = Color(0xFFFEFAF0)
@@ -224,6 +226,7 @@ data class KSCustomColors(
     val navIcon: Color = Color.Unspecified,
     val navIconSelected: Color = Color.Unspecified,
     val navBackgroundHighlight: Color = Color.Unspecified,
+    val navBackgroundTapped: Color = Color.Unspecified,
 
     // OLD COLORS
     // Greens
@@ -363,7 +366,7 @@ val KSLightCustomColors = KSCustomColors(
     navBackgroundHighlight = green_200,
     navIcon = grey_800,
     navIconSelected = grey_800,
-
+    navBackgroundTapped = green_100,
 
     // OLD COLORS
     // Greens
@@ -500,6 +503,7 @@ val KSDarkCustomColors = KSCustomColors(
     navBackgroundHighlight = green_400,
     navIcon = grey_100,
     navIconSelected = grey_1000,
+    navBackgroundTapped = green_800,
 
     // OLD COLORS
     // Greens

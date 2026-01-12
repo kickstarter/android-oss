@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -110,19 +111,22 @@ fun ProjectImageFromURl(
 @Composable
 fun CircleImageFromURl(
     imageUrl: String?,
-    modifier: Modifier
+    modifier: Modifier,
+    contentDescription: String = "Contact picture",
+    colorFilter: ColorFilter? = null
 ) {
     Image(
         painter = rememberAsyncImagePainter(
             model = imageUrl
         ),
-        contentDescription = "Contact picture",
+        contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier = modifier
             .clip(CircleShape)
             .background(
                 colors.kds_support_300,
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.grid_1))
-            )
+            ),
+        colorFilter = colorFilter
     )
 }

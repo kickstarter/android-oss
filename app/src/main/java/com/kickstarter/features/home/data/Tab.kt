@@ -7,14 +7,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-sealed class Tab(val route: String, val icon: ImageVector) {
+sealed class Tab(val route: String, val icon: ImageVector? = null, val url: String? = null) {
     data object Home : Tab("home", home)
     data object Search : Tab("search", search)
-    data object Profile : Tab("profile", human)
-}
+    data object LogIn : Tab("login", human)
 
-// Hardcoded for now, could try to potentially load configuration from backend (SDUI approach or easiest version try remote config configuration)
-val tabs = listOf(Tab.Home, Tab.Search, Tab.Profile)
+    data class Profile(val avatarUrl: String) : Tab("profile", url = avatarUrl)
+}
 
 val home: ImageVector
     get() {

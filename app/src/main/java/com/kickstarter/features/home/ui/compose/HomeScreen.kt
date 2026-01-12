@@ -8,6 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,8 +49,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
-import com.kickstarter.features.home.data.tabs
+import com.kickstarter.ui.compose.CircleImageFromURl
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import kotlin.math.roundToInt
 
 @Composable
@@ -92,26 +95,51 @@ private fun FloatingCenterNavItem(
         )
     )
 
-    Image(
-        modifier = modifier
-            .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
-            .background(animatedBackgroundColor)
-            .padding(KSTheme.dimensions.navIconPadding)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick
-            ),
-        imageVector = tab.icon,
-        contentDescription = tab.route,
-        colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
-        else ColorFilter.tint(KSTheme.colors.navIcon)
-    )
+    if (tab.icon != null) {
+        Image(
+            modifier = modifier
+                .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
+                .background(animatedBackgroundColor)
+                .padding(KSTheme.dimensions.navIconPadding)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = onClick
+                ),
+            imageVector = tab.icon,
+            contentDescription = tab.route,
+            colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
+            else ColorFilter.tint(KSTheme.colors.navIcon)
+        )
+    }
+
+    // - User Avatar icon
+    if (tab.url != null) {
+        CircleImageFromURl(
+            imageUrl = tab.url,
+            contentDescription = tab.route,
+            modifier = modifier
+                .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
+                .background(animatedBackgroundColor)
+                .padding(KSTheme.dimensions.navIconPadding / 2)
+                .border(
+                    width = KSTheme.dimensions.strokeWidth,
+                    color = KSTheme.colors.navIconBorderAvatar,
+                    shape = CircleShape
+                )
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = onClick
+                )
+        )
+    }
 }
 
 @Composable
 fun FloatingCenterBottomNav(
     nav: NavHostController,
+    tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
 ) {
     val backStack by nav.currentBackStackEntryAsState()
     val current = backStack?.destination?.route
@@ -199,6 +227,7 @@ fun FloatingCenterBottomNav(
                                 tab = tab,
                                 selected = selected,
                                 onClick = {
+                                    // TODO: should be a callback floating Nav should have no knowledge of navigation graph.
                                     nav.navigate(tab.route) {
                                         popUpTo(nav.graph.findStartDestination().id) {
                                             saveState = true

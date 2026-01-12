@@ -269,7 +269,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
     //Compose Coil
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:34.3.0')

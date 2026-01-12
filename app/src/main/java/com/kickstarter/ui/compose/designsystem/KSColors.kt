@@ -361,7 +361,7 @@ val KSLightCustomColors = KSCustomColors(
     iconInfo = blue_07,
     iconDisabled = grey_05,
 
-    // BottomNav light color schema
+    // Floating BottomNav light color schema
     navBackground = white,
     navBackgroundHighlight = green_200,
     navIcon = grey_800,
@@ -498,7 +498,7 @@ val KSDarkCustomColors = KSCustomColors(
     iconInfo = blue_03,
     iconDisabled = grey_06,
 
-    // BottomNav Dark color schema
+    // Floating BottomNav Dark color schema
     navBackground = grey_900,
     navBackgroundHighlight = green_400,
     navIcon = grey_100,

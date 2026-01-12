@@ -16,9 +16,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -41,7 +41,6 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -95,9 +94,9 @@ private fun FloatingCenterNavItem(
 
     Image(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
             .background(animatedBackgroundColor)
-            .padding(8.dp)
+            .padding(KSTheme.dimensions.navIconPadding)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -145,43 +144,42 @@ fun FloatingCenterBottomNav(
         Modifier
             .background(Color.Transparent)
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 24.dp),
+            .padding(horizontal = KSTheme.dimensions.navPadding, vertical = KSTheme.dimensions.paddingLarge),
         contentAlignment = Alignment.Center
     ) {
 
         Box(
             modifier = Modifier
-                .width(152.dp)
+                .width(KSTheme.dimensions.navWidth)
                 .dropShadow(
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(KSTheme.dimensions.navCorner),
                     shadow = Shadow(
-                        radius = 16.dp,
-                        spread = 0.dp,
+                        radius = KSTheme.dimensions.navCorner,
+                        spread = KSTheme.dimensions.navShadowXOffset,
                         color = KSTheme.colors.kds_black.copy(alpha = 0.28f),
-                        offset = DpOffset(x = 0.dp, 6.dp)
+                        offset = DpOffset(x = KSTheme.dimensions.navShadowXOffset, KSTheme.dimensions.navShadowYOffset)
                     )
                 )
                 .background(
                     color = KSTheme.colors.navBackground,
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(KSTheme.dimensions.navCorner)
                 )
         ) {
-            // - Using BoxWithConstraints as a canvas to draw the sliding animation
+
             Box {
                 // - Sliding animated container, simulating background of FloatingPillNavItem
                 Box(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(KSTheme.dimensions.navIconPadding)
                         .offset { IntOffset(indicatorOffset.value.toInt(), 0) }
-                        .width(40.dp)
-                        .height(40.dp)
-                        .background(activeColor, RoundedCornerShape(8.dp))
+                        .size(KSTheme.dimensions.navIconSize)
+                        .background(activeColor, RoundedCornerShape(KSTheme.dimensions.navCornerIcon))
                 )
 
                 // - BottomNav Layout
                 Row(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(KSTheme.dimensions.navPadding)
                         .fillMaxWidth()
                         .onGloballyPositioned { coordinates -> rowCoordinates = coordinates },
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -212,7 +210,7 @@ fun FloatingCenterBottomNav(
                             )
                         }
                         if (index < tabs.size - 1) {
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(KSTheme.dimensions.navBetween))
                         }
                     }
                 }

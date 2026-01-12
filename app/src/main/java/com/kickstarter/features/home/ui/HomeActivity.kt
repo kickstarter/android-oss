@@ -35,6 +35,7 @@ import com.kickstarter.features.home.ui.compose.FloatingCenterBottomNav
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.transition
@@ -63,7 +64,10 @@ class HomeActivity : ComponentActivity() {
         }
 
         setContent {
-            App()
+            val darModeEnabled = this.isDarkModeEnabled(env = environment)
+            KickstarterApp(useDarkTheme = darModeEnabled) {
+                App()
+            }
         }
 
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {

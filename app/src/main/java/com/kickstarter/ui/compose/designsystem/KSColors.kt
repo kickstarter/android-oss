@@ -55,6 +55,10 @@ val grey_08 = Color(0xFF3C3C3C)
 val grey_09 = Color(0xFF2C2C2C)
 val grey_10 = Color(0xFF171717)
 val grey_11 = Color(0xFF212121)
+val grey_100 = Color(0xFFF3F3F3)
+val grey_800 = Color(0xFF454545)
+val grey_900 = Color(0xFF272727)
+val grey_1000 = Color(0xFF191919)
 
 // Greens
 val green_01 = Color(0xFFEBFEF6)
@@ -67,6 +71,10 @@ val green_07 = Color(0xFF025A34)
 val green_08 = Color(0xFF024629)
 val green_09 = Color(0xFF01321D)
 val green_10 = Color(0xFF011E11)
+val green_100 = Color(0xFFDAFFBB)
+val green_200 = Color(0xFFA3FF55)
+val green_400 = Color(0xFF71F701)
+val green_800 = Color(0xFF244F00)
 
 // Yellows
 val yellow_01 = Color(0xFFFEFAF0)
@@ -213,6 +221,13 @@ data class KSCustomColors(
     val iconInfo: Color = Color.Unspecified,
     val iconDisabled: Color = Color.Unspecified,
 
+    // BottomNav semantic color naming
+    val navBackground: Color = Color.Unspecified,
+    val navIcon: Color = Color.Unspecified,
+    val navIconSelected: Color = Color.Unspecified,
+    val navBackgroundHighlight: Color = Color.Unspecified,
+    val navBackgroundTapped: Color = Color.Unspecified,
+
     // OLD COLORS
     // Greens
     val kds_create_100: Color = Color.Unspecified,
@@ -346,6 +361,13 @@ val KSLightCustomColors = KSCustomColors(
     iconInfo = blue_07,
     iconDisabled = grey_05,
 
+    // Floating BottomNav light color schema
+    navBackground = white,
+    navBackgroundHighlight = green_200,
+    navIcon = grey_800,
+    navIconSelected = grey_800,
+    navBackgroundTapped = green_100,
+
     // OLD COLORS
     // Greens
     kds_create_100 = kds_create_100,
@@ -475,6 +497,13 @@ val KSDarkCustomColors = KSCustomColors(
     iconInverse = grey_08,
     iconInfo = blue_03,
     iconDisabled = grey_06,
+
+    // Floating BottomNav Dark color schema
+    navBackground = grey_900,
+    navBackgroundHighlight = green_400,
+    navIcon = grey_100,
+    navIconSelected = grey_1000,
+    navBackgroundTapped = green_800,
 
     // OLD COLORS
     // Greens

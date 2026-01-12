@@ -1,5 +1,3 @@
-@file:Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
-
 package com.kickstarter.features.home.ui.compose
 
 import android.content.res.Configuration
@@ -15,13 +13,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -35,8 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -44,7 +41,6 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -52,17 +48,20 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.tabs
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppPreview() {
-    Box(
-        modifier = Modifier.background(Color.LightGray)
-    ) {
-        val nav = rememberNavController()
-        FloatingCenterBottomNav(nav)
+    KSTheme {
+        Box(
+            modifier = Modifier.background(Color.LightGray)
+        ) {
+            val nav = rememberNavController()
+            FloatingCenterBottomNav(nav)
+        }
     }
 }
 
@@ -76,10 +75,10 @@ private fun FloatingCenterNavItem(
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
 
-    val activeColor = Color(0xFFB6F36C)
+    val activeColor = KSTheme.colors.navBackgroundHighlight
 
     val targetColor = when {
-        pressed -> activeColor.copy(alpha = 0.5f)
+        pressed -> KSTheme.colors.navBackgroundTapped
         else -> {
             activeColor.copy(alpha = 0f)
         }
@@ -95,9 +94,9 @@ private fun FloatingCenterNavItem(
 
     Image(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
             .background(animatedBackgroundColor)
-            .padding(8.dp)
+            .padding(KSTheme.dimensions.navIconPadding)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -105,6 +104,8 @@ private fun FloatingCenterNavItem(
             ),
         imageVector = tab.icon,
         contentDescription = tab.route,
+        colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
+        else ColorFilter.tint(KSTheme.colors.navIcon)
     )
 }
 
@@ -118,7 +119,7 @@ fun FloatingCenterBottomNav(
 
     // - animation offSet state for sliding container
     val indicatorOffset = remember { Animatable(0f) }
-    val activeColor = Color(0xFFB6F36C)
+    val activeColor = KSTheme.colors.navBackgroundHighlight
 
     // - State to store the final layout data of the items and the Row itself
     val itemLayouts = remember { mutableStateMapOf<Int, IntOffset>() }
@@ -143,43 +144,42 @@ fun FloatingCenterBottomNav(
         Modifier
             .background(Color.Transparent)
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 24.dp),
+            .padding(horizontal = KSTheme.dimensions.navPadding, vertical = KSTheme.dimensions.paddingLarge),
         contentAlignment = Alignment.Center
     ) {
 
         Box(
             modifier = Modifier
-                .width(152.dp)
+                .width(KSTheme.dimensions.navWidth)
                 .dropShadow(
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(KSTheme.dimensions.navCorner),
                     shadow = Shadow(
-                        radius = 16.dp,
-                        spread = 0.dp,
-                        color = Color(0x40000000),
-                        offset = DpOffset(x = 0.dp, 6.dp)
+                        radius = KSTheme.dimensions.navCorner,
+                        spread = KSTheme.dimensions.navShadowXOffset,
+                        color = KSTheme.colors.kds_black.copy(alpha = 0.28f),
+                        offset = DpOffset(x = KSTheme.dimensions.navShadowXOffset, KSTheme.dimensions.navShadowYOffset)
                     )
                 )
                 .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(16.dp)
+                    color = KSTheme.colors.navBackground,
+                    shape = RoundedCornerShape(KSTheme.dimensions.navCorner)
                 )
         ) {
-            // - Using BoxWithConstraints as a canvas to draw the sliding animation
-            BoxWithConstraints {
+
+            Box {
                 // - Sliding animated container, simulating background of FloatingPillNavItem
                 Box(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(KSTheme.dimensions.navIconPadding)
                         .offset { IntOffset(indicatorOffset.value.toInt(), 0) }
-                        .width(40.dp)
-                        .height(40.dp)
-                        .background(activeColor, RoundedCornerShape(8.dp))
+                        .size(KSTheme.dimensions.navIconSize)
+                        .background(activeColor, RoundedCornerShape(KSTheme.dimensions.navCornerIcon))
                 )
 
                 // - BottomNav Layout
                 Row(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(KSTheme.dimensions.navPadding)
                         .fillMaxWidth()
                         .onGloballyPositioned { coordinates -> rowCoordinates = coordinates },
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -210,7 +210,7 @@ fun FloatingCenterBottomNav(
                             )
                         }
                         if (index < tabs.size - 1) {
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(KSTheme.dimensions.navBetween))
                         }
                     }
                 }

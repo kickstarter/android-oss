@@ -79,6 +79,17 @@ data class KSDimensions(
     val bottomSheetMaxHeight: Dp = Dp.Unspecified,
     val secretRewardBadgeOffsetY: Dp = Dp.Unspecified,
     val paddingXXXLarge: Dp = Dp.Unspecified,
+
+    // Floating BottomNav Semantic dimensions
+    val navWidth: Dp = Dp.Unspecified,
+    val navCorner: Dp = Dp.Unspecified,
+    val navPadding: Dp = Dp.Unspecified,
+    val navBetween: Dp = Dp.Unspecified,
+    val navIconSize: Dp = Dp.Unspecified,
+    val navIconPadding: Dp = Dp.Unspecified,
+    val navCornerIcon: Dp = Dp.Unspecified,
+    val navShadowYOffset: Dp = Dp.Unspecified,
+    val navShadowXOffset: Dp = Dp.Unspecified,
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -156,6 +167,17 @@ val KSStandardDimensions = KSDimensions(
     activityFeedProjectImageHeight = 54.dp,
     bottomSheetMinHeight = 200.dp,
     bottomSheetMaxHeight = 770.dp,
-    secretRewardBadgeOffsetY = 14.dp
+    secretRewardBadgeOffsetY = 14.dp,
+
+    // Floating BottomNav Semantic dimensions
+    navWidth = 152.dp,
+    navCorner = 16.dp,
+    navCornerIcon = 8.dp,
+    navPadding = 8.dp,
+    navBetween = 8.dp,
+    navIconSize = 40.dp,
+    navIconPadding = 8.dp,
+    navShadowYOffset = 6.dp,
+    navShadowXOffset = 0.dp,
 
 )

@@ -1,6 +1,5 @@
 package com.kickstarter.features.home.ui
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -27,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -45,15 +43,6 @@ import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.transition
 import kotlin.getValue
 import kotlin.random.Random
-
-@Composable
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun AppPreview() {
-    KickstarterApp {
-        App()
-    }
-}
 
 class HomeActivity : ComponentActivity() {
 
@@ -75,9 +64,13 @@ class HomeActivity : ComponentActivity() {
             val darModeEnabled = this.isDarkModeEnabled(env = environment)
             val homeUIState by viewModel.homeUIState.collectAsStateWithLifecycle()
 
-            val tabs = if (homeUIState.isLoggedInUser)
-                listOf(Tab.Home, Tab.Search, Tab.Profile(avatarUrl = homeUIState.userAvatarUrl))
-            else listOf(Tab.Home, Tab.Search, Tab.LogIn)
+            val tabs = remember(homeUIState.isLoggedInUser) {
+                listOf(
+                    Tab.Home,
+                    Tab.Search,
+                    if (homeUIState.userAvatarUrl.isNotEmpty()) Tab.Profile(homeUIState.userAvatarUrl) else Tab.LogIn
+                )
+            }
 
             KickstarterApp(useDarkTheme = darModeEnabled) {
                 App(tabs = tabs)

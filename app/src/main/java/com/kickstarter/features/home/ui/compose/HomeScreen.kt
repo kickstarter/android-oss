@@ -51,13 +51,12 @@ import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.ui.compose.CircleImageFromURl
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun AppPreview() {
+fun FloatingCenterBottomNavPreview() {
     KSTheme {
         Box(
             modifier = Modifier.background(Color.LightGray)

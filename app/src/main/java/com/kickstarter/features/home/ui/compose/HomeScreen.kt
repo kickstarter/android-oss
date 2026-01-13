@@ -183,7 +183,7 @@ fun FloatingCenterBottomNav(
                     shadow = Shadow(
                         radius = KSTheme.dimensions.navCorner,
                         spread = KSTheme.dimensions.navShadowXOffset,
-                        color = KSTheme.colors.kds_black.copy(alpha = 0.28f),
+                        color = KSTheme.colors.navBoxShadow.copy(alpha = 0.28f),
                         offset = DpOffset(x = KSTheme.dimensions.navShadowXOffset, KSTheme.dimensions.navShadowYOffset)
                     )
                 )

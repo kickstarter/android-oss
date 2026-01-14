@@ -12,7 +12,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,15 +40,18 @@ import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
+import com.kickstarter.features.home.data.TabIcon
 import com.kickstarter.ui.compose.CircleImageFromURl
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlin.math.roundToInt
@@ -56,7 +59,7 @@ import kotlin.math.roundToInt
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun FloatingCenterBottomNavPreview() {
+fun FloatingCenterBottomNavDefaultPreview() {
     KSTheme {
         Box(
             modifier = Modifier.background(Color.LightGray)
@@ -94,44 +97,62 @@ private fun FloatingCenterNavItem(
         )
     )
 
-    if (tab.icon != null) {
-        Image(
-            modifier = modifier
-                .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
-                .background(animatedBackgroundColor)
-                .padding(KSTheme.dimensions.navIconPadding)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClick
-                ),
-            imageVector = tab.icon,
-            contentDescription = tab.route,
-            colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
-            else ColorFilter.tint(KSTheme.colors.navIcon)
-        )
-    }
-
-    // - User Avatar icon
-    if (tab.url != null) {
-        CircleImageFromURl(
-            imageUrl = tab.url,
-            contentDescription = tab.route,
-            modifier = modifier
-                .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
-                .background(animatedBackgroundColor)
-                .padding(KSTheme.dimensions.navIconPadding / 2)
-                .border(
-                    width = KSTheme.dimensions.strokeWidth,
-                    color = KSTheme.colors.navIconBorderAvatar,
-                    shape = CircleShape
-                )
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClick
-                )
-        )
+    when (tab.icon) {
+        is TabIcon.Static -> {
+            Image(
+                modifier = modifier
+                    .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
+                    .background(animatedBackgroundColor)
+                    .padding(KSTheme.dimensions.navIconPadding)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = onClick
+                    ),
+                imageVector = tab.icon.vector,
+                contentDescription = tab.route,
+                colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
+                else ColorFilter.tint(KSTheme.colors.navIcon)
+            )
+        }
+        is TabIcon.Dynamic -> {
+            // - TODO: protect with a local fallback resource image in case URL fails or not connectivity
+            CircleImageFromURl(
+                imageUrl = tab.icon.url,
+                contentDescription = tab.route,
+                modifier = modifier
+                    .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
+                    .background(animatedBackgroundColor)
+                    .padding(KSTheme.dimensions.navIconPadding / 2)
+                    .border(
+                        width = KSTheme.dimensions.strokeWidth,
+                        color = KSTheme.colors.navIconBorderAvatar,
+                        shape = CircleShape
+                    )
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = onClick
+                    )
+            )
+        }
+        is TabIcon.Resource -> {
+            Image(
+                modifier = modifier
+                    .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
+                    .background(animatedBackgroundColor)
+                    .padding(KSTheme.dimensions.navIconPadding)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = onClick
+                    ),
+                painter = painterResource(id = tab.icon.id),
+                contentDescription = tab.route,
+                colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
+                else ColorFilter.tint(KSTheme.colors.navIcon)
+            )
+        }
     }
 }
 
@@ -209,7 +230,6 @@ fun FloatingCenterBottomNav(
                         .padding(KSTheme.dimensions.navPadding)
                         .fillMaxWidth()
                         .onGloballyPositioned { coordinates -> rowCoordinates = coordinates },
-                    horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     tabs.forEachIndexed { index, tab ->
@@ -223,6 +243,7 @@ fun FloatingCenterBottomNav(
                                 }
                         ) {
                             FloatingCenterNavItem(
+                                modifier = Modifier.sizeIn(maxWidth = 40.dp),
                                 tab = tab,
                                 selected = selected,
                                 onClick = {

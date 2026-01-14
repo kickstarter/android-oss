@@ -86,6 +86,11 @@ class HomeActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Home Screen composable parent UI
+ *
+ * @param tabs: Contains the list of tabs represented on the floating bottomNav
+ */
 @Composable
 fun App(
     tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)

@@ -1,5 +1,6 @@
 package com.kickstarter.features.home.data
 
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
@@ -7,12 +8,41 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-sealed class Tab(val route: String, val icon: ImageVector? = null, val url: String? = null) {
-    data object Home : Tab("home", home)
-    data object Search : Tab("search", search)
-    data object LogIn : Tab("login", human)
+/**
+ * Defines wrapper for visual assets
+ *  Static: Given icon (human,search,home ...)
+ *  Dynamic: Url string of Image
+ *  Resource: Local resource
+ */
+sealed interface TabIcon {
+    data class Static(val vector: ImageVector) : TabIcon
+    data class Dynamic(val url: String) : TabIcon
+    data class Resource(@DrawableRes val id: Int) : TabIcon // - Resource type not used as of today but seems likely to happen
+}
 
-    data class Profile(val avatarUrl: String) : Tab("profile", url = avatarUrl)
+/**
+ * Defines logical unit for Bottom Navigation tab Item
+ */
+sealed class Tab(
+    val route: String,
+    val icon: TabIcon // Single source of truth
+) {
+    data object Home : Tab("home", TabIcon.Static(home))
+    data object Search : Tab("search", TabIcon.Static(search))
+    data object LogIn : Tab("login", TabIcon.Static(human))
+
+    /**
+     * Profile Tab requires dynamic type, as the url will change depending on User profile
+     */
+    data class Profile(val avatarUrl: String) : Tab(
+        route = "profile",
+        icon = TabIcon.Dynamic(avatarUrl)
+    )
+
+//    data class Messages(@DrawableRes val id: Int) : Tab(
+//        route = "messages",
+//        icon = TabIcon.Resource(id)
+//    )
 }
 
 val home: ImageVector

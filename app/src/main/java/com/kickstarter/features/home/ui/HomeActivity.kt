@@ -1,5 +1,6 @@
 package com.kickstarter.features.home.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -83,6 +85,20 @@ class HomeActivity : ComponentActivity() {
                 this@HomeActivity.transition(TransitionUtils.slideInFromLeft())
             }
         })
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun HomeActivityPreview() {
+    val tabs = listOf(
+        Tab.Home,
+        Tab.Search,
+        Tab.LogIn
+    )
+    KickstarterApp {
+        App(tabs = tabs)
     }
 }
 

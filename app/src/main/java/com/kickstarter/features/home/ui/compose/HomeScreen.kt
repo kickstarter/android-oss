@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,16 +35,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.round
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -54,7 +51,6 @@ import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.TabIcon
 import com.kickstarter.ui.compose.KSCircleImage
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -168,26 +164,20 @@ fun FloatingCenterBottomNav(
     nav: NavHostController,
     tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
 ) {
+    // TODO: move navigation references to parent, FloatingCenterBottomNav should only have a callback for ie onTabSelected: (Tab) -> Unit
     val backStack by nav.currentBackStackEntryAsState()
     val current = backStack?.destination?.route
-    val activeIndex = tabs.indexOfFirst { it.route == current }.coerceAtLeast(0)
+    val activeIndex = remember(current, tabs) {
+        tabs.indexOfFirst { it.route == current }.coerceAtLeast(0)
+    }
 
-    // - animation offSet state for sliding container
+    // - animation offSet X for sliding container
     val indicatorOffset = remember { Animatable(0f) }
-    val activeColor = KSTheme.colors.navBackgroundHighlight
+    // - coordinates directory data sample: Index 0 (Home) is at 40.0f || Index 1 (Search) is at 120.0f ...
+    val tabsXCoordinate = remember { mutableStateMapOf<Int, Float>() }
 
-    // - State to store the final layout data of the items and the Row itself
-    val itemLayouts = remember { mutableStateMapOf<Int, IntOffset>() }
-    val itemWidths = remember { mutableStateMapOf<Int, Int>() }
-    var rowCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
-
-    // - Animates the indicator whenever the active tab/layout/coordinates changes
-    LaunchedEffect(activeIndex, itemLayouts.size, rowCoordinates) {
-        val rowX = rowCoordinates?.positionInWindow()?.x?.roundToInt() ?: 0
-        val itemWindowOffset = itemLayouts[activeIndex] ?: return@LaunchedEffect
-        val targetX = (itemWindowOffset.x - rowX).toFloat()
-
-        if (targetX >= 0f) {
+    LaunchedEffect(activeIndex, tabsXCoordinate.size) {
+        tabsXCoordinate[activeIndex]?.let { targetX ->
             indicatorOffset.animateTo(
                 targetValue = targetX,
                 animationSpec = spring(dampingRatio = 0.7f, stiffness = 300f)
@@ -221,53 +211,58 @@ fun FloatingCenterBottomNav(
                 )
         ) {
 
-            Box {
-                // - Sliding animated container simulating background of FloatingPillNavItem
-                Box(
-                    modifier = Modifier
-                        .padding(KSTheme.dimensions.navIconPadding)
-                        .offset { IntOffset(indicatorOffset.value.toInt(), 0) }
-                        .size(KSTheme.dimensions.navIconSize)
-                        .background(activeColor, RoundedCornerShape(KSTheme.dimensions.navCornerIcon))
-                )
+            // - Layout of sliding animated container simulating background of FloatingPillNavItem
+            Box(
+                modifier = Modifier
+                    .padding(KSTheme.dimensions.navIconPadding)
+                    .size(KSTheme.dimensions.navIconSize)
+                    .graphicsLayer { // - animated container x-offset
+                        translationX = indicatorOffset.value
+                    }
+                    .background(
+                        color = KSTheme.colors.navBackgroundHighlight,
+                        shape = RoundedCornerShape(KSTheme.dimensions.navCornerIcon)
+                    )
+            )
 
-                // - BottomNav Layout
-                Row(
-                    modifier = Modifier
-                        .padding(KSTheme.dimensions.navPadding)
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates -> rowCoordinates = coordinates },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    tabs.forEachIndexed { index, tab ->
-                        val selected = current == tab.route
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .onGloballyPositioned { coordinates ->
-                                    itemLayouts[index] = coordinates.positionInWindow().round()
-                                    itemWidths[index] = coordinates.size.width
+            // - BottomNav Layout
+            Row(
+                modifier = Modifier
+                    .padding(KSTheme.dimensions.navPadding)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                tabs.forEachIndexed { index, tab ->
+                    val selected = current == tab.route
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .onGloballyPositioned { coordinates ->
+                                val xPos = coordinates.positionInParent().x
+                                if (tabsXCoordinate[index] != xPos) {
+                                    tabsXCoordinate[index] = xPos
                                 }
-                        ) {
-                            FloatingCenterNavItem(
-                                modifier = Modifier.sizeIn(maxWidth = 40.dp),
-                                tab = tab,
-                                selected = selected,
-                                onClick = {
-                                    // TODO: should be a callback floating Nav should have no knowledge of navigation graph.
-                                    nav.navigate(tab.route) {
-                                        popUpTo(nav.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        FloatingCenterNavItem(
+                            modifier = Modifier.sizeIn(maxWidth = 40.dp),
+                            tab = tab,
+                            selected = selected,
+                            onClick = {
+                                // TODO: should be a callback floating Nav should have no knowledge of navigation graph.
+                                nav.navigate(tab.route) {
+                                    popUpTo(nav.graph.findStartDestination().id) {
+                                        saveState = true
                                     }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                            )
-                        }
-                        if (index < tabs.size - 1) {
-                            Spacer(modifier = Modifier.width(KSTheme.dimensions.navBetween))
-                        }
+                            }
+                        )
+                    }
+                    if (index < tabs.size - 1) {
+                        Spacer(modifier = Modifier.width(KSTheme.dimensions.navBetween))
                     }
                 }
             }

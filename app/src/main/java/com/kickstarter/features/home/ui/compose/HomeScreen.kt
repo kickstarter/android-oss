@@ -52,20 +52,36 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.TabIcon
-import com.kickstarter.ui.compose.CircleImageFromURl
+import com.kickstarter.ui.compose.KSCircleImage
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun FloatingCenterBottomNavDefaultPreview() {
+fun FloatingCenterBottomNavLoggedOutPreview() {
     KSTheme {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
             val nav = rememberNavController()
-            FloatingCenterBottomNav(nav)
+            val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.LogIn)
+            FloatingCenterBottomNav(nav, tabs)
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun FloatingCenterBottomNavLoggedInPreview() {
+    KSTheme {
+        Box(
+            modifier = Modifier.background(Color.LightGray)
+        ) {
+            val nav = rememberNavController()
+            val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.Profile(""))
+            FloatingCenterBottomNav(nav, tabs)
         }
     }
 }
@@ -116,14 +132,14 @@ private fun FloatingCenterNavItem(
             )
         }
         is TabIcon.Dynamic -> {
-            // - TODO: protect with a local fallback resource image in case URL fails or not connectivity
-            CircleImageFromURl(
-                imageUrl = tab.icon.url,
+            KSCircleImage(
+                url = tab.icon.url,
                 contentDescription = tab.route,
                 modifier = modifier
                     .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
                     .background(animatedBackgroundColor)
                     .padding(KSTheme.dimensions.navIconPadding / 2)
+                    .sizeIn(maxWidth = KSTheme.dimensions.navAvatarSize, maxHeight = KSTheme.dimensions.navAvatarSize)
                     .border(
                         width = KSTheme.dimensions.strokeWidth,
                         color = KSTheme.colors.navIconBorderAvatar,

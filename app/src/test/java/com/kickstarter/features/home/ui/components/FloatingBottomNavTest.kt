@@ -133,21 +133,22 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
             .getUnclippedBoundsInRoot()
             .left
 
-        val slidingContainerCoord = composeTestRule
-            .onNodeWithTag(SLIDING_INDICATOR)
-            .getUnclippedBoundsInRoot()
-            .left
-
         composeTestRule
             .onNodeWithTag(tabTag(Tab.Search))
             .performClick()
 
         composeTestRule.waitForIdle()
 
+        // - Capture coordinate once animation is finished
+        val finalSlidingContainerX = composeTestRule
+            .onNodeWithTag(SLIDING_INDICATOR)
+            .getUnclippedBoundsInRoot()
+            .left
+
         assertEquals(
             "The indicator pill is not aligned with the active tab",
             searchTabCoord.value,
-            slidingContainerCoord.value,
+            finalSlidingContainerX.value,
             0.0f
         )
     }

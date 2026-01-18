@@ -25,7 +25,7 @@ sealed interface TabIcon {
  */
 sealed class Tab(
     val route: String,
-    val icon: TabIcon // Single source of truth
+    val icon: TabIcon
 ) {
     data object Home : Tab("home", TabIcon.Static(home))
     data object Search : Tab("search", TabIcon.Static(search))

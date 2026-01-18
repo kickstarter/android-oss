@@ -1,4 +1,4 @@
-package com.kickstarter.features.home.ui.compose
+package com.kickstarter.features.home.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
@@ -47,6 +48,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.TabIcon
+import com.kickstarter.features.home.ui.components.FloatingBottomNavTestTags.SLIDING_INDICATOR
+import com.kickstarter.features.home.ui.components.FloatingBottomNavTestTags.tabTag
 import com.kickstarter.ui.compose.KSCircleImage
 import com.kickstarter.ui.compose.designsystem.KSTheme
 
@@ -78,6 +81,11 @@ fun FloatingBottomNavLoggedInPreview() {
             FloatingBottomNav(nav, tabs)
         }
     }
+}
+
+object FloatingBottomNavTestTags {
+    fun tabTag(tab: Tab) = "tab_route${tab.route} tab_icon${tab.icon}"
+    const val SLIDING_INDICATOR = "sliding_indicator"
 }
 
 @Composable
@@ -162,7 +170,7 @@ fun FloatingBottomNav(
     nav: NavHostController,
     tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
 ) {
-    // TODO: move navigation references to parent, FloatingCenterBottomNav should only have a callback for ie onTabSelected: (Tab) -> Unit
+    // TODO: hoisting the navigation logic, FloatingCenterBottomNav should only have a callback for ie onTabSelected: (Tab) -> Unit
     val backStack by nav.currentBackStackEntryAsState()
     val current = backStack?.destination?.route
     val activeIndex = remember(current, tabs) {
@@ -221,6 +229,7 @@ fun FloatingBottomNav(
                         color = KSTheme.colors.navBackgroundHighlight,
                         shape = RoundedCornerShape(KSTheme.dimensions.navCornerIcon)
                     )
+                    .testTag(SLIDING_INDICATOR),
             )
 
             // - BottomNav Layout
@@ -244,7 +253,9 @@ fun FloatingBottomNav(
                         contentAlignment = Alignment.Center
                     ) {
                         FloatingCenterNavItem(
-                            modifier = Modifier.sizeIn(maxWidth = 40.dp),
+                            modifier = Modifier
+                                .sizeIn(maxWidth = 40.dp)
+                                .testTag(tabTag(tab)),
                             tab = tab,
                             selected = selected,
                             onClick = {

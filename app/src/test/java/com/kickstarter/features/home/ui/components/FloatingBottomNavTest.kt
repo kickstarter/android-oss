@@ -4,14 +4,16 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.createGraph
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.ui.components.FloatingBottomNavTestTags.SLIDING_INDICATOR
 import com.kickstarter.features.home.ui.components.FloatingBottomNavTestTags.tabTag
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
 class FloatingBottomNavTest : KSRobolectricTestCase() {
@@ -105,6 +107,7 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
         )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Sliding container when user clicks Tab Search moves from Tab Home to Tab Search`() {
 
@@ -112,6 +115,11 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             val nav = rememberNavController()
+            nav.graph = nav.createGraph(startDestination = Tab.Home.route) {
+                composable(Tab.Home.route) {}
+                composable(Tab.Search.route) {}
+                composable(Tab.Profile("").route) {}
+            }
             KSTheme {
                 FloatingBottomNav(
                     nav = nav,
@@ -134,10 +142,10 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
             .onNodeWithTag(tabTag(Tab.Search))
             .performClick()
 
-        advanceUntilIdle()
+        composeTestRule.waitForIdle()
 
         assertEquals(
-            "The indicator pill is not aligned with the active tab on initial load",
+            "The indicator pill is not aligned with the active tab",
             searchTabCoord.value,
             slidingContainerCoord.value,
             0.0f

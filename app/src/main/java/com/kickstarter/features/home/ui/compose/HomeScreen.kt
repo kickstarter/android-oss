@@ -113,31 +113,34 @@ private fun FloatingCenterNavItem(
         )
     )
 
+    val baseModifier = modifier
+        .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
+        .background(animatedBackgroundColor)
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick
+        )
+
+    val colorFilter =
+        if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
+        else ColorFilter.tint(KSTheme.colors.navIcon)
+
     when (tab.icon) {
         is TabIcon.Static -> {
             Image(
-                modifier = modifier
-                    .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
-                    .background(animatedBackgroundColor)
-                    .padding(KSTheme.dimensions.navIconPadding)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = onClick
-                    ),
+                modifier = baseModifier
+                    .padding(KSTheme.dimensions.navIconPadding),
                 imageVector = tab.icon.vector,
                 contentDescription = tab.route,
-                colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
-                else ColorFilter.tint(KSTheme.colors.navIcon)
+                colorFilter = colorFilter
             )
         }
         is TabIcon.Dynamic -> {
             KSCircleImage(
                 url = tab.icon.url,
                 contentDescription = tab.route,
-                modifier = modifier
-                    .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
-                    .background(animatedBackgroundColor)
+                modifier = baseModifier
                     .padding(KSTheme.dimensions.navIconPadding / 2)
                     .sizeIn(maxWidth = KSTheme.dimensions.navAvatarSize, maxHeight = KSTheme.dimensions.navAvatarSize)
                     .border(
@@ -145,28 +148,16 @@ private fun FloatingCenterNavItem(
                         color = KSTheme.colors.navIconBorderAvatar,
                         shape = CircleShape
                     )
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = onClick
-                    )
+
             )
         }
         is TabIcon.Resource -> {
             Image(
-                modifier = modifier
-                    .clip(RoundedCornerShape(KSTheme.dimensions.navIconPadding))
-                    .background(animatedBackgroundColor)
-                    .padding(KSTheme.dimensions.navIconPadding)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null,
-                        onClick = onClick
-                    ),
+                modifier = baseModifier
+                    .padding(KSTheme.dimensions.navIconPadding),
                 painter = painterResource(id = tab.icon.id),
                 contentDescription = tab.route,
-                colorFilter = if (selected) ColorFilter.tint(KSTheme.colors.navIconSelected)
-                else ColorFilter.tint(KSTheme.colors.navIcon)
+                colorFilter = colorFilter
             )
         }
     }
@@ -231,7 +222,7 @@ fun FloatingCenterBottomNav(
         ) {
 
             Box {
-                // - Sliding animated container, simulating background of FloatingPillNavItem
+                // - Sliding animated container simulating background of FloatingPillNavItem
                 Box(
                     modifier = Modifier
                         .padding(KSTheme.dimensions.navIconPadding)

@@ -34,7 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
-import com.kickstarter.features.home.ui.compose.FloatingCenterBottomNav
+import com.kickstarter.features.home.ui.compose.FloatingBottomNav
 import com.kickstarter.features.home.viewmodel.HomeScreenViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.TransitionUtils
@@ -117,7 +117,7 @@ fun App(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (shouldShowBottomNav.value) {
-                FloatingCenterBottomNav(nav, tabs = tabs)
+                FloatingBottomNav(nav, tabs = tabs)
             }
         }
     ) { inner ->

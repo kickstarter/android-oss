@@ -53,14 +53,14 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun FloatingCenterBottomNavLoggedOutPreview() {
+fun FloatingBottomNavLoggedOutPreview() {
     KSTheme {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
             val nav = rememberNavController()
             val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.LogIn)
-            FloatingCenterBottomNav(nav, tabs)
+            FloatingBottomNav(nav, tabs)
         }
     }
 }
@@ -68,14 +68,14 @@ fun FloatingCenterBottomNavLoggedOutPreview() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun FloatingCenterBottomNavLoggedInPreview() {
+fun FloatingBottomNavLoggedInPreview() {
     KSTheme {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
             val nav = rememberNavController()
             val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.Profile(""))
-            FloatingCenterBottomNav(nav, tabs)
+            FloatingBottomNav(nav, tabs)
         }
     }
 }
@@ -158,7 +158,7 @@ private fun FloatingCenterNavItem(
 }
 
 @Composable
-fun FloatingCenterBottomNav(
+fun FloatingBottomNav(
     nav: NavHostController,
     tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
 ) {

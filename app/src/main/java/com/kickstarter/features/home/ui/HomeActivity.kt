@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,11 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
-import com.kickstarter.features.home.ui.compose.FloatingCenterBottomNav
+import com.kickstarter.features.home.ui.components.FloatingBottomNav
+import com.kickstarter.features.home.viewmodel.HomeScreenViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -39,20 +43,14 @@ import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.transition
+import kotlin.getValue
 import kotlin.random.Random
-
-@Composable
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun AppPreview() {
-    KickstarterApp {
-        App()
-    }
-}
 
 class HomeActivity : ComponentActivity() {
 
     private lateinit var environment: Environment
+    private lateinit var viewModelFactory: HomeScreenViewModel.Factory
+    private val viewModel: HomeScreenViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,12 +59,23 @@ class HomeActivity : ComponentActivity() {
 
         this.getEnvironment()?.let { env ->
             environment = env
+            viewModelFactory = HomeScreenViewModel.Factory(env)
         }
 
         setContent {
             val darModeEnabled = this.isDarkModeEnabled(env = environment)
+            val homeUIState by viewModel.homeUIState.collectAsStateWithLifecycle()
+
+            val tabs = remember(homeUIState.isLoggedInUser) {
+                listOf(
+                    Tab.Home,
+                    Tab.Search,
+                    if (homeUIState.userAvatarUrl.isNotEmpty()) Tab.Profile(homeUIState.userAvatarUrl) else Tab.LogIn
+                )
+            }
+
             KickstarterApp(useDarkTheme = darModeEnabled) {
-                App()
+                App(tabs = tabs)
             }
         }
 
@@ -80,14 +89,36 @@ class HomeActivity : ComponentActivity() {
 }
 
 @Composable
-fun App() {
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun HomeActivityPreview() {
+    val tabs = listOf(
+        Tab.Home,
+        Tab.Search,
+        Tab.LogIn
+    )
+    KickstarterApp {
+        App(tabs = tabs)
+    }
+}
+
+/**
+ * Home Screen composable parent UI
+ *
+ * @param tabs: Contains the list of tabs represented on the floating bottomNav
+ */
+@Composable
+fun App(
+    tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
+) {
     val nav = rememberNavController()
     val shouldShowBottomNav = remember { mutableStateOf(true) }
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            if (shouldShowBottomNav.value)
-                FloatingCenterBottomNav(nav)
+            if (shouldShowBottomNav.value) {
+                FloatingBottomNav(nav, tabs = tabs)
+            }
         }
     ) { inner ->
         NavHost(
@@ -97,9 +128,9 @@ fun App() {
                 .fillMaxSize()
                 .padding(top = inner.calculateTopPadding())
         ) {
-            composable(Tab.Home.route) { ScreenStub("Home") }
-            composable(Tab.Search.route) { ScreenStub("Search") }
-            composable(Tab.Profile.route) { ScreenStub("Profile") }
+            tabs.map { tab ->
+                composable(tab.route) { ScreenStub(tab.route) }
+            }
         }
     }
 }

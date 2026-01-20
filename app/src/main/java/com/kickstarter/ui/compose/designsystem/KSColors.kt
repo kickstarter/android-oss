@@ -227,6 +227,8 @@ data class KSCustomColors(
     val navIconSelected: Color = Color.Unspecified,
     val navBackgroundHighlight: Color = Color.Unspecified,
     val navBackgroundTapped: Color = Color.Unspecified,
+    val navIconBorderAvatar: Color = Color.Unspecified,
+    val navBoxShadow: Color = Color.Unspecified,
 
     // OLD COLORS
     // Greens
@@ -367,6 +369,8 @@ val KSLightCustomColors = KSCustomColors(
     navIcon = grey_800,
     navIconSelected = grey_800,
     navBackgroundTapped = green_100,
+    navIconBorderAvatar = white,
+    navBoxShadow = black,
 
     // OLD COLORS
     // Greens
@@ -504,6 +508,8 @@ val KSDarkCustomColors = KSCustomColors(
     navIcon = grey_100,
     navIconSelected = grey_1000,
     navBackgroundTapped = green_800,
+    navIconBorderAvatar = grey_900,
+    navBoxShadow = black,
 
     // OLD COLORS
     // Greens

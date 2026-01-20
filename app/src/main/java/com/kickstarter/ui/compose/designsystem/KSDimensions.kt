@@ -90,6 +90,7 @@ data class KSDimensions(
     val navCornerIcon: Dp = Dp.Unspecified,
     val navShadowYOffset: Dp = Dp.Unspecified,
     val navShadowXOffset: Dp = Dp.Unspecified,
+    val navAvatarSize: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -179,5 +180,6 @@ val KSStandardDimensions = KSDimensions(
     navIconPadding = 8.dp,
     navShadowYOffset = 6.dp,
     navShadowXOffset = 0.dp,
+    navAvatarSize = 32.dp
 
 )

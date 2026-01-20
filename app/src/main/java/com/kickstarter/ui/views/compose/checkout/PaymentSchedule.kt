@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +40,8 @@ import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.models.PaymentIncrementBadge
+import com.kickstarter.models.PaymentIncrementBadgeVariant
 import com.kickstarter.type.PaymentIncrementState
 import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.activities.DisclaimerItems
@@ -222,7 +225,9 @@ fun PaymentRow(
                 style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
-            StatusBadge(paymentIncrement.badgeData)
+            paymentIncrement.paymentIncrementBadge?.let {
+                StatusBadge(it)
+            }
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
@@ -276,11 +281,10 @@ private fun paymentIncrementStyledCurrency(
 }
 
 @Composable
-fun StatusBadge(badgeData: PlotBadgeData) {
-
-    val colors = mapStyleToColors(badgeData.style)
-    val backgroundColor = colors.first
-    val textColor = colors.second
+fun StatusBadge(badgeData: PaymentIncrementBadge) {
+    val colors = mapVariantToColors(badgeData.variant)
+    val backgroundColor = colors.background
+    val textColor = colors.text
 
     Box(
         modifier = Modifier
@@ -300,16 +304,44 @@ fun StatusBadge(badgeData: PlotBadgeData) {
     ) {
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-            text = badgeData.stateBadgeName,
+            text = badgeData.copy,
             style = typographyV2.headingSM,
             color = textColor
         )
     }
 }
 
-fun mapStyleToColors(style: String): Pair<Color, Color> {
+// Logic to return Android colors for badge background and text
+@Composable
+fun mapVariantToColors(variant: PaymentIncrementBadgeVariant): PaymentIncrementBadgeColors {
     val isLight = !isSystemInDarkTheme()
-    when (style) {
-        // Logic to return Android colors for badge background and text
+    when (variant) {
+        PaymentIncrementBadgeVariant.RED -> {
+            val backgroundColor = if (isLight) colors.red_light else colors.red_03
+            val textColor = if (isLight) colors.kds_alert else colors.red_07
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.GRAY -> {
+            val backgroundColor = if (isLight) colors.grey_03 else colors.grey_05
+            val textColor = colors.grey_10
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.GREEN -> {
+            val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
+            val textColor = if (isLight) colors.green_06 else colors.green_07
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.DANGER -> {
+            val backgroundColor = if (isLight) colors.backgroundWarningSubtle else colors.yellow_03
+            val textColor = if (isLight) colors.textAccentYellowBold else colors.yellow_08
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.PURPLE -> {
+            val backgroundColor = colors.purple_03
+            val textColor = colors.purple_08
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
     }
 }
+
+data class PaymentIncrementBadgeColors(val background: Color, val text: Color)

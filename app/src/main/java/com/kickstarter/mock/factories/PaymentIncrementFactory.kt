@@ -138,7 +138,7 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
-                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Errored payment", variant = PaymentIncrementBadgeVariant.DANGER),
+                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Authentication required", variant = PaymentIncrementBadgeVariant.DANGER),
                     state = PaymentIncrementState.ERRORED,
                     paymentIncrementableId = "3",
                     paymentIncrementableType = "pledge",

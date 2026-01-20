@@ -332,13 +332,13 @@ fun mapVariantToColors(variant: PaymentIncrementBadgeVariant): PaymentIncrementB
             return PaymentIncrementBadgeColors(backgroundColor, textColor)
         }
         PaymentIncrementBadgeVariant.DANGER -> {
-            val backgroundColor = if (isLight) colors.backgroundWarningSubtle else colors.yellow_03
-            val textColor = if (isLight) colors.textAccentYellowBold else colors.yellow_08
+            val backgroundColor = if (isLight) colors.red_light else colors.red_03
+            val textColor = if (isLight) colors.kds_alert else colors.red_07
             return PaymentIncrementBadgeColors(backgroundColor, textColor)
         }
         PaymentIncrementBadgeVariant.PURPLE -> {
-            val backgroundColor = colors.purple_03
-            val textColor = colors.purple_08
+            val backgroundColor = colors.blue_03
+            val textColor = colors.blue_09
             return PaymentIncrementBadgeColors(backgroundColor, textColor)
         }
     }

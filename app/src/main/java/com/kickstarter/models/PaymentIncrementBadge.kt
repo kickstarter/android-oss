@@ -1,7 +1,6 @@
 package com.kickstarter.models
 
 import android.os.Parcelable
-import com.stripe.android.model.DeferredIntentParams
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -30,7 +29,7 @@ data class PaymentIncrementBadge(
         var equals = super.equals(obj)
         if (obj is PaymentIncrementBadge) {
             equals = copy() == obj.copy() &&
-                    variant() == obj.variant()
+                variant() == obj.variant()
         }
         return equals
     }

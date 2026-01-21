@@ -191,14 +191,18 @@ fun PaymentRow(
     paymentIncrement: PaymentIncrement,
     ksCurrency: KSCurrency?
 ) {
-    val isCollectedAdjusted =
-        (paymentIncrement.state == PaymentIncrementState.COLLECTED &&
-                paymentIncrement.refundedAmount != null) ||
-                (paymentIncrement.state == PaymentIncrementState.COLLECTED_ADJUSTED)
-    val isUnattemptedAdjusted =
-        (paymentIncrement.state == PaymentIncrementState.UNATTEMPTED &&
-                paymentIncrement.stateReason == PaymentIncrementStateReason.REFUND_ADJUSTED) ||
-                (paymentIncrement.state == PaymentIncrementState.UNATTEMPTED_ADJUSTED)
+    val isCollectedAdjusted = (
+        paymentIncrement.state == PaymentIncrementState.COLLECTED &&
+            paymentIncrement.refundedAmount != null
+        ) || (
+        paymentIncrement.state == PaymentIncrementState.COLLECTED_ADJUSTED
+        )
+    val isUnattemptedAdjusted = (
+        paymentIncrement.state == PaymentIncrementState.UNATTEMPTED &&
+            paymentIncrement.stateReason == PaymentIncrementStateReason.REFUND_ADJUSTED
+        ) || (
+        paymentIncrement.state == PaymentIncrementState.UNATTEMPTED_ADJUSTED
+        )
 
     val displayedAmount =
         if (isCollectedAdjusted || isUnattemptedAdjusted) {

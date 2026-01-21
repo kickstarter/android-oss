@@ -58,7 +58,7 @@ class PaymentIncrementFactory {
         fun badge(
             copy: String,
             variant: PaymentIncrementBadgeVariant
-        ) : PaymentIncrementBadge {
+        ): PaymentIncrementBadge {
             return PaymentIncrementBadge.builder()
                 .copy(copy)
                 .variant(variant)

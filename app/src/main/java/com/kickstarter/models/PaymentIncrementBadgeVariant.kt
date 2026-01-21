@@ -15,6 +15,4 @@ enum class PaymentIncrementBadgeVariant {
 
     /** Background color for neutral actions or states */
     GRAY
-
-
 }

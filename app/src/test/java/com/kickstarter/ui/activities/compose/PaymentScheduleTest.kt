@@ -63,7 +63,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
             refundedAmount = null,
             refundUpdatedAmountInProjectNativeCurrency = null,
-            ),
+        ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),

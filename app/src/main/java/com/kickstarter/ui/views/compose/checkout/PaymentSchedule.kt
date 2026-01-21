@@ -208,6 +208,9 @@ fun PaymentRow(
         } else {
             paymentIncrement.amount().amountFormattedInProjectNativeCurrency
         }
+    if (displayedAmount == null) {
+        print(paymentIncrement.paymentIncrementAmount)
+    }
 
     Row(
         modifier = Modifier

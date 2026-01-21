@@ -123,7 +123,9 @@ class PaymentIncrementFactory {
                     paymentIncrementableId = "1",
                     paymentIncrementableType = "pledge",
                     scheduledCollection = now.plusDays(15),
-                    stateReason = PaymentIncrementStateReason.REFUND_ADJUSTED
+                    stateReason = PaymentIncrementStateReason.REFUND_ADJUSTED,
+                    refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$42.00", formattedAmountWithCode = "USD $70.75", amountAsFloat = "70.75", amountAsCents = "7075", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "70.75$"),
+                    refundUpdatedAmountInProjectNativeCurrency = "18.00$"
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),

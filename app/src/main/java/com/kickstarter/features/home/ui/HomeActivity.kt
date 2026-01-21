@@ -30,8 +30,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.ui.components.FloatingBottomNav
@@ -68,9 +71,9 @@ class HomeActivity : ComponentActivity() {
 
             val tabs = remember(homeUIState.isLoggedInUser) {
                 listOf(
-                    Tab.Home,
-                    Tab.Search,
-                    if (homeUIState.userAvatarUrl.isNotEmpty()) Tab.Profile(homeUIState.userAvatarUrl) else Tab.LogIn
+                    Tab.Home(),
+                    Tab.Search(),
+                    if (homeUIState.isLoggedInUser) Tab.Profile(homeUIState.userAvatarUrl) else Tab.LogIn()
                 )
             }
 
@@ -93,9 +96,9 @@ class HomeActivity : ComponentActivity() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun HomeActivityPreview() {
     val tabs = listOf(
-        Tab.Home,
-        Tab.Search,
-        Tab.LogIn
+        Tab.Home(),
+        Tab.Search(),
+        Tab.LogIn()
     )
     KickstarterApp {
         App(tabs = tabs)
@@ -109,21 +112,36 @@ fun HomeActivityPreview() {
  */
 @Composable
 fun App(
-    tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
+    tabs: List<Tab> = listOf(Tab.Home(), Tab.Search(), Tab.LogIn())
 ) {
-    val nav = rememberNavController()
+    val navController = rememberNavController()
     val shouldShowBottomNav = remember { mutableStateOf(true) }
+    val backStack by navController.currentBackStackEntryAsState()
+    val currentRoute = backStack?.destination?.route
+
+    val tabsUpdated = tabs.map { tab ->
+        // - Inject the Navigation logic into each one
+        when (tab) {
+            is Tab.Home -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
+            is Tab.Search -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
+            is Tab.LogIn -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
+            is Tab.Profile -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
+        }
+    }
+
+    // - Determine which tab object is "active" based on the current route
+    val activeTab = tabsUpdated.find { it.route == currentRoute } ?: tabs.first()
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (shouldShowBottomNav.value) {
-                FloatingBottomNav(nav, tabs = tabs)
+                FloatingBottomNav(tabs = tabsUpdated, activeTab = activeTab)
             }
         }
     ) { inner ->
         NavHost(
-            navController = nav,
-            startDestination = Tab.Home.route,
+            navController = navController,
+            startDestination = tabs.first().route,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = inner.calculateTopPadding())
@@ -132,6 +150,15 @@ fun App(
                 composable(tab.route) { ScreenStub(tab.route) }
             }
         }
+    }
+}
+
+// Helper to keep the navigation logic DRY
+fun NavHostController.navWithDefaults(route: String) {
+    this.navigate(route) {
+        popUpTo(this@navWithDefaults.graph.findStartDestination().id) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 

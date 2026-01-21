@@ -25,24 +25,20 @@ sealed interface TabIcon {
  */
 sealed class Tab(
     val route: String,
-    val icon: TabIcon
+    val icon: TabIcon,
+    open val onClick: () -> Unit
 ) {
-    data object Home : Tab("home", TabIcon.Static(home))
-    data object Search : Tab("search", TabIcon.Static(search))
-    data object LogIn : Tab("login", TabIcon.Static(human))
+    data class Home(override val onClick: () -> Unit = {}) :
+        Tab("home", TabIcon.Static(home), onClick)
 
-    /**
-     * Profile Tab requires dynamic type, as the url will change depending on User profile
-     */
-    data class Profile(val avatarUrl: String) : Tab(
-        route = "profile",
-        icon = TabIcon.Dynamic(avatarUrl)
-    )
+    data class Search(override val onClick: () -> Unit = {}) :
+        Tab("search", TabIcon.Static(search), onClick)
 
-//    data class Messages(@DrawableRes val id: Int) : Tab(
-//        route = "messages",
-//        icon = TabIcon.Resource(id)
-//    )
+    data class LogIn(override val onClick: () -> Unit = {}) :
+        Tab("login", TabIcon.Static(human), onClick)
+
+    data class Profile(val avatarUrl: String, override val onClick: () -> Unit = {}) :
+        Tab("profile", TabIcon.Dynamic(avatarUrl), onClick)
 }
 
 val home: ImageVector

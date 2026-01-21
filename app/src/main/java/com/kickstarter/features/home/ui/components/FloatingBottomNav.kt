@@ -42,10 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.kickstarter.features.home.data.Tab
 import com.kickstarter.features.home.data.TabIcon
 import com.kickstarter.features.home.ui.components.FloatingBottomNavTestTags.SLIDING_INDICATOR
@@ -61,9 +57,8 @@ fun FloatingBottomNavLoggedOutPreview() {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
-            val nav = rememberNavController()
-            val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.LogIn)
-            FloatingBottomNav(nav, tabs)
+            val tabs = listOf<Tab>(Tab.Home(), Tab.Search(), Tab.LogIn())
+            FloatingBottomNav(tabs)
         }
     }
 }
@@ -76,9 +71,8 @@ fun FloatingBottomNavLoggedInPreview() {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
-            val nav = rememberNavController()
-            val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.Profile(""))
-            FloatingBottomNav(nav, tabs)
+            val tabs = listOf<Tab>(Tab.Home(), Tab.Search(), Tab.Profile(""))
+            FloatingBottomNav(tabs)
         }
     }
 }
@@ -167,20 +161,17 @@ private fun FloatingCenterNavItem(
 
 @Composable
 fun FloatingBottomNav(
-    nav: NavHostController,
-    tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn)
+    tabs: List<Tab> = listOf(Tab.Home(), Tab.Search(), Tab.LogIn()),
+    activeTab: Tab = Tab.Home(), // - initial active tab will be home
 ) {
-    // TODO: hoisting the navigation logic, FloatingCenterBottomNav should only have a callback for ie onTabSelected: (Tab) -> Unit
-    val backStack by nav.currentBackStackEntryAsState()
-    val current = backStack?.destination?.route
-    val activeIndex = remember(current, tabs) {
-        tabs.indexOfFirst { it.route == current }.coerceAtLeast(0)
-    }
-
     // - animation offSet X for sliding container
     val indicatorOffset = remember { Animatable(0f) }
     // - coordinates directory data sample: Index 0 (Home) is at 40.0f || Index 1 (Search) is at 120.0f ...
     val tabsXCoordinate = remember { mutableStateMapOf<Int, Float>() }
+
+    val activeIndex = remember(activeTab, tabs) {
+        tabs.indexOf(activeTab).coerceAtLeast(0)
+    }
 
     LaunchedEffect(activeIndex, tabsXCoordinate.size) {
         tabsXCoordinate[activeIndex]?.let { targetX ->
@@ -240,7 +231,7 @@ fun FloatingBottomNav(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 tabs.forEachIndexed { index, tab ->
-                    val selected = current == tab.route
+                    val selected = activeTab.route == tab.route
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -259,14 +250,7 @@ fun FloatingBottomNav(
                             tab = tab,
                             selected = selected,
                             onClick = {
-                                // TODO: should be a callback floating Nav should have no knowledge of navigation graph.
-                                nav.navigate(tab.route) {
-                                    popUpTo(nav.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                tab.onClick()
                             }
                         )
                     }

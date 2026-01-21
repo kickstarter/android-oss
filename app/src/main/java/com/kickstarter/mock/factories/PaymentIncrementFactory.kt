@@ -118,6 +118,15 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled (adjusted)", variant = PaymentIncrementBadgeVariant.PURPLE),
+                    state = PaymentIncrementState.UNATTEMPTED,
+                    paymentIncrementableId = "1",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(15),
+                    stateReason = PaymentIncrementStateReason.REFUND_ADJUSTED
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
                     paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
                     state = PaymentIncrementState.COLLECTED,
                     paymentIncrementableId = "2",
@@ -127,7 +136,7 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
-                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected (Adjusted)", variant = PaymentIncrementBadgeVariant.GREEN),
+                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected (adjusted)", variant = PaymentIncrementBadgeVariant.GREEN),
                     state = PaymentIncrementState.COLLECTED,
                     paymentIncrementableId = "2",
                     paymentIncrementableType = "pledge",
@@ -147,7 +156,7 @@ class PaymentIncrementFactory {
                 ),
                 PaymentIncrementFactory.paymentIncrement(
                     paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
-                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Cancelled", variant = PaymentIncrementBadgeVariant.GRAY),
+                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Canceled", variant = PaymentIncrementBadgeVariant.GRAY),
                     state = PaymentIncrementState.CANCELLED,
                     paymentIncrementableId = "4",
                     paymentIncrementableType = "pledge",
@@ -172,6 +181,15 @@ class PaymentIncrementFactory {
                     scheduledCollection = now.plusDays(60),
                     stateReason = PaymentIncrementStateReason.UNKNOWN__,
                     refundedAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$")
+                ),
+                PaymentIncrementFactory.paymentIncrement(
+                    paymentIncrementAmount = PaymentIncrementFactory.amount(formattedAmount = "$60.00", formattedAmountWithCode = "USD $99.75", amountAsFloat = "99.75", amountAsCents = "9975", currencyCode = CurrencyCode.USD.rawValue, amountFormattedInProjectNativeCurrency = "99.75$"),
+                    paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Dropped", variant = PaymentIncrementBadgeVariant.GRAY),
+                    state = PaymentIncrementState.CHARGEBACK_LOST,
+                    paymentIncrementableId = "4",
+                    paymentIncrementableType = "pledge",
+                    scheduledCollection = now.plusDays(60),
+                    stateReason = PaymentIncrementStateReason.UNKNOWN__,
                 ),
             )
         }

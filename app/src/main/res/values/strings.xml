@@ -106,4 +106,8 @@
 
   <!-- FPO's for BottomNav -->
   <string name="internal_tools_home_activity">Home Activity</string>
+
+  <!-- FPO's for PLOT Refunds -->
+  <string name="fpo_dropped">Dropped</string>
+  <string name="fpo_scheduled_adjusted">Scheduled (adjusted)</string>
 </resources>

@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.PKCE
@@ -25,6 +26,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 import timber.log.Timber
+
+class OAuthException(cause: Throwable) : Exception(cause)
 
 /**
  * UiState for the OAuthScreen.
@@ -78,76 +81,81 @@ class OAuthViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     fun produceState(intent: Intent, uri: Uri? = null) {
         viewModelScope.launch {
-            uri?.let {
-                val code = uri.getQueryParameter("code")
-                if (isAfterRedirectionStep(uri)) {
-                    Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
-                    apiClient.loginWithCodes(
-                        requireNotNull(codeVerifier),
-                        requireNotNull(code),
-                        clientID
-                    )
-                        .asFlow()
-                        .flatMapLatest { token ->
-                            Timber.d("$logcat About to persist token to currentUser: $token")
-                            loginUseCase.setToken(token.accessToken())
-                            apiClient.fetchCurrentUser()
-                                .asFlow()
-                                .map {
-                                    it
-                                }
-                        }
-                        .catch {
-                            Timber.e(
-                                "$logcat error while getting the token or user: ${
-                                processThrowable(
-                                    it
-                                )
-                                }"
-                            )
-                            mutableUIState.emit(
-                                OAuthUiState(
-                                    error = processThrowable(it),
-                                    user = null
-                                )
-                            )
-                            loginUseCase.logout()
-                            codeVerifier = null
-                        }
-                        .collect { user ->
-                            Timber.d("$logcat About to persist user to currentUser: $user")
-                            loginUseCase.setUser(user)
-                            mutableUIState.emit(
-                                OAuthUiState(
-                                    user = user,
-                                )
-                            )
-                            analyticEvents.trackLogInButtonCtaClicked()
-                            codeVerifier = null
-                        }
-                } else {
-                    mutableUIState.emit(
-                        OAuthUiState(
-                            error = "$code / $codeVerifier empty or null or wrong redirection",
-                            user = null
+            try {
+                uri?.let {
+                    val code = uri.getQueryParameter("code")
+                    if (isAfterRedirectionStep(uri)) {
+                        Timber.d("$logcat retrieve token after redirectionDeeplink: $code")
+                        apiClient.loginWithCodes(
+                            requireNotNull(codeVerifier),
+                            requireNotNull(code),
+                            clientID
                         )
-                    )
-                    codeVerifier = null
+                            .asFlow()
+                            .flatMapLatest { token ->
+                                Timber.d("$logcat About to persist token to currentUser: $token")
+                                loginUseCase.setToken(token.accessToken())
+                                apiClient.fetchCurrentUser().asFlow()
+                            }
+                            .catch {
+                                Timber.e(
+                                    "$logcat error while getting the token or user: ${
+                                    processThrowable(
+                                        it
+                                    )
+                                    }"
+                                )
+                                mutableUIState.emit(
+                                    OAuthUiState(
+                                        error = processThrowable(it),
+                                        user = null
+                                    )
+                                )
+                                loginUseCase.logout()
+                                codeVerifier = null
+                            }
+                            .collect { user ->
+                                Timber.d("$logcat About to persist user to currentUser: $user")
+                                loginUseCase.setUser(user)
+                                mutableUIState.emit(
+                                    OAuthUiState(
+                                        user = user,
+                                    )
+                                )
+                                analyticEvents.trackLogInButtonCtaClicked()
+                                codeVerifier = null
+                            }
+                    } else {
+                        mutableUIState.emit(
+                            OAuthUiState(
+                                error = "$code / $codeVerifier empty or null or wrong redirection",
+                                user = null
+                            )
+                        )
+                        codeVerifier = null
+                    }
                 }
+            } catch (e: Exception) {
+                processThrowable(e)
             }
 
             if (intent.data == null && uri == null) {
-                codeVerifier = null
-                codeVerifier = verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
-                codeVerifier?.let {
-                    val url = generateAuthorizationUrlWithParams(it)
-                    Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
-                    mutableUIState.emit(
-                        OAuthUiState(
-                            authorizationUrl = url,
-                            isAuthorizationStep = true,
+                try {
+                    codeVerifier = null
+                    codeVerifier =
+                        verifier.generateRandomCodeVerifier(entropy = CodeVerifier.MIN_CODE_VERIFIER_ENTROPY)
+                    codeVerifier?.let {
+                        val url = generateAuthorizationUrlWithParams(it)
+                        Timber.d("$logcat isAuthorizationStep $url and codeVerifier: $codeVerifier")
+                        mutableUIState.emit(
+                            OAuthUiState(
+                                authorizationUrl = url,
+                                isAuthorizationStep = true,
+                            )
                         )
-                    )
+                    }
+                } catch (e: OAuthException) {
+                    processThrowable(e)
                 }
             }
         }
@@ -156,13 +164,16 @@ class OAuthViewModel(
     private fun processThrowable(throwable: Throwable): String {
         if (!throwable.message.isNullOrBlank()) return throwable.message ?: ""
 
-        if (throwable is ApiException) {
+        val message = if (throwable is ApiException) {
             val apiError = throwable.errorEnvelope()?.errorMessages()?.toString() ?: ""
             val genericError = throwable.response().message()
-            return "$genericError / $apiError"
+            "$genericError / $apiError"
+        } else {
+            "Unknown OAuth Error"
         }
 
-        return "error while getting the token or user"
+        FirebaseCrashlytics.getInstance().recordException(OAuthException(throwable))
+        return message
     }
 
     private fun generateAuthorizationUrlWithParams(verifier: String): String {

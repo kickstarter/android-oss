@@ -1,5 +1,6 @@
 package com.kickstarter.features.home.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -91,68 +93,7 @@ class HomeActivity : ComponentActivity() {
             }
 
             KickstarterApp(useDarkTheme = darModeEnabled) {
-                val navController = rememberNavController()
-                val shouldShowBottomNav = remember { mutableStateOf(true) }
-                val backStack by navController.currentBackStackEntryAsState()
-                val currentRoute = backStack?.destination?.route
-
-                val activeTab = tabs.find { it.route == currentRoute } ?: tabs.first()
-                Scaffold(
-                    modifier = Modifier.systemBarsPadding(),
-                    bottomBar = {
-                        if (shouldShowBottomNav.value) {
-                            FloatingBottomNav(
-                                tabs = tabs,
-                                activeTab = activeTab,
-                                onTabClicked = { tab ->
-                                    navController.navWithDefaults(tab.route)
-                                }
-                            )
-                        }
-                    }
-                ) { inner ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = tabs.first().route,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = inner.calculateTopPadding())
-                    ) {
-                        tabs.map { tab ->
-                            when (tab) {
-                                is Tab.Search -> {
-                                    composable(tab.route) {
-                                        SearchAndFilterScreen(
-                                            env = environment,
-                                            searchViewModel = searchVM,
-                                            filterMenuVM = filterMenuVM,
-                                            onBackClicked = { },
-                                            preLaunchedCallback = { project, tag ->
-                                                startPreLaunchProjectActivity(
-                                                    project = project,
-                                                    previousScreen = ThirdPartyEventValues.ScreenName.SEARCH.value,
-                                                    refTag = tag
-                                                )
-                                            },
-                                            projectCallback = { projectAndRef ->
-                                                startProjectActivity(
-                                                    project = projectAndRef.first,
-                                                    refTag = projectAndRef.second,
-                                                    previousScreen = ThirdPartyEventValues.ScreenName.SEARCH.value
-                                                )
-                                            },
-                                        )
-                                    }
-                                }
-                                else -> {
-                                    composable(tab.route) {
-                                        ScreenStub(tab.route)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                App(tabs)
             }
         }
 
@@ -162,6 +103,87 @@ class HomeActivity : ComponentActivity() {
                 this@HomeActivity.transition(TransitionUtils.slideInFromLeft())
             }
         })
+    }
+
+    @Composable
+    @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+    @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+    fun HomeActivityPreview() {
+        val tabs = listOf(
+            Tab.Home,
+            Tab.Search,
+            Tab.LogIn
+        )
+        KickstarterApp {
+            App(tabs = tabs)
+        }
+    }
+
+    @Composable
+    private fun App(tabs: List<Tab>) {
+        val navController = rememberNavController()
+        val shouldShowBottomNav = remember { mutableStateOf(true) }
+        val backStack by navController.currentBackStackEntryAsState()
+        val currentRoute = backStack?.destination?.route
+
+        val activeTab = tabs.find { it.route == currentRoute } ?: tabs.first()
+        Scaffold(
+            modifier = Modifier.systemBarsPadding(),
+            bottomBar = {
+                if (shouldShowBottomNav.value) {
+                    FloatingBottomNav(
+                        tabs = tabs,
+                        activeTab = activeTab,
+                        onTabClicked = { tab ->
+                            navController.navWithDefaults(tab.route)
+                        }
+                    )
+                }
+            }
+        ) { inner ->
+            NavHost(
+                navController = navController,
+                startDestination = tabs.first().route,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = inner.calculateTopPadding())
+            ) {
+                tabs.map { tab ->
+                    when (tab) {
+                        is Tab.Search -> {
+                            composable(tab.route) {
+                                SearchAndFilterScreen(
+                                    env = environment,
+                                    searchViewModel = searchVM,
+                                    filterMenuVM = filterMenuVM,
+                                    onBackClicked = { },
+                                    preLaunchedCallback = { project, tag ->
+                                        startPreLaunchProjectActivity(
+                                            project = project,
+                                            previousScreen = ThirdPartyEventValues.ScreenName.SEARCH.value,
+                                            refTag = tag
+                                        )
+                                    },
+                                    projectCallback = { projectAndRef ->
+                                        startProjectActivity(
+                                            project = projectAndRef.first,
+                                            refTag = projectAndRef.second,
+                                            previousScreen = ThirdPartyEventValues.ScreenName.SEARCH.value
+                                        )
+                                    },
+                                )
+                            }
+                        }
+
+                        else -> {
+                            composable(tab.route) {
+                                ScreenStub(tab.route)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

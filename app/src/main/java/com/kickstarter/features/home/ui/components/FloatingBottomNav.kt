@@ -57,7 +57,7 @@ fun FloatingBottomNavLoggedOutPreview() {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
-            val tabs = listOf<Tab>(Tab.Home(), Tab.Search(), Tab.LogIn())
+            val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.LogIn)
             FloatingBottomNav(tabs)
         }
     }
@@ -71,7 +71,7 @@ fun FloatingBottomNavLoggedInPreview() {
         Box(
             modifier = Modifier.background(Color.LightGray)
         ) {
-            val tabs = listOf<Tab>(Tab.Home(), Tab.Search(), Tab.Profile(""))
+            val tabs = listOf<Tab>(Tab.Home, Tab.Search, Tab.Profile(""))
             FloatingBottomNav(tabs)
         }
     }
@@ -161,8 +161,9 @@ private fun FloatingCenterNavItem(
 
 @Composable
 fun FloatingBottomNav(
-    tabs: List<Tab> = listOf(Tab.Home(), Tab.Search(), Tab.LogIn()),
-    activeTab: Tab = Tab.Home(), // - initial active tab will be home
+    tabs: List<Tab> = listOf(Tab.Home, Tab.Search, Tab.LogIn),
+    activeTab: Tab = Tab.Home, // - initial active tab will be home
+    onTabClicked: (Tab) -> Unit = { a -> }
 ) {
     // - animation offSet X for sliding container
     val indicatorOffset = remember { Animatable(0f) }
@@ -250,7 +251,7 @@ fun FloatingBottomNav(
                             tab = tab,
                             selected = selected,
                             onClick = {
-                                tab.onClick()
+                                onTabClicked(tab)
                             }
                         )
                     }

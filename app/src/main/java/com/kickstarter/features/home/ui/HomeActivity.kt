@@ -84,9 +84,9 @@ class HomeActivity : ComponentActivity() {
 
             val tabs = remember(homeUIState.isLoggedInUser) {
                 listOf(
-                    Tab.Home(),
-                    Tab.Search(),
-                    if (homeUIState.isLoggedInUser) Tab.Profile(homeUIState.userAvatarUrl) else Tab.LogIn()
+                    Tab.Home,
+                    Tab.Search,
+                    if (homeUIState.isLoggedInUser) Tab.Profile(homeUIState.userAvatarUrl) else Tab.LogIn
                 )
             }
 
@@ -96,22 +96,18 @@ class HomeActivity : ComponentActivity() {
                 val backStack by navController.currentBackStackEntryAsState()
                 val currentRoute = backStack?.destination?.route
 
-                val tabsUpdated = tabs.map { tab ->
-                    // - Inject the Navigation logic into each one
-                    when (tab) {
-                        is Tab.Home -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
-                        is Tab.Search -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
-                        is Tab.LogIn -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
-                        is Tab.Profile -> tab.copy(onClick = { navController.navWithDefaults(tab.route) })
-                    }
-                }
-
-                val activeTab = tabsUpdated.find { it.route == currentRoute } ?: tabs.first()
+                val activeTab = tabs.find { it.route == currentRoute } ?: tabs.first()
                 Scaffold(
                     modifier = Modifier.systemBarsPadding(),
                     bottomBar = {
                         if (shouldShowBottomNav.value) {
-                            FloatingBottomNav(tabs = tabsUpdated, activeTab = activeTab)
+                            FloatingBottomNav(
+                                tabs = tabs,
+                                activeTab = activeTab,
+                                onTabClicked = { tab ->
+                                    navController.navWithDefaults(tab.route)
+                                }
+                            )
                         }
                     }
                 ) { inner ->

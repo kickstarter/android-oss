@@ -84,6 +84,10 @@ class LoginToutActivity : ComponentActivity() {
             viewModelFactory = LoginToutViewModel.Factory(env)
             oAuthViewModelFactory = OAuthViewModelFactory(environment = env)
             this.ksString = requireNotNull(env.ksString())
+
+            oAuthViewModel.provideErrorAction { cause ->
+                FirebaseCrashlytics.getInstance().recordException(OAuthException(cause))
+            }
         }
 
         setContent {

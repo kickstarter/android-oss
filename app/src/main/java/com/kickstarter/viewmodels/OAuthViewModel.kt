@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.CodeVerifier
 import com.kickstarter.libs.utils.PKCE
@@ -77,6 +76,11 @@ class OAuthViewModel(
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = OAuthUiState()
             )
+
+    private var errorAction: (cause: Throwable) -> Unit = {}
+    fun provideErrorAction(errorAction: (cause: Throwable) -> Unit) {
+        this.errorAction = errorAction
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun produceState(intent: Intent, uri: Uri? = null) {
@@ -169,10 +173,10 @@ class OAuthViewModel(
             val genericError = throwable.response().message()
             "$genericError / $apiError"
         } else {
-            "Unknown OAuth Error"
+            throwable.message ?: "Unknown OAuth Error"
         }
 
-        FirebaseCrashlytics.getInstance().recordException(OAuthException(throwable))
+        errorAction.invoke(throwable)
         return message
     }
 

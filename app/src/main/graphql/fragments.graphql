@@ -352,6 +352,7 @@ fragment reward on Reward {
     startsAt
     endsAt
     rewardType
+    featured
     allowedAddons {
         nodes {
             id

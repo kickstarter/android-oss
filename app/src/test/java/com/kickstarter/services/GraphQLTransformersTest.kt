@@ -274,6 +274,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         DateTime.now().minusDays(50),
         DateTime.now().plusDays(50),
         RewardType.base,
+        true,
         AllowedAddons(listOf(Reward.Node("UmV3YXJkLTk3MDA2NjA"))),
         null,
     )
@@ -307,5 +308,50 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         assertTrue(reward.shippingRules()?.size == 2)
         assertTrue(reward.shippingRules()?.first()?.id() == decodeRelayId(canadaSimpleSR.locationId))
         assertTrue(reward.shippingRules()?.last()?.id() == decodeRelayId(australiaSR.locationId))
+    }
+
+    @Test
+    fun `test rewardTransformer returns correct featured value`() {
+        val reward = rewardTransformer(
+            rewardGr = fragmentReward
+        )
+
+        assertTrue(reward.isFeatured())
+
+        val nonFeaturedFragmentReward = Reward(
+            "UmV3YXJkLTk2NTM3NzY",
+            "Stormgate Supporter",
+            452,
+            "Some reward description here",
+            DateTime.now().toDate(),
+            true,
+            audienceData = Reward.AudienceData(secret = false),
+            Reward.Amount("Amount", Amount("20.0", null, null)),
+            Reward.PledgeAmount(
+                "PledgeAmount", Amount("10.0", null, null)
+            ),
+            Reward.LatePledgeAmount(
+                "LatePledgeAmount", Amount("30.0", null, null)
+            ),
+            Reward.ConvertedAmount(
+                "ConvertedAmount", Amount("30.0", null, null)
+            ),
+            ShippingPreference.unrestricted,
+            3,
+            3,
+            3,
+            DateTime.now().minusDays(50),
+            DateTime.now().plusDays(50),
+            RewardType.base,
+            false,
+            AllowedAddons(listOf(Reward.Node("UmV3YXJkLTk3MDA2NjA"))),
+            null,
+        )
+
+        val nonFeaturedReward = rewardTransformer(
+            rewardGr = nonFeaturedFragmentReward
+        )
+
+        assertFalse(nonFeaturedReward.isFeatured())
     }
 }

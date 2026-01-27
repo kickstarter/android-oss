@@ -53,7 +53,8 @@ class Reward private constructor(
      * field reflecting the local pickup location, available only at GraphQL, in V1 it would be empty
      */
     private val localReceiptLocation: Location?,
-    private val isSecretReward: Boolean?
+    private val isSecretReward: Boolean?,
+    private val isFeatured: Boolean
 ) : Parcelable, Relay {
     fun backersCount() = this.backersCount
     fun convertedMinimum() = this.convertedMinimum
@@ -84,6 +85,7 @@ class Reward private constructor(
     fun isLimited() = limit() != null && !isAllGone()
     fun localReceiptLocation() = this.localReceiptLocation
     fun isSecretReward() = this.isSecretReward
+    fun isFeatured() = this.isFeatured
     @Parcelize
     data class Builder(
         private var backersCount: Int? = null,
@@ -112,7 +114,8 @@ class Reward private constructor(
         private var shippingPreferenceType: ShippingPreference? = null,
         private var shippingRules: List<ShippingRule>? = null,
         private var localReceiptLocation: Location? = null,
-        private var isSecretReward: Boolean? = null
+        private var isSecretReward: Boolean? = null,
+        private var isFeatured: Boolean = false
     ) : Parcelable {
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount }
         fun convertedMinimum(convertedMinimum: Double?) = apply { this.convertedMinimum = convertedMinimum ?: 0.0 }
@@ -143,6 +146,7 @@ class Reward private constructor(
         fun isAvailable(isAvailable: Boolean?) = apply { this.isAvailable = isAvailable ?: false }
         fun localReceiptLocation(localReceiptLocation: Location?) = apply { this.localReceiptLocation = localReceiptLocation }
         fun isSecretReward(isSecretReward: Boolean?) = apply { this.isSecretReward = isSecretReward ?: false }
+        fun isFeatured(isFeatured: Boolean?) = apply { this.isFeatured = isFeatured ?: false }
         fun build() = Reward(
             backersCount = backersCount,
             convertedMinimum = convertedMinimum,
@@ -170,7 +174,8 @@ class Reward private constructor(
             shippingPreferenceType = shippingPreferenceType,
             isAvailable = isAvailable,
             localReceiptLocation = localReceiptLocation,
-            isSecretReward = isSecretReward
+            isSecretReward = isSecretReward,
+            isFeatured = isFeatured
         )
     }
 
@@ -211,7 +216,8 @@ class Reward private constructor(
         shippingPreferenceType = shippingPreferenceType,
         isAvailable = isAvailable,
         localReceiptLocation = localReceiptLocation,
-        isSecretReward = isSecretReward
+        isSecretReward = isSecretReward,
+        isFeatured = isFeatured
     )
 
     override fun equals(other: Any?): Boolean {
@@ -243,7 +249,8 @@ class Reward private constructor(
                 shippingPreferenceType() == other.shippingPreferenceType() &&
                 isAvailable() == other.isAvailable() &&
                 localReceiptLocation() == other.localReceiptLocation() &&
-                isSecretReward() == other.isSecretReward()
+                isSecretReward() == other.isSecretReward() &&
+                isFeatured() == other.isFeatured()
         }
         return equals
     }

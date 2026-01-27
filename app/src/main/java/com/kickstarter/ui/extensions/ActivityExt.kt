@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.AnimRes
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -27,6 +28,7 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getCreatorBioWebViewActivityIntent
 import com.kickstarter.libs.utils.extensions.getPledgeRedemptionIntent
 import com.kickstarter.libs.utils.extensions.getPreLaunchProjectActivity
+import com.kickstarter.libs.utils.extensions.getProjectIntent
 import com.kickstarter.libs.utils.extensions.getProjectUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getReportProjectActivityIntent
 import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
@@ -268,17 +270,36 @@ fun Activity.transition(transition: Pair<Int, Int>) {
 }
 
 @SuppressLint("IntentWithNullActionLaunch") // Lint bug: https://issuetracker.google.com/issues/294200850
-fun Activity.startPreLaunchProjectActivity(uri: Uri, project: Project, previousScreen: String? = null) {
+fun Activity.startPreLaunchProjectActivity(uri: Uri? = null, project: Project, previousScreen: String? = null, refTag: RefTag? = null) {
     val intent = Intent().getPreLaunchProjectActivity(
         this,
         project.slug(),
         project.reduceProjectPayload()
     )
-    // Pass full deeplink for attribution tracking purposes when launching from deeplink
-    intent.setData(uri)
-    val ref = UrlUtils.refTag(uri.toString())
-    ref?.let { intent.putExtra(IntentKey.REF_TAG, RefTag.from(ref)) }
+    uri?.let {
+        // Pass full deeplink for attribution tracking purposes when launching from deeplink
+        intent.setData(uri)
+    }
+
+    val ref = refTag ?: UrlUtils.refTag(uri.toString())
+    ref?.let {
+        if (ref is String?) intent.putExtra(IntentKey.REF_TAG, RefTag.from(ref))
+        else if (ref is RefTag) intent.putExtra(IntentKey.REF_TAG, ref)
+    }
     previousScreen?.let { intent.putExtra(IntentKey.PREVIOUS_SCREEN, it) }
+    startActivity(intent)
+    TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+}
+
+fun Activity.startProjectActivity(project: Project, refTag: RefTag, previousScreen: String?) {
+    val intent = Intent().getProjectIntent(this)
+
+    intent.putExtra(IntentKey.PROJECT, project)
+    intent.putExtra(IntentKey.REF_TAG, refTag)
+    previousScreen?.let {
+        intent.putExtra(IntentKey.PREVIOUS_SCREEN, previousScreen)
+    }
+
     startActivity(intent)
     TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
 }

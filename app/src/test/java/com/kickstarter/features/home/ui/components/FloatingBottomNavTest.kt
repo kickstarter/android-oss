@@ -4,9 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.createGraph
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.home.data.Tab
@@ -24,10 +22,8 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
         val tabs = listOf(Tab.Home, Tab.Search, Tab.LogIn)
 
         composeTestRule.setContent {
-            val nav = rememberNavController()
             KSTheme {
                 FloatingBottomNav(
-                    nav = nav,
                     tabs = tabs,
                 )
             }
@@ -53,10 +49,8 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
         val tabs = listOf(Tab.Home, Tab.Search, Tab.Profile(""))
 
         composeTestRule.setContent {
-            val nav = rememberNavController()
             KSTheme {
                 FloatingBottomNav(
-                    nav = nav,
                     tabs = tabs,
                 )
             }
@@ -82,7 +76,6 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
             val nav = rememberNavController()
             KSTheme {
                 FloatingBottomNav(
-                    nav = nav,
                     tabs = tabs,
                 )
             }
@@ -109,29 +102,25 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `Sliding container when user clicks Tab Search moves from Tab Home to Tab Search`() {
+    fun `Active tab gets updated and onTabClicked is called`() {
 
         val tabs = listOf(Tab.Home, Tab.Search, Tab.Profile(""))
+        var activeTabCheck: Tab? = null
 
         composeTestRule.setContent {
-            val nav = rememberNavController()
-            nav.graph = nav.createGraph(startDestination = Tab.Home.route) {
-                composable(Tab.Home.route) {}
-                composable(Tab.Search.route) {}
-                composable(Tab.Profile("").route) {}
-            }
+            activeTabCheck = tabs[0]
             KSTheme {
                 FloatingBottomNav(
-                    nav = nav,
                     tabs = tabs,
+                    activeTab = activeTabCheck!!,
+                    onTabClicked = { tab ->
+                        activeTabCheck = tab
+                    }
                 )
             }
         }
 
-        val searchTabCoord = composeTestRule
-            .onNodeWithTag(tabTag(Tab.Search))
-            .getUnclippedBoundsInRoot()
-            .left
+        assertEquals(activeTabCheck?.route, tabs[0].route)
 
         composeTestRule
             .onNodeWithTag(tabTag(Tab.Search))
@@ -139,17 +128,6 @@ class FloatingBottomNavTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
 
-        // - Capture coordinate once animation is finished
-        val finalSlidingContainerX = composeTestRule
-            .onNodeWithTag(SLIDING_INDICATOR)
-            .getUnclippedBoundsInRoot()
-            .left
-
-        assertEquals(
-            "The indicator pill is not aligned with the active tab",
-            searchTabCoord.value,
-            finalSlidingContainerX.value,
-            0.0f
-        )
+        assertEquals(activeTabCheck?.route, tabs[1].route)
     }
 }

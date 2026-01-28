@@ -106,4 +106,5 @@
 
   <!-- FPO's for BottomNav -->
   <string name="internal_tools_home_activity">Home Activity</string>
+  <string name="internal_tools_video_feed_activity">Video Feed Activity</string>
 </resources>

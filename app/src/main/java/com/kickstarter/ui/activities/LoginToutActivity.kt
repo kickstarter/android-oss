@@ -238,8 +238,8 @@ class LoginToutActivity : ComponentActivity() {
                 if (OAuthViewModel.isAfterRedirectionStep(it))
                     oAuthViewModel.produceState(intent = intent, uri)
             }
-        } catch (e: OAuthException) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+        } catch (error: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(OAuthException(error))
         }
     }
 

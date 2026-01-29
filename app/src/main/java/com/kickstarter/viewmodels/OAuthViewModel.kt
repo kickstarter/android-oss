@@ -137,8 +137,8 @@ class OAuthViewModel(
                         codeVerifier = null
                     }
                 }
-            } catch (e: OAuthException) {
-                processThrowable(e)
+            } catch (error: Throwable) {
+                processThrowable(error)
             }
 
             if (intent.data == null && uri == null) {
@@ -156,8 +156,8 @@ class OAuthViewModel(
                             )
                         )
                     }
-                } catch (e: OAuthException) {
-                    processThrowable(e)
+                } catch (error: Throwable) {
+                    processThrowable(error)
                 }
             }
         }
@@ -168,7 +168,7 @@ class OAuthViewModel(
     }
 
     private fun processThrowable(throwable: Throwable): String {
-        if (!throwable.message.isNullOrBlank()) return throwable.message ?: ""
+        errorAction.invoke(throwable)
 
         val message = if (throwable is ApiException) {
             val apiError = throwable.errorEnvelope()?.errorMessages()?.toString() ?: ""
@@ -178,7 +178,6 @@ class OAuthViewModel(
             throwable.message ?: "Unknown OAuth Error"
         }
 
-        errorAction.invoke(throwable)
         return message
     }
 

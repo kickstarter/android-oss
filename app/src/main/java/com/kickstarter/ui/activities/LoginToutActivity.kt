@@ -107,6 +107,7 @@ class LoginToutActivity : ComponentActivity() {
                         viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
                     },
                     onSignUpOrLogInClicked = {
+                        oAuthViewModel.sendCTAEvent()
                         oAuthViewModel.produceState(intent = intent)
                     }
                 )

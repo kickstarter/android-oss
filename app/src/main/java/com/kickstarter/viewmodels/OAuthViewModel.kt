@@ -125,7 +125,6 @@ class OAuthViewModel(
                                         user = user,
                                     )
                                 )
-                                analyticEvents.trackLogInButtonCtaClicked()
                                 codeVerifier = null
                             }
                     } else {

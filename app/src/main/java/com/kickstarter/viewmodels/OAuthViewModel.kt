@@ -163,6 +163,10 @@ class OAuthViewModel(
         }
     }
 
+    fun sendCTAEvent() {
+        analyticEvents.trackLogInInitiateCtaClicked()
+    }
+
     private fun processThrowable(throwable: Throwable): String {
         if (!throwable.message.isNullOrBlank()) return throwable.message ?: ""
 

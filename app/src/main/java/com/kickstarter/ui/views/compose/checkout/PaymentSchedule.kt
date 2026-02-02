@@ -43,7 +43,6 @@ import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrementBadge
 import com.kickstarter.models.PaymentIncrementBadgeVariant
 import com.kickstarter.type.PaymentIncrementState
-import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -197,24 +196,15 @@ fun PaymentRow(
         ) || (
         paymentIncrement.state == PaymentIncrementState.COLLECTED_ADJUSTED
         )
-    val isUnattemptedAdjusted = (
-        paymentIncrement.state == PaymentIncrementState.UNATTEMPTED &&
-            paymentIncrement.stateReason == PaymentIncrementStateReason.REFUND_ADJUSTED
-        ) || (
-        paymentIncrement.state == PaymentIncrementState.UNATTEMPTED_ADJUSTED
-        )
 
     val displayedAmount =
-        if (isCollectedAdjusted || isUnattemptedAdjusted) {
+        if (isCollectedAdjusted) {
             paymentIncrement.refundUpdatedAmountInProjectNativeCurrency
         } else if (paymentIncrement.state == PaymentIncrementState.REFUNDED) {
             paymentIncrement.refundedAmount?.amountFormattedInProjectNativeCurrency
         } else {
             paymentIncrement.amount().amountFormattedInProjectNativeCurrency
         }
-    if (displayedAmount == null) {
-        print(paymentIncrement.paymentIncrementAmount)
-    }
 
     Row(
         modifier = Modifier

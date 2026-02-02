@@ -25,15 +25,6 @@ data class PaymentIncrementBadge(
         )
     }
 
-    override fun equals(obj: Any?): Boolean {
-        var equals = super.equals(obj)
-        if (obj is PaymentIncrementBadge) {
-            equals = copy() == obj.copy() &&
-                variant() == obj.variant()
-        }
-        return equals
-    }
-
     fun toBuilder() = Builder(
         copy = copy,
         variant = variant,

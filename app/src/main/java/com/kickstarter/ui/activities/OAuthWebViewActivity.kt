@@ -16,7 +16,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
@@ -54,18 +56,23 @@ class OAuthWebViewActivity : ComponentActivity() {
 
     @Composable
     private fun WebView(url: String, context: Context, callback: (String) -> Unit) {
-        AndroidView(factory = {
-            WebView(it).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                this.webViewClient = CustomWebViewClient(context = context, callback)
-                this.settings.allowFileAccess = true
-            }
-        }, update = {
+        AndroidView(
+            modifier = Modifier.systemBarsPadding(),
+            factory = {
+                WebView(it).apply {
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    this.webViewClient = CustomWebViewClient(context = context, callback)
+                    this.settings.allowFileAccess = true
+                    this.settings.domStorageEnabled = true
+                    this.settings.javaScriptEnabled = true
+                }
+            }, update = {
                 it.loadUrl(url)
-            })
+            }
+        )
     }
 }
 

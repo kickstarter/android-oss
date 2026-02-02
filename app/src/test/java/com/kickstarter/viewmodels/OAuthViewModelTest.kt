@@ -29,6 +29,26 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testSendCTAEvent() = runTest {
+        val mockCodeVerifier = object : PKCE {
+            override fun generateCodeChallenge(codeVerifier: String): String {
+                return ""
+            }
+
+            override fun generateRandomCodeVerifier(entropy: Int): String {
+                return ""
+            }
+        }
+
+        setUpEnvironment(environment(), mockCodeVerifier)
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            vm.sendCTAEvent()
+        }
+
+        this@OAuthViewModelTest.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testProduceState_isAuthorizationStep_Staging() = runTest {
 
         val testEndpoint = Secrets.WebEndpoint.STAGING
@@ -184,7 +204,7 @@ class OAuthViewModelTest : KSRobolectricTestCase() {
         )
 
         assertEquals(currentUserV2.accessToken, "token")
-        this@OAuthViewModelTest.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName)
+        this@OAuthViewModelTest.segmentTrack.assertNoValues()
     }
 
     @Test

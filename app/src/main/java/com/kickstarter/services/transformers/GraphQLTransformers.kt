@@ -42,6 +42,8 @@ import com.kickstarter.models.Location
 import com.kickstarter.models.Order
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrementAmount
+import com.kickstarter.models.PaymentIncrementBadge
+import com.kickstarter.models.PaymentIncrementBadgeVariant
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentSource
 import com.kickstarter.models.Photo
@@ -790,7 +792,9 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
                 .expirationDate(paymentSource.onCreditCard.expirationDate)
                 .lastFour(paymentSource.onCreditCard.lastFour)
                 .build()
-        } else { null }
+        } else {
+            null
+        }
     }
 
     val addOns = backingGr?.addOns?.let {
@@ -831,6 +835,16 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
 
     val isPostCampaign = backingGr?.isPostCampaign ?: false
     val incremental = backingGr?.incremental ?: false
+
+    fun getPaymentIncrementBadgeVariantType(badgeVariant: com.kickstarter.type.PaymentIncrementBadgeVariant) =
+        when (badgeVariant) {
+            com.kickstarter.type.PaymentIncrementBadgeVariant.RED -> PaymentIncrementBadgeVariant.RED
+            com.kickstarter.type.PaymentIncrementBadgeVariant.GRAY -> PaymentIncrementBadgeVariant.GRAY
+            com.kickstarter.type.PaymentIncrementBadgeVariant.GREEN -> PaymentIncrementBadgeVariant.GREEN
+            com.kickstarter.type.PaymentIncrementBadgeVariant.DANGER -> PaymentIncrementBadgeVariant.DANGER
+            com.kickstarter.type.PaymentIncrementBadgeVariant.PURPLE -> PaymentIncrementBadgeVariant.PURPLE
+            else -> PaymentIncrementBadgeVariant.GRAY
+        }
     val paymentIncrements = backingGr?.paymentIncrements?.map {
         val paymentIncrementAmount = PaymentIncrementAmount.builder()
             .amountAsCents(it.paymentIncrement.amount.paymentIncrementAmount.amountAsCents)
@@ -840,6 +854,12 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
             .amountFormattedInProjectNativeCurrency(it.paymentIncrement.amount.paymentIncrementAmount.amountFormattedInProjectNativeCurrency)
             .currencyCode(it.paymentIncrement.amount.paymentIncrementAmount.currency)
             .build()
+        val paymentIncrementBadge = it.paymentIncrement.badge?.let { badgeGr ->
+            PaymentIncrementBadge.builder()
+                .copy(badgeGr.paymentIncrementBadge.copy)
+                .variant(getPaymentIncrementBadgeVariantType(badgeVariant = badgeGr.paymentIncrementBadge.variant))
+                .build()
+        }
         val refundedAmount = it.paymentIncrement.refundedAmount?.let { refunded ->
             PaymentIncrementAmount.builder()
                 .amountAsCents(refunded.paymentIncrementAmount.amountAsCents)
@@ -853,6 +873,7 @@ fun backingTransformer(backingGr: com.kickstarter.fragment.Backing?): Backing {
         val scheduleCollection = it.paymentIncrement.scheduledCollection
         PaymentIncrement.builder()
             .amount(paymentIncrementAmount)
+            .paymentIncrementBadge(paymentIncrementBadge)
             .scheduledCollection(scheduleCollection)
             .state(it.paymentIncrement.state)
             .stateReason(it.paymentIncrement.stateReason)

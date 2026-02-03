@@ -19,6 +19,7 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
 import com.kickstarter.models.PaymentIncrementAmount
+import com.kickstarter.models.PaymentIncrementBadgeVariant
 import com.kickstarter.type.PaymentIncrementState
 import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -54,17 +55,19 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled", variant = PaymentIncrementBadgeVariant.PURPLE),
             state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.parse("2024-10-14T18:12:00Z"), // Mon, 14 Oct 2024 18:12 UTC
             stateReason = PaymentIncrementStateReason.REQUIRES_ACTION,
             refundedAmount = null,
-            refundUpdatedAmountInProjectNativeCurrency = null
+            refundUpdatedAmountInProjectNativeCurrency = null,
         ),
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
             state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -76,6 +79,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled", variant = PaymentIncrementBadgeVariant.PURPLE),
             state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -87,6 +91,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
             state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -101,6 +106,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
             state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -112,6 +118,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
             state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -123,6 +130,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
             state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -134,6 +142,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected", variant = PaymentIncrementBadgeVariant.GREEN),
             state = PaymentIncrementState.COLLECTED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -148,6 +157,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled", variant = PaymentIncrementBadgeVariant.PURPLE),
             state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -159,6 +169,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled", variant = PaymentIncrementBadgeVariant.PURPLE),
             state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -170,6 +181,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled", variant = PaymentIncrementBadgeVariant.PURPLE),
             state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -181,6 +193,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Scheduled", variant = PaymentIncrementBadgeVariant.PURPLE),
             state = PaymentIncrementState.UNATTEMPTED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -195,6 +208,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Canceled", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.CANCELLED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -206,6 +220,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Canceled", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.CANCELLED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -217,6 +232,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Canceled", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.CANCELLED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -228,6 +244,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Canceled", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.CANCELLED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -242,6 +259,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Refunded", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.REFUNDED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -253,6 +271,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Refunded", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.REFUNDED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -264,6 +283,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Refunded", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.REFUNDED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -275,6 +295,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Refunded", variant = PaymentIncrementBadgeVariant.GRAY),
             state = PaymentIncrementState.REFUNDED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -289,6 +310,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Authentication required", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -300,6 +322,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Authentication required", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -311,6 +334,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Authentication required", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -322,6 +346,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Authentication required", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -332,10 +357,11 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         )
     )
 
-    private val samplePaymentIncrementsWithErroredStateAndUnkownStateReason = listOf(
+    private val samplePaymentIncrementsWithErroredStateAndUnknownStateReason = listOf(
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Errored payment", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "1",
             paymentIncrementableType = "pledge",
@@ -347,6 +373,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Errored payment", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "2",
             paymentIncrementableType = "pledge",
@@ -358,6 +385,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Errored payment", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "3",
             paymentIncrementableType = "pledge",
@@ -369,6 +397,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
         PaymentIncrement(
             paymentIncrementAmount = PaymentIncrementAmount.builder().formattedAmount("$25")
                 .build(),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Errored payment", variant = PaymentIncrementBadgeVariant.DANGER),
             state = PaymentIncrementState.ERRORED,
             paymentIncrementableId = "4",
             paymentIncrementableType = "pledge",
@@ -489,7 +518,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
                 PaymentSchedule(
                     isExpanded = true,
                     onExpandChange = {},
-                    paymentIncrements = samplePaymentIncrementsWithErroredStateAndUnkownStateReason
+                    paymentIncrements = samplePaymentIncrementsWithErroredStateAndUnknownStateReason
                 )
             }
         }
@@ -568,6 +597,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
                     .currencyCode("USD")
                     .amountFormattedInProjectNativeCurrency("25$")
                     .build(),
+                paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected (adjusted)", variant = PaymentIncrementBadgeVariant.GREEN),
                 state = PaymentIncrementState.COLLECTED,
                 paymentIncrementableId = "adjusted-1",
                 paymentIncrementableType = "pledge",
@@ -610,6 +640,7 @@ class PaymentScheduleTest : KSRobolectricTestCase() {
                 currencyCode = "USD",
                 amountFormattedInProjectNativeCurrency = "99.75$"
             ),
+            paymentIncrementBadge = PaymentIncrementFactory.badge(copy = "Collected (adjusted)", variant = PaymentIncrementBadgeVariant.PURPLE),
             paymentIncrementableId = "refunded-adjusted",
             paymentIncrementableType = "pledge",
             scheduledCollection = DateTime.now(),

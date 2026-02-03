@@ -9,6 +9,7 @@ import org.joda.time.DateTime
 @Parcelize
 data class PaymentIncrement(
     val paymentIncrementAmount: PaymentIncrementAmount,
+    val paymentIncrementBadge: PaymentIncrementBadge?,
     val paymentIncrementableId: String,
     val paymentIncrementableType: String,
     val scheduledCollection: DateTime,
@@ -18,6 +19,7 @@ data class PaymentIncrement(
     val refundUpdatedAmountInProjectNativeCurrency: String?,
 ) : Parcelable {
     fun amount() = this.paymentIncrementAmount
+    fun paymentIncrementBadge() = this.paymentIncrementBadge
     fun paymentIncrementableId() = this.paymentIncrementableId
     fun paymentIncrementableType() = this.paymentIncrementableType
     fun scheduledCollection() = this.scheduledCollection
@@ -30,6 +32,7 @@ data class PaymentIncrement(
     data class Builder(
         private var paymentIncrementAmount: PaymentIncrementAmount = PaymentIncrementAmount.builder()
             .build(),
+        private var paymentIncrementBadge: PaymentIncrementBadge? = null,
         private var paymentIncrementableId: String = "",
         private var paymentIncrementableType: String = "",
         private var scheduledCollection: DateTime = DateTime.now(),
@@ -40,6 +43,9 @@ data class PaymentIncrement(
     ) : Parcelable {
         fun amount(paymentIncrementAmount: PaymentIncrementAmount) =
             apply { this.paymentIncrementAmount = paymentIncrementAmount }
+
+        fun paymentIncrementBadge(paymentIncrementBadge: PaymentIncrementBadge?) =
+            apply { this.paymentIncrementBadge = paymentIncrementBadge }
 
         fun paymentIncrementableId(paymentIncrementableId: String) =
             apply { this.paymentIncrementableId = paymentIncrementableId }
@@ -62,6 +68,7 @@ data class PaymentIncrement(
 
         fun build() = PaymentIncrement(
             paymentIncrementAmount = paymentIncrementAmount,
+            paymentIncrementBadge = paymentIncrementBadge,
             paymentIncrementableId = paymentIncrementableId,
             paymentIncrementableType = paymentIncrementableType,
             scheduledCollection = scheduledCollection,
@@ -76,6 +83,7 @@ data class PaymentIncrement(
         var equals = super.equals(obj)
         if (obj is PaymentIncrement) {
             equals = amount() == obj.amount() &&
+                paymentIncrementBadge() == obj.paymentIncrementBadge() &&
                 paymentIncrementableId() == obj.paymentIncrementableId() &&
                 paymentIncrementableType() == obj.paymentIncrementableType() &&
                 scheduledCollection() == obj.scheduledCollection() &&
@@ -89,6 +97,7 @@ data class PaymentIncrement(
 
     fun toBuilder() = Builder(
         paymentIncrementAmount = paymentIncrementAmount,
+        paymentIncrementBadge = paymentIncrementBadge,
         paymentIncrementableId = paymentIncrementableId,
         paymentIncrementableType = paymentIncrementableType,
         scheduledCollection = scheduledCollection,

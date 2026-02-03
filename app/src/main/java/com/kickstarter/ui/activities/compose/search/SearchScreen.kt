@@ -89,7 +89,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -315,10 +314,15 @@ fun SearchAndFilterScreen(
 }
 
 @Composable
-private fun setUpErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Job {
+private fun setUpErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Unit {
     val scope = rememberCoroutineScope()
-    val defaultErrorMessage = LocalContext.current.getString(R.string.Something_went_wrong_please_try_again)
-    val errorAction = { message: String? ->
+    val context = LocalContext.current
+
+    val defaultErrorMessage = context.getString(R.string.Something_went_wrong_please_try_again)
+
+    // TODO: store SnackbarResult on VM to consult it before showing new one, in case there is multiple enqueue snackbars.
+    // TODO:  channels / LaunchedEffect convo might be a good fit
+    return { message: String? ->
         scope.launch {
             snackbarHostState.showSnackbar(
                 message = message ?: defaultErrorMessage,
@@ -327,8 +331,6 @@ private fun setUpErrorActions(snackbarHostState: SnackbarHostState): (String?) -
             )
         }
     }
-
-    return errorAction
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

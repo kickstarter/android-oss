@@ -110,7 +110,8 @@ class GetShippingRulesUseCase(
                     project
                 )
 
-                filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
+                filteredRewards.clear()
+                filteredRewards.addAll(projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
@@ -137,7 +138,6 @@ class GetShippingRulesUseCase(
             defaultShippingRule = shippingRule
             emitCurrentState(isLoading = true)
             delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
-            filterRewardsByLocation(allAvailableRulesForProject, shippingRule, projectRewards)
             emitCurrentState(isLoading = false)
         }
     }
@@ -152,73 +152,6 @@ class GetShippingRulesUseCase(
                 filteredRw = filteredRewards.toList()
             )
         )
-    }
-
-    /**
-     * Filters and sorts the project's rewards based on availability, reward type, and the selected shipping rule.
-     *
-     * This method processes the given list of rewards and updates [filteredRewards] in a prioritized order:
-     *
-     * 1. Adds the "no reward" option, if present.
-     * 2. Adds secret rewards that are available, sorted by their minimum pledge amount.
-     * 3. Adds all other available rewards that meet one of the following criteria:
-     *    - Ships worldwide
-     *    - Is a digital or local pickup reward
-     *    - Ships to restricted locations and includes a shipping rule matching the selected location
-     *    These are also sorted by minimum pledge amount.
-     * * 4. Finally, appends any unavailable rewards at the end, regardless of type.
-     *
-     * Rewards are only added if available, and the method ensures no duplicates or incorrect entries
-     * by filtering and categorizing in a single pass.
-     *
-     *
-     * @param allAvailableShippingRules map of location ID to shipping rule available for the project
-     * @param rule the selected shipping rule (e.g., user's chosen location)
-     * @param rewards the full list of rewards associated with the project
-     */
-    private fun filterRewardsByLocation(
-        allAvailableShippingRules: Map<Long, ShippingRule>,
-        rule: ShippingRule,
-        rewards: List<Reward>
-    ) {
-        filteredRewards.clear()
-
-        val locationId = rule.location()?.id() ?: 0L
-        val validShippingRule = allAvailableShippingRules[locationId]
-        val rewardGroups = mutableListOf<Reward>()
-        var noReward: Reward? = null
-        val secretRewards = mutableListOf<Reward>()
-        val notAvailableRewards = mutableListOf<Reward>()
-
-        rewards.forEach { rw ->
-            if (RewardUtils.isNoReward(rw)) {
-                noReward = rw
-                return@forEach
-            }
-            if (!rw.isAvailable()) {
-                notAvailableRewards.add(rw)
-                return@forEach
-            }
-            if (rw.isSecretReward() == true) {
-                secretRewards.add(rw)
-            } else {
-                val shouldAdd = when {
-                    RewardUtils.shipsWorldwide(rw) -> true
-                    RewardUtils.isLocalPickup(rw) -> true
-                    RewardUtils.isDigital(rw) -> true
-                    RewardUtils.shipsToRestrictedLocations(rw) && validShippingRule != null -> {
-                        rw.shippingRules()?.any { it.location()?.id() == locationId } == true
-                    }
-                    else -> false
-                }
-                if (shouldAdd) rewardGroups.add(rw)
-            }
-        }
-
-        noReward?.let { filteredRewards.add(it) }
-        filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
-        filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
-        filteredRewards.addAll(notAvailableRewards)
     }
 
     /**

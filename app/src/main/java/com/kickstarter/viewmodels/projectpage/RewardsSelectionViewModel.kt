@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
@@ -29,7 +30,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -53,6 +55,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private var indexOfBackedReward = 0
     private var newUserReward: Reward = Reward.builder().build()
     private var selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule()
+    private var latestConfig: Config? = null
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -96,23 +99,28 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         val project = projectData.project()
         viewModelScope.launch {
             emitCurrentState()
-            apolloClient.getRewardsFromProject(project.slug() ?: "")
-                .asFlow()
-                .combine(currentConfig.asFlow()) { rewardsList, config ->
-                    if (shippingRulesUseCase == null) {
-                        shippingRulesUseCase = GetShippingRulesUseCase(
-                            project = projectData.project(),
-                            config = config,
-                            projectRewards = rewardsList,
-                            viewModelScope,
-                            Dispatchers.IO
-                        )
-                    }
+            currentConfig.asFlow()
+                .flatMapLatest { config ->
+                    latestConfig = config
+                    apolloClient.getRewardsFromProject(
+                        project.slug() ?: "",
+                        locationCountryCode = config.countryCode()
+                    )
+                        .asFlow()
+                        .map { rewardsList -> rewardsList to config }
+                }
+                .catch { }
+                .collect { (rewardsList, config) ->
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        project = projectData.project(),
+                        config = config,
+                        projectRewards = rewardsList,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
                     shippingRulesUseCase?.invoke()
                     emitShippingUIState()
                 }
-                .catch { }
-                .collect()
         }
     }
 
@@ -190,8 +198,26 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
-            shippingRulesUseCase?.filterBySelectedRule(shippingRule)
-            emitShippingUIState()
+            val project = currentProjectData.project()
+            val locationCountry = shippingRule.location()?.country()?.takeIf { it.isNotBlank() }
+                ?: latestConfig?.countryCode()
+            apolloClient.getRewardsFromProject(
+                project.slug() ?: "",
+                locationCountryCode = locationCountry
+            )
+                .asFlow()
+                .catch { }
+                .collect { rewardsList ->
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        project = project,
+                        config = latestConfig,
+                        projectRewards = rewardsList,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
+                    shippingRulesUseCase?.filterBySelectedRule(shippingRule)
+                    emitShippingUIState()
+                }
         }
     }
 

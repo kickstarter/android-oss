@@ -49,8 +49,6 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.libs.utils.extensions.isNull
-import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import kotlin.getValue
 
@@ -95,6 +93,14 @@ class VideoFeedActivity : AppCompatActivity() {
     fun VideoFeedPager(projectsList: List<Project>) {
         val pagerState = rememberPagerState(pageCount = { projectsList.size })
 
+        // Pagination Trigger
+        LaunchedEffect(pagerState.currentPage) {
+            val threshold = 3 // - 3 till the end, start quering for more
+            if (pagerState.currentPage >= projectsList.size - threshold && projectsList.isNotEmpty()) {
+                viewModel.loadProjects()
+            }
+        }
+
         VerticalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
@@ -114,6 +120,23 @@ class VideoFeedActivity : AppCompatActivity() {
     @Composable
     fun VideoFeedList(projectsList: List<Project>) {
         val listState = rememberLazyListState()
+
+        // Pagination Trigger
+        val shouldLoadMore = remember {
+            derivedStateOf {
+                val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
+                val totalItems = listState.layoutInfo.totalItemsCount
+
+                // - 3 till the end, start quering for more
+                lastVisibleItem != null && lastVisibleItem.index >= totalItems - 3
+            }
+        }
+
+        LaunchedEffect(shouldLoadMore.value) {
+            if (shouldLoadMore.value) {
+                viewModel.loadProjects()
+            }
+        }
 
         LazyColumn(
             state = listState,

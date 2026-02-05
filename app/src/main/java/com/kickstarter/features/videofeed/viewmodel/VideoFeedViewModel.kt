@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.videofeed.ui.VideoFeedActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.rx2.asFlow
@@ -44,16 +47,22 @@ open class VideoFeedViewModel(
                 initialValue = VideoFeedUIState()
             )
 
-    init {
-        val params = DiscoveryParams.builder()
-            .sort(DiscoveryParams.Sort.MAGIC)
-            .build()
+    val params = DiscoveryParams.builder()
+        .sort(DiscoveryParams.Sort.MAGIC)
+        .build()
 
+    private var nextPage: String? = ""
+
+    init {
+        loadProjects()
+    }
+
+    fun loadProjects() {
         scope.launch {
-            apolloClient.getProjects(params, "")
+            apolloClient.getProjects(params, nextPage)
                 .asFlow()
                 .map { envelope ->
-                    val pList = envelope.projects().filter { it.video().isNotNull() }.map {
+                    val pList = envelope.projects().filter { it.hasVideo() && it.video().isNotNull() }.map {
                         VideoFeedActivity.Project(
                             id = it.id().toInt(),
                             category = it.category()?.name() ?: "category",
@@ -66,12 +75,19 @@ open class VideoFeedViewModel(
                         )
                     }
 
+                    if (envelope.pageInfoEnvelope()?.hasNextPage.isTrue()) {
+                        nextPage = envelope.pageInfoEnvelope()?.endCursor
+                    }
+
                     return@map pList
                 }
                 .collectLatest { projects ->
-                    _videoFeedUIState.emit(
-                        VideoFeedUIState(false, false, projects)
-                    )
+                    _videoFeedUIState.update { currentState ->
+                        currentState.copy(
+                            isLoading = false,
+                            projects = currentState.projects + projects
+                        )
+                    }
                 }
         }
     }

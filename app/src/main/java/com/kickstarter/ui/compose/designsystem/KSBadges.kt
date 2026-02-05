@@ -28,6 +28,8 @@ import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.purple_02
+import com.kickstarter.ui.compose.designsystem.purple_08
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -72,6 +74,10 @@ fun KSBadgesPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSSecretRewardBadge()
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+
+            KSFeaturedRewardBadge()
         }
     }
 }
@@ -269,4 +275,38 @@ fun KSSecretRewardBadge(
         },
         textStyle = typographyV2.headingSM
     )
+}
+
+@Composable
+fun KSFeaturedRewardBadge(
+    modifier: Modifier = Modifier,
+    iconTint: Color = purple_08
+) {
+    Row(
+        modifier
+            .background(
+                color = purple_02,
+                shape = shapes.small
+            )
+            .padding(
+                start = dimensions.paddingMediumSmall,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall,
+                end = dimensions.paddingMediumSmall
+            )
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(end = dimensions.paddingXSmall)
+                .size(dimensions.alertIconSize),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_start),
+            contentDescription = stringResource(R.string.fpo_featured_reward),
+            colorFilter = ColorFilter.tint(iconTint)
+        )
+        Text(
+            text = stringResource(R.string.fpo_featured_reward),
+            color = purple_08,
+            style = typographyV2.headingSM
+        )
+    }
 }

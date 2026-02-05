@@ -297,7 +297,7 @@ fun KSFeaturedRewardBadge(
             modifier = Modifier
                 .padding(end = dimensions.paddingXSmall)
                 .size(dimensions.alertIconSize),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_start),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_star),
             contentDescription = stringResource(R.string.fpo_featured_reward),
             colorFilter = ColorFilter.tint(iconTint)
         )

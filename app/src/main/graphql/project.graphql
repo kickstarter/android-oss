@@ -51,10 +51,15 @@ query FetchProject($slug: String!, $rewardImageWidth: Int = 1024) {
   }
 }
 
-query FetchProjectRewards($slug: String!, $rewardImageWidth: Int = 1024) {
+query FetchProjectRewards(
+  $slug: String!,
+  $rewardImageWidth: Int = 1024,
+  $sort: ProjectRewardsSort = ELIGIBILITY,
+  $location: CountryCode
+) {
   project(slug: $slug) {
     minPledge
-    rewards {
+    rewards(sort: $sort, location: $location) {
       nodes {
         id
         ... reward

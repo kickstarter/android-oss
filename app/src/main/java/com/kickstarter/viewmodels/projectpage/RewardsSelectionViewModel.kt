@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
@@ -29,7 +30,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
@@ -53,6 +55,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private var indexOfBackedReward = 0
     private var newUserReward: Reward = Reward.builder().build()
     private var selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule()
+    private var latestConfig: Config? = null
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -96,23 +99,31 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         val project = projectData.project()
         viewModelScope.launch {
             emitCurrentState()
-            apolloClient.getRewardsFromProject(project.slug() ?: "")
-                .asFlow()
-                .combine(currentConfig.asFlow()) { rewardsList, config ->
-                    if (shippingRulesUseCase == null) {
-                        shippingRulesUseCase = GetShippingRulesUseCase(
-                            project = projectData.project(),
-                            config = config,
-                            projectRewards = rewardsList,
-                            viewModelScope,
-                            Dispatchers.IO
-                        )
-                    }
-                    shippingRulesUseCase?.invoke()
-                    emitShippingUIState()
+            currentConfig.asFlow()
+                .flatMapLatest { config ->
+                    latestConfig = config
+                    apolloClient.getRewardsFromProject(
+                        project.slug() ?: "",
+                        locationCountryCode = config.countryCode()
+                    )
+                        .asFlow()
+                        .map { rewardsList -> rewardsList to config }
                 }
                 .catch { }
-                .collect()
+                .collect { (rewardsList, config) ->
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        project = projectData.project(),
+                        config = config,
+                        projectRewards = rewardsList,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
+                    shippingRulesUseCase?.invoke()
+                    if (hasSelectedShippingRule()) {
+                        shippingRulesUseCase?.filterBySelectedRule(selectedShippingRule)
+                    }
+                    emitShippingUIState()
+                }
         }
     }
 
@@ -169,8 +180,15 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private suspend fun emitShippingUIState() {
         // - collect useCase flow and update shippingUIState
         shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
-            selectedShippingRule = shippingUseCase.selectedShippingRule
-            mutableShippingUIState.emit(shippingUseCase)
+            val hasSelection = hasSelectedShippingRule()
+            if (!hasSelection) {
+                selectedShippingRule = shippingUseCase.selectedShippingRule
+            }
+            mutableShippingUIState.emit(
+                shippingUseCase.copy(
+                    selectedShippingRule = if (hasSelection) selectedShippingRule else shippingUseCase.selectedShippingRule
+                )
+            )
         }
     }
 
@@ -185,14 +203,45 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     /**
-     * The user has change the shipping location on the UI
-     * @param shippingRule is the new selected location
+     * The User changed shipping location; re-fetch rewards for that country.
+     * @param shippingRule the newly selected shipping rule
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
-            shippingRulesUseCase?.filterBySelectedRule(shippingRule)
-            emitShippingUIState()
+            mutableShippingUIState.emit(
+                mutableShippingUIState.value.copy(
+                    loading = true,
+                    selectedShippingRule = shippingRule
+                )
+            )
+            selectedShippingRule = shippingRule
+            val project = currentProjectData.project()
+            val locationCountry = shippingRule.location()?.country()?.takeIf { it.isNotBlank() }
+                ?: latestConfig?.countryCode()
+            apolloClient.getRewardsFromProject(
+                project.slug() ?: "",
+                locationCountryCode = locationCountry
+            )
+                .asFlow()
+                .catch { }
+                .collect { rewardsList ->
+                    shippingRulesUseCase = GetShippingRulesUseCase(
+                        project = project,
+                        config = latestConfig,
+                        projectRewards = rewardsList,
+                        viewModelScope,
+                        Dispatchers.IO
+                    )
+                    shippingRulesUseCase?.invoke()
+                    shippingRulesUseCase?.filterBySelectedRule(shippingRule)
+                    emitShippingUIState()
+                }
         }
+    }
+
+    private fun hasSelectedShippingRule(): Boolean {
+        // True when a user-picked shipping rule has a real location id.
+        return (selectedShippingRule.location()?.id() ?: 0L) > 0L
     }
 
     fun getPledgeData(): Pair<PledgeData, PledgeReason>? {
@@ -236,6 +285,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     fun overrideShippingRulesUseCase(testUseCase: GetShippingRulesUseCase) {
         shippingRulesUseCase = testUseCase
         viewModelScope.launch {
+            testUseCase.invoke()
             emitShippingUIState()
         }
     }

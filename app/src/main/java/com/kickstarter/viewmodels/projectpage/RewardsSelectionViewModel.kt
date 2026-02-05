@@ -119,6 +119,9 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                         Dispatchers.IO
                     )
                     shippingRulesUseCase?.invoke()
+                    if (hasSelectedShippingRule()) {
+                        shippingRulesUseCase?.filterBySelectedRule(selectedShippingRule)
+                    }
                     emitShippingUIState()
                 }
         }
@@ -177,8 +180,15 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private suspend fun emitShippingUIState() {
         // - collect useCase flow and update shippingUIState
         shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
-            selectedShippingRule = shippingUseCase.selectedShippingRule
-            mutableShippingUIState.emit(shippingUseCase)
+            val hasSelection = hasSelectedShippingRule()
+            if (!hasSelection) {
+                selectedShippingRule = shippingUseCase.selectedShippingRule
+            }
+            mutableShippingUIState.emit(
+                shippingUseCase.copy(
+                    selectedShippingRule = if (hasSelection) selectedShippingRule else shippingUseCase.selectedShippingRule
+                )
+            )
         }
     }
 
@@ -193,11 +203,18 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     /**
-     * The user has change the shipping location on the UI
-     * @param shippingRule is the new selected location
+     * User changed shipping location; re-fetch rewards for that country.
+     * @param shippingRule the newly selected shipping rule
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
         viewModelScope.launch {
+            mutableShippingUIState.emit(
+                mutableShippingUIState.value.copy(
+                    loading = true,
+                    selectedShippingRule = shippingRule
+                )
+            )
+            selectedShippingRule = shippingRule
             val project = currentProjectData.project()
             val locationCountry = shippingRule.location()?.country()?.takeIf { it.isNotBlank() }
                 ?: latestConfig?.countryCode()
@@ -215,10 +232,16 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                         viewModelScope,
                         Dispatchers.IO
                     )
+                    shippingRulesUseCase?.invoke()
                     shippingRulesUseCase?.filterBySelectedRule(shippingRule)
                     emitShippingUIState()
                 }
         }
+    }
+
+    private fun hasSelectedShippingRule(): Boolean {
+        // True when a user-picked shipping rule has a real location id.
+        return (selectedShippingRule.location()?.id() ?: 0L) > 0L
     }
 
     fun getPledgeData(): Pair<PledgeData, PledgeReason>? {

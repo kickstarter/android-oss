@@ -25,14 +25,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,13 +52,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.currentStateAsState
 import com.kickstarter.R
+import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
+import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isLatePledgesActive
+import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.mock.factories.CategoryFactory
@@ -196,6 +209,127 @@ fun getCardProjectState(project: Project): CardProjectState {
         CardProjectState.LIVE
     else {
         CardProjectState.LIVE
+    }
+}
+
+@Composable
+fun SearchAndFilterScreen(
+    env: Environment,
+    filterMenuVM: FilterMenuViewModel,
+    searchViewModel: SearchAndFilterViewModel,
+    onBackClicked: () -> Unit = {},
+    preLaunchedCallback: (project: Project, reftag: RefTag) -> Unit = { a, b -> },
+    projectCallback: (projAndRef: Pair<Project, RefTag>) -> Unit = { a -> }
+) {
+    val phaseff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
+    var currentSearchTerm by rememberSaveable { mutableStateOf("") }
+    val lazyListState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val searchUIState by searchViewModel.searchUIState.collectAsStateWithLifecycle()
+    val popularProjects = searchUIState.popularProjectsList
+    val searchedProjects = searchUIState.searchList
+    val isLoading = searchUIState.isLoading
+    val hasMorePages = searchUIState.hasMore
+
+    val categoriesState by filterMenuVM.filterMenuUIState.collectAsStateWithLifecycle()
+    val categories = categoriesState.categoriesList
+
+    val errorAction = setUpErrorActions(snackbarHostState)
+
+    searchViewModel.provideErrorAction { message ->
+        errorAction.invoke(message)
+    }
+
+    filterMenuVM.provideErrorAction { message ->
+        errorAction.invoke(message)
+    }
+
+    CompositionLocalProvider(LocalFilterMenuViewModel provides filterMenuVM) {
+        SearchScreen(
+            environment = env,
+            onBackClicked = {
+                onBackClicked()
+            },
+            errorSnackBarHostState = snackbarHostState,
+            isLoading = isLoading,
+            isDefaultList = currentSearchTerm.isTrimmedEmpty(),
+            itemsList = if (currentSearchTerm.isTrimmedEmpty()) {
+                popularProjects
+            } else {
+                searchedProjects
+            },
+            lazyColumnListState = lazyListState,
+            showEmptyView = !isLoading && (searchedProjects.isEmpty() && popularProjects.isEmpty()),
+            categories = categories,
+            onSearchTermChanged = { searchTerm ->
+                currentSearchTerm = searchTerm
+                searchViewModel.updateSearchTerm(searchTerm)
+            },
+            onItemClicked = { project ->
+                val projAndRef = searchViewModel.getProjectAndRefTag(project)
+                if (project.displayPrelaunch().isTrue()) {
+                    preLaunchedCallback(project, projAndRef.second)
+                } else {
+                    projectCallback(projAndRef)
+                }
+            },
+            onApplySearchWithParams = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
+                searchViewModel.updateParamsToSearchWith(
+                    category = category,
+                    projectSort = sort
+                        ?: DiscoveryParams.Sort.MAGIC, // magic is the default sort
+                    projectState = projectState,
+                    percentageBucket = percentageBucket,
+                    location = location,
+                    amountBucket = amountRaisedBucket,
+                    goalBucket = goalBucket,
+                    recommended = recomended,
+                    projectsLoved = projectsLoved,
+                    savedProjects = saved,
+                    social = social
+                )
+            },
+            shouldShowPhase = phaseff
+        )
+    }
+
+    // Load more when scroll to the end
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val layoutInfo = lazyListState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+            lastVisibleItemIndex >= (totalItems - 5) && totalItems > 0
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(shouldLoadMore, lifecycleOwner.lifecycle.currentStateAsState().value, isLoading, hasMorePages) {
+        if (shouldLoadMore && lifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED && !isLoading && hasMorePages) {
+            searchViewModel.loadMore()
+        }
+    }
+}
+
+@Composable
+private fun setUpErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Unit {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val defaultErrorMessage = context.getString(R.string.Something_went_wrong_please_try_again)
+
+    // TODO: store SnackbarResult on VM to consult it before showing new one, in case there is multiple enqueue snackbars.
+    // TODO:  channels / LaunchedEffect convo might be a good fit
+    return { message: String? ->
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message ?: defaultErrorMessage,
+                actionLabel = KSSnackbarTypes.KS_ERROR.name,
+                duration = SnackbarDuration.Long
+            )
+        }
     }
 }
 

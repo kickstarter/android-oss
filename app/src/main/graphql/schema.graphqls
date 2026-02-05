@@ -1004,6 +1004,10 @@ enum Feature {
 
   followers_only_updates
 
+  sauce_user_menu
+
+  access_pm_config_post_launch_2025
+
   tax_education_2025
 
   sauce_project_faqs
@@ -1017,14 +1021,6 @@ enum Feature {
   multiple_tracking_numbers
 
   sauce_global_footer
-
-  edit_intro_pm_config_post_launch_2026
-
-  edit_reward_pm_config_post_launch_2026
-
-  edit_shipping_pm_config_post_launch_2026
-
-  partner_program_refresh
 }
 
 """
@@ -1495,7 +1491,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Parameters for filtering and sorting the backer report" searchQuery: BackerReportSearchQuery!): JSON
+  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by pledge manager completed at minimum" pmCompletedAtMin: String, "Filter by pledge manager completed at maximum" pmCompletedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by shopify sync status" shopifySyncStatus: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
 
   """
   Backer survey for the project
@@ -14136,7 +14132,7 @@ type Task implements Node {
   """
   The category of the task
   """
-  category: TaskProjectReportCategory!
+  category: String!
 
   """
   When the task was completed
@@ -14148,27 +14144,7 @@ type Task implements Node {
   """
   createdAt: ISO8601DateTime!
 
-  """
-  The number of flaggings for this task
-  """
-  flaggingsCount: Int!
-
   id: ID!
-
-  """
-  The latest admin note on this task
-  """
-  latestAdminNote: Note
-
-  """
-  The latest flagging associated with this task
-  """
-  latestFlagging: Flagging
-
-  """
-  The latest Zendesk ticket associated with this task
-  """
-  latestZendeskTicket: ZendeskTicket
 
   """
   The project associated with this task
@@ -14447,67 +14423,18 @@ enum TaskProjectReportCategory {
 }
 
 """
-A note attached to a notable object
+Sort order for OpenSearch queries
 """
-type Note {
+enum OpenSearchSort {
   """
-  The action associated with the note
+  Ascending order
   """
-  action: String
+  asc
 
   """
-  The body of the note
+  Descending order
   """
-  body: String
-
-  """
-  When the note was created
-  """
-  createdAt: ISO8601DateTime!
-
-  id: ID!
-
-  """
-  The user who created the note
-  """
-  notetaker: User
-}
-
-"""
-A Zendesk ticket associated with a task
-"""
-type ZendeskTicket implements Node {
-  """
-  When the ticket was created
-  """
-  createdAt: ISO8601DateTime!
-
-  id: ID!
-
-  """
-  The status of the Zendesk ticket
-  """
-  status: String
-
-  """
-  The subject of the Zendesk ticket
-  """
-  subject: String
-
-  """
-  When the ticket was last updated
-  """
-  updatedAt: ISO8601DateTime!
-
-  """
-  The URL to view the ticket in Zendesk
-  """
-  zendeskPageUrl: String
-
-  """
-  The Zendesk ticket ID
-  """
-  zendeskTicketId: String
+  desc
 }
 
 """
@@ -14772,11 +14699,6 @@ type Mutation {
   Save or update a recent search
   """
   createOrUpdateRecentSearch(input: CreateOrUpdateRecentSearchInput!): CreateOrUpdateRecentSearchPayload
-
-  """
-  Set ShipStation configuration variables for a Project
-  """
-  createOrUpdateShipStationConfiguration(input: CreateOrUpdateShipStationConfigurationInput!): CreateOrUpdateShipStationConfigurationPayload
 
   """
   Creates (or updates) a shipping zone with weight ranges and locations
@@ -17804,6 +17726,14 @@ input BackerReportSelection {
   Filter by actions taken
   """
   actionsTaken: [String!]
+
+  pledgeOverTime: [Boolean!]
+
+  backerEntryPoint: [String!]
+
+  pmCompletedAtMin: String
+
+  pmCompletedAtMax: String
 
   """
   Filter by backer entry point
@@ -23253,6 +23183,317 @@ input DeleteVariantMappingsInput {
   The project id
   """
   projectId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateBackerReportSegment
+"""
+type CreateBackerReportSegmentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: SavedSearchSegment
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CreateBackerReportSegment
+"""
+input CreateBackerReportSegmentInput {
+  """
+  The name of saved segment
+  """
+  name: String
+
+  """
+  The project ID of the request
+  """
+  projectId: ID!
+
+  """
+  The ID of the segment to update. If null, a new segment will be created
+  """
+  segmentId: ID
+
+  """
+  A set of search parameters to save for reëxecution
+  """
+  segmentBody: JSON
+
+  """
+  If true, the segment will be duplicated
+  """
+  duplicate: Boolean
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteBackerReportSegment
+"""
+type DeleteBackerReportSegmentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteBackerReportSegment
+"""
+input DeleteBackerReportSegmentInput {
+  """
+  The ID of the segment to delete
+  """
+  segmentId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateRecentSearch
+"""
+type CreateOrUpdateRecentSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: RecentSearch
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateRecentSearch
+"""
+input CreateOrUpdateRecentSearchInput {
+  """
+  The name of the search
+  """
+  name: String!
+
+  """
+  The search query as URL params
+  """
+  body: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteRecentSearch
+"""
+type DeleteRecentSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteRecentSearch
+"""
+input DeleteRecentSearchInput {
+  """
+  The ID of the recent search to delete
+  """
+  id: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateDiscoverSavedSearch
+"""
+type CreateOrUpdateDiscoverSavedSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: SavedSearchSegment
+
+  success: Boolean!
+
+  totalCountSavedSearches: Int
+}
+
+"""
+Autogenerated input type of CreateOrUpdateDiscoverSavedSearch
+"""
+input CreateOrUpdateDiscoverSavedSearchInput {
+  """
+  The name of the saved search
+  """
+  name: String
+
+  """
+  A set of search parameters to save for reëxecution
+  """
+  segmentBody: JSON
+
+  """
+  The ID of the segment to update. If null, a new segment will be created
+  """
+  segmentId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteDiscoverSavedSearch
+"""
+type DeleteDiscoverSavedSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteDiscoverSavedSearch
+"""
+input DeleteDiscoverSavedSearchInput {
+  """
+  The ID of the discover saved search segment to delete
+  """
+  segmentId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DistributeDigitalAccessResources
+"""
+type DistributeDigitalAccessResourcesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project
+}
+
+"""
+Autogenerated input type of DistributeDigitalAccessResources
+"""
+input DistributeDigitalAccessResourcesInput {
+  projectId: ID!
+
+  resources: String!
+
+  """
+  Type of resource distribution: 'unique' or 'shared'
+  """
+  resourcesType: ResourcesTypeEnum!
+
+  description: String!
+
+  searchQuery: JSON!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+enum ResourcesTypeEnum {
+  """
+  Each backer gets a unique resource
+  """
+  UNIQUE
+
+  """
+  All backers share the same resource
+  """
+  SHARED
+}
+
+"""
+Autogenerated return type of SetUserBadges
+"""
+type SetUserBadgesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of SetUserBadges
+"""
+input SetUserBadgesInput {
+  badgeNames: [String!]!
+
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of FixUserMissingNotifications
+"""
+type FixUserMissingNotificationsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of FixUserMissingNotifications
+"""
+input FixUserMissingNotificationsInput {
+  userId: ID!
 
   """
   A unique identifier for the client performing the mutation.

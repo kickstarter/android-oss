@@ -84,8 +84,12 @@ class InternalToolsActivity : AppCompatActivity() {
             homeActivityButtonClicked()
         }
 
-        binding.videoFeedButton.setOnClickListener {
-            videoFeedActivityButtonClicked()
+        binding.videoFeedButtonA.setOnClickListener {
+            videoFeedActivityButtonClicked(scrollType = false)
+        }
+
+        binding.videoFeedButtonB.setOnClickListener {
+            videoFeedActivityButtonClicked(scrollType = true)
         }
 
         binding.pushNotificationsButton.setOnClickListener {
@@ -143,8 +147,9 @@ class InternalToolsActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun videoFeedActivityButtonClicked() {
+    private fun videoFeedActivityButtonClicked(scrollType: Boolean) {
         val intent = Intent(this, VideoFeedActivity::class.java)
+        intent.putExtra("scrollType", scrollType)
         startActivity(intent)
     }
 

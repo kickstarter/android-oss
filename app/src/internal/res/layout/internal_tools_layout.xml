@@ -195,12 +195,20 @@
         android:text="@string/internal_tools_home_activity" />
 
     <Button
-        android:id="@+id/video_feed_button"
+        android:id="@+id/video_feed_button_a"
         style="@style/SecondaryButton"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/internal_tools_video_feed_activity" />
+        android:text="@string/internal_tools_video_feed_activity_a" />
+
+    <Button
+        android:id="@+id/video_feed_button_b"
+        style="@style/SecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/internal_tools_video_feed_activity_b" />
 
       <Button
         android:id="@+id/push_notifications_button"

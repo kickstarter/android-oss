@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -47,6 +49,8 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.libs.utils.extensions.isNull
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import kotlin.getValue
 
@@ -76,13 +80,39 @@ class VideoFeedActivity : AppCompatActivity() {
             KickstarterApp(useDarkTheme = true) {
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 val projects = uiState.projects
-                MobileVisioningView(projectsList = projects)
+
+                val scrollType = intent.extras?.getBoolean("scrollType", false)
+
+                if (scrollType == false)
+                    VideoFeedList(projectsList = projects)
+                if (scrollType == true)
+                    VideoFeedPager(projectsList = projects)
             }
         }
     }
 
     @Composable
-    fun MobileVisioningView(projectsList: List<Project>) {
+    fun VideoFeedPager(projectsList: List<Project>) {
+        val pagerState = rememberPagerState(pageCount = { projectsList.size })
+
+        VerticalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize(),
+            beyondViewportPageCount = 1,
+            userScrollEnabled = true,
+            key = { projectsList[it].id }
+        ) { page ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                ProjectFullscreenCard(projectsList[page], true, modifier = Modifier.fillMaxSize())
+            }
+        }
+    }
+
+    @Composable
+    fun VideoFeedList(projectsList: List<Project>) {
         val listState = rememberLazyListState()
 
         LazyColumn(
@@ -93,7 +123,9 @@ class VideoFeedActivity : AppCompatActivity() {
         ) {
             itemsIndexed(projectsList) { index, project ->
                 val isVisible by remember {
-                    derivedStateOf { listState.firstVisibleItemIndex == index }
+                    derivedStateOf {
+                        listState.firstVisibleItemIndex == index
+                    }
                 }
                 ProjectFullscreenCard(project, isVisible, modifier = Modifier.fillParentMaxSize())
             }

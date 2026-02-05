@@ -266,7 +266,7 @@ fun KSSecretRewardBadge(
                 modifier = Modifier
                     .padding(end = dimensions.paddingXSmall)
                     .size(dimensions.alertIconSize),
-            imageVector = secretRewardLock,
+                imageVector = secretRewardLock,
                 contentDescription = stringResource(R.string.Secret_reward),
                 colorFilter = ColorFilter.tint(tint)
             )

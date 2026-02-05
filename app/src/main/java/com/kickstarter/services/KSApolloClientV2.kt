@@ -144,7 +144,7 @@ import kotlin.coroutines.cancellation.CancellationException
 interface ApolloClientTypeV2 {
     fun getProject(project: Project): Observable<Project>
     fun getProject(slug: String): Observable<Project>
-    fun getProjects(discoveryParams: DiscoveryParams, slug: String?): Observable<DiscoverEnvelope>
+    fun getProjects(discoveryParams: DiscoveryParams, cursor: String?): Observable<DiscoverEnvelope>
     fun createSetupIntent(project: Project? = null): Observable<String>
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
     fun getStoredCards(): Observable<List<StoredCard>>

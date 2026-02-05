@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
@@ -37,13 +38,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import kotlin.getValue
 
 class VideoFeedActivity : AppCompatActivity() {
 
@@ -56,45 +61,28 @@ class VideoFeedActivity : AppCompatActivity() {
         val videoUrl: String
     )
 
-    private val sampleProjects = listOf(
-        Project(
-            1,
-            "Project We Love",
-            "Kode Dot: The All-in-One Device",
-            "$20,150 pledged • 498 backers",
-            20,
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-        ),
-        Project(
-            2,
-            "Project We Love",
-            "Ringo Move – The Ultimate Bottle",
-            "$812,134 pledged • 5k backers",
-            75,
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
-        ),
-        Project(
-            3,
-            "3 days left",
-            "Hyodo MagBase™ — Inter-swappable Wallet",
-            "$23,903 pledged • Help bring this idea to life",
-            75,
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
-        )
-    )
+    private lateinit var environment: com.kickstarter.libs.Environment
+    private lateinit var viewModelFactory: VideoFeedViewModel.Factory
+    private val viewModel: VideoFeedViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.getEnvironment()?.let { env ->
+            environment = env
+            viewModelFactory = VideoFeedViewModel.Factory(env)
+        }
 
         setContent {
             KickstarterApp(useDarkTheme = true) {
-                MobileVisioningView()
+                val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
+                val projects = uiState.projects
+                MobileVisioningView(projectsList = projects)
             }
         }
     }
 
     @Composable
-    fun MobileVisioningView() {
+    fun MobileVisioningView(projectsList: List<Project>) {
         val listState = rememberLazyListState()
 
         LazyColumn(
@@ -103,7 +91,7 @@ class VideoFeedActivity : AppCompatActivity() {
                 .fillMaxSize()
                 .background(Color.Black)
         ) {
-            itemsIndexed(sampleProjects) { index, project ->
+            itemsIndexed(projectsList) { index, project ->
                 val isVisible by remember {
                     derivedStateOf { listState.firstVisibleItemIndex == index }
                 }

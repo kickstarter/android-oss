@@ -266,7 +266,7 @@ fun KSSecretRewardBadge(
                 modifier = Modifier
                     .padding(end = dimensions.paddingXSmall)
                     .size(dimensions.alertIconSize),
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_locked),
+            imageVector = secretRewardLock,
                 contentDescription = stringResource(R.string.Secret_reward),
                 colorFilter = ColorFilter.tint(tint)
             )
@@ -297,7 +297,7 @@ fun KSFeaturedRewardBadge(
             modifier = Modifier
                 .padding(end = dimensions.paddingXSmall)
                 .size(dimensions.alertIconSize),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_star),
+            imageVector = featuredRewardStar,
             contentDescription = stringResource(R.string.fpo_featured_reward),
             colorFilter = ColorFilter.tint(iconTint)
         )

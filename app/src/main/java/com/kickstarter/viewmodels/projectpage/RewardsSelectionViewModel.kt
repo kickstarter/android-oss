@@ -203,7 +203,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     /**
-     * User changed shipping location; re-fetch rewards for that country.
+     * The User changed shipping location; re-fetch rewards for that country.
      * @param shippingRule the newly selected shipping rule
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
@@ -285,6 +285,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     fun overrideShippingRulesUseCase(testUseCase: GetShippingRulesUseCase) {
         shippingRulesUseCase = testUseCase
         viewModelScope.launch {
+            testUseCase.invoke()
             emitShippingUIState()
         }
     }

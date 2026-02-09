@@ -106,4 +106,8 @@
 
   <!-- FPO's for BottomNav -->
   <string name="internal_tools_home_activity">Home Activity</string>
+
+  <!-- FPO's for Reward Card for Featured Reward Badge -->
+  <string name="fpo_featured_reward" formatted="false">Featured</string>
+
 </resources>

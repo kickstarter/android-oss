@@ -1,8 +1,8 @@
 package com.kickstarter.features.videofeed.ui
 
+import android.content.Context
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +42,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -51,6 +49,7 @@ import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import timber.log.Timber
 import kotlin.getValue
 
 class VideoFeedActivity : AppCompatActivity() {
@@ -68,6 +67,8 @@ class VideoFeedActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: VideoFeedViewModel.Factory
     private val viewModel: VideoFeedViewModel by viewModels { viewModelFactory }
 
+    private lateinit var playerPool: VideoPlayerPool
+
     private var numberOfPlayers = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +78,7 @@ class VideoFeedActivity : AppCompatActivity() {
             viewModelFactory = VideoFeedViewModel.Factory(env)
         }
 
+        playerPool = VideoPlayerPool(this)
         setContent {
             KickstarterApp(useDarkTheme = true) {
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
@@ -85,15 +87,21 @@ class VideoFeedActivity : AppCompatActivity() {
                 val scrollType = intent.extras?.getBoolean("scrollType", false)
 
                 if (scrollType == false)
-                    VideoFeedList(projectsList = projects)
+                    VideoFeedList(projectsList = projects, playerPool)
                 if (scrollType == true)
-                    VideoFeedPager(projectsList = projects)
+                    VideoFeedPager(projectsList = projects, playerPool)
             }
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // 3. Crucial: Clean up all players to prevent memory leaks
+        playerPool.releaseAll()
+    }
+
     @Composable
-    fun VideoFeedPager(projectsList: List<Project>) {
+    fun VideoFeedPager(projectsList: List<Project>, playerPool: VideoPlayerPool) {
         val pagerState = rememberPagerState(pageCount = { projectsList.size })
 
         // Pagination Trigger
@@ -115,13 +123,20 @@ class VideoFeedActivity : AppCompatActivity() {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                ProjectFullscreenCard(projectsList[page], true, modifier = Modifier.fillMaxSize())
+                ProjectFullscreenCard(
+                    projectsList[page],
+                    page == pagerState.currentPage,
+                    modifier = Modifier.fillMaxSize(),
+                    playerPool,
+                    itemIndex = page,
+                    currentPage = pagerState.currentPage
+                )
             }
         }
     }
 
     @Composable
-    fun VideoFeedList(projectsList: List<Project>) {
+    fun VideoFeedList(projectsList: List<Project>, playerPool: VideoPlayerPool) {
         val listState = rememberLazyListState()
 
         // Pagination Trigger
@@ -153,7 +168,8 @@ class VideoFeedActivity : AppCompatActivity() {
                         listState.firstVisibleItemIndex == index
                     }
                 }
-                ProjectFullscreenCard(project, isVisible, modifier = Modifier.fillParentMaxSize())
+                // TODO: use snapshot
+                ProjectFullscreenCard(project, isVisible, modifier = Modifier.fillParentMaxSize(), playerPool, itemIndex = index, currentPage = listState.firstVisibleItemIndex)
             }
         }
     }
@@ -174,9 +190,16 @@ class VideoFeedActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun ProjectFullscreenCard(project: Project, isVisible: Boolean, modifier: Modifier) {
+    fun ProjectFullscreenCard(
+        project: Project,
+        isVisible: Boolean,
+        modifier: Modifier,
+        playerPool: VideoPlayerPool,
+        itemIndex: Int,
+        currentPage: Int
+    ) {
         Box(modifier = modifier.background(Color.Black)) {
-            VideoPlayer(videoUrl = project.videoUrl, isActive = isVisible)
+            VideoPlayer(videoUrl = project.videoUrl, isActive = isVisible, pool = playerPool, itemIndex = itemIndex, currentPagerIndex = currentPage)
 
             Box(
                 modifier = Modifier
@@ -323,44 +346,85 @@ class VideoFeedActivity : AppCompatActivity() {
 
     @OptIn(UnstableApi::class)
     @Composable
-    fun VideoPlayer(videoUrl: String, isActive: Boolean) {
-        if (videoUrl.isEmpty()) return
-        val context = LocalContext.current
-        val exoPlayer = remember(videoUrl) {
-            ExoPlayer.Builder(context).build().apply {
-                setMediaItem(MediaItem.fromUri(videoUrl))
-                repeatMode = Player.REPEAT_MODE_ONE
-                prepare()
-                numberOfPlayers++
-                Log.d("VideoPlayer", "Active number of players:${numberOfPlayers} Creating new player for: $videoUrl")
-            }
-        }
-
-        LaunchedEffect(isActive) {
-            exoPlayer.playWhenReady = isActive
-        }
+    fun VideoPlayer(
+        videoUrl: String,
+        itemIndex: Int,
+        currentPagerIndex: Int,
+        pool: VideoPlayerPool,
+        isActive: Boolean
+    ) {
+        val player = pool.getPlayer(videoUrl, itemIndex, currentPagerIndex)
 
         AndroidView(
-            factory = {
-                PlayerView(it).apply {
-                    player = exoPlayer
+            factory = { ctx ->
+                PlayerView(ctx).apply {
                     useController = false
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    layoutParams = FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
                 }
             },
-            modifier = Modifier.fillMaxSize()
-        )
-
-        DisposableEffect(videoUrl) {
-            onDispose {
-                exoPlayer.release()
-                numberOfPlayers--
-                Log.d("VideoPlayer", "Active number of players:${numberOfPlayers} Releasing player for: $videoUrl")
+            modifier = Modifier.fillMaxSize(),
+            update = { view ->
+                if (isActive) {
+                    if (view.player != player) view.player = player
+                    player.playWhenReady = true
+                } else {
+                    view.player = null
+                    player.playWhenReady = false
+                }
+            },
+            onRelease = { view ->
+                view.player = null
             }
+        )
+    }
+}
+
+@OptIn(UnstableApi::class)
+class VideoPlayerPool(context: Context) {
+    private val poolSize = 3
+    private val instances = List(poolSize) {
+        ExoPlayer.Builder(context).build().apply {
+            repeatMode = Player.REPEAT_MODE_ONE
         }
+    }
+
+    // - Which Player Index (0, 1, or 2)
+    private val urlToPlayerIndex = mutableMapOf<String, Int>()
+    // - Item's Position in the list
+    private val urlToPosition = mutableMapOf<String, Int>()
+
+    fun getPlayer(url: String, itemIndex: Int, currentPagerIndex: Int): ExoPlayer {
+        urlToPosition[url] = itemIndex
+
+        // - If this URL is already assigned to an engine, return it
+        urlToPlayerIndex[url]?.let { return instances[it] }
+
+        // - Find the "farthest" player to reuse
+        val playerIndexToReuse = instances.indices.maxByOrNull { idx ->
+            val assignedUrl = urlToPlayerIndex.filterValues { it == idx }.keys.firstOrNull()
+            if (assignedUrl == null) Int.MAX_VALUE
+            else {
+                val assignedPos = urlToPosition[assignedUrl] ?: 0
+                Math.abs(assignedPos - currentPagerIndex)
+            }
+        } ?: 0
+
+        val oldUrl = urlToPlayerIndex.filterValues { it == playerIndexToReuse }.keys.firstOrNull()
+        if (oldUrl != null) {
+            urlToPlayerIndex.remove(oldUrl)
+        }
+
+        val player = instances[playerIndexToReuse]
+        urlToPlayerIndex[url] = playerIndexToReuse
+
+        player.setMediaItem(MediaItem.fromUri(url))
+        player.prepare()
+
+        Timber.tag("VideoPool").d("Assigned Player $playerIndexToReuse to index $itemIndex. Farthest from $currentPagerIndex")
+        return player
+    }
+
+    fun releaseAll() {
+        instances.forEach { it.release() }
     }
 }

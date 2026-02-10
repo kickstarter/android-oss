@@ -51,6 +51,7 @@ import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.getValue
 
 @UnstableApi
@@ -135,11 +136,12 @@ class VideoFeedActivity : AppCompatActivity() {
             userScrollEnabled = true,
             key = { projectsList[it].id }
         ) { page ->
+            val isVisible = pagerState.currentPage == page
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                ProjectFullscreenCard(projectsList[page], true, modifier = Modifier.fillMaxSize(), preloadManager, sharedPlayer)
+                ProjectFullscreenCard(projectsList[page], isVisible, modifier = Modifier.fillMaxSize(), preloadManager, sharedPlayer)
             }
         }
     }
@@ -157,6 +159,14 @@ class VideoFeedActivity : AppCompatActivity() {
                 // - 3 till the end, start quering for more
                 lastVisibleItem != null && lastVisibleItem.index >= totalItems - 3
             }
+        }
+
+        LaunchedEffect(listState) {
+            snapshotFlow { listState.firstVisibleItemIndex }
+                .distinctUntilChanged()
+                .collect { index ->
+                    viewModel.onPageChanged(index)
+                }
         }
 
         LaunchedEffect(shouldLoadMore.value) {
@@ -362,13 +372,13 @@ class VideoFeedActivity : AppCompatActivity() {
     @Composable
     fun VideoPlayer(
         videoUrl: String,
-        isActive: Boolean,
+        isActive: Boolean, // This is the crucial variable!
         preloadManager: DefaultPreloadManager,
         sharedPlayer: ExoPlayer
     ) {
         val mediaItem = remember(videoUrl) { MediaItem.fromUri(videoUrl) }
 
-
+        // ONLY the active page should touch the sharedPlayer
         if (isActive) {
             DisposableEffect(videoUrl) {
                 val preloadedSource = preloadManager.getMediaSource(mediaItem)
@@ -379,12 +389,11 @@ class VideoFeedActivity : AppCompatActivity() {
                     sharedPlayer.setMediaItem(mediaItem)
                 }
 
-                sharedPlayer.repeatMode = Player.REPEAT_MODE_ONE// -> likely repat infinite // all
+                sharedPlayer.repeatMode = Player.REPEAT_MODE_ONE
                 sharedPlayer.prepare()
                 sharedPlayer.playWhenReady = true
 
                 onDispose {
-                    // - Stop the shared player so the next page can use it. Do NOT call release() here, will kill the shared engine
                     sharedPlayer.stop()
                     sharedPlayer.clearMediaItems()
                 }
@@ -400,12 +409,12 @@ class VideoFeedActivity : AppCompatActivity() {
                 },
                 modifier = Modifier.fillMaxSize(),
                 update = { view ->
-                    // Ensure the view is always synced to the shared player instance
                     view.player = sharedPlayer
                 }
             )
         } else {
-            // While inactive, show a black box.
+            // Neighbors (isActive == false) should show nothing or a thumbnail
+            // This prevents them from stealing the sharedPlayer from the active item
             Box(modifier = Modifier.fillMaxSize().background(Color.Black))
         }
     }

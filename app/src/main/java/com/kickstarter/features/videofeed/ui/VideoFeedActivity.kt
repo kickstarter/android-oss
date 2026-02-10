@@ -45,6 +45,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.preload.DefaultPreloadManager
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
@@ -52,6 +53,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import kotlin.getValue
 
+@UnstableApi
 class VideoFeedActivity : AppCompatActivity() {
 
     data class Project(
@@ -78,23 +80,48 @@ class VideoFeedActivity : AppCompatActivity() {
             KickstarterApp(useDarkTheme = true) {
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 val projects = uiState.projects
+                val currentIndex by viewModel.preloadManagerIndex.collectAsStateWithLifecycle()
 
                 val scrollType = intent.extras?.getBoolean("scrollType", false)
 
+                val (preloadManager, sharedPlayer) = remember {
+                    val builder = DefaultPreloadManager.Builder(
+                        application,
+                        viewModel.preloadManager
+                    )
+                    Pair(builder.build(), builder.buildExoPlayer())
+                }
+
+                // Connect VM state to Manager side-effects
+                LaunchedEffect(uiState.projects, currentIndex) {
+                    // Update items list
+                    uiState.projects.forEachIndexed { index, project ->
+                        preloadManager.add(MediaItem.fromUri(project.videoUrl), index)
+                    }
+
+                    // Move the preload anchor
+                    preloadManager.setCurrentPlayingIndex(currentIndex)
+
+                    // Execute the math (Distance 1 = 5s, Distance 3 = Tracks, etc.)
+                    preloadManager.invalidate()
+                }
+
                 if (scrollType == false)
-                    VideoFeedList(projectsList = projects)
+                    VideoFeedList(projectsList = projects, preloadManager, sharedPlayer)
                 if (scrollType == true)
-                    VideoFeedPager(projectsList = projects)
+                    VideoFeedPager(projectsList = projects, preloadManager, sharedPlayer)
             }
         }
     }
 
     @Composable
-    fun VideoFeedPager(projectsList: List<Project>) {
+    fun VideoFeedPager(projectsList: List<Project>, preloadManager: DefaultPreloadManager, sharedPlayer: ExoPlayer) {
         val pagerState = rememberPagerState(pageCount = { projectsList.size })
 
         // Pagination Trigger
         LaunchedEffect(pagerState.currentPage) {
+            viewModel.onPageChanged(pagerState.currentPage)
+
             val threshold = 3 // - 3 till the end, start quering for more
             if (pagerState.currentPage >= projectsList.size - threshold && projectsList.isNotEmpty()) {
                 viewModel.loadProjects()
@@ -112,13 +139,13 @@ class VideoFeedActivity : AppCompatActivity() {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                ProjectFullscreenCard(projectsList[page], true, modifier = Modifier.fillMaxSize())
+                ProjectFullscreenCard(projectsList[page], true, modifier = Modifier.fillMaxSize(), preloadManager, sharedPlayer)
             }
         }
     }
 
     @Composable
-    fun VideoFeedList(projectsList: List<Project>) {
+    fun VideoFeedList(projectsList: List<Project>, preloadManager: DefaultPreloadManager, sharedPlayer: ExoPlayer) {
         val listState = rememberLazyListState()
 
         // Pagination Trigger
@@ -134,6 +161,7 @@ class VideoFeedActivity : AppCompatActivity() {
 
         LaunchedEffect(shouldLoadMore.value) {
             if (shouldLoadMore.value) {
+                //viewModel.onPageChanged(pagerState.currentPage)
                 viewModel.loadProjects()
             }
         }
@@ -150,7 +178,13 @@ class VideoFeedActivity : AppCompatActivity() {
                         listState.firstVisibleItemIndex == index
                     }
                 }
-                ProjectFullscreenCard(project, isVisible, modifier = Modifier.fillParentMaxSize())
+                ProjectFullscreenCard(
+                    project,
+                    isVisible,
+                    modifier = Modifier.fillParentMaxSize(),
+                    preloadManager,
+                    sharedPlayer
+                )
             }
         }
     }
@@ -171,9 +205,15 @@ class VideoFeedActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun ProjectFullscreenCard(project: Project, isVisible: Boolean, modifier: Modifier) {
+    fun ProjectFullscreenCard(
+        project: Project,
+        isVisible: Boolean,
+        modifier: Modifier,
+        preloadManager: DefaultPreloadManager,
+        sharedPlayer: ExoPlayer
+    ) {
         Box(modifier = modifier.background(Color.Black)) {
-            VideoPlayer(videoUrl = project.videoUrl, isActive = isVisible)
+            VideoPlayer(videoUrl = project.videoUrl, isActive = isVisible, preloadManager, sharedPlayer)
 
             Box(
                 modifier = Modifier
@@ -320,37 +360,53 @@ class VideoFeedActivity : AppCompatActivity() {
 
     @OptIn(UnstableApi::class)
     @Composable
-    fun VideoPlayer(videoUrl: String, isActive: Boolean) {
-        val context = LocalContext.current
-        val exoPlayer = remember(videoUrl) {
-            ExoPlayer.Builder(context).build().apply {
-                setMediaItem(MediaItem.fromUri(videoUrl))
-                repeatMode = Player.REPEAT_MODE_ONE
-                prepare()
-            }
-        }
+    fun VideoPlayer(
+        videoUrl: String,
+        isActive: Boolean,
+        preloadManager: DefaultPreloadManager,
+        sharedPlayer: ExoPlayer
+    ) {
+        val mediaItem = remember(videoUrl) { MediaItem.fromUri(videoUrl) }
 
-        LaunchedEffect(isActive) {
-            exoPlayer.playWhenReady = isActive
-        }
 
-        AndroidView(
-            factory = {
-                PlayerView(it).apply {
-                    player = exoPlayer
-                    useController = false
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    layoutParams = FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
+        if (isActive) {
+            DisposableEffect(videoUrl) {
+                val preloadedSource = preloadManager.getMediaSource(mediaItem)
+
+                if (preloadedSource != null) {
+                    sharedPlayer.setMediaSource(preloadedSource)
+                } else {
+                    sharedPlayer.setMediaItem(mediaItem)
                 }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
 
-        DisposableEffect(videoUrl) {
-            onDispose { exoPlayer.release() }
+                sharedPlayer.repeatMode = Player.REPEAT_MODE_ONE// -> likely repat infinite // all
+                sharedPlayer.prepare()
+                sharedPlayer.playWhenReady = true
+
+                onDispose {
+                    // - Stop the shared player so the next page can use it. Do NOT call release() here, will kill the shared engine
+                    sharedPlayer.stop()
+                    sharedPlayer.clearMediaItems()
+                }
+            }
+
+            AndroidView(
+                factory = { ctx ->
+                    PlayerView(ctx).apply {
+                        player = sharedPlayer
+                        useController = false
+                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
+                },
+                modifier = Modifier.fillMaxSize(),
+                update = { view ->
+                    // Ensure the view is always synced to the shared player instance
+                    view.player = sharedPlayer
+                }
+            )
+        } else {
+            // While inactive, show a black box.
+            Box(modifier = Modifier.fillMaxSize().background(Color.Black))
         }
     }
 }

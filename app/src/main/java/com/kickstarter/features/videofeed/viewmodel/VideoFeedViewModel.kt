@@ -3,6 +3,9 @@ package com.kickstarter.features.videofeed.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.source.preload.DefaultPreloadManager
+import com.kickstarter.features.videofeed.PreloadStatusControl
 import com.kickstarter.features.videofeed.ui.VideoFeedActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -29,6 +32,7 @@ data class VideoFeedUIState(
     val projects: List<VideoFeedActivity.Project> = emptyList()
 )
 
+@UnstableApi
 open class VideoFeedViewModel(
     private val environment: Environment,
     private val testDispatcher: CoroutineDispatcher? = null
@@ -46,6 +50,23 @@ open class VideoFeedViewModel(
                 started = SharingStarted.WhileSubscribed(),
                 initialValue = VideoFeedUIState()
             )
+
+    private val _currentIndex = MutableStateFlow(0)
+    val preloadManagerIndex = _currentIndex
+        .asStateFlow()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = 0
+        )
+
+    val preloadManager = PreloadStatusControl { _currentIndex.value }
+
+    fun onPageChanged(index: Int) {
+        if (_currentIndex.value != index) {
+            _currentIndex.value = index
+        }
+    }
 
     val params = DiscoveryParams.builder()
         .sort(DiscoveryParams.Sort.MAGIC)

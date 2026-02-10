@@ -68,6 +68,8 @@ class VideoFeedActivity : AppCompatActivity() {
     private lateinit var viewModelFactory: VideoFeedViewModel.Factory
     private val viewModel: VideoFeedViewModel by viewModels { viewModelFactory }
 
+    private var numberOfPlayers = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.getEnvironment()?.let { env ->
@@ -322,13 +324,15 @@ class VideoFeedActivity : AppCompatActivity() {
     @OptIn(UnstableApi::class)
     @Composable
     fun VideoPlayer(videoUrl: String, isActive: Boolean) {
+        if (videoUrl.isEmpty()) return
         val context = LocalContext.current
         val exoPlayer = remember(videoUrl) {
-            Log.d("VideoPlayer", "Creating new player for: $videoUrl")
             ExoPlayer.Builder(context).build().apply {
                 setMediaItem(MediaItem.fromUri(videoUrl))
                 repeatMode = Player.REPEAT_MODE_ONE
                 prepare()
+                numberOfPlayers++
+                Log.d("VideoPlayer", "Active number of players:${numberOfPlayers} Creating new player for: $videoUrl")
             }
         }
 
@@ -354,7 +358,8 @@ class VideoFeedActivity : AppCompatActivity() {
         DisposableEffect(videoUrl) {
             onDispose {
                 exoPlayer.release()
-                Log.d("VideoPlayer", "Releasing player for: $videoUrl")
+                numberOfPlayers--
+                Log.d("VideoPlayer", "Active number of players:${numberOfPlayers} Releasing player for: $videoUrl")
             }
         }
     }

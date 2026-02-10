@@ -292,10 +292,11 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:$compose_version"
 
     // Exoplayer
-    def exoplayer= '1.8.0'
+    def exoplayer= '1.9.2'
     implementation "androidx.media3:media3-ui:$exoplayer"
     implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
     implementation "androidx.media3:media3-datasource:$exoplayer"
+    implementation "androidx.media3:media3-extractor:$exoplayer" // (includes MP2T/MPEG-TS support)
 
     // Coroutines
     def coroutines = '1.10.2'

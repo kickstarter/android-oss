@@ -1,6 +1,7 @@
 package com.kickstarter.features.videofeed.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.compose.setContent
@@ -52,6 +53,7 @@ import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import kotlinx.coroutines.flow.distinctUntilChanged
+import timber.log.Timber
 import kotlin.getValue
 
 @UnstableApi
@@ -86,25 +88,33 @@ class VideoFeedActivity : AppCompatActivity() {
                 val scrollType = intent.extras?.getBoolean("scrollType", false)
 
                 val (preloadManager, sharedPlayer) = remember {
-                    val builder = DefaultPreloadManager.Builder(
-                        application,
-                        viewModel.preloadManager
-                    )
-                    Pair(builder.build(), builder.buildExoPlayer())
+                    try {
+                        val builder = DefaultPreloadManager.Builder(
+                            application,
+                            viewModel.preloadManager
+                        )
+                        // Return the actual objects
+                        Pair(builder.build(), builder.buildExoPlayer())
+                    } catch (e: Exception) {
+                        // Log the error for debugging
+                        Timber.tag("VideoPlayer").d("error initializing either preloadManager or exoplayer")
+                        // Return nulls so the UI can handle the empty state
+                        Pair(null, null)
+                    }
                 }
 
                 // Connect VM state to Manager side-effects
                 LaunchedEffect(uiState.projects, currentIndex) {
                     // Update items list
                     uiState.projects.forEachIndexed { index, project ->
-                        preloadManager.add(MediaItem.fromUri(project.videoUrl), index)
+                        preloadManager?.add(MediaItem.fromUri(project.videoUrl), index)
                     }
 
                     // Move the preload anchor
-                    preloadManager.setCurrentPlayingIndex(currentIndex)
+                    preloadManager?.setCurrentPlayingIndex(currentIndex)
 
                     // Execute the math (Distance 1 = 5s, Distance 3 = Tracks, etc.)
-                    preloadManager.invalidate()
+                    preloadManager?.invalidate()
                 }
 
                 if (scrollType == false)
@@ -116,7 +126,7 @@ class VideoFeedActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun VideoFeedPager(projectsList: List<Project>, preloadManager: DefaultPreloadManager, sharedPlayer: ExoPlayer) {
+    fun VideoFeedPager(projectsList: List<Project>, preloadManager: DefaultPreloadManager?, sharedPlayer: ExoPlayer?) {
         val pagerState = rememberPagerState(pageCount = { projectsList.size })
 
         // Pagination Trigger
@@ -147,7 +157,7 @@ class VideoFeedActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun VideoFeedList(projectsList: List<Project>, preloadManager: DefaultPreloadManager, sharedPlayer: ExoPlayer) {
+    fun VideoFeedList(projectsList: List<Project>, preloadManager: DefaultPreloadManager?, sharedPlayer: ExoPlayer?) {
         val listState = rememberLazyListState()
 
         // Pagination Trigger
@@ -219,8 +229,8 @@ class VideoFeedActivity : AppCompatActivity() {
         project: Project,
         isVisible: Boolean,
         modifier: Modifier,
-        preloadManager: DefaultPreloadManager,
-        sharedPlayer: ExoPlayer
+        preloadManager: DefaultPreloadManager?,
+        sharedPlayer: ExoPlayer?
     ) {
         Box(modifier = modifier.background(Color.Black)) {
             VideoPlayer(videoUrl = project.videoUrl, isActive = isVisible, preloadManager, sharedPlayer)
@@ -373,45 +383,49 @@ class VideoFeedActivity : AppCompatActivity() {
     fun VideoPlayer(
         videoUrl: String,
         isActive: Boolean, // This is the crucial variable!
-        preloadManager: DefaultPreloadManager,
-        sharedPlayer: ExoPlayer
+        preloadManager: DefaultPreloadManager?,
+        sharedPlayer: ExoPlayer?
     ) {
         val mediaItem = remember(videoUrl) { MediaItem.fromUri(videoUrl) }
 
         // ONLY the active page should touch the sharedPlayer
         if (isActive) {
-            DisposableEffect(videoUrl) {
-                val preloadedSource = preloadManager.getMediaSource(mediaItem)
+                DisposableEffect(videoUrl) {
+                    try {
+                        val preloadedSource = preloadManager?.getMediaSource(mediaItem)
 
-                if (preloadedSource != null) {
-                    sharedPlayer.setMediaSource(preloadedSource)
-                } else {
-                    sharedPlayer.setMediaItem(mediaItem)
-                }
+                        if (preloadedSource != null) {
+                            sharedPlayer?.setMediaSource(preloadedSource)
+                        } else {
+                            sharedPlayer?.setMediaItem(mediaItem)
+                        }
 
-                sharedPlayer.repeatMode = Player.REPEAT_MODE_ONE
-                sharedPlayer.prepare()
-                sharedPlayer.playWhenReady = true
-
-                onDispose {
-                    sharedPlayer.stop()
-                    sharedPlayer.clearMediaItems()
-                }
-            }
-
-            AndroidView(
-                factory = { ctx ->
-                    PlayerView(ctx).apply {
-                        player = sharedPlayer
-                        useController = false
-                        resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                        sharedPlayer?.repeatMode = Player.REPEAT_MODE_ONE
+                        sharedPlayer?.prepare()
+                        sharedPlayer?.playWhenReady = true
+                    }catch (e: Throwable){
+                        Timber.tag("VideoPlayer").d("error preparing for url: $videoUrl")
                     }
-                },
-                modifier = Modifier.fillMaxSize(),
-                update = { view ->
-                    view.player = sharedPlayer
+
+                    onDispose {
+                        sharedPlayer?.stop()
+                        sharedPlayer?.clearMediaItems()
+                    }
                 }
-            )
+
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            player = sharedPlayer
+                            useController = false
+                            resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                    update = { view ->
+                        view.player = sharedPlayer
+                    }
+                )
         } else {
             // Neighbors (isActive == false) should show nothing or a thumbnail
             // This prevents them from stealing the sharedPlayer from the active item

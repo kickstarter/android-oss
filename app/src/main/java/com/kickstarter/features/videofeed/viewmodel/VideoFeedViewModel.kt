@@ -96,7 +96,9 @@ open class VideoFeedViewModel(
                             videoUrl = it.video()?.hls() ?: it.video()?.high() ?: ""
                         )
                     }
-                        .filter { it.videoUrl.isNotBlank() }
+                        .filter {
+                            it.videoUrl.isNotBlank()
+                        }
 
                     if (envelope.pageInfoEnvelope()?.hasNextPage.isTrue()) {
                         nextPage = envelope.pageInfoEnvelope()?.endCursor

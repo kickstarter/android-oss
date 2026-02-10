@@ -83,18 +83,20 @@ open class VideoFeedViewModel(
             apolloClient.getProjects(params, nextPage)
                 .asFlow()
                 .map { envelope ->
-                    val pList = envelope.projects().filter { it.hasVideo() && it.video().isNotNull() }.map {
+                    val pList = envelope.projects().filter {
+                        it.hasVideo() && it.video().isNotNull()
+                                && (it.video()?.hls()?.isNotEmpty().isTrue() || it.video()?.high()?.isNotEmpty().isTrue())
+                    }.map {
                         VideoFeedActivity.Project(
                             id = it.id().toInt(),
                             category = it.category()?.name() ?: "category",
                             title = it.name() ?: "name",
                             subtitle = it.blurb() ?: "Subtitle",
                             percentageFunded = it.percentageFunded().toInt(),
-                            videoUrl = it.video()?.hls() ?: it.video()?.base() ?: it.video()?.high()
-                                ?: ""
-
+                            videoUrl = it.video()?.hls() ?: it.video()?.high() ?: ""
                         )
                     }
+                        .filter { it.videoUrl.isNotBlank() }
 
                     if (envelope.pageInfoEnvelope()?.hasNextPage.isTrue()) {
                         nextPage = envelope.pageInfoEnvelope()?.endCursor

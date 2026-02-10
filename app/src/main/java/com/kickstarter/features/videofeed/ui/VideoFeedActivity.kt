@@ -43,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -323,6 +324,7 @@ class VideoFeedActivity : AppCompatActivity() {
     fun VideoPlayer(videoUrl: String, isActive: Boolean) {
         val context = LocalContext.current
         val exoPlayer = remember(videoUrl) {
+            Log.d("VideoPlayer", "Creating new player for: $videoUrl")
             ExoPlayer.Builder(context).build().apply {
                 setMediaItem(MediaItem.fromUri(videoUrl))
                 repeatMode = Player.REPEAT_MODE_ONE
@@ -350,7 +352,10 @@ class VideoFeedActivity : AppCompatActivity() {
         )
 
         DisposableEffect(videoUrl) {
-            onDispose { exoPlayer.release() }
+            onDispose {
+                exoPlayer.release()
+                Log.d("VideoPlayer", "Releasing player for: $videoUrl")
+            }
         }
     }
 }

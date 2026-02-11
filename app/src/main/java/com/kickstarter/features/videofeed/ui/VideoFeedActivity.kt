@@ -353,7 +353,7 @@ class VideoFeedActivity : AppCompatActivity() {
         pool: VideoPlayerPool,
         isActive: Boolean
     ) {
-        val player = pool.getPlayer(videoUrl, itemIndex, currentPagerIndex)
+        val player = pool.getPlayer(videoUrl)
 
         AndroidView(
             factory = { ctx ->
@@ -379,52 +379,38 @@ class VideoFeedActivity : AppCompatActivity() {
     }
 }
 
-@OptIn(UnstableApi::class)
 class VideoPlayerPool(context: Context) {
     private val poolSize = 3
-    private val instances = List(poolSize) {
+    private var nextAvailableIndex = 0
+
+    private val players = List(poolSize) {
         ExoPlayer.Builder(context).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
         }
     }
 
-    // - Which Player Index (0, 1, or 2)
-    private val urlToPlayerIndex = mutableMapOf<String, Int>()
-    // - Item's Position in the list
-    private val urlToPosition = mutableMapOf<String, Int>()
+    private val urlToPlayerMap = mutableMapOf<String, ExoPlayer>()
 
-    fun getPlayer(url: String, itemIndex: Int, currentPagerIndex: Int): ExoPlayer {
-        urlToPosition[url] = itemIndex
+    fun getPlayer(url: String): ExoPlayer {
+        // - If we already have a player for this URL, just give it back
+        urlToPlayerMap[url]?.let { return it }
 
-        // - If this URL is already assigned to an engine, return it
-        urlToPlayerIndex[url]?.let { return instances[it] }
+        // - next player on rotation
+        val playerToReuse = players[nextAvailableIndex]
 
-        // - Find the "farthest" player to reuse
-        val playerIndexToReuse = instances.indices.maxByOrNull { idx ->
-            val assignedUrl = urlToPlayerIndex.filterValues { it == idx }.keys.firstOrNull()
-            if (assignedUrl == null) Int.MAX_VALUE
-            else {
-                val assignedPos = urlToPosition[assignedUrl] ?: 0
-                Math.abs(assignedPos - currentPagerIndex)
-            }
-        } ?: 0
+        // Remove the old URL entry so it doesn't point to this player anymore
+        urlToPlayerMap.entries.removeIf { it.value == playerToReuse }
 
-        val oldUrl = urlToPlayerIndex.filterValues { it == playerIndexToReuse }.keys.firstOrNull()
-        if (oldUrl != null) {
-            urlToPlayerIndex.remove(oldUrl)
+        // Assign the new URL to this player
+        urlToPlayerMap[url] = playerToReuse
+        nextAvailableIndex = (nextAvailableIndex + 1) % poolSize
+
+        // 3. Prepare the player with the new content
+        return playerToReuse.apply {
+            setMediaItem(MediaItem.fromUri(url))
+            prepare()
         }
-
-        val player = instances[playerIndexToReuse]
-        urlToPlayerIndex[url] = playerIndexToReuse
-
-        player.setMediaItem(MediaItem.fromUri(url))
-        player.prepare()
-
-        Timber.tag("VideoPool").d("Assigned Player $playerIndexToReuse to index $itemIndex. Farthest from $currentPagerIndex")
-        return player
     }
 
-    fun releaseAll() {
-        instances.forEach { it.release() }
-    }
+    fun releaseAll() = players.forEach { it.release() }
 }

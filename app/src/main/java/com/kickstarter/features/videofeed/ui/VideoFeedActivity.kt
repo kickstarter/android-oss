@@ -389,23 +389,23 @@ class VideoPlayerPool(context: Context) {
         }
     }
 
+    // - Mapping player to url
     private val urlToPlayerMap = mutableMapOf<String, ExoPlayer>()
-
     fun getPlayer(url: String): ExoPlayer {
-        // - If we already have a player for this URL, just give it back
+        // - if player had url return
         urlToPlayerMap[url]?.let { return it }
 
-        // - next player on rotation
+        // - next player on rotation otherwise
         val playerToReuse = players[nextAvailableIndex]
 
-        // Remove the old URL entry so it doesn't point to this player anymore
+        // - next player on rotation otherwise
         urlToPlayerMap.entries.removeIf { it.value == playerToReuse }
 
-        // Assign the new URL to this player
+        // - update entry
         urlToPlayerMap[url] = playerToReuse
         nextAvailableIndex = (nextAvailableIndex + 1) % poolSize
 
-        // 3. Prepare the player with the new content
+        // - retunr prepared player
         return playerToReuse.apply {
             setMediaItem(MediaItem.fromUri(url))
             prepare()

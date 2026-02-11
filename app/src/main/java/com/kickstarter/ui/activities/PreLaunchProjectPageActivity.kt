@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.ui.platform.LocalContext
 import com.kickstarter.R
-import com.kickstarter.features.projectstory.ProjectStoryViewModel
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
@@ -40,9 +39,6 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
     private val viewModel: PrelaunchProjectViewModel.PrelaunchProjectViewModel by viewModels { viewModelFactory }
     private lateinit var similarProjectsViewModelFactory: SimilarProjectsViewModel.Factory
     private val similarProjectsViewModel: SimilarProjectsViewModel by viewModels { similarProjectsViewModelFactory }
-
-    private lateinit var projectStoryViewModelFactory: ProjectStoryViewModel.Factory
-    private val projectStoryViewModel: ProjectStoryViewModel by viewModels { projectStoryViewModelFactory }
     private val compositeDisposable = CompositeDisposable()
     private var ksString: KSString? = null
 
@@ -61,7 +57,6 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
         this.getEnvironment()?.let { env ->
             viewModelFactory = PrelaunchProjectViewModel.Factory(env)
             similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
-            projectStoryViewModelFactory = ProjectStoryViewModel.Factory(env)
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
@@ -87,23 +82,16 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val projectState = viewModel.project().subscribeAsState(initial = null)
                 val similarProjectsState = similarProjectsViewModel.similarProjectsUiState.collectAsState()
-                val projectStoryState = projectStoryViewModel.projectStoryUiState.collectAsState()
 
                 LaunchedEffect(projectState.value) {
                     projectState.value?.let {
                         similarProjectsViewModel.provideProject(it)
-                        projectStoryViewModel.provideProject(it)
-                        projectStoryViewModel.fetchProject()
                     }
                 }
 
                 PreLaunchProjectPageScreen(
                     projectState = projectState,
                     similarProjectsState = similarProjectsState,
-                    projectStoryState = projectStoryState,
-                    onImageClick = {
-                        this.projectStoryViewModel.fetchProject()
-                    },
                     leftOnClickAction = { finish() },
                     rightOnClickAction = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }

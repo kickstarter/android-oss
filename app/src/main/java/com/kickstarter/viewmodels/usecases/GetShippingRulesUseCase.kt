@@ -155,26 +155,20 @@ class GetShippingRulesUseCase(
     }
 
     /**
-     * Filters and sorts the project's rewards based on availability, reward type, and the selected shipping rule.
+     * Filters the project's rewards by the selected shipping rule and updates [filteredRewards].
      *
-     * This method processes the given list of rewards and updates [filteredRewards] in a prioritized order:
+     * Rewards are expected to be pre-sorted by the API (e.g. ELIGIBILITY sort). This method
+     * keeps that order and builds a single list: rewards that are available for the selected
+     * location (or no reward / unavailable / secret) are added in iteration order. The "no reward"
+     * option, if present, is inserted at the front.
      *
-     * 1. Adds the "no reward" option, if present.
-     * 2. Adds secret rewards that are available, sorted by their minimum pledge amount.
-     * 3. Adds all other available rewards that meet one of the following criteria:
-     *    - Ships worldwide
-     *    - Is a digital or local pickup reward
-     *    - Ships to restricted locations and includes a shipping rule matching the selected location
-     *    These are also sorted by minimum pledge amount.
-     * * 4. Finally, appends any unavailable rewards at the end, regardless of type.
-     *
-     * Rewards are only added if available, and the method ensures no duplicates or incorrect entries
-     * by filtering and categorizing in a single pass.
-     *
+     * A reward is included if it is the no-reward option, is unavailable, is a secret reward, or
+     * meets one of: ships worldwide, is digital, is local pickup, or ships to restricted
+     * locations and has a shipping rule for the selected location.
      *
      * @param allAvailableShippingRules map of location ID to shipping rule available for the project
      * @param rule the selected shipping rule (e.g., user's chosen location)
-     * @param rewards the full list of rewards associated with the project
+     * @param rewards the full list of rewards (e.g. from API with ELIGIBILITY sort)
      */
     private fun filterRewardsByLocation(
         allAvailableShippingRules: Map<Long, ShippingRule>,
@@ -185,10 +179,7 @@ class GetShippingRulesUseCase(
 
         val locationId = rule.location()?.id() ?: 0L
         val validShippingRule = allAvailableShippingRules[locationId]
-        val rewardGroups = mutableListOf<Reward>()
         var noReward: Reward? = null
-        val secretRewards = mutableListOf<Reward>()
-        val notAvailableRewards = mutableListOf<Reward>()
 
         rewards.forEach { rw ->
             if (RewardUtils.isNoReward(rw)) {
@@ -196,11 +187,11 @@ class GetShippingRulesUseCase(
                 return@forEach
             }
             if (!rw.isAvailable()) {
-                notAvailableRewards.add(rw)
+                filteredRewards.add(rw)
                 return@forEach
             }
             if (rw.isSecretReward() == true) {
-                secretRewards.add(rw)
+                filteredRewards.add(rw)
             } else {
                 val shouldAdd = when {
                     RewardUtils.shipsWorldwide(rw) -> true
@@ -211,14 +202,10 @@ class GetShippingRulesUseCase(
                     }
                     else -> false
                 }
-                if (shouldAdd) rewardGroups.add(rw)
+                if (shouldAdd) filteredRewards.add(rw)
             }
         }
-
-        noReward?.let { filteredRewards.add(it) }
-        filteredRewards.addAll(secretRewards.sortedBy { it.minimum() })
-        filteredRewards.addAll(rewardGroups.sortedBy { it.minimum() })
-        filteredRewards.addAll(notAvailableRewards)
+        noReward?.let { filteredRewards.add(0, it) }
     }
 
     /**

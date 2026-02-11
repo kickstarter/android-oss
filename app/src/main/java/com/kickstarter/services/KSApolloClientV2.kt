@@ -129,6 +129,7 @@ import com.kickstarter.type.BackingState
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.NonDeprecatedFlaggingKind
 import com.kickstarter.type.PaymentTypes
+import com.kickstarter.type.ProjectRewardsSort
 import com.kickstarter.type.StripeIntentContextTypes
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
@@ -731,7 +732,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun getRewardsFromProject(slug: String): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
-            val query = FetchProjectRewardsQuery(slug)
+            val query = FetchProjectRewardsQuery(
+                slug = slug,
+                sort = Optional.present(ProjectRewardsSort.ELIGIBILITY)
+            )
 
             this.service.query(query)
                 .rxFlowable()

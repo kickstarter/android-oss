@@ -3,15 +3,17 @@ package com.kickstarter.ui.activities.compose
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
@@ -34,6 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.kickstarter.R
+import com.kickstarter.features.projectstory.ProjectStoryUiState
+import com.kickstarter.features.projectstory.data.RichTextItem
+import com.kickstarter.features.projectstory.ui.RichTextItemPhotoComponent
+import com.kickstarter.features.projectstory.ui.RichTextItemTextComponent
+import com.kickstarter.features.projectstory.ui.WebViewComponent
 import com.kickstarter.libs.utils.extensions.toHtml
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
@@ -61,6 +68,7 @@ import com.kickstarter.ui.toolbars.compose.ToolbarIconToggleButton
 import com.kickstarter.ui.toolbars.compose.TopToolBar
 import com.kickstarter.ui.views.compose.KsCreatorLayout
 import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
+import timber.log.Timber
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -70,7 +78,8 @@ fun PreLaunchProjectPageScreenPreview() {
         val project = ProjectFactory.backedProject()
         val projectState = remember { mutableStateOf(null) }
         val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
-        PreLaunchProjectPageScreen(projectState, similarProjectsState)
+        val projectStoryState = remember { mutableStateOf(ProjectStoryUiState()) }
+        PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
     }
 }
 
@@ -91,6 +100,8 @@ enum class PreLaunchProjectPageScreenTestTag() {
 fun PreLaunchProjectPageScreen(
     projectState: State<Project?>,
     similarProjectsState: State<SimilarProjectsUiState>,
+    projectStoryState: State<ProjectStoryUiState>,
+    onImageClick: () -> Unit = {},
     leftOnClickAction: () -> Unit = {},
     rightOnClickAction: () -> Unit = {},
     middleRightClickAction: () -> Unit = {},
@@ -100,6 +111,8 @@ fun PreLaunchProjectPageScreen(
     numberOfFollowers: String? = null
 ) {
     val project = projectState.value
+    val story = projectStoryState.value.storiedProject?.story
+
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
         topBar = {
@@ -121,151 +134,189 @@ fun PreLaunchProjectPageScreen(
                 leftOnClickAction = { leftOnClickAction() }
             )
         }
-    ) {
+    ) { paddingValues ->
         ConstraintLayout(
-            modifier = Modifier.fillMaxSize().background(colors.kds_support_100)
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .background(colors.kds_white)
         ) {
-            val (constraintLayout, buttonCardLayout) = createRefs()
+            val (lazyColumn, buttonCardLayout) = createRefs()
             val screenPadding = dimensionResource(id = R.dimen.activity_horizontal_margin)
 
-            ConstraintLayout(
+            LazyColumn(
                 modifier = Modifier
-                    .constrainAs(constraintLayout) {
+                    .constrainAs(lazyColumn) {
                         linkTo(parent.top, buttonCardLayout.bottom, bias = 0.0f)
                         absoluteLeft.linkTo(parent.absoluteLeft)
                         absoluteRight.linkTo(parent.absoluteRight)
                     }
-                    .verticalScroll(rememberScrollState())
             ) {
-                val (
-                    projectImage, comingSoonBadge, projectName, creatorLayout,
-                    projectDescription, category, location, similarProjects
-                ) = createRefs()
-
-                ProjectImageFromURl(
-                    imageUrl = (project?.photo()?.full()),
-                    modifier = Modifier
-                        .testTag(PROJECT_IMAGE.name)
-                        .constrainAs(projectImage) {
-                            top.linkTo(parent.top)
-                        }
-                        .aspectRatio(1.77f)
-                )
-
-                TextWithKdsSupport700Bg(
-                    stringResource(id = R.string.Coming_soon),
-                    Modifier
-                        .constrainAs(comingSoonBadge) {
-                            top.linkTo(projectImage.bottom)
-                            bottom.linkTo(projectImage.bottom)
-                            start.linkTo(parent.start, screenPadding)
-                        }
-                        .testTag(COMING_SOON_BADGE.name)
-                )
-
-                val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f
-                TextH6ExtraBoldTitle(
-                    text = project?.name().orEmpty(),
-                    modifier = Modifier
-                        .alpha(projectNameAlpha)
-                        .constrainAs(projectName) {
-                            top.linkTo(comingSoonBadge.bottom)
-                            start.linkTo(parent.start, screenPadding)
-                        }
-                        .padding(end = screenPadding)
-                        .testTag(PROJECT_NAME.name)
-                )
-
-                KsCreatorLayout(
-                    creatorName = project?.creator()?.name() ?: "",
-                    imageUrl = project?.creator()?.avatar()?.medium() ?: "",
-                    modifier = Modifier
-                        .testTag(CREATOR_LAYOUT.name)
-                        .fillMaxWidth()
-                        .constrainAs(creatorLayout) {
-                            top.linkTo(projectName.bottom)
-                            start.linkTo(parent.start, screenPadding)
-                        }
-                        .padding(end = screenPadding)
-                        .padding(
-                            vertical = dimensionResource(id = R.dimen.grid_1)
-                        ),
-                    onClickAction = {
-                        onCreatorLayoutClicked.invoke()
-                    }
-                )
-
-                project?.blurb()?.let {
-                    TextBody2Style(
-                        text = it.toHtml().toString(),
+                item {
+                    ConstraintLayout(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag(PROJECT_DESCRIPTION.name)
-                            .constrainAs(projectDescription) {
-                                top.linkTo(creatorLayout.bottom)
-                                start.linkTo(parent.start, screenPadding)
+                    ) {
+                        val (
+                            projectImage, comingSoonBadge, projectName, creatorLayout,
+                            projectDescription, category, location, similarProjects
+                        ) = createRefs()
+
+                        ProjectImageFromURl(
+                            imageUrl = (project?.photo()?.full()),
+                            modifier = Modifier
+                                .testTag(PROJECT_IMAGE.name)
+                                .constrainAs(projectImage) {
+                                    top.linkTo(parent.top)
+                                }
+                                .aspectRatio(1.77f)
+                                .clickable {
+                                    onImageClick.invoke()
+                                }
+                        )
+
+                        TextWithKdsSupport700Bg(
+                            stringResource(id = R.string.Coming_soon),
+                            Modifier
+                                .constrainAs(comingSoonBadge) {
+                                    top.linkTo(projectImage.bottom)
+                                    bottom.linkTo(projectImage.bottom)
+                                    start.linkTo(parent.start, screenPadding)
+                                }
+                                .testTag(COMING_SOON_BADGE.name)
+                        )
+
+                        val projectNameAlpha = if (project?.name().isNullOrBlank()) 0f else 1f
+                        TextH6ExtraBoldTitle(
+                            text = project?.name().orEmpty(),
+                            modifier = Modifier
+                                .alpha(projectNameAlpha)
+                                .constrainAs(projectName) {
+                                    top.linkTo(comingSoonBadge.bottom)
+                                    start.linkTo(parent.start, screenPadding)
+                                }
+                                .padding(end = screenPadding)
+                                .testTag(PROJECT_NAME.name)
+                        )
+
+                        KsCreatorLayout(
+                            creatorName = project?.creator()?.name() ?: "",
+                            imageUrl = project?.creator()?.avatar()?.medium() ?: "",
+                            modifier = Modifier
+                                .testTag(CREATOR_LAYOUT.name)
+                                .fillMaxWidth()
+                                .constrainAs(creatorLayout) {
+                                    top.linkTo(projectName.bottom)
+                                    start.linkTo(parent.start, screenPadding)
+                                }
+                                .padding(end = screenPadding)
+                                .padding(
+                                    vertical = dimensionResource(id = R.dimen.grid_1)
+                                ),
+                            onClickAction = {
+                                onCreatorLayoutClicked.invoke()
                             }
-                            .padding(end = screenPadding)
-                            .padding(
-                                vertical = dimensionResource(id = R.dimen.grid_1)
+                        )
+
+                        project?.blurb()?.let {
+                            TextBody2Style(
+                                text = it.toHtml().toString(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(PROJECT_DESCRIPTION.name)
+                                    .constrainAs(projectDescription) {
+                                        top.linkTo(creatorLayout.bottom)
+                                        start.linkTo(parent.start, screenPadding)
+                                    }
+                                    .padding(end = screenPadding)
+                                    .padding(
+                                        vertical = dimensionResource(id = R.dimen.grid_1)
+                                    )
                             )
-                    )
-                }
-
-                project?.category()?.name()?.let {
-                    TextCaptionStyleWithStartIcon(
-                        it,
-                        painterResource(R.drawable.icon__compass),
-                        modifier = Modifier
-                            .testTag(PROJECT_CATEGORY_NAME.name)
-                            .constrainAs(category) {
-                                top.linkTo(projectDescription.bottom)
-                                start.linkTo(parent.start, screenPadding)
-                            }
-                            .padding(end = screenPadding)
-                            .padding(vertical = dimensionResource(id = R.dimen.grid_2))
-                    )
-                }
-
-                project?.location()?.name()?.let {
-                    val locationPadding = dimensionResource(id = R.dimen.grid_5)
-                    TextCaptionStyleWithStartIcon(
-                        it,
-                        Icons.Filled.LocationOn,
-                        modifier = Modifier
-                            .testTag(PROJECT_LOCATION_NAME.name)
-                            .constrainAs(location) {
-                                start.linkTo(category.end, locationPadding)
-                                top.linkTo(category.top)
-                                bottom.linkTo(category.bottom)
-                            }
-                            .padding(end = screenPadding)
-                    )
-                }
-
-                val spcAnchor = when {
-                    project?.location()?.name() != null -> location
-                    project?.category()?.name() != null -> category
-                    project?.blurb() != null -> projectDescription
-                    else -> creatorLayout
-                }
-
-                val spcMarginTop = dimensionResource(id = R.dimen.grid_3)
-                val spcMarginBottom = dimensionResource(id = R.dimen.grid_27)
-
-                Box(
-                    modifier = Modifier
-                        .constrainAs(similarProjects) {
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                            top.linkTo(spcAnchor.bottom, spcMarginTop)
                         }
-                        .padding(bottom = spcMarginBottom)
-                ) {
-                    SimilarProjectsComponent(
-                        uiState = similarProjectsState,
-                        onClick = onSimilarProjectClick
-                    )
+
+                        project?.category()?.name()?.let {
+                            TextCaptionStyleWithStartIcon(
+                                it,
+                                painterResource(R.drawable.icon__compass),
+                                modifier = Modifier
+                                    .testTag(PROJECT_CATEGORY_NAME.name)
+                                    .constrainAs(category) {
+                                        top.linkTo(projectDescription.bottom)
+                                        start.linkTo(parent.start, screenPadding)
+                                    }
+                                    .padding(end = screenPadding)
+                                    .padding(vertical = dimensionResource(id = R.dimen.grid_2))
+                            )
+                        }
+
+                        project?.location()?.name()?.let {
+                            val locationPadding = dimensionResource(id = R.dimen.grid_5)
+                            TextCaptionStyleWithStartIcon(
+                                it,
+                                Icons.Filled.LocationOn,
+                                modifier = Modifier
+                                    .testTag(PROJECT_LOCATION_NAME.name)
+                                    .constrainAs(location) {
+                                        start.linkTo(category.end, locationPadding)
+                                        top.linkTo(category.top)
+                                        bottom.linkTo(category.bottom)
+                                    }
+                                    .padding(end = screenPadding)
+                            )
+                        }
+                    }
+                }
+
+                items(story?.items ?: listOf(), contentType = { it::class.simpleName }) { item ->
+                    Box(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                    ) {
+                        when (item) {
+                            is RichTextItem.Text -> {
+                                when (item) {
+                                    is RichTextItem.Text.Paragraph -> {
+                                        if (item.children?.any { it is RichTextItem.Photo } == true) {
+                                            Timber.w("MISSING LINKED IMAGE")
+                                        } else {
+                                            RichTextItemTextComponent(item as RichTextItem.Text)
+                                        }
+                                    }
+                                    else -> {
+                                        RichTextItemTextComponent(item)
+                                    }
+                                }
+                            }
+                            is RichTextItem.Photo -> {
+                                RichTextItemPhotoComponent(item)
+                            }
+                            is RichTextItem.Oembed -> {
+                                Timber.d("RichTextItem.Oembed item: $item")
+                                if (item.iframeUrl.isNotEmpty()) {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth().height(224.dp) // .defaultMinSize(minHeight = 200.dp)
+                                    ) {
+                                        WebViewComponent(item.iframeUrl)
+                                    }
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+
+                item {
+                    val spcMarginTop = dimensionResource(id = R.dimen.grid_3)
+                    val spcMarginBottom = dimensionResource(id = R.dimen.grid_27)
+
+                    Box(
+                        modifier = Modifier
+                            .padding(top = spcMarginTop, bottom = spcMarginBottom)
+                    ) {
+                        SimilarProjectsComponent(
+                            uiState = similarProjectsState,
+                            onClick = onSimilarProjectClick
+                        )
+                    }
                 }
             }
 

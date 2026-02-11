@@ -129,6 +129,13 @@ type Query {
   """
   orderEdit(id: ID!): OrderEdit!
 
+  """
+  Fetches a partner given its ID.
+  """
+  partner(partnerId: ID!): Partner
+
+  partners("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, searchQuery: PartnersSearchQuery): PartnersConnection!
+
   photoForEditor(id: ID!): Photo
 
   pledgeManagerOptOutReasons: [OptOutReason!]!
@@ -153,7 +160,7 @@ type Query {
   """
   project(slug: String, pid: Int): Project
 
-  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [PublicProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], owners: [ID!], projectDeadlineSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, reportsCountSort: OpenSearchSort, reportsOpenCountSort: OpenSearchSort, reportsUnassignedCountSort: OpenSearchSort, zendeskTicketsCountSort: OpenSearchSort, openZendeskTicketsCountSort: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
+  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [AdminProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], owners: [ID!], projectDeadlineSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, reportsCountSort: OpenSearchSort, reportsOpenCountSort: OpenSearchSort, reportsUnassignedCountSort: OpenSearchSort, zendeskTicketsCountSort: OpenSearchSort, openZendeskTicketsCountSort: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
 
   """
   Get some projects
@@ -1025,6 +1032,10 @@ enum Feature {
   edit_shipping_pm_config_post_launch_2026
 
   partner_program_refresh
+
+  collaborator_creator_dashboard_access
+
+  polls_2026
 }
 
 """
@@ -1265,6 +1276,8 @@ enum CreditCardTypes {
   DINERS
 
   UNIONPAY
+
+  LINK
 }
 
 """
@@ -1284,6 +1297,8 @@ enum LowercaseCreditCardTypes {
   diners
 
   unionpay
+
+  link
 }
 
 """
@@ -2257,7 +2272,7 @@ type Project implements Node & Commentable {
   """
   The project's public state.
   """
-  publicState: PublicProjectState
+  publicState: AdminProjectState
 
   """
   Survey questions asked of all the project's backers
@@ -6194,12 +6209,22 @@ type Shipment {
   """
   cost: Int!
 
+  """
+  Datetime shipment was created
+  """
+  createdAt: DateTime!
+
   id: ID!
 
   """
   The tracking number for this shipment.
   """
   trackingNumber: String
+
+  """
+  Datetime the shipment was last updated
+  """
+  updatedAt: DateTime!
 }
 
 """
@@ -7958,9 +7983,13 @@ enum CollaboratorPermission {
 
   configure_pledge_manager
 
+  manage_fulfillment_partner_integrations
+
   launch_pledge_manager
 
   launch_prelaunch
+
+  view_creator_dashboard
 }
 
 """
@@ -8287,6 +8316,51 @@ enum ProjectState {
 }
 
 """
+An extended set of project states that admin use daily.
+"""
+enum AdminProjectState {
+  """
+  Active and accepting pledges.
+  """
+  LIVE
+
+  """
+  Successfully funded by deadline.
+  """
+  SUCCESSFUL
+
+  """
+  Failed to fund by deadline.
+  """
+  FAILED
+
+  """
+  Project is submitted and in prelaunch state.
+  """
+  SUBMITTED
+
+  """
+  Project that is in prelaunch.
+  """
+  UPCOMING
+
+  """
+  Project that is successful and accepting late pledges.
+  """
+  LATE_PLEDGE
+
+  """
+  Project was canceled by creator.
+  """
+  CANCELED
+
+  """
+  Project was suspended by Kickstarter.
+  """
+  SUSPENDED
+}
+
+"""
 A project spreadsheet, including a url and row data
 """
 type Spreadsheet {
@@ -8507,6 +8581,11 @@ type Submission {
   appeal: Message
 
   """
+  The submission's greenlit status.
+  """
+  greenlitStatus: SubmissionGreenlit
+
+  """
   If the submission has messages between the creator and KSR staff.
   """
   hasMessages: Boolean!
@@ -8562,6 +8641,41 @@ enum SubmissionState {
   Rejected by a reviewer, cannot launch.
   """
   REJECTED
+}
+
+"""
+Various submission greenlit states.
+"""
+enum SubmissionGreenlit {
+  """
+  Automatically Approved.
+  """
+  AUTO_APPROVED
+
+  """
+  Submission skipped the normal approval process and was approved.
+  """
+  FAST_TRACKED
+
+  """
+  Automatically rejected by our submission processes.
+  """
+  AUTO_REJECTED
+
+  """
+  For submissions that were auto approved, this records that the user manually wanted their project opted out.
+  """
+  OPTED_OUT
+
+  """
+  Either the submission had a low acceptability score or was required to be reviewed for other reasons.
+  """
+  REVIEW_REQUIRED
+
+  """
+  Legacy, possibly unused.
+  """
+  NOT_ELIGIBLE
 }
 
 """
@@ -9000,6 +9114,11 @@ type VideoTrackCue implements Node {
 A report by a user.
 """
 type Flagging implements Node {
+  """
+  When the flagging was created
+  """
+  createdAt: ISO8601DateTime!
+
   """
   The detailed reason for the flagging.
   """
@@ -10520,6 +10639,11 @@ type CreatorToolsPaths {
   projectPath: String!
 
   """
+  The ShipStation sync configuration path
+  """
+  shipStationConfigPath: String!
+
+  """
   The Shopify sync path path
   """
   shopifySyncPath: String!
@@ -10725,6 +10849,11 @@ input BackerReportSearchQuery {
   backerEntryPoint: [String!]
 
   """
+  Filter by backer email addresses
+  """
+  backerEmails: [String!]
+
+  """
   Page number for pagination
   """
   page: Int
@@ -10797,9 +10926,19 @@ type ShipStationConfiguration implements Node {
   id: ID!
 
   """
+  When was the last sync for an Order to ShipStation?
+  """
+  lastSyncedAt: DateTime
+
+  """
   External ID for a Store in ShipStation
   """
   storeId: String!
+
+  """
+  How many orders have been synced to ShipStation
+  """
+  syncedCount: Int!
 
   """
   Whether syncing with ShipStation is enabled or disabled
@@ -13845,6 +13984,18 @@ enum PledgeProjectsOverviewSort {
   AWAITING_REWARD
 
   REWARD_RECEIVED
+
+  CAMPAIGN_LIVE
+
+  CAMPAIGN_FUNDED
+
+  CAMPAIGN_ENDED
+
+  CAMPAIGN_FAILED
+
+  PLEDGE_DROPPED
+
+  PLEDGE_CANCELED
 }
 
 enum BackingsDashboardSortOptions {
@@ -14546,6 +14697,197 @@ enum CreatorHrcStatusTier {
 }
 
 """
+A Kickstarter partner providing services to creators
+"""
+type Partner {
+  avatarUrl: String
+
+  categories: [Category!]!
+
+  description: String!
+
+  featured: Boolean!
+
+  id: ID!
+
+  """
+  Raw language ISO codes
+  """
+  languageCodes: [String!]!
+
+  """
+  Localized language names
+  """
+  languages: [String!]!
+
+  """
+  Localized location names
+  """
+  locationNames: [String!]!
+
+  locations: [Location!]!
+
+  logoUrl: String
+
+  name: String!
+
+  """
+  Localized partner tier (Premier/Expert)
+  """
+  partnerTier: String!
+
+  """
+  Raw partner tier code
+  """
+  partnerTierCode: PartnerTier!
+
+  """
+  Raw service type codes
+  """
+  serviceTypeCodes: [PartnerService!]!
+
+  """
+  Localized service types
+  """
+  serviceTypes: [String!]!
+
+  siteUrl: String!
+
+  user: User
+}
+
+"""
+Partner tier levels
+"""
+enum PartnerTier {
+  PREMIER
+
+  EXPERT
+}
+
+"""
+Types of services partners can provide
+"""
+enum PartnerService {
+  """
+  Campaign Strategy
+  """
+  CAMPAIGN_STRATEGY
+
+  """
+  Marketing Promotion
+  """
+  MARKETING_PROMOTION
+
+  """
+  Fulfillment Logistics
+  """
+  FULFILLMENT_LOGISTICS
+
+  """
+  Manufacturing Production
+  """
+  MANUFACTURING_PRODUCTION
+
+  """
+  Retail Distribution
+  """
+  RETAIL_DISTRIBUTION
+
+  """
+  Product Design
+  """
+  PRODUCT_DESIGN
+
+  """
+  Other
+  """
+  OTHER
+}
+
+"""
+The connection type for Partner.
+"""
+type PartnersConnection {
+  """
+  A list of edges.
+  """
+  edges: [PartnerEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Partner]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type PartnerEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Partner
+}
+
+"""
+Search parameters for partners query.
+"""
+input PartnersSearchQuery {
+  """
+  Filter by partner name
+  """
+  name: String
+
+  """
+  Search across partner fields
+  """
+  search: String
+
+  """
+  Filter by partner tier
+  """
+  partnerTier: PartnerTier
+
+  """
+  Filter by languages
+  """
+  languages: [String!]
+
+  """
+  Filter by service types
+  """
+  serviceTypes: [PartnerService!]
+
+  """
+  Filter by location IDs
+  """
+  locationIds: [ID!]
+
+  """
+  Filter by category IDs
+  """
+  categoryIds: [ID!]
+
+  """
+  Filter by featured status
+  """
+  featured: Boolean
+}
+
+"""
 The mutation root of the Kickstarter GraphQL interface
 """
 type Mutation {
@@ -14764,6 +15106,11 @@ type Mutation {
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
 
   """
+  Create or update a Kickstarter partner
+  """
+  createOrUpdatePartner(input: CreateOrUpdatePartnerInput!): CreateOrUpdatePartnerPayload
+
+  """
   Creates or updates a preview order with given starting attributes
   """
   createOrUpdatePreviewOrder(input: CreateOrUpdatePreviewOrderInput!): CreateOrUpdatePreviewOrderPayload
@@ -14951,6 +15298,11 @@ type Mutation {
   Deletes an option type and values for an item
   """
   deleteOption(input: DeleteOptionInput!): DeleteOptionPayload
+
+  """
+  Delete a Kickstarter partner
+  """
+  deletePartner(input: DeletePartnerInput!): DeletePartnerPayload
 
   """
   Delete a project post
@@ -15297,6 +15649,11 @@ type Mutation {
   Enable & disable the preview url for a Kickstarter project.
   """
   toggleProjectPreview(input: ToggleProjectPreviewInput!): ToggleProjectPreviewPayload
+
+  """
+  Pause or Resume ShipStation syncing
+  """
+  toggleShipStationSyncing(input: ToggleShipStationSyncingInput!): ToggleShipStationSyncingPayload
 
   """
   Toggles the syncing state for a Shopify shop
@@ -17810,6 +18167,11 @@ input BackerReportSelection {
   """
   backerEntryPoint: [String!]
 
+  """
+  Filter by backer email addresses
+  """
+  backerEmails: [String!]
+
   ids: [ID!]
 
   selectAll: Boolean
@@ -20289,6 +20651,32 @@ input CreateOrUpdateShipStationConfigurationInput {
 }
 
 """
+Autogenerated return type of ToggleShipStationSyncing
+"""
+type ToggleShipStationSyncingPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  shipStationConfiguration: ShipStationConfiguration!
+}
+
+"""
+Autogenerated input type of ToggleShipStationSyncing
+"""
+input ToggleShipStationSyncingInput {
+  projectId: ID!
+
+  syncing: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of CreateTrackEvent
 """
 type CreateTrackEventPayload {
@@ -20755,6 +21143,84 @@ enum ExistingFreeItemsBehavior {
   Include backings regardless of whether they have some of the specified free items
   """
   include
+}
+
+"""
+Autogenerated return type of CreateOrUpdatePartner
+"""
+type CreateOrUpdatePartnerPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  partner: Partner
+}
+
+"""
+Autogenerated input type of CreateOrUpdatePartner
+"""
+input CreateOrUpdatePartnerInput {
+  partnerId: ID
+
+  name: String
+
+  siteUrl: String
+
+  description: String
+
+  avatarUrl: String
+
+  logoUrl: String
+
+  partnerTier: PartnerTier
+
+  languages: [String!]
+
+  serviceTypes: [PartnerService!]
+
+  featured: Boolean
+
+  userId: ID
+
+  locationIds: [ID!]
+
+  categoryIds: [ID!]
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeletePartner
+"""
+type DeletePartnerPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Whether the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeletePartner
+"""
+input DeletePartnerInput {
+  """
+  The ID of the partner to delete
+  """
+  partnerId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 }
 
 """

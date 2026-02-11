@@ -13,6 +13,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
@@ -36,6 +37,7 @@ import com.kickstarter.ui.data.ActivityResult.Companion.create
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.LoginToutViewModel
+import com.kickstarter.viewmodels.OAuthException
 import com.kickstarter.viewmodels.OAuthViewModel
 import com.kickstarter.viewmodels.OAuthViewModelFactory
 import io.reactivex.Observable
@@ -82,6 +84,10 @@ class LoginToutActivity : ComponentActivity() {
             viewModelFactory = LoginToutViewModel.Factory(env)
             oAuthViewModelFactory = OAuthViewModelFactory(environment = env)
             this.ksString = requireNotNull(env.ksString())
+
+            oAuthViewModel.provideErrorAction { cause ->
+                FirebaseCrashlytics.getInstance().recordException(OAuthException(cause))
+            }
         }
 
         setContent {
@@ -101,6 +107,7 @@ class LoginToutActivity : ComponentActivity() {
                         viewModel.inputs.disclaimerItemClicked(DisclaimerItems.HELP)
                     },
                     onSignUpOrLogInClicked = {
+                        oAuthViewModel.sendCTAEvent()
                         oAuthViewModel.produceState(intent = intent)
                     }
                 )
@@ -110,6 +117,10 @@ class LoginToutActivity : ComponentActivity() {
         logInAndSignUpAndLoginWithFacebookVM()
 
         setUpOAuthViewModel()
+
+        intent.data?.let { data ->
+            afterRedirection(data.toString(), intent)
+        }
     }
 
     /***
@@ -213,18 +224,22 @@ class LoginToutActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Timber.d("$oAuthLogcat onNewIntent Intent: $intent, data: ${intent?.data}")
-        intent?.let {
-            val url = intent.data.toString()
+        intent.data?.let { data ->
+            val url = data.toString()
             // - Redirection takes place from ChromeTab, as the defaultBrowser is Chrome
-            afterRedirection(url, it)
+            afterRedirection(url, intent)
         }
     }
 
     private fun afterRedirection(url: String, intent: Intent) {
-        val uri = url.toUri()
-        uri?.let {
-            if (OAuthViewModel.isAfterRedirectionStep(it))
-                oAuthViewModel.produceState(intent = intent, uri)
+        try {
+            val uri = url.toUri()
+            uri?.let {
+                if (OAuthViewModel.isAfterRedirectionStep(it))
+                    oAuthViewModel.produceState(intent = intent, uri)
+            }
+        } catch (error: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(OAuthException(error))
         }
     }
 

@@ -48,7 +48,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test useCase returns project reward list filtered when collecting late pledges`() = runTest {
+    fun `test useCase returns project reward list without location filtering`() = runTest {
         val apolloClient = MockApolloClientV2()
         val config = ConfigFactory.configForUSUser()
 
@@ -88,14 +88,12 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         assertEquals(state.size, 2)
-        assertNotSame(state.last().filteredRw, project.rewards())
-        assertEquals(state.last().filteredRw.size, 1)
-        assertEquals(state.last().filteredRw.first(), reward2)
+        assertEquals(state.last().filteredRw, rwList)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `no reward is always added first even if unavailable`() = runTest {
+    fun `no reward is preserved when already first`() = runTest {
         val config = ConfigFactory.configForUSUser()
         val noReward = RewardFactory.noReward().toBuilder()
             .isAvailable(false) // Force it to be unavailable
@@ -109,7 +107,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
         val project = ProjectFactory.project()
             .toBuilder()
-            .rewards(listOf(regularReward, noReward))
+            .rewards(listOf(noReward, regularReward))
             .isInPostCampaignPledgingPhase(true)
             .postCampaignPledgingEnabled(true)
             .build()
@@ -127,13 +125,12 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         val filtered = state.last().filteredRw
-        assertTrue(filtered.isNotEmpty())
-        assertEquals(noReward, filtered.first())
+        assertEquals(listOf(noReward, regularReward), filtered)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `unavailable rewards are appended at the end`() = runTest {
+    fun `unavailable rewards are preserved in order`() = runTest {
         val config = ConfigFactory.configForUSUser()
         val availableReward = RewardFactory.reward().toBuilder()
             .isAvailable(true)
@@ -164,13 +161,12 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         val filtered = state.last().filteredRw
-        assertEquals(2, filtered.size)
-        assertEquals(unavailableReward, filtered.last())
+        assertEquals(listOf(availableReward, unavailableReward), filtered)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `secret rewards are included if available and sorted by minimum pledge`() = runTest {
+    fun `secret rewards are preserved in order`() = runTest {
         val config = ConfigFactory.configForUSUser()
 
         val noReward = RewardFactory.noReward().toBuilder()
@@ -196,7 +192,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
         val project = ProjectFactory.project()
             .toBuilder()
-            .rewards(listOf(regularReward, secretReward1, secretReward2, noReward))
+            .rewards(listOf(noReward, secretReward1, secretReward2, regularReward))
             .isInPostCampaignPledgingPhase(true)
             .postCampaignPledgingEnabled(true)
             .build()
@@ -214,16 +210,12 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         val filtered = state.last().filteredRw
-        assertEquals(4, filtered.size)
-        assertEquals(noReward, filtered[0]) // "no reward" first
-        assertEquals(secretReward2, filtered[1]) // secret reward with min = 10
-        assertEquals(secretReward1, filtered[2]) // secret reward with min = 30
-        assertEquals(regularReward, filtered[3]) // available regular reward at the end
+        assertEquals(listOf(noReward, secretReward1, secretReward2, regularReward), filtered)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `unavailable secret rewards are added at the end with other unavailable rewards`() = runTest {
+    fun `unavailable secret rewards are preserved in order`() = runTest {
         val config = ConfigFactory.configForUSUser()
 
         val secretUnavailable = RewardFactory.reward().toBuilder()
@@ -258,8 +250,6 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
         val filtered = state.last().filteredRw
 
-        assertEquals(2, filtered.size)
-        assertEquals(regularAvailable, filtered[0]) // Eligible reward comes first
-        assertEquals(secretUnavailable, filtered[1]) // Unavailable secret reward at the end
+        assertEquals(listOf(regularAvailable, secretUnavailable), filtered)
     }
 }

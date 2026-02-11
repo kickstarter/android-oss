@@ -126,6 +126,7 @@ import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.type.BackingState
+import com.kickstarter.type.CountryCode
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.NonDeprecatedFlaggingKind
 import com.kickstarter.type.PaymentTypes
@@ -243,7 +244,11 @@ interface ApolloClientTypeV2 {
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
     fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
-    fun getRewardsFromProject(slug: String): Observable<List<Reward>>
+    fun getRewardsFromProject(
+        slug: String,
+        locationCountryCode: String? = null,
+        sort: ProjectRewardsSort = ProjectRewardsSort.ELIGIBILITY
+    ): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
     suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
@@ -729,7 +734,11 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getRewardsFromProject(slug: String): Observable<List<Reward>> {
+    override fun getRewardsFromProject(
+        slug: String,
+        locationCountryCode: String?,
+        sort: ProjectRewardsSort
+    ): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
             val query = FetchProjectRewardsQuery(

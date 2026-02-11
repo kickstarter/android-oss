@@ -1,6 +1,5 @@
 package com.kickstarter.features.search.viewmodel
 
-import android.util.Pair
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import timber.log.Timber
+import kotlin.Pair
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.text.isNotBlank
 
@@ -228,15 +228,15 @@ class SearchAndFilterViewModel(
     ): Pair<Project, RefTag> {
         val isFirstResult = if (projects.isEmpty()) false else selectedProject === projects[0]
         return if (searchTerm.isEmpty()) {
-            if (isFirstResult) Pair.create(
+            if (isFirstResult) Pair(
                 selectedProject,
                 RefTag.searchPopularFeatured()
-            ) else Pair.create(selectedProject, RefTag.searchPopular())
+            ) else Pair(selectedProject, RefTag.searchPopular())
         } else {
-            if (isFirstResult) Pair.create(
+            if (isFirstResult) Pair(
                 selectedProject,
                 RefTag.searchFeatured()
-            ) else Pair.create(selectedProject, RefTag.search())
+            ) else Pair(selectedProject, RefTag.search())
         }
     }
 

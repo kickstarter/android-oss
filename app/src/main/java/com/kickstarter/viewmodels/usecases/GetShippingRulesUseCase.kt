@@ -110,7 +110,8 @@ class GetShippingRulesUseCase(
                     project
                 )
 
-                filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
+                filteredRewards.clear()
+                filteredRewards.addAll(projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
@@ -137,7 +138,6 @@ class GetShippingRulesUseCase(
             defaultShippingRule = shippingRule
             emitCurrentState(isLoading = true)
             delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
-            filterRewardsByLocation(allAvailableRulesForProject, shippingRule, projectRewards)
             emitCurrentState(isLoading = false)
         }
     }

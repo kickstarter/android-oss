@@ -481,6 +481,11 @@ fragment paymentIncrementAmount on PaymentIncrementAmount {
     currency
 }
 
+fragment paymentIncrementBadge on PaymentIncrementBadge {
+    copy
+    variant
+}
+
 fragment location on Location {
     displayableName
     country
@@ -556,6 +561,9 @@ fragment paymentIncrement on PaymentIncrement {
     id
     amount {
         ...paymentIncrementAmount
+    }
+    badge {
+        ...paymentIncrementBadge
     }
     state
     stateReason

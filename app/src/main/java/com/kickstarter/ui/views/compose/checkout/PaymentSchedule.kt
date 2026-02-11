@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,8 +40,9 @@ import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.PaymentIncrementFactory
 import com.kickstarter.models.PaymentIncrement
+import com.kickstarter.models.PaymentIncrementBadge
+import com.kickstarter.models.PaymentIncrementBadgeVariant
 import com.kickstarter.type.PaymentIncrementState
-import com.kickstarter.type.PaymentIncrementStateReason
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.compose.designsystem.KSClickableText
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -188,9 +190,13 @@ fun PaymentRow(
     paymentIncrement: PaymentIncrement,
     ksCurrency: KSCurrency?
 ) {
-    val isCollectedAdjusted =
+    val isCollectedAdjusted = (
         paymentIncrement.state == PaymentIncrementState.COLLECTED &&
             paymentIncrement.refundedAmount != null
+        ) || (
+        paymentIncrement.state == PaymentIncrementState.COLLECTED_ADJUSTED
+        )
+
     val displayedAmount =
         if (isCollectedAdjusted) {
             paymentIncrement.refundUpdatedAmountInProjectNativeCurrency
@@ -216,7 +222,9 @@ fun PaymentRow(
                 style = typographyV2.bodyBoldMD,
                 color = colors.textPrimary
             )
-            StatusBadge(paymentIncrement.state, paymentIncrement.stateReason, isCollectedAdjusted)
+            paymentIncrement.paymentIncrementBadge?.let {
+                StatusBadge(it)
+            }
         }
         Text(
             modifier = Modifier.testTag(PaymentScheduleTestTags.AMOUNT_TEXT.name),
@@ -270,181 +278,67 @@ private fun paymentIncrementStyledCurrency(
 }
 
 @Composable
-fun StatusBadge(state: PaymentIncrementState, stateReason: PaymentIncrementStateReason, isCollectedAdjusted: Boolean) {
-    when (state) {
-        PaymentIncrementState.ERRORED -> {
-            if (stateReason == PaymentIncrementStateReason.REQUIRES_ACTION) {
-                val isLight = !isSystemInDarkTheme()
-                val backgroundColor = if (isLight) colors.backgroundWarningSubtle else colors.yellow_03
-                val textColor = if (isLight) colors.textAccentYellowBold else colors.yellow_08
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = backgroundColor,
-                            shape = RoundedCornerShape(
-                                topStart = dimensions.radiusSmall,
-                                topEnd = dimensions.radiusSmall,
-                                bottomStart = dimensions.radiusSmall,
-                                bottomEnd = dimensions.radiusSmall
-                            ),
-                        )
-                        .padding(
-                            horizontal = dimensions.paddingSmall,
-                            vertical = dimensions.paddingXSmall
-                        )
-                ) {
-                    Text(
-                        modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                        text = stringResource(id = R.string.Authentication_required),
-                        style = typographyV2.headingSM,
-                        color = textColor
-                    )
-                }
-            } else {
-                val isLight = !isSystemInDarkTheme()
-                val backgroundColor = if (isLight) colors.red_light else colors.red_03
-                val textColor = if (isLight) colors.kds_alert else colors.red_07
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = backgroundColor,
-                            shape = RoundedCornerShape(
-                                topStart = dimensions.radiusSmall,
-                                topEnd = dimensions.radiusSmall,
-                                bottomStart = dimensions.radiusSmall,
-                                bottomEnd = dimensions.radiusSmall
-                            ),
-                        )
-                        .padding(
-                            horizontal = dimensions.paddingSmall,
-                            vertical = dimensions.paddingXSmall
-                        )
-                ) {
-                    Text(
-                        modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                        text = stringResource(id = R.string.Errored_payment),
-                        style = typographyV2.headingSM,
-                        color = textColor
-                    )
-                }
-            }
-        }
+fun StatusBadge(badgeData: PaymentIncrementBadge) {
+    val colors = mapVariantToColors(badgeData.variant)
+    val backgroundColor = colors.background
+    val textColor = colors.text
 
-        PaymentIncrementState.COLLECTED -> {
-            val isLight = !isSystemInDarkTheme()
-            val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
-            val textColor = if (isLight) colors.green_06 else colors.green_07
-            val labelRes = if (isCollectedAdjusted) {
-                R.string.Collected_adjusted
-            } else {
-                R.string.project_view_pledge_status_collected
-            }
-
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = backgroundColor,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = labelRes),
-                    style = typographyV2.headingSM,
-                    color = textColor
-                )
-            }
-        }
-
-        PaymentIncrementState.UNATTEMPTED -> {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = colors.blue_03,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.Scheduled),
-                    style = typographyV2.headingSM,
-                    color = colors.blue_09
-                )
-            }
-        }
-
-        PaymentIncrementState.CANCELLED -> {
-            val isLight = !isSystemInDarkTheme()
-            val backgroundColor = if (isLight) colors.grey_03 else colors.grey_05
-            val textColor = colors.grey_10
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = backgroundColor,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.project_view_pledge_status_canceled),
-                    style = typographyV2.headingSM,
-                    color = textColor
-                )
-            }
-        }
-        PaymentIncrementState.REFUNDED -> {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = colors.purple_03,
-                        shape = RoundedCornerShape(
-                            topStart = dimensions.radiusSmall,
-                            topEnd = dimensions.radiusSmall,
-                            bottomStart = dimensions.radiusSmall,
-                            bottomEnd = dimensions.radiusSmall
-                        ),
-                    )
-                    .padding(
-                        horizontal = dimensions.paddingSmall,
-                        vertical = dimensions.paddingXSmall
-                    )
-            ) {
-                Text(
-                    modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
-                    text = stringResource(id = R.string.Refunded),
-                    style = typographyV2.headingSM,
-                    color = colors.purple_08
-                )
-            }
-        }
-        PaymentIncrementState.UNKNOWN__ -> {}
-        PaymentIncrementState.CHARGEBACK_LOST -> {}
+    Box(
+        modifier = Modifier
+            .background(
+                color = backgroundColor,
+                shape = RoundedCornerShape(
+                    topStart = dimensions.radiusSmall,
+                    topEnd = dimensions.radiusSmall,
+                    bottomStart = dimensions.radiusSmall,
+                    bottomEnd = dimensions.radiusSmall
+                ),
+            )
+            .padding(
+                horizontal = dimensions.paddingSmall,
+                vertical = dimensions.paddingXSmall
+            )
+    ) {
+        Text(
+            modifier = Modifier.testTag(PaymentScheduleTestTags.BADGE_TEXT.name),
+            text = badgeData.copy,
+            style = typographyV2.headingSM,
+            color = textColor
+        )
     }
 }
+
+// Logic to return Android colors for badge background and text
+@Composable
+fun mapVariantToColors(variant: PaymentIncrementBadgeVariant): PaymentIncrementBadgeColors {
+    val isLight = !isSystemInDarkTheme()
+    when (variant) {
+        PaymentIncrementBadgeVariant.RED -> {
+            val backgroundColor = if (isLight) colors.red_light else colors.red_03
+            val textColor = if (isLight) colors.kds_alert else colors.red_07
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.GRAY -> {
+            val backgroundColor = if (isLight) colors.grey_03 else colors.grey_05
+            val textColor = colors.grey_10
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.GREEN -> {
+            val backgroundColor = if (isLight) colors.green_06.copy(alpha = 0.06f) else colors.green_02
+            val textColor = if (isLight) colors.green_06 else colors.green_07
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.DANGER -> {
+            val backgroundColor = if (isLight) colors.red_light else colors.red_03
+            val textColor = if (isLight) colors.kds_alert else colors.red_07
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+        PaymentIncrementBadgeVariant.PURPLE -> {
+            val backgroundColor = colors.blue_03
+            val textColor = colors.blue_09
+            return PaymentIncrementBadgeColors(backgroundColor, textColor)
+        }
+    }
+}
+
+data class PaymentIncrementBadgeColors(val background: Color, val text: Color)

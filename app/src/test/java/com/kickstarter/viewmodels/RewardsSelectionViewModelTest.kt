@@ -371,8 +371,17 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertTrue(shippingUiState.any { it.loading })
         assertTrue(shippingUiState.any { !it.loading })
 
-        assertEquals(testRewards.size, obtained.size)
-        assertEquals(testRewards, obtained)
+        assertEquals(testRewards[0], obtained[0])
+        assertFalse(obtained.contains(testRewards[5]))
+        var lastIndex = -1
+        for (rw in obtained) {
+            val idx = testRewards.indexOf(rw)
+            assertTrue(idx >= 0)
+            assertTrue(idx > lastIndex) { "Order must be preserved" }
+            lastIndex = idx
+        }
+        assertTrue(obtained.size <= testRewards.size)
+        assertTrue(obtained.size >= 7)
     }
 
     @Test

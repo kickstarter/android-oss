@@ -102,10 +102,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             currentConfig.asFlow()
                 .flatMapLatest { config ->
                     latestConfig = config
-                    apolloClient.getRewardsFromProject(
-                        project.slug() ?: "",
-                        locationCountryCode = config.countryCode()
-                    )
+                    apolloClient.getRewardsFromProject(project.slug() ?: "")
                         .asFlow()
                         .map { rewardsList -> rewardsList to config }
                 }
@@ -216,12 +213,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             )
             selectedShippingRule = shippingRule
             val project = currentProjectData.project()
-            val locationCountry = shippingRule.location()?.country()?.takeIf { it.isNotBlank() }
-                ?: latestConfig?.countryCode()
-            apolloClient.getRewardsFromProject(
-                project.slug() ?: "",
-                locationCountryCode = locationCountry
-            )
+            apolloClient.getRewardsFromProject(project.slug() ?: "")
                 .asFlow()
                 .catch { }
                 .collect { rewardsList ->

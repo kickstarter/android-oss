@@ -245,7 +245,6 @@ interface ApolloClientTypeV2 {
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
     fun getRewardsFromProject(
         slug: String,
-        locationCountryCode: String? = null,
         sort: ProjectRewardsSort = ProjectRewardsSort.ELIGIBILITY
     ): Observable<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
@@ -735,7 +734,6 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override fun getRewardsFromProject(
         slug: String,
-        locationCountryCode: String?,
         sort: ProjectRewardsSort
     ): Observable<List<Reward>> {
         return Observable.defer {

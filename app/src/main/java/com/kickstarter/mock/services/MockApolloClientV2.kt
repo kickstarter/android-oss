@@ -61,7 +61,6 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun getRewardsFromProject(
         slug: String,
-        locationCountryCode: String?,
         sort: com.kickstarter.type.ProjectRewardsSort
     ): io.reactivex.Observable<List<Reward>> {
         return io.reactivex.Observable.just(emptyList())

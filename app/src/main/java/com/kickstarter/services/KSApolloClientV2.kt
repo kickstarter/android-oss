@@ -126,7 +126,6 @@ import com.kickstarter.services.transformers.shippingRulesListTransformer
 import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.type.BackingState
-import com.kickstarter.type.CountryCode
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.NonDeprecatedFlaggingKind
 import com.kickstarter.type.PaymentTypes

@@ -5,7 +5,6 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
-import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +20,6 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `test useCase returns project reward list unfiltered when not collecting`() = runTest {
-        val apolloClient = MockApolloClientV2()
         val config = ConfigFactory.configForCA()
         val project = ProjectFactory.project()
             .toBuilder()
@@ -48,8 +46,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test useCase returns project reward list without location filtering`() = runTest {
-        val apolloClient = MockApolloClientV2()
+    fun `test useCase returns project reward list filtered by default location`() = runTest {
         val config = ConfigFactory.configForUSUser()
 
         val shippingRule1 = ShippingRuleFactory.canadaShippingRule()
@@ -88,7 +85,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         assertEquals(state.size, 2)
-        assertEquals(state.last().filteredRw, rwList)
+        assertEquals(state.last().filteredRw, listOf(reward2))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

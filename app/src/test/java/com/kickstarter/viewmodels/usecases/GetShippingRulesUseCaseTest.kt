@@ -60,7 +60,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
             .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
             .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
             .isAvailable(true)
-            .shippingRules(listOf(shippingRule1))
+            .shippingRules(listOf(shippingRule1, shippingRule3))
             .build()
         val reward2 = reward.toBuilder()
             .shippingRules(listOf(shippingRule1, shippingRule2, shippingRule3))

@@ -377,7 +377,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         for (rw in obtained) {
             val idx = testRewards.indexOf(rw)
             assertTrue(idx >= 0)
-            assertTrue(idx > lastIndex) { "Order must be preserved" }
+            assertTrue("Order must be preserved", idx > lastIndex)
             lastIndex = idx
         }
         assertTrue(obtained.size <= testRewards.size)

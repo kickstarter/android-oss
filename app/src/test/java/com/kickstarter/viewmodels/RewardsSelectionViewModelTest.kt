@@ -363,32 +363,12 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
 
         advanceUntilIdle()
         viewModel.selectedShippingRule(ShippingRuleFactory.germanyShippingRule())
-        advanceTimeBy(600)
 
-        // New filter: single list, input order preserved, noReward first. Reward 5 (Mexico only) excluded for Germany.
-        val filteredRewards = listOf(
-            testRewards[0], // noReward (always first)
-            testRewards[1], // unavailable
-            testRewards[2], // available, unrestricted
-            testRewards[3], // available, restricted to Germany
-            testRewards[4], // available, unrestricted
-            testRewards[6], // unavailable
-            testRewards[7], // available, restricted (includes Germany)
-            testRewards[8]  // available, unrestricted
-        )
-
+        // No location filtering: all rewards shown in backend order (noReward first). Reward card shows "unavailable" when shipping not available.
         val obtained = shippingUiState.last().filteredRw
-
-        // Assertions
-        assertEquals(shippingUiState.size, 4)
-        assertEquals(shippingUiState[2].loading, true)
-        assertEquals(shippingUiState[3].loading, false)
-
-        assertEquals(filteredRewards.size, obtained.size)
-        assertEquals(filteredRewards, obtained)
-
+        assertEquals(testRewards.size, obtained.size)
+        assertEquals(testRewards, obtained)
         assertEquals(obtained.first(), testRewards[0]) // noReward
-        assertEquals(obtained[3], testRewards[3]) // restricted Germany reward
     }
 
     @Test

@@ -12,7 +12,6 @@ import com.kickstarter.models.ShippingRule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -110,11 +109,10 @@ class GetShippingRulesUseCase(
                     project
                 )
 
-                filterRewardsByLocation(allAvailableRulesForProject, defaultShippingRule, projectRewards)
+                setRewardsList(projectRewards)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
-                // - All rewards are digital, all rewards must be available
                 filteredRewards.clear()
                 filteredRewards.addAll(projectRewards)
             }
@@ -135,9 +133,6 @@ class GetShippingRulesUseCase(
     fun filterBySelectedRule(shippingRule: ShippingRule) {
         scope.launch(dispatcher) {
             defaultShippingRule = shippingRule
-            emitCurrentState(isLoading = true)
-            delay(500) // Added delay due to the filtering happening too fast for the user to perceive the loading state
-            filterRewardsByLocation(allAvailableRulesForProject, shippingRule, projectRewards)
             emitCurrentState(isLoading = false)
         }
     }
@@ -155,53 +150,19 @@ class GetShippingRulesUseCase(
     }
 
     /**
-     * Filters the project's rewards by the selected shipping rule and updates [filteredRewards].
-     *
-     * Rewards are expected to be in server-side ELIGIBILITY order. This method preserves that order
-     * and builds a single list: the "no reward" option (if present) is placed first, followed by
-     * all other rewards that are either unavailable, secret, or eligible for the selected location
-     * (worldwide, digital, local pickup, or restricted with a matching shipping rule).
-     *
-     * @param allAvailableShippingRules map of location ID to shipping rule available for the project
-     * @param rule the selected shipping rule (e.g., user's chosen location)
-     * @param rewards the full list of rewards (typically in ELIGIBILITY order from the server)
+     * Sets [filteredRewards] to the full list in backend order (no reward first when present).
+     * No location-based filtering: reward cards show "unavailable" UI when shipping is not available.
      */
-    private fun filterRewardsByLocation(
-        allAvailableShippingRules: Map<Long, ShippingRule>,
-        rule: ShippingRule,
-        rewards: List<Reward>
-    ) {
+    private fun setRewardsList(rewards: List<Reward>) {
         filteredRewards.clear()
-
-        val locationId = rule.location()?.id() ?: 0L
-        val validShippingRule = allAvailableShippingRules[locationId]
         var noReward: Reward? = null
-
         rewards.forEach { rw ->
             if (RewardUtils.isNoReward(rw)) {
                 noReward = rw
-                return@forEach
-            }
-            if (!rw.isAvailable()) {
-                filteredRewards.add(rw)
-                return@forEach
-            }
-            if (rw.isSecretReward() == true) {
-                filteredRewards.add(rw)
             } else {
-                val shouldAdd = when {
-                    RewardUtils.shipsWorldwide(rw) -> true
-                    RewardUtils.isLocalPickup(rw) -> true
-                    RewardUtils.isDigital(rw) -> true
-                    RewardUtils.shipsToRestrictedLocations(rw) && validShippingRule != null -> {
-                        rw.shippingRules()?.any { it.location()?.id() == locationId } == true
-                    }
-                    else -> false
-                }
-                if (shouldAdd) filteredRewards.add(rw)
+                filteredRewards.add(rw)
             }
         }
-
         noReward?.let { filteredRewards.add(0, it) }
     }
 

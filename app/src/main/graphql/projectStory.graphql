@@ -1,0 +1,129 @@
+query FetchProjectStory($slug: String!, $imageUrlWidth: Int = 1024) {
+  project(slug: $slug) {
+    ...projectStoryFragment
+  }
+}
+
+fragment projectStoryFragment on Project {
+  id
+  pid
+  name
+  slug
+  isLaunched
+  imageUrl(width: $imageUrlWidth)
+  storyRichText {
+    ...storyRichTextComponentFragment
+  }
+  prelaunchStoryRichText {
+    ...storyRichTextComponentFragment
+  }
+}
+
+fragment storyRichTextComponentFragment on RichTextComponent {
+  items {
+    ... on RichText {
+      __typename
+      text
+      link
+      styles
+      children {
+        ...richTextChildParagraphFragment
+        ...richTextPhotoFragment
+      }
+    }
+    ... on RichTextHeader1 {
+      __typename
+      text
+      link
+      styles
+      children {
+        ...richTextChildParagraphFragment
+      }
+    }
+    ... on RichTextHeader2 {
+      __typename
+      text
+      link
+      styles
+      children {
+        ...richTextChildParagraphFragment
+      }
+    }
+    ... on RichTextHeader3 {
+      __typename
+      text
+      link
+      styles
+      children {
+        ...richTextChildParagraphFragment
+      }
+    }
+    ... on RichTextHeader4 {
+      __typename
+      text
+      link
+      styles
+      children {
+        ...richTextChildParagraphFragment
+      }
+    }
+    ... on RichTextListOpen {
+      __typename
+      _present
+    }
+    ... on RichTextListItem {
+      __typename
+      text
+      link
+      styles
+      children {
+        ...richTextChildParagraphFragment
+      }
+    }
+    ... on RichTextListClose {
+      __typename
+      _present
+    }
+    ... on RichTextOembed {
+      __typename
+      type
+      iframeUrl
+      width
+      height
+      html
+    }
+    ... on RichTextPhoto {
+      ...richTextPhotoFragment
+    }
+    ... on RichTextAudio {
+      __typename
+      url
+      altText
+      caption
+    }
+    ... on RichTextVideo {
+      __typename
+      url
+      altText
+      caption
+    }
+  }
+}
+
+fragment richTextChildParagraphFragment on RichText {
+  __typename
+  text
+  link
+  styles
+}
+
+fragment richTextPhotoFragment on RichTextPhoto {
+  __typename
+  url(width: $imageUrlWidth)
+  altText
+  caption
+  asset {
+    url(width: $imageUrlWidth)
+    altText
+  }
+}

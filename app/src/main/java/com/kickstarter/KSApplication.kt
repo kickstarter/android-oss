@@ -4,6 +4,10 @@ import android.text.TextUtils
 import androidx.annotation.CallSuper
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.ApiEndpoint
@@ -38,7 +42,7 @@ import java.net.URI
 import java.util.UUID
 import javax.inject.Inject
 
-open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
+open class KSApplication : MultiDexApplication(), IKSApplicationComponent, ImageLoaderFactory {
     private var component: ApplicationComponent? = null
 
     @Inject
@@ -161,6 +165,19 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent {
         cookieManager.cookieStore.add(webUri, cookie)
         cookieManager.cookieStore.add(apiUri, cookie)
         CookieHandler.setDefault(this.cookieManager)
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .components {
+                if (android.os.Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    Timber.d("GifDecoder")
+                    add(GifDecoder.Factory())
+                }
+            }
+            .build()
     }
 
     private fun createErrorHandler() {

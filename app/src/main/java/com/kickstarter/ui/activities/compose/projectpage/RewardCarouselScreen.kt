@@ -203,10 +203,14 @@ fun RewardCarouselScreen(
                     items = rewards,
                 ) { reward ->
 
+                    val selectedLocationId = currentShippingRule.location()?.id()
+
                     val ctaButtonEnabled = when {
                         RewardUtils.isNoReward(reward) -> true
 
                         !reward.isAvailable() -> false
+
+                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> false
 
                         !reward.hasAddons() && backing?.isBacked(reward) != true -> true
 

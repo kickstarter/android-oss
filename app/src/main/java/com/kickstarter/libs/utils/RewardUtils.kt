@@ -86,6 +86,17 @@ object RewardUtils {
     fun shipsToRestrictedLocations(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.RESTRICTED.name, ignoreCase = true)
 
     /**
+     * Returns `true` if the reward is shippable to the given location (or has no shipping restriction).
+     * Worldwide, digital, and local pickup rewards are always considered shippable.
+     * Restricted rewards are shippable only if their shipping rules contain the given locationId.
+     * When locationId is null, restricted rewards are considered not shippable to the selected location.
+     */
+    fun isShippableToLocation(reward: Reward, locationId: Long?): Boolean {
+        if (!shipsToRestrictedLocations(reward)) return true
+        return locationId != null && reward.shippingRules()?.any { it.location()?.id() == locationId } == true
+    }
+
+    /**
      * Returns `true` if the reward has a limit set, and the limit has not been reached, `false` otherwise.
      */
     fun isLimited(reward: Reward) = reward.limit() != null && !isLimitReached(reward)

@@ -81,8 +81,14 @@ object RewardUtils {
         return rewardsItems != null && rewardsItems.isNotEmpty()
     }
 
+    /**
+     * Returns `true` if the reward ships worldwide (unrestricted shipping preference).
+     */
     fun shipsWorldwide(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.UNRESTRICTED.name, ignoreCase = true)
 
+    /**
+     * Returns `true` if the reward ships only to restricted locations (specific countries/regions).
+     */
     fun shipsToRestrictedLocations(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.RESTRICTED.name, ignoreCase = true)
 
     /**

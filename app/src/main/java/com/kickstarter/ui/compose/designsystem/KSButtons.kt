@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -729,6 +730,7 @@ fun KSButton(
 
         Text(
             text = text,
+            textAlign = TextAlign.Center,
             color = if (isEnabled) textColor else colors.textSecondary,
             style = textStyle
         )

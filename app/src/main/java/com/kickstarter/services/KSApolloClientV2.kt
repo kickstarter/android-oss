@@ -33,6 +33,7 @@ import com.kickstarter.ErroredBackingsQuery
 import com.kickstarter.FetchCategoryQuery
 import com.kickstarter.FetchProjectQuery
 import com.kickstarter.FetchProjectRewardsQuery
+import com.kickstarter.FetchProjectStoryQuery
 import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
@@ -250,6 +251,9 @@ interface ApolloClientTypeV2 {
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
     suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float? = null, long: Float? = null, radius: Float? = null, filterByCoordinates: Boolean? = null): Result<List<Location>>
+
+    suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?>
+
     fun cleanDisposables()
 }
 
@@ -1951,6 +1955,19 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 projectTransformer(it?.similarProject)
             }
         } ?: emptyList()
+    }
+
+    override suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?> = executeForResult {
+        val query = FetchProjectStoryQuery(
+            slug = slug
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.project
     }
 
     override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> = executeForResult {

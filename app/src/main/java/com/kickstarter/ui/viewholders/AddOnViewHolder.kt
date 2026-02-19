@@ -2,6 +2,12 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -14,6 +20,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardItemsAdapter
+import com.kickstarter.ui.compose.designsystem.KSFeaturedRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSSecretRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.data.ProjectData
@@ -154,14 +161,22 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
         val badgeOverImage = binding.secretBadgeComposeOverImage
         val badgeAboveCard = binding.secretBadgeComposeAboveCard
 
-        if (reward.isSecretReward() == true) {
+        val showBadge = reward.isSecretReward() == true || reward.isFeatured() == true
+        if (showBadge) {
             if (hasImage) {
                 badgeOverImage.visibility = View.VISIBLE
                 badgeAboveCard.visibility = View.GONE
 
                 badgeOverImage.setContent {
                     KSTheme {
-                        KSSecretRewardBadge()
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (reward.isSecretReward() == true) KSSecretRewardBadge()
+                            if (reward.isFeatured() == true) KSFeaturedRewardBadge()
+                        }
                     }
                 }
             } else {
@@ -170,7 +185,14 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
 
                 badgeAboveCard.setContent {
                     KSTheme {
-                        KSSecretRewardBadge()
+                        Row(
+                            modifier = Modifier.wrapContentSize(),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (reward.isSecretReward() == true) KSSecretRewardBadge()
+                            if (reward.isFeatured() == true) KSFeaturedRewardBadge()
+                        }
                     }
                 }
             }

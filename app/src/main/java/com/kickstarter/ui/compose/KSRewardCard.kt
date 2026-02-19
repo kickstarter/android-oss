@@ -20,10 +20,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ import com.kickstarter.R
 import com.kickstarter.models.Photo
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
+import com.kickstarter.ui.compose.designsystem.KSFeaturedRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSSecretRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -97,6 +100,35 @@ fun KSRewardCardPreviewImageSelectedSecret() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSRewardCardPreviewImageSelectedFeatured() {
+    KSTheme {
+        KSRewardCard(
+            amount = "$20",
+            conversion = "about $400",
+            title = "Featured reward",
+            backerCountBadgeText = "23 backers",
+            image = Photo.builder().altText("").full("").build(),
+            description = "this is a description",
+            isCTAButtonEnabled = true,
+            isSecret = false,
+            isFeatured = true,
+            estimatedDelivery = "June 10th, 2026",
+            includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
+            yourSelectionIsVisible = true,
+            ctaButtonText = "Select",
+            expirationDateText = "4 Days",
+            shippingSummaryText = "Anywhere",
+            addonsPillVisible = true,
+            remainingText = "5 left",
+            estimatedShippingCost = "About $10-$15",
+            onRewardSelectClicked = { }
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSRewardCardPreviewImageNoSelectedSecret() {
     KSTheme {
         KSRewardCard(
@@ -108,6 +140,35 @@ fun KSRewardCardPreviewImageNoSelectedSecret() {
             description = "this is a description",
             isCTAButtonEnabled = true,
             isSecret = true,
+            estimatedDelivery = "June 10th, 2026",
+            includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
+            yourSelectionIsVisible = false,
+            ctaButtonText = "Select",
+            expirationDateText = "4 Days",
+            shippingSummaryText = "Anywhere",
+            addonsPillVisible = true,
+            remainingText = "5 left",
+            estimatedShippingCost = "About $10-$15",
+            onRewardSelectClicked = { }
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSRewardCardPreviewImageNoSelectedFeatured() {
+    KSTheme {
+        KSRewardCard(
+            amount = "$20",
+            conversion = "about $400",
+            title = "Featured reward",
+            backerCountBadgeText = "23 backers",
+            image = Photo.builder().altText("").full("").build(),
+            description = "this is a description",
+            isCTAButtonEnabled = true,
+            isSecret = false,
+            isFeatured = true,
             estimatedDelivery = "June 10th, 2026",
             includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
             yourSelectionIsVisible = false,
@@ -163,6 +224,34 @@ fun KSRewardCardPreviewNoImageSelectedSecret() {
             description = "this is a description",
             isCTAButtonEnabled = true,
             isSecret = true,
+            estimatedDelivery = "June 10th, 2026",
+            includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
+            yourSelectionIsVisible = true,
+            ctaButtonText = "Select",
+            expirationDateText = "4 Days",
+            shippingSummaryText = "Anywhere",
+            addonsPillVisible = true,
+            remainingText = "5 left",
+            estimatedShippingCost = "About $10-$15",
+            onRewardSelectClicked = { }
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSRewardCardPreviewNoImageSelectedFeatured() {
+    KSTheme {
+        KSRewardCard(
+            amount = "$20",
+            conversion = "about $400",
+            title = "Featured reward",
+            backerCountBadgeText = "23 backers",
+            description = "this is a description",
+            isCTAButtonEnabled = true,
+            isSecret = false,
+            isFeatured = true,
             estimatedDelivery = "June 10th, 2026",
             includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
             yourSelectionIsVisible = true,
@@ -240,6 +329,40 @@ fun KSRewardCardPreviewNoImageNoSelectedSecret() {
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSRewardCardPreviewNoImageNoSelectedFeatured() {
+    KSTheme {
+        Box(
+            modifier = Modifier
+                .width(KSTheme.dimensions.cardWidth)
+                .padding(KSTheme.dimensions.paddingMediumLarge)
+        ) {
+            KSRewardCard(
+                amount = "$20",
+                conversion = "about $400",
+                title = "Featured reward",
+                backerCountBadgeText = "23 backers",
+                description = "this is a description",
+                isCTAButtonEnabled = true,
+                isSecret = false,
+                isFeatured = true,
+                estimatedDelivery = "June 10th, 2026",
+                includes = listOf("1 Comic Book", "2 pins", "3 happy meals"),
+                yourSelectionIsVisible = false,
+                ctaButtonText = "Select",
+                expirationDateText = "4 Days",
+                shippingSummaryText = "Anywhere",
+                addonsPillVisible = true,
+                remainingText = "5 left",
+                estimatedShippingCost = "About $10-$15",
+                onRewardSelectClicked = { }
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun KSRewardCardPreviewNoImageNoSelectedNoSecret() {
     KSTheme {
         KSRewardCard(
@@ -288,27 +411,41 @@ fun KSRewardCard(
     estimatedShippingCost: String? = null,
     onRewardSelectClicked: () -> Unit,
     isSecret: Boolean = false,
+    isFeatured: Boolean = false,
 ) {
     Box(modifier = modifier.width(KSTheme.dimensions.cardWidth)) {
-        if (isSecret && image == null && !yourSelectionIsVisible) {
+        if ((isSecret || isFeatured) && image == null && !yourSelectionIsVisible) {
             Box(
                 modifier = Modifier
                     .offset(x = dimensions.paddingMedium, y = -(dimensions.secretRewardBadgeOffsetY))
                     .zIndex(1f)
             ) {
-                KSSecretRewardBadge()
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (isSecret) KSSecretRewardBadge()
+                    if (isFeatured) KSFeaturedRewardBadge()
+                }
             }
         }
+        val cardShape = RoundedCornerShape(KSTheme.dimensions.radiusMediumSmall)
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(KSTheme.dimensions.radiusMediumSmall),
+            shape = cardShape,
+            colors = CardDefaults.cardColors(containerColor = KSTheme.colors.kds_white),
+            border = null,
         ) {
-            Column(modifier = Modifier.background(KSTheme.colors.kds_white)) {
+            Column(
+                modifier = Modifier
+                    .clip(cardShape)
+                    .background(KSTheme.colors.kds_white)
+            ) {
 
                 Box {
                     if (image != null) {
                         KSRewardAsyncImage(image = image)
-                        if (isSecret) {
+                        if (isSecret || isFeatured) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
@@ -317,14 +454,20 @@ fun KSRewardCard(
                                         y = dimensions.secretRewardBadgeOffsetY
                                     )
                             ) {
-                                KSSecretRewardBadge()
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (isSecret) KSSecretRewardBadge()
+                                    if (isFeatured) KSFeaturedRewardBadge()
+                                }
                             }
                         }
                     }
 
                     if (yourSelectionIsVisible) {
                         YourSelectionTag()
-                        if (isSecret && image == null) {
+                        if ((isSecret || isFeatured) && image == null) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
@@ -333,7 +476,13 @@ fun KSRewardCard(
                                         top = dimensions.paddingXXXLarge
                                     )
                             ) {
-                                KSSecretRewardBadge()
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (isSecret) KSSecretRewardBadge()
+                                    if (isFeatured) KSFeaturedRewardBadge()
+                                }
                             }
                         }
                     }

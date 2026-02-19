@@ -377,7 +377,8 @@ fun RewardCarouselScreen(
                             } else null,
                             addonsPillVisible = reward.hasAddons(),
                             isCTAButtonVisible = project.isAllowedToPledge(),
-                            isSecret = reward.isSecretReward() == true
+                            isSecret = reward.isSecretReward() == true,
+                            isFeatured = reward.isFeatured() == true
                         )
                     }
                 }

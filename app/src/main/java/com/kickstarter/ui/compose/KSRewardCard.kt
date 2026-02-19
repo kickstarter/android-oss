@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.kickstarter.R
 import com.kickstarter.models.Photo
+import com.kickstarter.ui.compose.designsystem.KSFeaturedRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
-import com.kickstarter.ui.compose.designsystem.KSFeaturedRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSSecretRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors

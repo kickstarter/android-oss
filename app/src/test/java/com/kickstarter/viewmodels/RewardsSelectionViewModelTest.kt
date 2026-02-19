@@ -27,7 +27,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -356,39 +355,19 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
             viewModel.provideProjectData(testProjectData)
 
             val useCase = GetShippingRulesUseCase(testProject, config, testRewards, this, dispatcher)
+            useCase.invoke()
             viewModel.overrideShippingRulesUseCase(useCase)
             viewModel.shippingUIState.toList(shippingUiState)
         }
 
         advanceUntilIdle()
         viewModel.selectedShippingRule(ShippingRuleFactory.germanyShippingRule())
-        advanceTimeBy(600)
 
-        // Construct expected filtered list
-        val filteredRewards = listOf(
-            testRewards[0], // noReward (always first)
-            testRewards[2], // available, unrestricted
-            testRewards[3], // available, restricted to Germany
-            testRewards[4], // available, unrestricted
-            testRewards[6], // available, unrestricted
-            testRewards[8], // available, unrestricted
-            testRewards[1], // unavailable
-            testRewards[7] // unavailable
-        )
-
+        // No location filtering: all rewards shown in backend order (noReward first). Reward card shows "unavailable" when shipping not available.
         val obtained = shippingUiState.last().filteredRw
-
-        // Assertions
-        assertEquals(shippingUiState.size, 4)
-        assertEquals(shippingUiState[2].loading, true)
-        assertEquals(shippingUiState[3].loading, false)
-
-        assertEquals(filteredRewards.size, obtained.size)
-        assertEquals(filteredRewards, obtained)
-
-        // Optional: Verify that "no reward" is first and Germany-shipping reward is correctly placed
+        assertEquals(testRewards.size, obtained.size)
+        assertEquals(testRewards, obtained)
         assertEquals(obtained.first(), testRewards[0]) // noReward
-        assertEquals(obtained[2], testRewards[3]) // restricted Germany reward
     }
 
     @Test

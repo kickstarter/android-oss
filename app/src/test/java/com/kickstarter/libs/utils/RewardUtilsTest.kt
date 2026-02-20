@@ -19,6 +19,7 @@ import com.kickstarter.libs.utils.RewardUtils.isLocalPickup
 import com.kickstarter.libs.utils.RewardUtils.isNoReward
 import com.kickstarter.libs.utils.RewardUtils.isReward
 import com.kickstarter.libs.utils.RewardUtils.isShippable
+import com.kickstarter.libs.utils.RewardUtils.isShippableToLocation
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedStart
 import com.kickstarter.libs.utils.RewardUtils.isValidTimeRange
@@ -29,6 +30,7 @@ import com.kickstarter.libs.utils.RewardUtils.timeInSecondsUntilDeadline
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import org.joda.time.DateTime
@@ -489,6 +491,25 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardRestrictedShipping()
         assertTrue(shipsToRestrictedLocations(reward))
         assertFalse(shipsWorldwide(reward))
+    }
+
+    @Test
+    fun `isShippableToLocation when not restricted returns true`() {
+        assertTrue(isShippableToLocation(RewardFactory.rewardWithShipping(), LocationFactory.unitedStates().id()))
+        assertTrue(isShippableToLocation(RewardFactory.digitalReward(), null))
+    }
+
+    @Test
+    fun `isShippableToLocation when restricted returns true only for location in rules`() {
+        val usRule = ShippingRuleFactory.usShippingRule()
+        val restrictedReward = RewardFactory.reward().toBuilder()
+            .shippingPreference(Reward.ShippingPreference.RESTRICTED.name)
+            .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
+            .shippingRules(listOf(usRule))
+            .build()
+        assertTrue(isShippableToLocation(restrictedReward, usRule.location()?.id()))
+        assertFalse(isShippableToLocation(restrictedReward, LocationFactory.mexico().id()))
+        assertFalse(isShippableToLocation(restrictedReward, null))
     }
 
     companion object {

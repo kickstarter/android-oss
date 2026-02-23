@@ -495,7 +495,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun `isShippableToLocation when not restricted returns true`() {
-        assertTrue(isShippableToLocation(RewardFactory.rewardWithShipping(), LocationFactory.unitedStates().id()))
+        assertTrue(isShippableToLocation(RewardFactory.rewardWithShipping(), null))
         assertTrue(isShippableToLocation(RewardFactory.digitalReward(), null))
     }
 
@@ -507,7 +507,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
             .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
             .shippingRules(listOf(usRule))
             .build()
-        assertTrue(isShippableToLocation(restrictedReward, usRule.location()?.id()))
+        assertTrue(isShippableToLocation(restrictedReward, usRule.location()!!.id()))
         assertFalse(isShippableToLocation(restrictedReward, LocationFactory.mexico().id()))
         assertFalse(isShippableToLocation(restrictedReward, null))
     }

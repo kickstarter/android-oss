@@ -173,14 +173,12 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
             .isAvailable(true)
             .build()
 
-        val secretReward1 = RewardFactory.reward().toBuilder()
-            .isSecretReward(true)
+        val secretReward1 = RewardFactory.secret().toBuilder()
             .minimum(30.0)
             .isAvailable(true)
             .build()
 
-        val secretReward2 = RewardFactory.reward().toBuilder()
-            .isSecretReward(true)
+        val secretReward2 = RewardFactory.secret().toBuilder()
             .minimum(10.0)
             .isAvailable(true)
             .build()
@@ -218,10 +216,8 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
     fun `unavailable secret rewards are preserved in order`() = runTest {
         val config = ConfigFactory.configForUSUser()
 
-        val secretUnavailable = RewardFactory.reward().toBuilder()
-            .isSecretReward(true)
+        val secretUnavailable = RewardFactory.secret().toBuilder()
             .isAvailable(false)
-            .minimum(50.0)
             .build()
 
         val regularAvailable = RewardFactory.reward().toBuilder()
@@ -251,5 +247,50 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val filtered = state.last().filteredRw
 
         assertEquals(listOf(regularAvailable, secretUnavailable), filtered)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `featured and secret rewards are preserved in order`() = runTest {
+        val config = ConfigFactory.configForUSUser()
+
+        val noReward = RewardFactory.noReward().toBuilder()
+            .isAvailable(true)
+            .build()
+
+        val secretReward = RewardFactory.secret().toBuilder()
+            .isAvailable(true)
+            .build()
+
+        val featuredReward = RewardFactory.featured().toBuilder()
+            .isAvailable(true)
+            .build()
+
+        val regularReward = RewardFactory.reward().toBuilder()
+            .isAvailable(true)
+            .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+            .build()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .rewards(listOf(noReward, secretReward, featuredReward, regularReward))
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .build()
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val scope = backgroundScope
+
+        val useCase = GetShippingRulesUseCase(project, config, project.rewards() ?: emptyList(), scope, dispatcher)
+
+        val state = mutableListOf<ShippingRulesState>()
+        scope.launch(dispatcher) {
+            useCase.invoke()
+            useCase.shippingRulesState.toList(state)
+        }
+        advanceUntilIdle()
+
+        val filtered = state.last().filteredRw
+        assertEquals(listOf(noReward, secretReward, featuredReward, regularReward), filtered)
     }
 }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.joda.time.DateTime
 import org.junit.Test
 
 class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
@@ -292,5 +293,41 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
         val filtered = state.last().filteredRw
         assertEquals(listOf(noReward, secretReward, featuredReward, regularReward), filtered)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `filteredRw excludes rewards that have not started or are expired`() = runTest {
+        val config = ConfigFactory.configForUSUser()
+
+        val validReward = RewardFactory.rewardWithShipping()
+        val expiredReward = RewardFactory.ended()
+        val notStartedReward = RewardFactory.reward().toBuilder()
+            .startsAt(DateTime.now().plusDays(1))
+            .build()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .rewards(listOf(validReward, expiredReward, notStartedReward))
+            .state(Project.STATE_SUCCESSFUL)
+            .isInPostCampaignPledgingPhase(false)
+            .postCampaignPledgingEnabled(false)
+            .build()
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val scope = backgroundScope
+
+        val useCase = GetShippingRulesUseCase(project, config, project.rewards() ?: emptyList(), scope, dispatcher)
+
+        val state = mutableListOf<ShippingRulesState>()
+        scope.launch(dispatcher) {
+            useCase.invoke()
+            useCase.shippingRulesState.toList(state)
+        }
+        advanceUntilIdle()
+
+        val filtered = state.last().filteredRw
+        assertEquals(1, filtered.size)
+        assertEquals(validReward, filtered.first())
     }
 }

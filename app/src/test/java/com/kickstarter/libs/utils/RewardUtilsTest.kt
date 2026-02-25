@@ -8,6 +8,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownDetail
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownUnit
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownValue
+import com.kickstarter.libs.utils.RewardUtils.filterByTimeRange
 import com.kickstarter.libs.utils.RewardUtils.hasBackers
 import com.kickstarter.libs.utils.RewardUtils.hasStarted
 import com.kickstarter.libs.utils.RewardUtils.isAvailableForProject
@@ -452,6 +453,31 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun isValidTimeRage_whenStartNotLimited_returnsTrue() {
         assertEquals(true, isValidTimeRange(rewardWithAddons))
+    }
+
+    @Test
+    fun filterByTimeRange_returnsOnlyRewardsThatHaveStartedAndNotExpired() {
+        val notStarted = RewardFactory.reward().toBuilder()
+            .startsAt(DateTime.now().plusDays(1))
+            .build()
+        val expired = RewardFactory.ended()
+        val validNoTimeLimits = RewardFactory.reward()
+        val validEndingSoon = RewardFactory.endingSoon()
+
+        val filtered = filterByTimeRange(listOf(notStarted, expired, validNoTimeLimits, validEndingSoon))
+
+        assertEquals(2, filtered.size)
+        assertTrue(filtered.contains(validNoTimeLimits))
+        assertTrue(filtered.contains(validEndingSoon))
+        assertFalse(filtered.contains(notStarted))
+        assertFalse(filtered.contains(expired))
+    }
+
+    @Test
+    fun filterByTimeRange_whenAllInvalid_returnsEmpty() {
+        val notStarted = RewardFactory.reward().toBuilder().startsAt(DateTime.now().plusDays(1)).build()
+        val expired = RewardFactory.ended()
+        assertTrue(filterByTimeRange(listOf(notStarted, expired)).isEmpty())
     }
 
     @Test

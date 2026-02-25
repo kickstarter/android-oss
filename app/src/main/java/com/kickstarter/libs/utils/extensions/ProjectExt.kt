@@ -30,6 +30,7 @@ import kotlin.math.floor
  *
  * - with the country code on configuration in case no user logged in
  * - with the selected currency by the user in case the is logged in user.
+ * - if configuration empty default to project currency
  *
  * Note: And user logged in can change it's currency at any time.
  */

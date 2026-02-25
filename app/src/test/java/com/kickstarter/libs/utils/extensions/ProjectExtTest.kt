@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils.extensions
 import android.content.Context
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.Config
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutWaveFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -54,6 +55,19 @@ class ProjectExtTest : KSRobolectricTestCase() {
         assertTrue(updatedProject.currentCurrency() == "CAD")
         assertTrue(updatedProject.currencyTrailingCode())
         assertTrue(updatedProject.currencySymbol() == "$")
+    }
+
+    @Test
+    fun testProjectUpdate_WhenCurrencyMissingFromConfigAndNoUser_ShouldNotCrashAndCurrencyIsFromProject() {
+        val config = Config.builder().build() // empty config
+        val project = ProjectFactory.project()
+
+        val updatedProject = project.updateProjectWith(config, user = null)
+
+        // Use project defaults
+        assertEquals("USD", updatedProject.currentCurrency())
+        assertEquals("$", updatedProject.currencySymbol())
+        assertTrue(updatedProject.currencyTrailingCode())
     }
 
     @Test

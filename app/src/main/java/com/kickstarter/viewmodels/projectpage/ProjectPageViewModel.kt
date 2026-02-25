@@ -419,12 +419,13 @@ interface ProjectPageViewModel {
                         currentConfig.observable(),
                         currentUser.observable()
                     ) { project, config, user ->
-                        return@withLatestFrom project.updateProjectWith(config, user.getValue())
+                        runCatching {
+                            project.updateProjectWith(config, user.getValue())
+                        }.getOrDefault(project)
                     }
                     .doOnError { throwable ->
                         FirebaseCrashlytics.getInstance().log("ProjectIntentMapper.project")
                         FirebaseCrashlytics.getInstance().recordException(throwable)
-                        // trace.putAttribute("ProjectIntentMapper", "ProjectIntentMapper")
                     }
                     .materialize()
             }

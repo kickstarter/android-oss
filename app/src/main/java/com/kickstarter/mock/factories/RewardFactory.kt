@@ -80,6 +80,22 @@ object RewardFactory {
             .build()
     }
 
+    @JvmStatic
+    fun featured(): Reward {
+        return reward().toBuilder()
+            .isFeatured(true)
+            .title("Featured reward")
+            .build()
+    }
+
+    @JvmStatic
+    fun secret(): Reward {
+        return reward().toBuilder()
+            .isSecretReward(true)
+            .title("Secret reward")
+            .build()
+    }
+
     fun endingSoon(): Reward {
         return reward().toBuilder()
             .endsAt(DateTime.now().plusDays(2))

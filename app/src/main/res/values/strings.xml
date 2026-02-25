@@ -46,6 +46,7 @@
   <string name="internal_tools_onboarding_flow">Onboarding flow</string>
   <string name="internal_tools_design_system">Design System</string>
   <string name="internal_tools_push_notifications">Push notifications</string>
+  <string name="internal_tools_project_story_activity">Project Story Activity</string>
   <string name="Logged_Out">Logged Out</string>
   <string name="mailto">mailto:</string>
   <string name="Network">Network</string>
@@ -109,5 +110,9 @@
 
   <!-- FPO's for Reward Card for Featured Reward Badge -->
   <string name="fpo_featured_reward" formatted="false">Featured</string>
+
+  <!-- FPO's for Reward Card for restricted rewards in the Selected Country -->
+  <string name="fpo_not_available_in_selected_country" formatted="false">Not available in selected country</string>
+
 
 </resources>

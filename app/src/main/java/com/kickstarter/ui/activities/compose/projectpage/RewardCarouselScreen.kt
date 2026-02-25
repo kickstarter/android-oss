@@ -203,10 +203,14 @@ fun RewardCarouselScreen(
                     items = rewards,
                 ) { reward ->
 
+                    val selectedLocationId = currentShippingRule.location()?.id()
+
                     val ctaButtonEnabled = when {
                         RewardUtils.isNoReward(reward) -> true
 
                         !reward.isAvailable() -> false
+
+                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> false
 
                         !reward.hasAddons() && backing?.isBacked(reward) != true -> true
 
@@ -229,6 +233,7 @@ fun RewardCarouselScreen(
 
                     val ctaButtonText = when {
                         ctaButtonEnabled -> R.string.Select
+                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> R.string.fpo_not_available_in_selected_country
                         else -> R.string.No_longer_available
                     }
 
@@ -372,7 +377,8 @@ fun RewardCarouselScreen(
                             } else null,
                             addonsPillVisible = reward.hasAddons(),
                             isCTAButtonVisible = project.isAllowedToPledge(),
-                            isSecret = reward.isSecretReward() == true
+                            isSecret = reward.isSecretReward() == true,
+                            isFeatured = reward.isFeatured() == true
                         )
                     }
                 }

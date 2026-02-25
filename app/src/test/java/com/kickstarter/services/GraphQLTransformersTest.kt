@@ -311,7 +311,7 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test rewardTransformer returns correct featured value`() {
+    fun `test rewardTransformer maps featured from fragment to reward model`() {
         val reward = rewardTransformer(
             rewardGr = fragmentReward
         )

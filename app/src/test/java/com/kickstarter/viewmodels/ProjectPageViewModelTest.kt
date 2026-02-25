@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Config
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
@@ -445,6 +446,29 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.projectData.assertValues(ProjectDataFactory.project(refreshedProject))
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+        assertEquals(null, this.vm.onThirdPartyEventSent.value)
+    }
+
+    @Test
+    fun testInitialProject_whenConfigMissing_loadsInitialProject() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project()
+        val environment = environment()
+            .toBuilder()
+            .currentConfig2(MockCurrentConfigV2())
+            .apolloClientV2(apolloClientSuccessfulGetProject(refreshedProject))
+            .build()
+
+        // - Simulate empty configuration
+        environment.currentConfigV2()?.config(Config.builder().build())
+        setUpEnvironment(environment)
+
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.projectData.assertValues(ProjectDataFactory.project(refreshedProject))
+        this.reloadProjectContainerIsGone.assertValue(true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
         assertEquals(null, this.vm.onThirdPartyEventSent.value)

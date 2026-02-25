@@ -30,6 +30,7 @@ import kotlin.math.floor
  *
  * - with the country code on configuration in case no user logged in
  * - with the selected currency by the user in case the is logged in user.
+ * - if configuration empty default to project currency
  *
  * Note: And user logged in can change it's currency at any time.
  */
@@ -38,13 +39,14 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
         it.name().equals(config.countryCode())
     }
 
-    val currentCurrency = user?.let {
-        it.chosenCurrency()
-    } ?: currentCountry?.currencyCode() ?: currency()
+    val currentCurrency = user?.chosenCurrency()
+        ?: currentCountry?.currencyCode()
+        ?: currency()
 
-    val countryOfCurrency = config.launchedCountries().first { it.currencyCode() == currentCurrency }
-    val currencySymbol = countryOfCurrency.currencySymbol()
-    val trailingCode = countryOfCurrency.trailingCode()
+    val countryOfCurrency = config.launchedCountries().find { it.currencyCode() == currentCurrency }
+
+    val currencySymbol = countryOfCurrency?.currencySymbol() ?: currencySymbol()
+    val trailingCode = countryOfCurrency?.trailingCode() ?: currencyTrailingCode()
 
     return this.toBuilder()
         .currentCurrency(currentCurrency)

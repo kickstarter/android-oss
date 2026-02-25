@@ -8,10 +8,10 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownDetail
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownUnit
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownValue
+import com.kickstarter.libs.utils.RewardUtils.filterByTimeRange
 import com.kickstarter.libs.utils.RewardUtils.hasBackers
 import com.kickstarter.libs.utils.RewardUtils.hasStarted
 import com.kickstarter.libs.utils.RewardUtils.isAvailableForProject
-import com.kickstarter.libs.utils.RewardUtils.filterByTimeRange
 import com.kickstarter.libs.utils.RewardUtils.isExpired
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isLimitReached

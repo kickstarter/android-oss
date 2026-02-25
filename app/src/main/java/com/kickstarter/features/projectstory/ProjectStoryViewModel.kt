@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.projectstory.data.StoriedProject
-import com.kickstarter.features.projectstory.data.transform
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.models.Project
+import com.kickstarter.services.transformers.extensions.toStoriedProject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,7 +70,7 @@ class ProjectStoryViewModel(
                     _projectStoryUiState.value = ProjectStoryUiState(
                         isLoading = false,
                         error = null,
-                        storiedProject = transform(it?.projectStoryFragment)
+                        storiedProject = it?.projectStoryFragment.toStoriedProject()
                     )
                     Timber.d("storiedProject: ${projectStoryUiState.value.storiedProject}")
                 }

@@ -65,6 +65,11 @@ type Query {
   editorialRevisionForAdmin(uuid: String!): EditorialRevisionForAdmin
 
   """
+  European Union supername location
+  """
+  europeanUnionLocation: Location!
+
+  """
   Fetches a address given its id.
   """
   fulfillmentAddress(id: ID!): Address
@@ -97,7 +102,7 @@ type Query {
   """
   Searches locations.
   """
-  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean, "Filter by discoverable." discoverable: Boolean): LocationsConnection
+  locations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Location search term." term: String, "Only return locations assignable (to a Project or User)." assignable: Boolean, "Only return locations for searching Projects." searchable: Boolean, "Filter by location type." type: LocationTypeEnum, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean, "Filter by discoverable." discoverable: Boolean): LocationsConnection
 
   """
   You.
@@ -110,6 +115,11 @@ type Query {
   node("ID of the object." id: ID!): Node
 
   """
+  Fetches a note given its id.
+  """
+  note(id: ID!): Note
+
+  """
   Fetches an order given its id.
   """
   order(id: ID!): Order!
@@ -118,6 +128,23 @@ type Query {
   Fetches an order edit given its id.
   """
   orderEdit(id: ID!): OrderEdit!
+
+  """
+  Fetches a partner given its ID.
+  """
+  partner(partnerId: ID!): Partner
+
+  """
+  Languages that partners can support
+  """
+  partnerLanguages: [PartnerLanguage!]!
+
+  """
+  Locations that partners can be based in
+  """
+  partnerLocations: [Location!]!
+
+  partners("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, searchQuery: PartnersSearchQuery, "Filter by one or more partner tiers." partnerTier: [PartnerTier!]): PartnersConnection!
 
   photoForEditor(id: ID!): Photo
 
@@ -134,6 +161,11 @@ type Query {
   pledgeProjectsOverview("tier types to include in response" tierTypes: [PledgeProjectsOverviewSort!], "Sort option as a string." sort: BackingsDashboardSortOptions = RELEVANCY, "All filter criteria for pledge projects." filters: PledgeProjectsOverviewFilterInput): PledgeProjectsOverview
 
   """
+  Fetches a poll given its id.
+  """
+  poll(id: ID!): Poll!
+
+  """
   Fetches a post given its ID.
   """
   post(id: ID!): Postable
@@ -143,7 +175,7 @@ type Query {
   """
   project(slug: String, pid: Int): Project
 
-  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [PublicProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], owners: [ID!], projectDeadlineSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, reportsCountSort: OpenSearchSort, reportsOpenCountSort: OpenSearchSort, reportsUnassignedCountSort: OpenSearchSort, zendeskTicketsCountSort: OpenSearchSort, openZendeskTicketsCountSort: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
+  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [AdminProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], owners: [ID!], projectDeadlineSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, reportsCountSort: OpenSearchSort, reportsOpenCountSort: OpenSearchSort, reportsUnassignedCountSort: OpenSearchSort, zendeskTicketsCountSort: OpenSearchSort, openZendeskTicketsCountSort: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
 
   """
   Get some projects
@@ -202,7 +234,17 @@ type Query {
   """
   tags("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Scoped to a provided scope" scope: TagScope!): TagsConnection
 
+  """
+  Fetches a task given its id.
+  """
+  task(id: ID!): Task
+
   trackBackgroundJobProgress(jobName: String!, projectId: ID!): BackgroundJobProgress!
+
+  """
+  Fetches Kickstarter-specific data for a Sidekiq batch by its ID.
+  """
+  trackedBatch("The TrackedBatch relay ID." id: ID!): TrackedBatch!
 
   """
   Fetches a project update given its ID.
@@ -228,6 +270,11 @@ type Query {
   Countries that are visible to the current user. This may include countries that cannot launch projects.
   """
   visibleCountries: [Country!]!
+
+  """
+  Fetches a Zendesk ticket given its id.
+  """
+  zendeskTicket(id: ID!): ZendeskTicket
 }
 
 """
@@ -798,8 +845,6 @@ enum Feature {
 
   project_build_milestones
 
-  user_menu_draft_project
-
   make_100_2020
 
   funding_sheet
@@ -944,8 +989,6 @@ enum Feature {
 
   remove_event_sourcing_2025
 
-  digital_rewards_2025
-
   digital_rewards__upload_button_2025
 
   pledge_over_time_edit_pledge_2025
@@ -986,10 +1029,6 @@ enum Feature {
 
   followers_only_updates
 
-  sauce_user_menu
-
-  access_pm_config_post_launch_2025
-
   tax_education_2025
 
   sauce_project_faqs
@@ -998,11 +1037,23 @@ enum Feature {
 
   shipstation_two_way_sync
 
-  free_items_2026
-
   multiple_tracking_numbers
 
   sauce_global_footer
+
+  edit_intro_pm_config_post_launch_2026
+
+  edit_reward_pm_config_post_launch_2026
+
+  edit_shipping_pm_config_post_launch_2026
+
+  partner_program_refresh
+
+  collaborator_creator_dashboard_access
+
+  polls_2026
+
+  digital_files_2026
 }
 
 """
@@ -1087,6 +1138,11 @@ type Location implements Node {
   The state name or code. Can be null.
   """
   state: String
+
+  """
+  The location type (e.g., Country, Town, State).
+  """
+  type: String!
 }
 
 """
@@ -1243,6 +1299,8 @@ enum CreditCardTypes {
   DINERS
 
   UNIONPAY
+
+  LINK
 }
 
 """
@@ -1262,6 +1320,8 @@ enum LowercaseCreditCardTypes {
   diners
 
   unionpay
+
+  link
 }
 
 """
@@ -1406,7 +1466,7 @@ type Project implements Node & Commentable {
   """
   Backing Add-ons
   """
-  addOns("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Retrieves both, pledge redemption and crowdfunding add-ons" crowdfundingAndPledgeManagement: Boolean, "Filters available add ons by pledge redemption only" pledgeManagementOnly: Boolean, "Filters available add ons by given location" forLocation: ID, "Enables\/disables add-ons sort by cost and title, with sorting enabled by default" sort: Boolean): ProjectRewardConnection
+  addOns("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Retrieves both, pledge redemption and crowdfunding add-ons" crowdfundingAndPledgeManagement: Boolean, "Filters available add ons by pledge redemption only" pledgeManagementOnly: Boolean, "Include free available add ons or filter them out" includeFreeAddons: Boolean, "Filters available add ons by given location" forLocation: ID, "Enables\/disables add-ons sort by cost and title, with sorting enabled by default" sort: Boolean): ProjectRewardConnection
 
   """
   The project's additional category.
@@ -1473,7 +1533,7 @@ type Project implements Node & Commentable {
   """
   Returns the backer report in JSON format
   """
-  backerReport("Filter by reward IDs" rewards: [ID!], "Filter by add-on IDs" addons: [ID!], "SQL operator to use for filtering add-ons" sqlFilterAddons: SqlFilterOperator, "Filter by item IDs" items: [ID!], "AND the item IDs instead of ORing them" sqlFilterItems: SqlFilterOperator, "Filter by SKU IDs" skus: [ID!], "AND the item variant IDs instead of ORing them" sqlFilterSkus: SqlFilterOperator, "Filter by backer selected shipping location" locations: [ID!], "Filter by reward cost minimum" amountMin: Int, "Filter by reward cost maximum" amountMax: Int, "Filter by date pledged minimum" pledgedAtMin: String, "Filter by date pledged maximum" pledgedAtMax: String, "Filter by pledge manager completed at minimum" pmCompletedAtMin: String, "Filter by pledge manager completed at maximum" pmCompletedAtMax: String, "Filter by fulfillment status" fulfillmentStatus: [String!], "Filter by wether the backer has answered the survey" surveyAnswered: [Boolean!], "Sort the backer report by this field" sortBy: String, "Sort the backer report in ascending or descending order" ascOrDesc: String, "Page number for pagination" page: Int, "Number of items per page" perPage: Int, "Backer report search term" term: [String!], "Filter by backing status" status: [String!], "Filter by pledge redemption state" pledgeRedemptionState: [String!], "Filter by shopify sync status" shopifySyncStatus: [String!], "Filter by actions taken" actionsTaken: [String!], "Filter by pledge type" pledgeOverTime: [Boolean!], "Filter by backer entry point" backerEntryPoint: [String!]): JSON
+  backerReport("Parameters for filtering and sorting the backer report" searchQuery: BackerReportSearchQuery!): JSON
 
   """
   Backer survey for the project
@@ -1671,6 +1731,11 @@ type Project implements Node & Commentable {
   currentBackersCount("Whether or not to considere new pm backers in the final count." withNewPmBackers: Boolean): Int!
 
   """
+  Currently active tracked batches for the project
+  """
+  currentTrackedBatches: [TrackedBatch!]!
+
+  """
   When is the project scheduled to end?
   """
   deadlineAt: DateTime
@@ -1719,6 +1784,11 @@ type Project implements Node & Commentable {
   List of FAQs of a project
   """
   faqs("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): ProjectFaqConnection
+
+  """
+  Feedback from the requested time frame
+  """
+  feedbackTimeline("Start date for feedback timeline" startDate: ISO8601DateTime, "End date for feedback timeline" endDate: ISO8601DateTime): [ProjectFeedbackTimelineEvent!]
 
   """
   The date at which pledge collections will end
@@ -1791,6 +1861,11 @@ type Project implements Node & Commentable {
   hasLaunchedPledgeManager: Boolean!
 
   """
+  Whether the project has any pledge manager change logs
+  """
+  hasPledgeManagerChangeLogs: Boolean!
+
+  """
   Does this project have any pledge over time config record?
   """
   hasPledgeOverTimeConfig: Boolean!
@@ -1804,6 +1879,11 @@ type Project implements Node & Commentable {
   Whether or not the project has reward images
   """
   hasRewardImages: Boolean!
+
+  """
+  Whether or not the project has reward that is shipping anywhere in the world
+  """
+  hasRewardShippingAnywhereInTheWorld: Boolean!
 
   """
   Whether the project has successfully linked a Shopify shop
@@ -2098,6 +2178,11 @@ type Project implements Node & Commentable {
   pledgeManager: PledgeManager
 
   """
+  Post-launch Pledge Manager configuration change log
+  """
+  pledgeManagerChangeLogs: [ChangeLog!]!
+
+  """
   Backer-facing summary of when the incremental charges will occur
   """
   pledgeOverTimeCollectionPlanChargeExplanation: String
@@ -2235,7 +2320,7 @@ type Project implements Node & Commentable {
   """
   The project's public state.
   """
-  publicState: PublicProjectState
+  publicState: AdminProjectState
 
   """
   Survey questions asked of all the project's backers
@@ -2283,6 +2368,11 @@ type Project implements Node & Commentable {
   Is this project configured for third party analytics events?
   """
   sendThirdPartyEvents: Boolean!
+
+  """
+  Configuration options for integrating with ShipStation
+  """
+  shipStationConfiguration: ShipStationConfiguration
 
   """
   The EU countries that require a VAT ID for the project to collect VAT
@@ -2696,7 +2786,7 @@ type Backing implements Node {
   """
   The add-ons that the backer selected
   """
-  addOnsWithQuantity: [BackingAddon!]
+  addOnsWithQuantity(freeOnly: Boolean): [BackingAddon!]
 
   """
   A summary of refunds and removal issued by the creator
@@ -4031,6 +4121,11 @@ type Reward implements Node {
   """
   hasLatePledgeBackers: Boolean
 
+  """
+  Whether this reward has any successful orders attached to it
+  """
+  hasSuccessfulOrders: Boolean!
+
   id: ID!
 
   """
@@ -4042,6 +4137,11 @@ type Reward implements Node {
   Is this reward currently accepting post-campaign pledges?
   """
   inPostCampaignPledgingPhase: Boolean!
+
+  """
+  Whether this reward is free or not
+  """
+  isFree: Boolean!
 
   """
   Does reward amount meet or exceed maximum pledge for the project
@@ -4508,6 +4608,11 @@ A question associated with one of the following: Project, RewardItem, Reward
 """
 type Question {
   """
+  The question answers
+  """
+  answers("Filter for current user's answer" getMyAnswer: Boolean): [Answer!]!
+
+  """
   The question choice selection limit
   """
   choiceSelectionLimit: Int
@@ -4540,6 +4645,16 @@ type Question {
   questionable: Questionable!
 
   """
+  A response and the count of that response
+  """
+  responseCounts: [ResponseCount!]!
+
+  """
+  Count of all answers given for the question
+  """
+  totalAnswers: Int!
+
+  """
   The question type
   """
   type: QuestionType!
@@ -4557,191 +4672,20 @@ enum QuestionType {
 }
 
 """
-Configuration for an Orderable for Cross-Sells.
-"""
-type OrderableConfig {
-  """
-  Is this reward currently available to add to an Order
-  """
-  available: Boolean!
-
-  """
-  Is this orderable available for cross-sells in Pledge Redemption.
-  """
-  enabled: Boolean!
-
-  id: ID!
-
-  """
-  The total number of an orderable available to be purchased
-  """
-  limit: Int
-
-  """
-  The number of an orderable a backer is allowed to add to their order
-  """
-  limitPerOrder: Int
-
-  """
-  The price charged for an orderable
-  """
-  price: Money
-
-  """
-  The price formatted for display in the user's chosen currency
-  """
-  priceConvertedToCurrencyFormatted: String
-
-  """
-  The price formatted for display
-  """
-  priceFormatted: String
-
-  """
-  How many of this reward are still available to claim during Pledge Redemption
-  """
-  remainingQuantity: Int
-}
-
-"""
-Data related to the audience for a particular resource
-"""
-type ResourceAudience {
-  audience: AudienceEnum!
-
-  """
-  True if the resource has access restricted by an access rule
-  """
-  secret: Boolean!
-
-  """
-  Url for sharing reward (absent if accessible to all)
-  """
-  shareUrl: String
-
-  token: String
-}
-
-"""
-The audience for the resource
-"""
-enum AudienceEnum {
-  """
-  everyone
-  """
-  everyone
-
-  """
-  link
-  """
-  link
-
-  """
-  restricted
-  """
-  restricted
-}
-
-"""
-Tax configuration data related to an item
-"""
-type ItemTaxConfig {
-  id: ID!
-
-  item: RewardItem!
-
-  """
-  Value of item pre any bundling discounts
-  """
-  marketValue: Int
-
-  taxCategory: TaxCategory
-}
-
-"""
-A project scoped tax category
-"""
-type TaxCategory {
-  """
-  Whether or not the category is associated with multiple items
-  """
-  associatedWithMultipleItems: Boolean!
-
-  """
-  Describes what products or services the tax code covers
-  """
-  codeDescription: String
-
-  id: ID!
-
-  """
-  Whether or not this is a default category managed by Kickstarter
-  """
-  ksrManaged: Boolean!
-
-  """
-  Whether or not the category is nontaxable
-  """
-  nontaxable: Boolean!
-
-  """
-  Third party tax code
-  """
-  taxCode: String!
-
-  """
-  The user assigned label for the vendor tax code
-  """
-  userLabel: String!
-}
-
-"""
-Item's weight configuration data
-"""
-type ItemWeight {
-  exclude: Boolean!
-
-  id: ID!
-
-  item: RewardItem!
-
-  """
-  item weight
-  """
-  weight: Float!
-}
-
-"""
-A surcharge for a particular item and location combo
-"""
-type SurchargeRule {
-  """
-  The surcharge cost for this location.
-  """
-  cost: Int!
-
-  """
-  The formatted surcharge cost for this location.
-  """
-  costFormatted: String!
-
-  id: ID!
-
-  item: RewardItem!
-
-  location: Location!
-}
-
-"""
-An answer associated with one of the following: LineItem, Cart, BackingAddon, OrderOrderable
+An answer associated with one of the following: LineItem, Cart, BackingAddon, OrderOrderable, Poll
 """
 type Answer {
   """
-  The object associated with the answer (e.g. Item, Project, Reward)
+  The backer survey object associated with the answer (e.g. Item, Project, Reward)
   """
-  answerable: Answerable!
+  backerSurveyAnswerable: BackerSurveyAnswerable!
 
   id: ID!
+
+  """
+  The poll object associated with the answer (e.g. Post)
+  """
+  pollAnswerable: PollAnswerable!
 
   """
   The associated question
@@ -4752,9 +4696,14 @@ type Answer {
   The response to the question
   """
   response: [String!]!
+
+  """
+  The answerer
+  """
+  user: User
 }
 
-union Answerable = LineItem|Cart|BackingAddon|OrderOrderable
+union BackerSurveyAnswerable = LineItem|Cart|BackingAddon|OrderOrderable
 
 """
 An add-on reward included in a backing.
@@ -4952,6 +4901,251 @@ enum OrderOrderableKindEnum {
   order_edit_addon
   """
   order_edit_addon
+}
+
+union PollAnswerable = Poll
+
+"""
+A poll with questions
+"""
+type Poll {
+  """
+  Whether or not the current user can manage the poll
+  """
+  canEdit: Boolean!
+
+  """
+  The poll duration in seconds
+  """
+  duration: Int
+
+  """
+  The poll duration in either days or hours, depending on the poll duration type
+  """
+  durationInDaysOrHours: String
+
+  """
+  The poll duration type (days or hours)
+  """
+  durationType: String
+
+  """
+  The end date of the poll
+  """
+  endsAt: DateTime
+
+  id: ID!
+
+  """
+  The image for the poll.
+  """
+  image: Photo
+
+  """
+  Whether the poll closure is manual
+  """
+  isManual: Boolean!
+
+  """
+  Whether the poll is open
+  """
+  isOpen: Boolean!
+
+  """
+  The poll questions
+  """
+  questions: [Question!]!
+}
+
+"""
+A response and the count of that response for a question
+"""
+type ResponseCount {
+  """
+  The response count
+  """
+  count: Int!
+
+  """
+  The response
+  """
+  response: String!
+}
+
+"""
+Configuration for an Orderable for Cross-Sells.
+"""
+type OrderableConfig {
+  """
+  Is this reward currently available to add to an Order
+  """
+  available: Boolean!
+
+  """
+  Is this orderable available for cross-sells in Pledge Redemption.
+  """
+  enabled: Boolean!
+
+  id: ID!
+
+  """
+  The total number of an orderable available to be purchased
+  """
+  limit: Int
+
+  """
+  The number of an orderable a backer is allowed to add to their order
+  """
+  limitPerOrder: Int
+
+  """
+  The price charged for an orderable
+  """
+  price: Money
+
+  """
+  The price formatted for display in the user's chosen currency
+  """
+  priceConvertedToCurrencyFormatted: String
+
+  """
+  The price formatted for display
+  """
+  priceFormatted: String
+
+  """
+  How many of this reward are still available to claim during Pledge Redemption
+  """
+  remainingQuantity: Int
+}
+
+"""
+Data related to the audience for a particular resource
+"""
+type ResourceAudience {
+  audience: AudienceEnum!
+
+  """
+  True if the resource has access restricted by an access rule
+  """
+  secret: Boolean!
+
+  """
+  Url for sharing reward (absent if accessible to all)
+  """
+  shareUrl: String
+
+  token: String
+}
+
+"""
+The audience for the resource
+"""
+enum AudienceEnum {
+  """
+  everyone
+  """
+  everyone
+
+  """
+  link
+  """
+  link
+
+  """
+  restricted
+  """
+  restricted
+}
+
+"""
+Tax configuration data related to an item
+"""
+type ItemTaxConfig {
+  id: ID!
+
+  item: RewardItem!
+
+  """
+  Value of item pre any bundling discounts
+  """
+  marketValue: Int
+
+  taxCategory: TaxCategory
+}
+
+"""
+A project scoped tax category
+"""
+type TaxCategory {
+  """
+  Whether or not the category is associated with multiple items
+  """
+  associatedWithMultipleItems: Boolean!
+
+  """
+  Describes what products or services the tax code covers
+  """
+  codeDescription: String
+
+  id: ID!
+
+  """
+  Whether or not this is a default category managed by Kickstarter
+  """
+  ksrManaged: Boolean!
+
+  """
+  Whether or not the category is nontaxable
+  """
+  nontaxable: Boolean!
+
+  """
+  Third party tax code
+  """
+  taxCode: String!
+
+  """
+  The user assigned label for the vendor tax code
+  """
+  userLabel: String!
+}
+
+"""
+Item's weight configuration data
+"""
+type ItemWeight {
+  exclude: Boolean!
+
+  id: ID!
+
+  item: RewardItem!
+
+  """
+  item weight
+  """
+  weight: Float!
+}
+
+"""
+A surcharge for a particular item and location combo
+"""
+type SurchargeRule {
+  """
+  The surcharge cost for this location.
+  """
+  cost: Int!
+
+  """
+  The formatted surcharge cost for this location.
+  """
+  costFormatted: String!
+
+  id: ID!
+
+  item: RewardItem!
+
+  location: Location!
 }
 
 """
@@ -5649,6 +5843,11 @@ type Order implements Node {
   orderableVoucherTotalFormatted: String!
 
   """
+  The parent shipment associated with the order
+  """
+  parentShipmentId: ID
+
+  """
   Payment source used on an order.
   """
   paymentSource: PaymentSource
@@ -6162,12 +6361,27 @@ type Shipment {
   """
   cost: Int!
 
+  """
+  Datetime shipment was created
+  """
+  createdAt: DateTime!
+
   id: ID!
+
+  """
+  The parent shipment ID for this shipment.
+  """
+  parentId: ID
 
   """
   The tracking number for this shipment.
   """
   trackingNumber: String
+
+  """
+  Datetime the shipment was last updated
+  """
+  updatedAt: DateTime!
 }
 
 """
@@ -7090,10 +7304,10 @@ type RichTextComponent {
   items: [RichTextItem!]!
 }
 
-union RichTextItem = RichText|RichTextHeader1|RichTextHeader2|RichTextHeader3|RichTextHeader4|RichTextListItem|RichTextListOpen|RichTextListClose|RichTextPhoto|RichTextAudio|RichTextVideo|RichTextOembed
+union RichTextItem = RichText|RichTextHeader|RichTextListItem|RichTextListOpen|RichTextListClose|RichTextPhoto|RichTextAudio|RichTextVideo|RichTextOembed
 
 """
-A Paragraph. <p>
+Text blocks and inline segments.
 """
 type RichText {
   children: [RichTextItem!]
@@ -7106,48 +7320,9 @@ type RichText {
 }
 
 """
-A Header 1. <h1>
+A Header. <h1..h4> (levels 1..4 use styles HEADING_1..HEADING_4)
 """
-type RichTextHeader1 {
-  children: [RichTextItem!]
-
-  link: String
-
-  styles: [String!]
-
-  text: String
-}
-
-"""
-A Header 2. <h2>
-"""
-type RichTextHeader2 {
-  children: [RichTextItem!]
-
-  link: String
-
-  styles: [String!]
-
-  text: String
-}
-
-"""
-A Header 3. <h3>
-"""
-type RichTextHeader3 {
-  children: [RichTextItem!]
-
-  link: String
-
-  styles: [String!]
-
-  text: String
-}
-
-"""
-A Header 4. <h4>
-"""
-type RichTextHeader4 {
+type RichTextHeader {
   children: [RichTextItem!]
 
   link: String
@@ -7926,9 +8101,13 @@ enum CollaboratorPermission {
 
   configure_pledge_manager
 
+  manage_fulfillment_partner_integrations
+
   launch_pledge_manager
 
   launch_prelaunch
+
+  view_creator_dashboard
 }
 
 """
@@ -8255,6 +8434,51 @@ enum ProjectState {
 }
 
 """
+An extended set of project states that admin use daily.
+"""
+enum AdminProjectState {
+  """
+  Active and accepting pledges.
+  """
+  LIVE
+
+  """
+  Successfully funded by deadline.
+  """
+  SUCCESSFUL
+
+  """
+  Failed to fund by deadline.
+  """
+  FAILED
+
+  """
+  Project is submitted and in prelaunch state.
+  """
+  SUBMITTED
+
+  """
+  Project that is in prelaunch.
+  """
+  UPCOMING
+
+  """
+  Project that is successful and accepting late pledges.
+  """
+  LATE_PLEDGE
+
+  """
+  Project was canceled by creator.
+  """
+  CANCELED
+
+  """
+  Project was suspended by Kickstarter.
+  """
+  SUSPENDED
+}
+
+"""
 A project spreadsheet, including a url and row data
 """
 type Spreadsheet {
@@ -8475,6 +8699,11 @@ type Submission {
   appeal: Message
 
   """
+  The submission's greenlit status.
+  """
+  greenlitStatus: SubmissionGreenlit
+
+  """
   If the submission has messages between the creator and KSR staff.
   """
   hasMessages: Boolean!
@@ -8530,6 +8759,41 @@ enum SubmissionState {
   Rejected by a reviewer, cannot launch.
   """
   REJECTED
+}
+
+"""
+Various submission greenlit states.
+"""
+enum SubmissionGreenlit {
+  """
+  Automatically Approved.
+  """
+  AUTO_APPROVED
+
+  """
+  Submission skipped the normal approval process and was approved.
+  """
+  FAST_TRACKED
+
+  """
+  Automatically rejected by our submission processes.
+  """
+  AUTO_REJECTED
+
+  """
+  For submissions that were auto approved, this records that the user manually wanted their project opted out.
+  """
+  OPTED_OUT
+
+  """
+  Either the submission had a low acceptability score or was required to be reviewed for other reasons.
+  """
+  REVIEW_REQUIRED
+
+  """
+  Legacy, possibly unused.
+  """
+  NOT_ELIGIBLE
 }
 
 """
@@ -8969,6 +9233,11 @@ A report by a user.
 """
 type Flagging implements Node {
   """
+  When the flagging was created
+  """
+  createdAt: ISO8601DateTime!
+
+  """
   The detailed reason for the flagging.
   """
   details: String!
@@ -9264,6 +9533,254 @@ enum FlaggingKind {
 }
 
 """
+A log of changes made to pledge manager configuration post launch
+"""
+type ChangeLog implements Node {
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  type: ChangeLogTypeEnum!
+
+  updatedAt: ISO8601DateTime!
+
+  """
+  User who made this change
+  """
+  user: User
+
+  """
+  Version history entries for this change log
+  """
+  versionHistories: [VersionHistory!]!
+}
+
+"""
+The type of change log entry (e.g. intro, cross_sells, shipping_costs)
+"""
+enum ChangeLogTypeEnum {
+  intro
+
+  cross_sells
+
+  shipping_costs
+
+  pledge_manager
+}
+
+"""
+Tracks version history for auditable entities in pledge manager configuration changes.
+"""
+type VersionHistory implements Node {
+  """
+  Auditable type associated with change log
+  """
+  auditable: Auditable!
+
+  """
+  Audited changes for this version history
+  """
+  auditedChanges: JSON!
+
+  """
+  ID of the associated change log
+  """
+  changeLogId: ID!
+
+  """
+  Timestamp when this version history was created
+  """
+  createdAt: ISO8601DateTime!
+
+  """
+  Optional description or metadata for this version history
+  """
+  description: String
+
+  id: ID!
+
+  """
+  Timestamp when this version history was updated
+  """
+  updatedAt: ISO8601DateTime!
+}
+
+union Auditable = BackerSurvey|PledgeManager|Reward|ItemWeight|ShippingZone|ShippingRate
+
+"""
+A backer survey that a creator sends
+"""
+type BackerSurvey {
+  """
+  Project- and reward- level survey questions
+  """
+  backerQuestions: [Question!]!
+
+  """
+  The number of backers who have not answered the survey
+  """
+  backersRemaining: Int!
+
+  """
+  Whether the survey has at least one question or option
+  """
+  hasBackerQuestionsOrItemOptions: Boolean!
+
+  """
+  Whether the survey has at least one item-level question or option
+  """
+  hasItemQuestionsOrOptions: Boolean!
+
+  id: ID!
+
+  """
+  An optional introduction to the backer survey.
+  """
+  intro("The width of embedded assets in pixels." assetWidth: Int, "Whether to return the intro for the editor." forEditor: Boolean): HTML
+
+  """
+  When the survey was sent
+  """
+  sentAt: DateTime
+
+  """
+  The percentage of surveys that have been completed
+  """
+  surveyCompletePercentage: Float!
+}
+
+"""
+Represents a project's pledge manager
+"""
+type PledgeManager {
+  """
+  Whether the pledge manager accepts new backers or not
+  """
+  acceptsNewBackers: Boolean!
+
+  id: ID!
+
+  """
+  Notes associated with the pledge manager
+  """
+  notes: [String!]!
+
+  """
+  Whether the creator opted out of the pledge manager.
+  """
+  optedOut: Boolean
+
+  """
+  The associated project
+  """
+  project: Project!
+
+  """
+  The date by which the PM will be reviewed (Date of review submission + 5 business days)
+  """
+  reviewAt: DateTime
+
+  """
+  The user assigned to review this pledge manager
+  """
+  reviewer: User
+
+  """
+  The pledge manager's state, e.g. draft, submitted, approved, denied, etc.
+  """
+  state: PledgeManagerStateEnum
+
+  """
+  Whether the pledge manager can be used to charge for tariffs.
+  """
+  tariffSurchargesEnabled: Boolean
+}
+
+"""
+The state of the pledge manager, e.g. draft, submitted, approved, denied.
+"""
+enum PledgeManagerStateEnum {
+  """
+  draft
+  """
+  draft
+
+  """
+  submitted
+  """
+  submitted
+
+  """
+  approved
+  """
+  approved
+
+  """
+  denied
+  """
+  denied
+}
+
+"""
+A shipping zone configured for a project
+"""
+type ShippingZone {
+  id: ID!
+
+  """
+  Whether it has rest of the world location
+  """
+  isRoot: Boolean!
+
+  """
+  The locations included in the zone.
+  """
+  locations: [Location!]!
+
+  """
+  Optional name for the shipping zone
+  """
+  name: String
+
+  """
+  The project the shipping zone belongs
+  """
+  project: Project!
+
+  """
+  Weight ranges with cost, relevant to the zone.
+  """
+  weightRanges: [WeightRange!]!
+}
+
+"""
+A min and max weight range with associated cost
+"""
+type WeightRange {
+  """
+  The cost for this weight range.
+  """
+  cost: Int!
+
+  """
+  The cost for this weight range, formatted.
+  """
+  costFormatted: String!
+
+  id: ID!
+
+  """
+  The max of the weight range (optional)
+  """
+  max: Float
+
+  """
+  The min of the weight range
+  """
+  min: Float!
+}
+
+"""
 The connection type for User.
 """
 type ProjectBackerFriendsConnection {
@@ -9521,6 +10038,11 @@ interface Postable {
   Actions you can currently perform
   """
   actions: PostActions!
+
+  """
+  The attached poll for the post.
+  """
+  attachedPoll: Poll
 
   """
   The specific audience who can view this post.
@@ -9809,6 +10331,11 @@ type CreatorInterview implements Node & Commentable & Postable {
   The interview answers associated with the creator interview.
   """
   answers("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Includes skipped answers" withSkipped: Boolean, "Includes blank answers" withBlank: Boolean): InterviewAnswerConnection!
+
+  """
+  The attached poll for the post.
+  """
+  attachedPoll: Poll
 
   """
   The specific audience who can view this post.
@@ -10123,6 +10650,11 @@ type FreeformPost implements Node & Commentable & Postable {
   actions: PostActions!
 
   """
+  The attached poll for the post.
+  """
+  attachedPoll: Poll
+
+  """
   The specific audience who can view this post.
   """
   audience: PostAudience!
@@ -10240,6 +10772,11 @@ type FreeformPost implements Node & Commentable & Postable {
   pinnedAt: DateTime
 
   """
+  The poll associated with the post.
+  """
+  poll: Poll
+
+  """
   The previous post.
   """
   previousPost: Postable
@@ -10298,6 +10835,26 @@ type Image {
 }
 
 """
+A feedback event in a project timeline
+"""
+type ProjectFeedbackTimelineEvent {
+  """
+  The feedback data
+  """
+  data: ProjectFeedback
+
+  """
+  When the feedback was provided
+  """
+  timestamp: ISO8601DateTime!
+
+  """
+  The event type
+  """
+  type: String!
+}
+
+"""
 List actions current user can perform on a project
 """
 type ProjectActions {
@@ -10312,48 +10869,6 @@ type ProjectActions {
   Whether or not the external survey should be displayed
   """
   showExternalSurvey: Boolean!
-}
-
-"""
-A backer survey that a creator sends
-"""
-type BackerSurvey {
-  """
-  Project- and reward- level survey questions
-  """
-  backerQuestions: [Question!]!
-
-  """
-  The number of backers who have not answered the survey
-  """
-  backersRemaining: Int!
-
-  """
-  Whether the survey has at least one question or option
-  """
-  hasBackerQuestionsOrItemOptions: Boolean!
-
-  """
-  Whether the survey has at least one item-level question or option
-  """
-  hasItemQuestionsOrOptions: Boolean!
-
-  id: ID!
-
-  """
-  An optional introduction to the backer survey.
-  """
-  intro("The width of embedded assets in pixels." assetWidth: Int, "Whether to return the intro for the editor." forEditor: Boolean): HTML
-
-  """
-  When the survey was sent
-  """
-  sentAt: DateTime
-
-  """
-  The percentage of surveys that have been completed
-  """
-  surveyCompletePercentage: Float!
 }
 
 """
@@ -10488,6 +11003,11 @@ type CreatorToolsPaths {
   projectPath: String!
 
   """
+  The ShipStation sync configuration path
+  """
+  shipStationConfigPath: String!
+
+  """
   The Shopify sync path path
   """
   shopifySyncPath: String!
@@ -10574,6 +11094,151 @@ enum AccessRuleTypeEnum {
 union SecretResource = Reward
 
 """
+A backer report search query.
+"""
+input BackerReportSearchQuery {
+  """
+  Filter by reward IDs
+  """
+  rewards: [ID!]
+
+  """
+  Filter by add-on IDs
+  """
+  addons: [ID!]
+
+  """
+  SQL operator to use for filtering add-ons
+  """
+  sqlFilterAddons: SqlFilterOperator
+
+  """
+  Filter by item IDs
+  """
+  items: [ID!]
+
+  """
+  AND the item IDs instead of ORing them
+  """
+  sqlFilterItems: SqlFilterOperator
+
+  """
+  Filter by SKU IDs
+  """
+  skus: [ID!]
+
+  """
+  AND the item variant IDs instead of ORing them
+  """
+  sqlFilterSkus: SqlFilterOperator
+
+  """
+  Filter by backer selected shipping location
+  """
+  locations: [ID!]
+
+  """
+  Filter by reward cost minimum
+  """
+  amountMin: Int
+
+  """
+  Filter by reward cost maximum
+  """
+  amountMax: Int
+
+  """
+  Filter by date pledged minimum
+  """
+  pledgedAtMin: String
+
+  """
+  Filter by date pledged maximum
+  """
+  pledgedAtMax: String
+
+  """
+  Filter by pledge manager completed at minimum
+  """
+  pmCompletedAtMin: String
+
+  """
+  Filter by pledge manager completed at maximum
+  """
+  pmCompletedAtMax: String
+
+  """
+  Filter by fulfillment status
+  """
+  fulfillmentStatus: [String!]
+
+  """
+  Filter by wether the backer has answered the survey
+  """
+  surveyAnswered: [Boolean!]
+
+  """
+  Backer report search term
+  """
+  term: [String!]
+
+  """
+  Filter by pledge type
+  """
+  pledgeOverTime: [Boolean!]
+
+  """
+  Filter by backing status
+  """
+  status: [String!]
+
+  """
+  Filter by pledge redemption state
+  """
+  pledgeRedemptionState: [String!]
+
+  """
+  Filter by shopify sync status
+  """
+  shopifySyncStatus: [String!]
+
+  """
+  Filter by actions taken
+  """
+  actionsTaken: [String!]
+
+  """
+  Filter by backer entry point
+  """
+  backerEntryPoint: [String!]
+
+  """
+  Filter by backer email addresses
+  """
+  backerEmails: [String!]
+
+  """
+  Page number for pagination
+  """
+  page: Int
+
+  """
+  Number of items per page
+  """
+  perPage: Int
+
+  """
+  Sort the backer report in ascending or descending order
+  """
+  ascOrDesc: OpenSearchSort
+
+  """
+  Sort the backer report by this field
+  """
+  sortBy: String
+}
+
+"""
 Operators for SQL filters
 """
 enum SqlFilterOperator {
@@ -10591,6 +11256,68 @@ enum SqlFilterOperator {
   Logical NOT
   """
   NOT
+}
+
+"""
+Sort order for OpenSearch queries
+"""
+enum OpenSearchSort {
+  """
+  Ascending order
+  """
+  asc
+
+  """
+  Descending order
+  """
+  desc
+}
+
+"""
+Configuration options for integrating a project with ShipStation
+"""
+type ShipStationConfiguration implements Node {
+  """
+  An API key for accessing the ShipStation API
+  """
+  apiKey: String!
+
+  """
+  An API Secret Key for accessing the ShipStation API
+  """
+  apiSecretKey: String!
+
+  id: ID!
+
+  """
+  Are there Orders where a sync is currently pending?
+  """
+  inProgress: Boolean!
+
+  """
+  When was the last sync for an Order to ShipStation?
+  """
+  lastSyncedAt: DateTime
+
+  """
+  External ID for a Store in ShipStation
+  """
+  storeId: String!
+
+  """
+  Errors that have occured while trying to sync orders to ShipStation
+  """
+  syncErrors: [String!]!
+
+  """
+  How many orders have been synced to ShipStation
+  """
+  syncedCount: Int!
+
+  """
+  Whether syncing with ShipStation is enabled or disabled
+  """
+  syncing: Boolean!
 }
 
 """
@@ -10634,75 +11361,81 @@ type SkuCount {
 }
 
 """
-Represents a project's pledge manager
+Kickstarter-specific data for a Sidekiq batch
 """
-type PledgeManager {
-  """
-  Whether the pledge manager accepts new backers or not
-  """
-  acceptsNewBackers: Boolean!
-
+type TrackedBatch {
   id: ID!
 
   """
-  Notes associated with the pledge manager
+  Whether a notification has been requested for this batch.
   """
-  notes: [String!]!
+  isNotificationRequested: Boolean!
 
   """
-  Whether the creator opted out of the pledge manager.
-  """
-  optedOut: Boolean
-
-  """
-  The associated project
+  The associated project.
   """
   project: Project!
 
   """
-  The date by which the PM will be reviewed (Date of review submission + 5 business days)
+  The Sidekiq batch status details.
   """
-  reviewAt: DateTime
-
-  """
-  The user assigned to review this pledge manager
-  """
-  reviewer: User
-
-  """
-  The pledge manager's state, e.g. draft, submitted, approved, denied, etc.
-  """
-  state: PledgeManagerStateEnum
-
-  """
-  Whether the pledge manager can be used to charge for tariffs.
-  """
-  tariffSurchargesEnabled: Boolean
+  sidekiqBatchStatus: SidekiqBatchStatus!
 }
 
 """
-The state of the pledge manager, e.g. draft, submitted, approved, denied.
+Status of a Sidekiq batch job.
 """
-enum PledgeManagerStateEnum {
+type SidekiqBatchStatus {
   """
-  draft
+  The time the batch was completed, or null if not complete yet.
   """
-  draft
+  completeAt: DateTime
 
   """
-  submitted
+  The time the batch was created.
   """
-  submitted
+  createdAt: DateTime!
 
   """
-  approved
+  The percentage of jobs that have failed.
   """
-  approved
+  failurePct: Float!
 
   """
-  denied
+  Number of jobs that failed.
   """
-  denied
+  failures: Int!
+
+  """
+  A batch is considered complete if the only pending jobs are retries of failed jobs. This means all jobs have been executed at least once, even if some executions were failures.  If there are any child batches, those must also be complete for the parent batch to be considered complete.
+  """
+  isComplete: Boolean!
+
+  """
+  Number of jobs still pending.  Includes jobs running for the first time and retries of failed jobs.
+  """
+  pending: Int!
+
+  """
+  The percentage of jobs that are still pending.
+  """
+  pendingPct: Float!
+
+  """
+  The time the batch was successful, or null if not successful yet.
+  A batch is considered successful if all jobs eventually completed successfully, even if some had to be retried after initial failures.
+  """
+  successAt: DateTime
+
+  """
+  The percentage of jobs that have succeeded.
+  """
+  successPct: Float!
+
+  """
+  Total number of jobs in the batch.
+  """
+  total: Int!
 }
 
 """
@@ -10839,65 +11572,6 @@ type ItemWeightCompletionStats {
   itemsMissingWeightsCount: Int!
 
   itemsWithWeightCount: Int!
-}
-
-"""
-A shipping zone configured for a project
-"""
-type ShippingZone {
-  id: ID!
-
-  """
-  Whether it has rest of the world location
-  """
-  isRoot: Boolean!
-
-  """
-  The locations included in the zone.
-  """
-  locations: [Location!]!
-
-  """
-  Optional name for the shipping zone
-  """
-  name: String
-
-  """
-  The project the shipping zone belongs
-  """
-  project: Project!
-
-  """
-  Weight ranges with cost, relevant to the zone.
-  """
-  weightRanges: [WeightRange!]!
-}
-
-"""
-A min and max weight range with associated cost
-"""
-type WeightRange {
-  """
-  The cost for this weight range.
-  """
-  cost: Int!
-
-  """
-  The cost for this weight range, formatted.
-  """
-  costFormatted: String!
-
-  id: ID!
-
-  """
-  The max of the weight range (optional)
-  """
-  max: Float
-
-  """
-  The min of the weight range
-  """
-  min: Float!
 }
 
 type LocationVatNumber {
@@ -11878,6 +12552,136 @@ type LocationEdge {
 }
 
 """
+Types of locations.
+"""
+enum LocationTypeEnum {
+  """
+  A Colloquial location.
+  """
+  COLLOQUIAL
+
+  """
+  A Continent location.
+  """
+  CONTINENT
+
+  """
+  A Country location.
+  """
+  COUNTRY
+
+  """
+  A County location.
+  """
+  COUNTY
+
+  """
+  A Drainage location.
+  """
+  DRAINAGE
+
+  """
+  A Estate location.
+  """
+  ESTATE
+
+  """
+  A HistoricalCounty location.
+  """
+  HISTORICAL_COUNTY
+
+  """
+  A HistoricalState location.
+  """
+  HISTORICAL_STATE
+
+  """
+  A HistoricalTown location.
+  """
+  HISTORICAL_TOWN
+
+  """
+  A Island location.
+  """
+  ISLAND
+
+  """
+  A LandFeature location.
+  """
+  LAND_FEATURE
+
+  """
+  A LocalAdmin location.
+  """
+  LOCAL_ADMIN
+
+  """
+  A Miscellaneous location.
+  """
+  MISCELLANEOUS
+
+  """
+  A Ocean location.
+  """
+  OCEAN
+
+  """
+  A POI location.
+  """
+  POI
+
+  """
+  A Root location.
+  """
+  ROOT
+
+  """
+  A Sea location.
+  """
+  SEA
+
+  """
+  A Sport location.
+  """
+  SPORT
+
+  """
+  A State location.
+  """
+  STATE
+
+  """
+  A Suburb location.
+  """
+  SUBURB
+
+  """
+  A Supername location.
+  """
+  SUPERNAME
+
+  """
+  A Timezone location.
+  """
+  TIMEZONE
+
+  """
+  A Town location.
+  """
+  TOWN
+
+  """
+  A Zip location.
+  """
+  ZIP
+
+  """
+  A Zone location.
+  """
+  ZONE
+}
+
+"""
 Intermediary set of changes that have yet to be applied to a backing
 """
 type Checkout implements Node {
@@ -12388,6 +13192,8 @@ enum EditorialPageType {
   international
 
   category
+
+  project_partners
 }
 
 """
@@ -13631,6 +14437,18 @@ enum PledgeProjectsOverviewSort {
   AWAITING_REWARD
 
   REWARD_RECEIVED
+
+  CAMPAIGN_LIVE
+
+  CAMPAIGN_FUNDED
+
+  CAMPAIGN_ENDED
+
+  CAMPAIGN_FAILED
+
+  PLEDGE_DROPPED
+
+  PLEDGE_CANCELED
 }
 
 enum BackingsDashboardSortOptions {
@@ -13922,7 +14740,7 @@ type Task implements Node {
   """
   The category of the task
   """
-  category: String!
+  category: TaskProjectReportCategory!
 
   """
   When the task was completed
@@ -13934,7 +14752,27 @@ type Task implements Node {
   """
   createdAt: ISO8601DateTime!
 
+  """
+  The number of flaggings for this task
+  """
+  flaggingsCount: Int!
+
   id: ID!
+
+  """
+  The latest admin note on this task
+  """
+  latestAdminNote: Note
+
+  """
+  The latest flagging associated with this task
+  """
+  latestFlagging: Flagging
+
+  """
+  The latest Zendesk ticket associated with this task
+  """
+  latestZendeskTicket: ZendeskTicket
 
   """
   The project associated with this task
@@ -13944,7 +14782,7 @@ type Task implements Node {
   """
   Whether this is a real issue
   """
-  realIssue: Boolean!
+  realIssue: Boolean
 
   """
   The current state of the task
@@ -13980,11 +14818,6 @@ enum TaskState {
   Completed task
   """
   completed
-
-  """
-  Closed task
-  """
-  closed
 
   """
   Completed task, marked as issue
@@ -14213,18 +15046,67 @@ enum TaskProjectReportCategory {
 }
 
 """
-Sort order for OpenSearch queries
+A note attached to a notable object
 """
-enum OpenSearchSort {
+type Note {
   """
-  Ascending order
+  The action associated with the note
   """
-  asc
+  action: String
 
   """
-  Descending order
+  The body of the note
   """
-  desc
+  body: String
+
+  """
+  When the note was created
+  """
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  """
+  The user who created the note
+  """
+  notetaker: User
+}
+
+"""
+A Zendesk ticket associated with a task
+"""
+type ZendeskTicket implements Node {
+  """
+  When the ticket was created
+  """
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  """
+  The status of the Zendesk ticket
+  """
+  status: String
+
+  """
+  The subject of the Zendesk ticket
+  """
+  subject: String
+
+  """
+  The URL to view the ticket in Zendesk
+  """
+  ticketZendeskPageUrl: String
+
+  """
+  When the ticket was last updated
+  """
+  updatedAt: ISO8601DateTime!
+
+  """
+  The Zendesk ticket ID
+  """
+  zendeskTicketId: String
 }
 
 """
@@ -14260,6 +15142,223 @@ enum CreatorHrcStatusTier {
   HRC status tier: Non-HRC
   """
   non_hrc
+}
+
+"""
+A Kickstarter partner providing services to creators
+"""
+type Partner {
+  approvalStatus: PartnerApprovalStatus!
+
+  avatarUrl: String
+
+  categories: [Category!]!
+
+  description: String!
+
+  featured: Boolean!
+
+  id: ID!
+
+  """
+  Raw language ISO codes
+  """
+  languageCodes: [String!]!
+
+  """
+  Localized language names
+  """
+  languages: [String!]!
+
+  """
+  Localized location names
+  """
+  locationNames: [String!]!
+
+  locations: [Location!]!
+
+  logoUrl: String
+
+  name: String!
+
+  """
+  Localized partner tier (Premier/Expert)
+  """
+  partnerTier: String!
+
+  """
+  Raw partner tier code
+  """
+  partnerTierCode: PartnerTier!
+
+  """
+  Raw service type codes
+  """
+  serviceTypeCodes: [PartnerService!]!
+
+  """
+  Localized service types
+  """
+  serviceTypes: [String!]!
+
+  siteUrl: String!
+
+  user: User
+}
+
+"""
+Approval status of partner
+"""
+enum PartnerApprovalStatus {
+  APPROVED
+
+  NOT_APPROVED
+}
+
+"""
+Partner tier levels
+"""
+enum PartnerTier {
+  PREMIER
+
+  EXPERT
+}
+
+"""
+Types of services partners can provide
+"""
+enum PartnerService {
+  """
+  Campaign Strategy
+  """
+  CAMPAIGN_STRATEGY
+
+  """
+  Marketing Promotion
+  """
+  MARKETING_PROMOTION
+
+  """
+  Fulfillment Logistics
+  """
+  FULFILLMENT_LOGISTICS
+
+  """
+  Manufacturing Production
+  """
+  MANUFACTURING_PRODUCTION
+
+  """
+  Retail Distribution
+  """
+  RETAIL_DISTRIBUTION
+
+  """
+  Product Design
+  """
+  PRODUCT_DESIGN
+}
+
+"""
+The connection type for Partner.
+"""
+type PartnersConnection {
+  """
+  A list of edges.
+  """
+  edges: [PartnerEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Partner]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type PartnerEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Partner
+}
+
+"""
+Search parameters for partners query.
+"""
+input PartnersSearchQuery {
+  """
+  Filter by partner name
+  """
+  name: String
+
+  """
+  Search across partner fields
+  """
+  search: String
+
+  """
+  Filter by partner tier
+  """
+  partnerTier: [PartnerTier!]
+
+  """
+  Filter by languages
+  """
+  languages: [String!]
+
+  """
+  Filter by service types
+  """
+  serviceTypes: [PartnerService!]
+
+  """
+  Filter by location IDs
+  """
+  locationIds: [ID!]
+
+  """
+  Filter by category IDs
+  """
+  categoryIds: [ID!]
+
+  """
+  Filter by featured status
+  """
+  featured: Boolean
+
+  """
+  Filter by partner approval status
+  """
+  approvalStatus: PartnerApprovalStatus
+}
+
+"""
+Languages supported by all partners
+"""
+type PartnerLanguage {
+  """
+  The language code (e.g., "en", "fr")
+  """
+  code: String!
+
+  """
+  The internationalized name of the language
+  """
+  name: String!
 }
 
 """
@@ -14307,6 +15406,16 @@ type Mutation {
   assignPledgeManager(input: AssignPledgeManagerInput!): AssignPledgeManagerPayload
 
   """
+  Sets the assigned admin for a task to a given admin user ID
+  """
+  assignTask(input: AssignTaskInput!): AssignTaskPayload
+
+  """
+  Sets the assigned admin for a set of tasks to a given admin user, if user_id is passed as null
+  """
+  assignTasks(input: AssignTasksInput!): AssignTasksPayload
+
+  """
   Batch updates addresses for users's active survey responses
   """
   batchUpdateSurveyResponseAddresses(input: BatchUpdateSurveyResponseAddressesInput!): BatchUpdateSurveyResponseAddressesPayload
@@ -14341,7 +15450,17 @@ type Mutation {
   """
   cancelProject(input: CancelProjectInput!): CancelProjectPayload
 
+  """
+  Assigns the unassigned reports for a given investigation
+  """
+  claimUnclaimedInvestigationReports(input: ClaimUnclaimedInvestigationReportsInput!): ClaimUnclaimedInvestigationReportsPayload
+
   clearUserUnseenActivity(input: ClearUserUnseenActivityInput!): ClearUserUnseenActivityPayload
+
+  """
+  Closes a poll
+  """
+  closePoll(input: ClosePollInput!): ClosePollPayload
 
   """
   Ends a given checkout wave.
@@ -14357,6 +15476,16 @@ type Mutation {
   Confirm payment and complete the order
   """
   completeOrder(input: CompleteOrderInput!): CompleteOrderPayload
+
+  """
+  Completes a given task
+  """
+  completeTask(input: CompleteTaskInput!): CompleteTaskPayload
+
+  """
+  Completes several tasks with the same resolution
+  """
+  completeTasks(input: CompleteTasksInput!): CompleteTasksPayload
 
   """
   Complete a $0 order
@@ -14387,6 +15516,11 @@ type Mutation {
   Save a new address.
   """
   createAddress(input: CreateAddressInput!): CreateAddressPayload
+
+  """
+  Creates an answer for a question
+  """
+  createAnswer(input: CreateAnswerInput!): CreateAnswerPayload
 
   """
   [DEPRECATED in favor of CreateBackingType] Create a checkout with Apple Pay.
@@ -14481,6 +15615,11 @@ type Mutation {
   createOrUpdateItemTaxConfig(input: CreateOrUpdateItemTaxConfigInput!): CreateOrUpdateItemTaxConfigPayload
 
   """
+  Create or update a Kickstarter partner
+  """
+  createOrUpdatePartner(input: CreateOrUpdatePartnerInput!): CreateOrUpdatePartnerPayload
+
+  """
   Creates or updates a preview order with given starting attributes
   """
   createOrUpdatePreviewOrder(input: CreateOrUpdatePreviewOrderInput!): CreateOrUpdatePreviewOrderPayload
@@ -14489,6 +15628,11 @@ type Mutation {
   Save or update a recent search
   """
   createOrUpdateRecentSearch(input: CreateOrUpdateRecentSearchInput!): CreateOrUpdateRecentSearchPayload
+
+  """
+  Set ShipStation configuration variables for a Project
+  """
+  createOrUpdateShipStationConfiguration(input: CreateOrUpdateShipStationConfigurationInput!): CreateOrUpdateShipStationConfigurationPayload
 
   """
   Creates (or updates) a shipping zone with weight ranges and locations
@@ -14504,6 +15648,11 @@ type Mutation {
   Create or update a shipment's tracking number
   """
   createOrUpdateTrackingNumber(input: CreateOrUpdateTrackingNumberInput!): CreateOrUpdateTrackingNumberPayload
+
+  """
+  Create or update shipments and their tracking numbers
+  """
+  createOrUpdateTrackingNumbers(input: CreateOrUpdateTrackingNumbersInput!): CreateOrUpdateTrackingNumbersPayload
 
   """
   Creates/updates a VAT config
@@ -14665,6 +15814,16 @@ type Mutation {
   deleteOption(input: DeleteOptionInput!): DeleteOptionPayload
 
   """
+  Delete a Kickstarter partner
+  """
+  deletePartner(input: DeletePartnerInput!): DeletePartnerPayload
+
+  """
+  Deletes a poll
+  """
+  deletePoll(input: DeletePollInput!): DeletePollPayload
+
+  """
   Delete a project post
   """
   deletePost(input: DeletePostInput!): DeletePostPayload
@@ -14738,6 +15897,11 @@ type Mutation {
   Adds disliked projects to a users taste profile
   """
   dislikeProject(input: DislikeProjectInput!): DislikeProjectPayload
+
+  """
+  Dismiss a tracked batch from current tracked batches.
+  """
+  dismissTrackedBatch(input: DismissTrackedBatchInput!): DismissTrackedBatchPayload
 
   """
   Distribute digital access resources like access keys or URLs to backers with digital rewards
@@ -14870,6 +16034,11 @@ type Mutation {
   rejectOrderEdit(input: RejectOrderEditInput!): RejectOrderEditPayload
 
   """
+  Remove a backer from a live project
+  """
+  removeBacker(input: RemoveBackerInput!): RemoveBackerPayload
+
+  """
   Removes the spreadsheet associated to a project
   """
   removeSheetFromProject(input: RemoveSheetFromProjectInput!): RemoveSheetFromProjectPayload
@@ -14882,6 +16051,11 @@ type Mutation {
   requestAppleIdDisconnectEmail(input: RequestAppleIdDisconnectEmailInput!): RequestAppleIdDisconnectEmailPayload
 
   """
+  Request a notification when a tracked batch completes.
+  """
+  requestBatchNotification(input: RequestBatchNotificationInput!): RequestBatchNotificationPayload
+
+  """
   Requests a password reset email.
   """
   requestPasswordReset(input: RequestPasswordResetInput!): RequestPasswordResetPayload
@@ -14890,6 +16064,11 @@ type Mutation {
   Reset a backer survey
   """
   resetBackerSurvey(input: ResetBackerSurveyInput!): ResetBackerSurveyPayload
+
+  """
+  Pause or Resume ShipStation syncing
+  """
+  retryShipStationSyncing(input: RetryShipStationSyncingInput!): RetryShipStationSyncingPayload
 
   """
   Reverts a pledge manager to draft state
@@ -15011,6 +16190,11 @@ type Mutation {
   toggleProjectPreview(input: ToggleProjectPreviewInput!): ToggleProjectPreviewPayload
 
   """
+  Pause or Resume ShipStation syncing
+  """
+  toggleShipStationSyncing(input: ToggleShipStationSyncingInput!): ToggleShipStationSyncingPayload
+
+  """
   Toggles the syncing state for a Shopify shop
   """
   toggleSyncingForShop(input: ToggleSyncingForShopInput!): ToggleSyncingForShopPayload
@@ -15108,6 +16292,11 @@ type Mutation {
   Creates, updates, or destroys associations between an Order and a backer's selected Cross Sells
   """
   updateCrossSellsOnOrder(input: UpdateCrossSellsOnOrderInput!): UpdateCrossSellsOnOrderPayload
+
+  """
+  Updates free items on multiple backings based on various filters.
+  """
+  updateFreeItems(input: UpdateFreeItemsInput!): UpdateFreeItemsPayload
 
   """
   Update a project's fulfillment_modal_dismissed_at timestamp.
@@ -15503,10 +16692,42 @@ input UpdatePostInput {
 
   audience: PostAudience
 
+  poll: PollInput
+
   """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+"""
+Poll input used for creating or updating polls on updates.
+"""
+input PollInput {
+  prompt: String!
+
+  choices: [String!]!
+
+  image: S3AssetInput
+
+  duration: Int
+}
+
+"""
+S3 information for an asset.
+"""
+input S3AssetInput {
+  id: ID
+
+  s3Key: String!
+
+  fileName: String!
+
+  contentType: String!
+
+  updatedAt: Int!
+
+  fileSize: Int!
 }
 
 """
@@ -17373,59 +18594,11 @@ type SetBackingFulfillmentStatusesPayload {
 Autogenerated input type of SetBackingFulfillmentStatuses
 """
 input SetBackingFulfillmentStatusesInput {
-  backingIds: [ID!]
-
-  selectAll: Boolean
-
   projectId: ID!
 
   newFulfillmentStatus: FulfillmentStatusSelectOptions!
 
-  rewards: [ID!]
-
-  addons: [ID!]
-
-  sqlFilterAddons: SqlFilterOperator
-
-  items: [ID!]
-
-  sqlFilterItems: SqlFilterOperator
-
-  skus: [ID!]
-
-  sqlFilterSkus: SqlFilterOperator
-
-  locations: [ID!]
-
-  amountMin: Int
-
-  amountMax: Int
-
-  pledgedAtMin: String
-
-  pledgedAtMax: String
-
-  fulfillmentStatus: [String!]
-
-  surveyAnswered: [Boolean!]
-
-  isLatePledge: [Boolean!]
-
-  term: [String!]
-
-  status: [String!]
-
-  pledgeRedemptionState: [String!]
-
-  actionsTaken: [String!]
-
-  pledgeOverTime: [Boolean!]
-
-  backerEntryPoint: [String!]
-
-  pmCompletedAtMin: String
-
-  pmCompletedAtMax: String
+  searchQuery: BackerReportSelection
 
   """
   A unique identifier for the client performing the mutation.
@@ -17444,6 +18617,135 @@ enum FulfillmentStatusSelectOptions {
   shipped
 
   delayed
+}
+
+"""
+A selection of backings in the backer report.
+"""
+input BackerReportSelection {
+  """
+  Filter by reward IDs
+  """
+  rewards: [ID!]
+
+  """
+  Filter by add-on IDs
+  """
+  addons: [ID!]
+
+  """
+  SQL operator to use for filtering add-ons
+  """
+  sqlFilterAddons: SqlFilterOperator
+
+  """
+  Filter by item IDs
+  """
+  items: [ID!]
+
+  """
+  AND the item IDs instead of ORing them
+  """
+  sqlFilterItems: SqlFilterOperator
+
+  """
+  Filter by SKU IDs
+  """
+  skus: [ID!]
+
+  """
+  AND the item variant IDs instead of ORing them
+  """
+  sqlFilterSkus: SqlFilterOperator
+
+  """
+  Filter by backer selected shipping location
+  """
+  locations: [ID!]
+
+  """
+  Filter by reward cost minimum
+  """
+  amountMin: Int
+
+  """
+  Filter by reward cost maximum
+  """
+  amountMax: Int
+
+  """
+  Filter by date pledged minimum
+  """
+  pledgedAtMin: String
+
+  """
+  Filter by date pledged maximum
+  """
+  pledgedAtMax: String
+
+  """
+  Filter by pledge manager completed at minimum
+  """
+  pmCompletedAtMin: String
+
+  """
+  Filter by pledge manager completed at maximum
+  """
+  pmCompletedAtMax: String
+
+  """
+  Filter by fulfillment status
+  """
+  fulfillmentStatus: [String!]
+
+  """
+  Filter by wether the backer has answered the survey
+  """
+  surveyAnswered: [Boolean!]
+
+  """
+  Backer report search term
+  """
+  term: [String!]
+
+  """
+  Filter by pledge type
+  """
+  pledgeOverTime: [Boolean!]
+
+  """
+  Filter by backing status
+  """
+  status: [String!]
+
+  """
+  Filter by pledge redemption state
+  """
+  pledgeRedemptionState: [String!]
+
+  """
+  Filter by shopify sync status
+  """
+  shopifySyncStatus: [String!]
+
+  """
+  Filter by actions taken
+  """
+  actionsTaken: [String!]
+
+  """
+  Filter by backer entry point
+  """
+  backerEntryPoint: [String!]
+
+  """
+  Filter by backer email addresses
+  """
+  backerEmails: [String!]
+
+  ids: [ID!]
+
+  selectAll: Boolean
 }
 
 """
@@ -18262,23 +19564,6 @@ input CreateRewardInput {
 }
 
 """
-S3 information for an asset.
-"""
-input S3AssetInput {
-  id: ID
-
-  s3Key: String!
-
-  fileName: String!
-
-  contentType: String!
-
-  updatedAt: Int!
-
-  fileSize: Int!
-}
-
-"""
 Item for a reward
 """
 input RewardItemInput {
@@ -18786,6 +20071,49 @@ enum NonDeprecatedFlaggingKind {
   backing-spam
   """
   BACKING_SPAM
+}
+
+"""
+Autogenerated return type of RemoveBacker
+"""
+type RemoveBackerPayload {
+  backerBlock: BackerBlock!
+
+  backing: Backing!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+type BackerBlock {
+  blockedUser: User!
+
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  project: Project!
+
+  updatedAt: ISO8601DateTime!
+
+  user: User!
+}
+
+"""
+Autogenerated input type of RemoveBacker
+"""
+input RemoveBackerInput {
+  """
+  ID of the backing to remove
+  """
+  backingId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 }
 
 """
@@ -19859,6 +21187,117 @@ input AppDataInput {
 }
 
 """
+Autogenerated return type of CreateOrUpdateShipStationConfiguration
+"""
+type CreateOrUpdateShipStationConfigurationPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  errors: [String!]
+
+  saved: Boolean!
+
+  stores: [ShipStationStore!]
+}
+
+"""
+A basic object representing a Store in ShipStation
+"""
+type ShipStationStore {
+  """
+  External ID of a Store in ShipStation
+  """
+  id: String!
+
+  """
+  Name of a Store in ShipStation
+  """
+  name: String!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateShipStationConfiguration
+"""
+input CreateOrUpdateShipStationConfigurationInput {
+  """
+  The ID of the project being configured
+  """
+  projectId: ID!
+
+  """
+  The API Key for ShipStation
+  """
+  apiKey: String!
+
+  """
+  The API Secret Key for ShipStation
+  """
+  apiSecretKey: String!
+
+  """
+  External ID for a Store in ShipStation
+  """
+  storeId: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of ToggleShipStationSyncing
+"""
+type ToggleShipStationSyncingPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  shipStationConfiguration: ShipStationConfiguration!
+}
+
+"""
+Autogenerated input type of ToggleShipStationSyncing
+"""
+input ToggleShipStationSyncingInput {
+  projectId: ID!
+
+  syncing: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of RetryShipStationSyncing
+"""
+type RetryShipStationSyncingPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of RetryShipStationSyncing
+"""
+input RetryShipStationSyncingInput {
+  projectId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of CreateTrackEvent
 """
 type CreateTrackEventPayload {
@@ -19931,6 +21370,658 @@ input CreateAttributionEventInput {
   eventProperties: JSON
 
   projectId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateBackerReportSegment
+"""
+type CreateBackerReportSegmentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: SavedSearchSegment
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CreateBackerReportSegment
+"""
+input CreateBackerReportSegmentInput {
+  """
+  The name of saved segment
+  """
+  name: String
+
+  """
+  The project ID of the request
+  """
+  projectId: ID!
+
+  """
+  The ID of the segment to update. If null, a new segment will be created
+  """
+  segmentId: ID
+
+  """
+  A set of search parameters to save for reëxecution
+  """
+  segmentBody: JSON
+
+  """
+  If true, the segment will be duplicated
+  """
+  duplicate: Boolean
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteBackerReportSegment
+"""
+type DeleteBackerReportSegmentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteBackerReportSegment
+"""
+input DeleteBackerReportSegmentInput {
+  """
+  The ID of the segment to delete
+  """
+  segmentId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateRecentSearch
+"""
+type CreateOrUpdateRecentSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: RecentSearch
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateRecentSearch
+"""
+input CreateOrUpdateRecentSearchInput {
+  """
+  The name of the search
+  """
+  name: String!
+
+  """
+  The search query as URL params
+  """
+  body: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteRecentSearch
+"""
+type DeleteRecentSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteRecentSearch
+"""
+input DeleteRecentSearchInput {
+  """
+  The ID of the recent search to delete
+  """
+  id: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateDiscoverSavedSearch
+"""
+type CreateOrUpdateDiscoverSavedSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  data: SavedSearchSegment
+
+  success: Boolean!
+
+  totalCountSavedSearches: Int
+}
+
+"""
+Autogenerated input type of CreateOrUpdateDiscoverSavedSearch
+"""
+input CreateOrUpdateDiscoverSavedSearchInput {
+  """
+  The name of the saved search
+  """
+  name: String
+
+  """
+  A set of search parameters to save for reëxecution
+  """
+  segmentBody: JSON
+
+  """
+  The ID of the segment to update. If null, a new segment will be created
+  """
+  segmentId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteDiscoverSavedSearch
+"""
+type DeleteDiscoverSavedSearchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Indicates if the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteDiscoverSavedSearch
+"""
+input DeleteDiscoverSavedSearchInput {
+  """
+  The ID of the discover saved search segment to delete
+  """
+  segmentId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DistributeDigitalAccessResources
+"""
+type DistributeDigitalAccessResourcesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project
+}
+
+"""
+Autogenerated input type of DistributeDigitalAccessResources
+"""
+input DistributeDigitalAccessResourcesInput {
+  projectId: ID!
+
+  resources: String!
+
+  """
+  Type of resource distribution: 'unique' or 'shared'
+  """
+  resourcesType: ResourcesTypeEnum!
+
+  description: String!
+
+  searchQuery: JSON!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+enum ResourcesTypeEnum {
+  """
+  Each backer gets a unique resource
+  """
+  UNIQUE
+
+  """
+  All backers share the same resource
+  """
+  SHARED
+}
+
+"""
+Autogenerated return type of UpdateFreeItems
+"""
+type UpdateFreeItemsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  existingFreeItems: [RewardItem!]!
+
+  """
+  The tracked batch for async processing (nil for small synchronous updates).
+  """
+  trackedBatch: TrackedBatch
+
+  updatedBackingCount: Int!
+}
+
+"""
+Autogenerated input type of UpdateFreeItems
+"""
+input UpdateFreeItemsInput {
+  projectId: ID!
+
+  itemsWithQuantities: [ItemWithQuantity!]!
+
+  mode: FreeItemUpdateMode!
+
+  existingFreeItemsBehavior: ExistingFreeItemsBehavior!
+
+  searchQuery: BackerReportSelection!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Item plus item quantity input
+"""
+input ItemWithQuantity {
+  id: ID!
+
+  quantity: Int!
+}
+
+"""
+Mode for updateFreeItemsType mutation
+"""
+enum FreeItemUpdateMode {
+  """
+  Append new free items to backings
+  """
+  add
+
+  """
+  Set backings to have only the specified free items
+  """
+  set
+}
+
+"""
+How the updateFreeItemsType mutation should behave when backers already have some of the free items being added.
+"""
+enum ExistingFreeItemsBehavior {
+  """
+  Abort and inform client some backers already have some of the specified free items
+  """
+  report
+
+  """
+  Skip backings which already have some of the specified free items
+  """
+  skip
+
+  """
+  Include backings regardless of whether they have some of the specified free items
+  """
+  include
+}
+
+"""
+Autogenerated return type of SetUserBadges
+"""
+type SetUserBadgesPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of SetUserBadges
+"""
+input SetUserBadgesInput {
+  badgeNames: [String!]!
+
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of FixUserMissingNotifications
+"""
+type FixUserMissingNotificationsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User
+}
+
+"""
+Autogenerated input type of FixUserMissingNotifications
+"""
+input FixUserMissingNotificationsInput {
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AssignTask
+"""
+type AssignTaskPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  task: Task
+}
+
+"""
+Autogenerated input type of AssignTask
+"""
+input AssignTaskInput {
+  taskId: ID!
+
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AssignTasks
+"""
+type AssignTasksPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of AssignTasks
+"""
+input AssignTasksInput {
+  taskIds: [ID!]!
+
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CompleteTask
+"""
+type CompleteTaskPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  task: Task
+}
+
+"""
+Autogenerated input type of CompleteTask
+"""
+input CompleteTaskInput {
+  taskId: ID!
+
+  realIssue: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CompleteTasks
+"""
+type CompleteTasksPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of CompleteTasks
+"""
+input CompleteTasksInput {
+  taskIds: [ID!]!
+
+  realIssue: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of ClaimUnclaimedInvestigationReports
+"""
+type ClaimUnclaimedInvestigationReportsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  projectInvestigation: ProjectInvestigation!
+}
+
+"""
+Autogenerated input type of ClaimUnclaimedInvestigationReports
+"""
+input ClaimUnclaimedInvestigationReportsInput {
+  projectInvestigationId: ID!
+
+  userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of RequestBatchNotification
+"""
+type RequestBatchNotificationPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  trackedBatch: TrackedBatch!
+}
+
+"""
+Autogenerated input type of RequestBatchNotification
+"""
+input RequestBatchNotificationInput {
+  trackedBatchId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DismissTrackedBatch
+"""
+type DismissTrackedBatchPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  trackedBatch: TrackedBatch!
+}
+
+"""
+Autogenerated input type of DismissTrackedBatch
+"""
+input DismissTrackedBatchInput {
+  trackedBatchId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdatePartner
+"""
+type CreateOrUpdatePartnerPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  partner: Partner
+}
+
+"""
+Autogenerated input type of CreateOrUpdatePartner
+"""
+input CreateOrUpdatePartnerInput {
+  partnerId: ID
+
+  name: String
+
+  siteUrl: String
+
+  description: String
+
+  avatarUrl: String
+
+  logoUrl: String
+
+  partnerTier: PartnerTier
+
+  languages: [String!]
+
+  serviceTypes: [PartnerService!]
+
+  featured: Boolean
+
+  userId: ID
+
+  locationIds: [ID!]
+
+  categoryIds: [ID!]
+
+  approvalStatus: PartnerApprovalStatus
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeletePartner
+"""
+type DeletePartnerPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Whether the deletion was successful
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeletePartner
+"""
+input DeletePartnerInput {
+  """
+  The ID of the partner to delete
+  """
+  partnerId: ID!
 
   """
   A unique identifier for the client performing the mutation.
@@ -21042,6 +23133,41 @@ input CreateOrUpdateTrackingNumberInput {
 }
 
 """
+Autogenerated return type of CreateOrUpdateTrackingNumbers
+"""
+type CreateOrUpdateTrackingNumbersPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  shipments: [Shipment!]!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateTrackingNumbers
+"""
+input CreateOrUpdateTrackingNumbersInput {
+  parentId: ID!
+
+  shipments: [ShipmentTrackingInput!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Inputs required for updating a shipment tracking number
+"""
+input ShipmentTrackingInput {
+  id: ID
+
+  trackingNumber: String
+}
+
+"""
 Autogenerated return type of ProcessTrackingNumbers
 """
 type ProcessTrackingNumbersPayload {
@@ -21736,6 +23862,51 @@ input DeleteQuestionInput {
 }
 
 """
+Autogenerated return type of CreateAnswer
+"""
+type CreateAnswerPayload {
+  answer: Answer
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated input type of CreateAnswer
+"""
+input CreateAnswerInput {
+  questionId: ID!
+
+  answerableType: AnswerableType!
+
+  answerableId: ID!
+
+  response: [String!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Types that can be associated with an Answer
+"""
+enum AnswerableType {
+  LineItem
+
+  Cart
+
+  BackingAddon
+
+  OrderOrderable
+
+  Poll
+}
+
+"""
 Autogenerated return type of BulkEditQuestions
 """
 type BulkEditQuestionsPayload {
@@ -22065,6 +24236,57 @@ input UpdateBackerSurveyIntroInput {
 }
 
 """
+Autogenerated return type of ClosePoll
+"""
+type ClosePollPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  poll: Poll!
+}
+
+"""
+Autogenerated input type of ClosePoll
+"""
+input ClosePollInput {
+  pollId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeletePoll
+"""
+type DeletePollPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Succeeds if poll is deleted.
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeletePoll
+"""
+input DeletePollInput {
+  pollId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of UpdateResourceAudience
 """
 type UpdateResourceAudiencePayload {
@@ -22113,14 +24335,24 @@ Autogenerated input type of AddUserToSecretRewardGroup
 """
 input AddUserToSecretRewardGroupInput {
   """
-  ID of the project with secret rewards
-  """
-  projectId: ID!
-
-  """
   Secret reward token shared by the creator
   """
   secretRewardToken: String!
+
+  """
+  ID of the project with secret rewards
+  """
+  projectId: ID
+
+  """
+  Project ID of the project with secret rewards
+  """
+  pid: Int
+
+  """
+  Slug of the project with secret rewards
+  """
+  slug: String
 
   """
   A unique identifier for the client performing the mutation.
@@ -22434,317 +24666,6 @@ input DeleteVariantMappingsInput {
   The project id
   """
   projectId: ID!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of CreateBackerReportSegment
-"""
-type CreateBackerReportSegmentPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  data: SavedSearchSegment
-
-  success: Boolean!
-}
-
-"""
-Autogenerated input type of CreateBackerReportSegment
-"""
-input CreateBackerReportSegmentInput {
-  """
-  The name of saved segment
-  """
-  name: String
-
-  """
-  The project ID of the request
-  """
-  projectId: ID!
-
-  """
-  The ID of the segment to update. If null, a new segment will be created
-  """
-  segmentId: ID
-
-  """
-  A set of search parameters to save for reëxecution
-  """
-  segmentBody: JSON
-
-  """
-  If true, the segment will be duplicated
-  """
-  duplicate: Boolean
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of DeleteBackerReportSegment
-"""
-type DeleteBackerReportSegmentPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  """
-  Indicates if the deletion was successful
-  """
-  success: Boolean!
-}
-
-"""
-Autogenerated input type of DeleteBackerReportSegment
-"""
-input DeleteBackerReportSegmentInput {
-  """
-  The ID of the segment to delete
-  """
-  segmentId: ID!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of CreateOrUpdateRecentSearch
-"""
-type CreateOrUpdateRecentSearchPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  data: RecentSearch
-
-  success: Boolean!
-}
-
-"""
-Autogenerated input type of CreateOrUpdateRecentSearch
-"""
-input CreateOrUpdateRecentSearchInput {
-  """
-  The name of the search
-  """
-  name: String!
-
-  """
-  The search query as URL params
-  """
-  body: String!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of DeleteRecentSearch
-"""
-type DeleteRecentSearchPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  """
-  Indicates if the deletion was successful
-  """
-  success: Boolean!
-}
-
-"""
-Autogenerated input type of DeleteRecentSearch
-"""
-input DeleteRecentSearchInput {
-  """
-  The ID of the recent search to delete
-  """
-  id: ID!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of CreateOrUpdateDiscoverSavedSearch
-"""
-type CreateOrUpdateDiscoverSavedSearchPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  data: SavedSearchSegment
-
-  success: Boolean!
-
-  totalCountSavedSearches: Int
-}
-
-"""
-Autogenerated input type of CreateOrUpdateDiscoverSavedSearch
-"""
-input CreateOrUpdateDiscoverSavedSearchInput {
-  """
-  The name of the saved search
-  """
-  name: String
-
-  """
-  A set of search parameters to save for reëxecution
-  """
-  segmentBody: JSON
-
-  """
-  The ID of the segment to update. If null, a new segment will be created
-  """
-  segmentId: ID
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of DeleteDiscoverSavedSearch
-"""
-type DeleteDiscoverSavedSearchPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  """
-  Indicates if the deletion was successful
-  """
-  success: Boolean!
-}
-
-"""
-Autogenerated input type of DeleteDiscoverSavedSearch
-"""
-input DeleteDiscoverSavedSearchInput {
-  """
-  The ID of the discover saved search segment to delete
-  """
-  segmentId: ID!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of DistributeDigitalAccessResources
-"""
-type DistributeDigitalAccessResourcesPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  project: Project
-}
-
-"""
-Autogenerated input type of DistributeDigitalAccessResources
-"""
-input DistributeDigitalAccessResourcesInput {
-  projectId: ID!
-
-  resources: String!
-
-  """
-  Type of resource distribution: 'unique' or 'shared'
-  """
-  resourcesType: ResourcesTypeEnum!
-
-  description: String!
-
-  searchQuery: JSON!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-enum ResourcesTypeEnum {
-  """
-  Each backer gets a unique resource
-  """
-  UNIQUE
-
-  """
-  All backers share the same resource
-  """
-  SHARED
-}
-
-"""
-Autogenerated return type of SetUserBadges
-"""
-type SetUserBadgesPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  user: User
-}
-
-"""
-Autogenerated input type of SetUserBadges
-"""
-input SetUserBadgesInput {
-  badgeNames: [String!]!
-
-  userId: ID!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of FixUserMissingNotifications
-"""
-type FixUserMissingNotificationsPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  user: User
-}
-
-"""
-Autogenerated input type of FixUserMissingNotifications
-"""
-input FixUserMissingNotificationsInput {
-  userId: ID!
 
   """
   A unique identifier for the client performing the mutation.

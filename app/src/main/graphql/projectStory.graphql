@@ -31,34 +31,7 @@ fragment storyRichTextComponentFragment on RichTextComponent {
         ...richTextPhotoFragment
       }
     }
-    ... on RichTextHeader1 {
-      __typename
-      text
-      link
-      styles
-      children {
-        ...richTextChildParagraphFragment
-      }
-    }
-    ... on RichTextHeader2 {
-      __typename
-      text
-      link
-      styles
-      children {
-        ...richTextChildParagraphFragment
-      }
-    }
-    ... on RichTextHeader3 {
-      __typename
-      text
-      link
-      styles
-      children {
-        ...richTextChildParagraphFragment
-      }
-    }
-    ... on RichTextHeader4 {
+    ... on RichTextHeader {
       __typename
       text
       link

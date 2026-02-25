@@ -54,6 +54,7 @@ fun ProjectStoryFragment?.toStoriedProject(): StoriedProject {
 
 /*
  * Note the use of `mapNotNull` to filter out `null` items everywhere. This may change.
+ * TODO: Remove this comment when this decision is reflected in tests for all cases.
  */
 fun StoryRichTextComponentFragment.toRichTextComponent(): RichTextComponent {
     val items: List<RichTextItem> = this.items.mapNotNull { fragmentItem ->
@@ -81,7 +82,9 @@ fun StoryRichTextComponentFragment.toRichTextComponent(): RichTextComponent {
                     "HEADING_1" in styles -> RichTextItem.Text.Header.Level.H1
                     "HEADING_2" in styles -> RichTextItem.Text.Header.Level.H2
                     "HEADING_3" in styles -> RichTextItem.Text.Header.Level.H3
-                    else -> RichTextItem.Text.Header.Level.H4 /* Least disruptive style */
+                    /* Least disruptive style
+                     * TODO: Reflect decision in test */
+                    else -> RichTextItem.Text.Header.Level.H4
                 }
                 RichTextItem.Text.Header(
                     level,

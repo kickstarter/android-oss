@@ -1,4 +1,4 @@
-package com.kickstarter.services
+package com.kickstarter.services.transformers
 
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.KSRobolectricTestCase
@@ -10,15 +10,6 @@ import com.kickstarter.fragment.Faq
 import com.kickstarter.fragment.Reward
 import com.kickstarter.fragment.Reward.AllowedAddons
 import com.kickstarter.fragment.User
-import com.kickstarter.services.transformers.aiDisclosureTransformer
-import com.kickstarter.services.transformers.decodeRelayId
-import com.kickstarter.services.transformers.environmentalCommitmentTransformer
-import com.kickstarter.services.transformers.projectFaqTransformer
-import com.kickstarter.services.transformers.rewardTransformer
-import com.kickstarter.services.transformers.simpleShippingRuleTransformer
-import com.kickstarter.services.transformers.updateTransformer
-import com.kickstarter.services.transformers.userPrivacyTransformer
-import com.kickstarter.services.transformers.userTransformer
 import com.kickstarter.type.EnvironmentalCommitmentCategory
 import com.kickstarter.type.RewardType
 import com.kickstarter.type.ShippingPreference

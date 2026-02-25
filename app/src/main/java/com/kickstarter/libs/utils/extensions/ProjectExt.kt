@@ -38,13 +38,14 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
         it.name().equals(config.countryCode())
     }
 
-    val currentCurrency = user?.let {
-        it.chosenCurrency()
-    } ?: currentCountry?.currencyCode() ?: currency()
+    val currentCurrency = user?.chosenCurrency()
+        ?: currentCountry?.currencyCode()
+        ?: currency()
 
-    val countryOfCurrency = config.launchedCountries().first { it.currencyCode() == currentCurrency }
-    val currencySymbol = countryOfCurrency.currencySymbol()
-    val trailingCode = countryOfCurrency.trailingCode()
+    val countryOfCurrency = config.launchedCountries().find { it.currencyCode() == currentCurrency }
+
+    val currencySymbol = countryOfCurrency?.currencySymbol() ?: currencySymbol()
+    val trailingCode = countryOfCurrency?.trailingCode() ?: currencyTrailingCode()
 
     return this.toBuilder()
         .currentCurrency(currentCurrency)

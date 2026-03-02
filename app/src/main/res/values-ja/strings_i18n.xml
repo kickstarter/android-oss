@@ -283,6 +283,7 @@
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">ライブ配信の詳細を取得できませんでした</string>
   <string name="Failed_to_update_subscription" formatted="false">定期購読の更新に失敗しました</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Featured" formatted="false">注目</string>
   <string name="Filter" formatted="false">絞り込む</string>
   <string name="Filter_by_all_projects" formatted="false">全てのプロジェクトに絞る</string>
   <string name="Filter_by_category_name" formatted="false">%{category_name} に絞る</string>
@@ -489,6 +490,7 @@
   <string name="News_events" formatted="false">1年に数回だけ、お近くのニュースやイベント情報をお届け。</string>
   <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
+  <string name="No_backings" formatted="false">支援なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
   <string name="No_funded_backings" formatted="false">ファンディング成立済みの支援はありません</string>
   <string name="No_go_back" formatted="false">いいえ、戻ります</string>
@@ -503,6 +505,7 @@
   <string name="No_saved_projects" formatted="false">保存済みのプロジェクトはありません</string>
   <string name="No_unread_messages" formatted="false">未読メッセージはありません</string>
   <string name="Not_available" formatted="false">利用できません</string>
+  <string name="Not_available_in_selected_country" formatted="false">選択された国/地域では利用できません</string>
   <string name="Not_delivered" formatted="false">未配送</string>
   <string name="Not_followed" formatted="false">フォローしてない</string>
   <string name="Not_now" formatted="false">後で</string>
@@ -937,6 +940,7 @@
   <string name="When_projects_youve_backed_have_successfully_funded_youll_see_them_here" formatted="false">バックしたプロジェクトのファンディングが成功すると、こちらに表示されます。</string>
   <string name="When_projects_youve_backed_need_your_attention_youll_see_them_here" formatted="false">バックしたプロジェクトに関してお知らせやアラートがある場合はこちらに表示されます。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
+  <string name="When_youve_backed_a_project_itll_show_up_here" formatted="false">プロジェクトをバック(支援)するとここに表示されます。</string>
   <string name="Which_categories_interest_you" formatted="false">興味のあるカテゴリーは？</string>
   <string name="Working_on_it" formatted="false">Working on it</string>
   <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>

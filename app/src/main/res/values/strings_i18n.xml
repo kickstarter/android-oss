@@ -285,6 +285,7 @@ Tap to retry</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Failed to retrieve live stream event details</string>
   <string name="Failed_to_update_subscription" formatted="false">Failed to update subscription</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Featured" formatted="false">Featured</string>
   <string name="Filter" formatted="false">Filter</string>
   <string name="Filter_by_all_projects" formatted="false">Filter by all projects</string>
   <string name="Filter_by_category_name" formatted="false">Filter by %{category_name}</string>
@@ -492,6 +493,7 @@ with friends.</string>
   <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
   <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
+  <string name="No_backings" formatted="false">No backings</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_funded_backings" formatted="false">No funded backings</string>
   <string name="No_go_back" formatted="false">No, go back</string>
@@ -507,6 +509,7 @@ from friends yet.</string>
   <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">No unread messages</string>
   <string name="Not_available" formatted="false">Not available</string>
+  <string name="Not_available_in_selected_country" formatted="false">Not available in selected country</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
   <string name="Not_now" formatted="false">Not Now</string>
@@ -942,6 +945,7 @@ Please try again later.</string>
   <string name="When_projects_youve_backed_have_successfully_funded_youll_see_them_here" formatted="false">When projects you\'ve backed have successfully funded, you\'ll see them here.</string>
   <string name="When_projects_youve_backed_need_your_attention_youll_see_them_here" formatted="false">When projects you’ve backed need your attention, you’ll see them here.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
+  <string name="When_youve_backed_a_project_itll_show_up_here" formatted="false">When you’ve backed a project, it’ll show up here.</string>
   <string name="Which_categories_interest_you" formatted="false">Which categories interest you?</string>
   <string name="Working_on_it" formatted="false">Working on it</string>
   <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>

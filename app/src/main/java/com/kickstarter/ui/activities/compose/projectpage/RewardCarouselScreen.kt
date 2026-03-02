@@ -233,7 +233,7 @@ fun RewardCarouselScreen(
 
                     val ctaButtonText = when {
                         ctaButtonEnabled -> R.string.Select
-                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> R.string.fpo_not_available_in_selected_country
+                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> R.string.Not_available_in_selected_country
                         else -> R.string.No_longer_available
                     }
 

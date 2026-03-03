@@ -46,6 +46,7 @@
   <string name="internal_tools_onboarding_flow">Onboarding flow</string>
   <string name="internal_tools_design_system">Design System</string>
   <string name="internal_tools_push_notifications">Push notifications</string>
+  <string name="internal_tools_project_story_activity">Project Story Activity</string>
   <string name="Logged_Out">Logged Out</string>
   <string name="mailto">mailto:</string>
   <string name="Network">Network</string>
@@ -108,4 +109,8 @@
   <string name="internal_tools_home_activity">Home Activity</string>
   <string name="internal_tools_video_feed_activity_a">Video Feed Activity (Regular Scroll)</string>
   <string name="internal_tools_video_feed_activity_b">Video Feed Activity (Snapping Scroll)</string>
+
+  <!-- FPO's for Reward Card for Featured Reward Badge -->
+  <string name="fpo_featured_reward" formatted="false">Featured</string>
+
 </resources>

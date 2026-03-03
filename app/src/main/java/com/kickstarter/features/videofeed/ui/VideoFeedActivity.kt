@@ -2,7 +2,6 @@ package com.kickstarter.features.videofeed.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.OptIn
@@ -49,7 +48,6 @@ import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
-import timber.log.Timber
 import kotlin.getValue
 
 class VideoFeedActivity : AppCompatActivity() {

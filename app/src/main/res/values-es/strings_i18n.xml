@@ -285,6 +285,7 @@ Toca para intentar de nuevo.</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
   <string name="Failed_to_update_subscription" formatted="false">No se pudo actualizar la suscripción</string>
   <string name="Faq" formatted="false">Preguntas frecuentes</string>
+  <string name="Featured" formatted="false">Destacados</string>
   <string name="Filter" formatted="false">Filtro</string>
   <string name="Filter_by_all_projects" formatted="false">Filtro: Todos los proyectos</string>
   <string name="Filter_by_category_name" formatted="false">Filtro: %{category_name}</string>
@@ -492,6 +493,7 @@ Toca para intentar de nuevo.</string>
   <string name="News_events" formatted="false">Unas cuantas veces al año: Noticias sobresalientes y eventos cerca de ti.</string>
   <string name="Newsletters" formatted="false">Boletines informativos</string>
   <string name="No_Results" formatted="false">Sin resultados</string>
+  <string name="No_backings" formatted="false">No hay contribuciones</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_funded_backings" formatted="false">No hay contribuciones a proyectos financiados</string>
   <string name="No_go_back" formatted="false">No, regresar</string>
@@ -506,6 +508,7 @@ Toca para intentar de nuevo.</string>
   <string name="No_saved_projects" formatted="false">No hay proyectos guardados</string>
   <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
   <string name="Not_available" formatted="false">No disponible</string>
+  <string name="Not_available_in_selected_country" formatted="false">No disponible en el país seleccionado</string>
   <string name="Not_delivered" formatted="false">No entregado</string>
   <string name="Not_followed" formatted="false">No siguiendo</string>
   <string name="Not_now" formatted="false">Ahora no</string>
@@ -939,6 +942,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="When_projects_youve_backed_have_successfully_funded_youll_see_them_here" formatted="false">Los proyectos que hayas patrocinado aparecerán aquí una vez que se financien con éxito.</string>
   <string name="When_projects_youve_backed_need_your_attention_youll_see_them_here" formatted="false">Verás aquí los proyectos que hayas patrocinado y necesiten tu atención.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
+  <string name="When_youve_backed_a_project_itll_show_up_here" formatted="false">Verás aquí los proyectos que hayas patrocinado.</string>
   <string name="Which_categories_interest_you" formatted="false">¿Qué categorías te interesan?</string>
   <string name="Working_on_it" formatted="false">Working on it</string>
   <string name="Write_a_bio" formatted="false">Escribe una biografía breve mediante una oración o dos.</string>

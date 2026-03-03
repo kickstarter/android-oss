@@ -4,7 +4,6 @@ import androidx.media3.exoplayer.source.preload.DefaultPreloadManager
 import androidx.media3.exoplayer.source.preload.DefaultPreloadManager.PreloadStatus.specifiedRangeLoaded
 import androidx.media3.exoplayer.source.preload.TargetPreloadStatusControl
 
-
 @androidx.media3.common.util.UnstableApi
 class PreloadStatusControl(private val currentPlayingIndexProvider: () -> Int) : TargetPreloadStatusControl<Int, DefaultPreloadManager.PreloadStatus> {
     override fun getTargetPreloadStatus(rankingData: Int): DefaultPreloadManager.PreloadStatus {

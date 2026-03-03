@@ -23,6 +23,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.features.home.ui.HomeActivity
+import com.kickstarter.features.projectstory.ProjectStoryActivity
 import com.kickstarter.features.videofeed.ui.VideoFeedActivity
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.Build
@@ -92,6 +93,10 @@ class InternalToolsActivity : AppCompatActivity() {
             videoFeedActivityButtonClicked(scrollType = true)
         }
 
+        binding.projectStoryButton.setOnClickListener {
+            projectStoryActivityButtonClicked()
+        }
+
         binding.pushNotificationsButton.setOnClickListener {
             pushNotificationsButtonClick()
         }
@@ -126,9 +131,16 @@ class InternalToolsActivity : AppCompatActivity() {
         // Specifying the RECEIVER_NOT_EXPORTED flag is required by apps targeting android 34, however
         // this flag parameter was added to registerReceiver in android 33,git while our min SDK is 23
         if (android.os.Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
-            this.registerReceiver(resetDeviceIdReceiver, IntentFilter(ResetDeviceIdWorker.BROADCAST), RECEIVER_NOT_EXPORTED)
+            this.registerReceiver(
+                resetDeviceIdReceiver,
+                IntentFilter(ResetDeviceIdWorker.BROADCAST),
+                RECEIVER_NOT_EXPORTED
+            )
         } else {
-            this.registerReceiver(resetDeviceIdReceiver, IntentFilter(ResetDeviceIdWorker.BROADCAST))
+            this.registerReceiver(
+                resetDeviceIdReceiver,
+                IntentFilter(ResetDeviceIdWorker.BROADCAST)
+            )
         }
     }
 
@@ -155,6 +167,11 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun homeActivityButtonClicked() {
         val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun projectStoryActivityButtonClicked() {
+        val intent = Intent(this, ProjectStoryActivity::class.java)
         startActivity(intent)
     }
 
@@ -188,17 +205,19 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun resetDeviceIdClick() {
         showDeviceId(false)
-        val request: OneTimeWorkRequest = OneTimeWorkRequest.Builder(ResetDeviceIdWorker::class.java)
-            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.SECONDS)
-            .setConstraints(WorkUtils.baseConstraints)
-            .build()
+        val request: OneTimeWorkRequest =
+            OneTimeWorkRequest.Builder(ResetDeviceIdWorker::class.java)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.SECONDS)
+                .setConstraints(WorkUtils.baseConstraints)
+                .build()
         WorkManager.getInstance(this)
             .enqueueUniqueWork(ResetDeviceIdWorker.TAG, ExistingWorkPolicy.REPLACE, request)
     }
 
     private fun showCustomEndpointDialog() {
         val view = View.inflate(this, R.layout.custom_endpoint_layout, null)
-        val customEndpointEditText: EditText = view.findViewById<EditText>(R.id.custom_endpoint_edit_text)
+        val customEndpointEditText: EditText =
+            view.findViewById<EditText>(R.id.custom_endpoint_edit_text)
         AlertDialog.Builder(this)
             .setTitle("Change endpoint")
             .setView(view)
@@ -218,12 +237,16 @@ class InternalToolsActivity : AppCompatActivity() {
     private fun showDeviceId(show: Boolean) {
         binding.resetDeviceId.isEnabled = !show
         ViewUtils.setInvisible(binding.deviceId, !show)
-        ViewUtils.setInvisible(binding.deviceIdLoadingIndicatorLayout.deviceIdLoadingIndicator, show)
+        ViewUtils.setInvisible(
+            binding.deviceIdLoadingIndicatorLayout.deviceIdLoadingIndicator,
+            show
+        )
     }
 
     private fun showHivequeenEndpointDialog() {
         val view = View.inflate(this, R.layout.hivequeen_endpoint_layout, null)
-        val hivequeenNameEditText: EditText = view.findViewById<EditText>(R.id.hivequeen_name_edit_text)
+        val hivequeenNameEditText: EditText =
+            view.findViewById<EditText>(R.id.hivequeen_name_edit_text)
         AlertDialog.Builder(this)
             .setTitle("Change endpoint")
             .setView(view)
@@ -232,7 +255,13 @@ class InternalToolsActivity : AppCompatActivity() {
             ) { _: DialogInterface?, _: Int ->
                 val hivequeenName = hivequeenNameEditText.text.toString()
                 if (hivequeenName.isNotEmpty()) {
-                    setEndpointAndRelaunch(ApiEndpoint.from(Secrets.Api.Endpoint.hqHost(hivequeenName)))
+                    setEndpointAndRelaunch(
+                        ApiEndpoint.from(
+                            Secrets.Api.Endpoint.hqHost(
+                                hivequeenName
+                            )
+                        )
+                    )
                 }
             }
             .setNegativeButton(android.R.string.cancel) { dialog: DialogInterface, _: Int ->
@@ -244,7 +273,8 @@ class InternalToolsActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun setupBuildInformationSection() {
         binding.apiEndpoint.text = apiEndpointPreference?.get()
-        binding.buildDate.text = build?.buildDate()?.toString(DateTimeFormat.forPattern("MMM dd, yyyy h:mm:ss aa zzz"))
+        binding.buildDate.text = build?.buildDate()
+            ?.toString(DateTimeFormat.forPattern("MMM dd, yyyy h:mm:ss aa zzz"))
         binding.commitSha.text = build?.sha()
         binding.deviceId.text = FirebaseHelper.identifier.value
         binding.variant.text = build?.variant()

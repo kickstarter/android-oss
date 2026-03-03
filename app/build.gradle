@@ -300,9 +300,6 @@ dependencies {
     implementation "androidx.media3:media3-datasource:$exoplayer"
     implementation "androidx.media3:media3-extractor:$exoplayer" // (includes MP2T/MPEG-TS support)
 
-    // Haze effect
-    implementation "dev.chrisbanes.haze:haze:1.7.2"
-
     // Coroutines
     def coroutines = '1.10.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"

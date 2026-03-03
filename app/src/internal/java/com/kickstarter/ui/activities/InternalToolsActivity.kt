@@ -24,6 +24,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.features.home.ui.HomeActivity
 import com.kickstarter.features.videofeed.ui.VideoFeedActivity
+import com.kickstarter.features.projectstory.ProjectStoryActivity
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.FirebaseHelper
@@ -91,6 +92,9 @@ class InternalToolsActivity : AppCompatActivity() {
         binding.videoFeedButtonB.setOnClickListener {
             videoFeedActivityButtonClicked(scrollType = true)
         }
+        binding.projectStoryButton.setOnClickListener {
+            projectStoryActivityButtonClicked()
+        }
 
         binding.pushNotificationsButton.setOnClickListener {
             pushNotificationsButtonClick()
@@ -155,6 +159,11 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun homeActivityButtonClicked() {
         val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun projectStoryActivityButtonClicked() {
+        val intent = Intent(this, ProjectStoryActivity::class.java)
         startActivity(intent)
     }
 

@@ -3,6 +3,7 @@ package com.kickstarter.mock.services
 import android.util.Pair
 import com.kickstarter.CreatePasswordMutation
 import com.kickstarter.DeletePaymentSourceMutation
+import com.kickstarter.FetchProjectStoryQuery
 import com.kickstarter.SendEmailVerificationMutation
 import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.UpdateUserEmailMutation
@@ -59,7 +60,10 @@ import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 
-    override fun getRewardsFromProject(slug: String): io.reactivex.Observable<List<Reward>> {
+    override fun getRewardsFromProject(
+        slug: String,
+        sort: com.kickstarter.type.ProjectRewardsSort
+    ): io.reactivex.Observable<List<Reward>> {
         return io.reactivex.Observable.just(emptyList())
     }
 
@@ -373,6 +377,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> {
         return Result.success(emptyList())
+    }
+
+    override suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?> {
+        return Result.success(null)
     }
 
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {

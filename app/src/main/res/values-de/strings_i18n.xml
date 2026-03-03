@@ -285,6 +285,7 @@ Antippen und erneut versuchen</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Details zu Live-Stream-Event konnten nicht geladen werden</string>
   <string name="Failed_to_update_subscription" formatted="false">Abo konnte nicht aktualisiert werden</string>
   <string name="Faq" formatted="false">FAQ</string>
+  <string name="Featured" formatted="false">Highlights</string>
   <string name="Filter" formatted="false">Filter</string>
   <string name="Filter_by_all_projects" formatted="false">Filter: Alle Projekte</string>
   <string name="Filter_by_category_name" formatted="false">Filter: %{category_name}</string>
@@ -491,6 +492,7 @@ Antippen und erneut versuchen</string>
   <string name="News_events" formatted="false">Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.</string>
   <string name="Newsletters" formatted="false">Newsletter</string>
   <string name="No_Results" formatted="false">Keine Ergebnisse</string>
+  <string name="No_backings" formatted="false">Keine Finanzierungsbeiträge</string>
   <string name="No_comments_yet" formatted="false">Bisher noch keine Kommentare.</string>
   <string name="No_funded_backings" formatted="false">Keine Beiträge für finanzierte Projekte</string>
   <string name="No_go_back" formatted="false">Nein, zurückgehen</string>
@@ -505,6 +507,7 @@ Antippen und erneut versuchen</string>
   <string name="No_saved_projects" formatted="false">Keine gespeicherten Projekte</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
   <string name="Not_available" formatted="false">Nicht verfügbar</string>
+  <string name="Not_available_in_selected_country" formatted="false">Belohnung ist im ausgewählten Land nicht verfügbar</string>
   <string name="Not_delivered" formatted="false">Nicht verschickt</string>
   <string name="Not_followed" formatted="false">Nicht gefolgt</string>
   <string name="Not_now" formatted="false">Nicht jetzt</string>
@@ -938,6 +941,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="When_projects_youve_backed_have_successfully_funded_youll_see_them_here" formatted="false">Wenn Projekte, die du unterstützt hast, erfolgreich finanziert wurden, erscheinen sie hier.</string>
   <string name="When_projects_youve_backed_need_your_attention_youll_see_them_here" formatted="false">Wenn Projekte, die du unterstützt, deine Aufmerksamkeit brauchen, siehst du sie hier.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
+  <string name="When_youve_backed_a_project_itll_show_up_here" formatted="false">Hier werden Projekte angezeigt, die du unterstützt hast.</string>
   <string name="Which_categories_interest_you" formatted="false">Welche Kategorien interessieren dich?</string>
   <string name="Working_on_it" formatted="false">Working on it</string>
   <string name="Write_a_bio" formatted="false">Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.</string>

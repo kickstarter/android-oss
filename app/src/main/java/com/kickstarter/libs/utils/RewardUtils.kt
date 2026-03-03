@@ -67,6 +67,12 @@ object RewardUtils {
     }
 
     /**
+     * Returns only rewards that have started and are not expired.
+     * Use when displaying reward lists (e.g. carousel, add-ons) to hide future or expired rewards.
+     */
+    fun filterByTimeRange(rewards: List<Reward>): List<Reward> = rewards.filter { isValidTimeRange(it) }
+
+    /**
      * Returns `true` if the reward has a valid expiration date on Starting date.
      */
     fun isTimeLimitedStart(reward: Reward): Boolean {
@@ -81,9 +87,26 @@ object RewardUtils {
         return rewardsItems != null && rewardsItems.isNotEmpty()
     }
 
+    /**
+     * Returns `true` if the reward ships worldwide (unrestricted shipping preference).
+     */
     fun shipsWorldwide(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.UNRESTRICTED.name, ignoreCase = true)
 
+    /**
+     * Returns `true` if the reward ships only to restricted locations (specific countries/regions).
+     */
     fun shipsToRestrictedLocations(reward: Reward): Boolean = reward.shippingPreference().equals(Reward.ShippingPreference.RESTRICTED.name, ignoreCase = true)
+
+    /**
+     * Returns `true` if the reward is shippable to the given location (or has no shipping restriction).
+     * Worldwide, digital, and local pickup rewards are always considered shippable.
+     * Restricted rewards are shippable only if their shipping rules contain the given locationId.
+     * When locationId is null, restricted rewards are considered not shippable to the selected location.
+     */
+    fun isShippableToLocation(reward: Reward, locationId: Long?): Boolean {
+        if (!shipsToRestrictedLocations(reward)) return true
+        return locationId != null && reward.shippingRules()?.any { it.location()?.id() == locationId } == true
+    }
 
     /**
      * Returns `true` if the reward has a limit set, and the limit has not been reached, `false` otherwise.

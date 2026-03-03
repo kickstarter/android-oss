@@ -51,6 +51,7 @@ import androidx.media3.ui.PlayerView
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
+import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import kotlin.getValue
 
 class VideoFeedActivity : AppCompatActivity() {
@@ -176,18 +177,7 @@ class VideoFeedActivity : AppCompatActivity() {
     @Composable
     fun ProjectFullscreenCard(project: Project, isVisible: Boolean, modifier: Modifier) {
         Box(modifier = modifier.background(Color.Black)) {
-            VideoPlayer(videoUrl = project.videoUrl, isActive = isVisible)
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.85f)),
-                            startY = 1200f
-                        )
-                    )
-            )
+            KSVideoPlayer(videoUrl = project.videoUrl, isActive = isVisible)
 
             Column(
                 modifier = Modifier
@@ -278,20 +268,7 @@ class VideoFeedActivity : AppCompatActivity() {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // TODO: ProgressBar for videoPlayback
-                LinearProgressIndicator(
-                    progress = { 0.3f },
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .fillMaxWidth()
-                        .height(3.dp)
-                        .clip(CircleShape),
-                    color = Color.White,
-                    trackColor = Color.White.copy(alpha = 0.2f),
-                    strokeCap = StrokeCap.Round
-                )
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

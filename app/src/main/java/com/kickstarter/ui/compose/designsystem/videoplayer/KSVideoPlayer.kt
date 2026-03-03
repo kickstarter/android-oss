@@ -53,13 +53,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
-import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.delay
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -81,7 +74,6 @@ fun KSVideoPlayer(
     }
 
     // Create the HazeState to track background pixels
-    val hazeState = remember { HazeState() }
     var progress by remember { mutableFloatStateOf(0f) }
 
     var showControls by remember { mutableStateOf(false) }
@@ -124,7 +116,7 @@ fun KSVideoPlayer(
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 }
             },
-            modifier = Modifier.fillMaxSize().hazeSource(hazeState)
+            modifier = Modifier.fillMaxSize()
         )
 
         // 1. Central Controls (Hidden by default, shown on tap)
@@ -142,7 +134,6 @@ fun KSVideoPlayer(
                 ControlIcon(
                     iconRes = R.drawable.rewind,
                     size = 36.dp,
-                    hazeState = hazeState,
                     onClick = { exoPlayer.seekTo(exoPlayer.currentPosition - 5000) }
                 )
 
@@ -150,7 +141,6 @@ fun KSVideoPlayer(
                 ControlIcon(
                     iconRes = R.drawable.play,
                     size = 62.dp,
-                    hazeState = hazeState,
                     onClick = {
                         showControls = !showControls
                         if (showControls) exoPlayer.pause()
@@ -161,7 +151,6 @@ fun KSVideoPlayer(
                 ControlIcon(
                     iconRes = R.drawable.forward,
                     size = 36.dp,
-                    hazeState = hazeState,
                     onClick = { exoPlayer.seekTo(exoPlayer.currentPosition + 5000) }
                 )
             }
@@ -198,7 +187,6 @@ fun KSVideoPlayer(
 private fun ControlIcon(
     @DrawableRes iconRes: Int,
     size: Dp,
-    hazeState: HazeState,
     onClick: () -> Unit
 ) {
     Box(
@@ -206,16 +194,18 @@ private fun ControlIcon(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .hazeEffect(
-                state = hazeState,
-                style = HazeStyle(
-                    tint = HazeTint(Color(0xFF2B2B2D).copy(alpha = 0.25f)),
-                    blurRadius = 27.68.dp, // Figma 27.68px blur
+            .background(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFF2B2B2D).copy(alpha = 0.3f),
+                        Color(0xFF2B2B2D).copy(alpha = 0.1f),
+                        Color(0xFF2B2B2D).copy(alpha = 0.05f)
+                    )
                 )
             )
             .border(
                 width = 1.38.dp, // Figma Spec
-                color = Color.White.copy(alpha = 0.25f), // Figma Spec
+                color = Color.White.copy(alpha = 0.25f),
                 shape = CircleShape
             )
             .clickable(onClick = onClick)

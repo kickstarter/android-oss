@@ -299,6 +299,9 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
     implementation "androidx.media3:media3-datasource:$exoplayer"
 
+    // Haze effect
+    implementation "dev.chrisbanes.haze:haze:1.7.2"
+
     // Coroutines
     def coroutines = '1.10.2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"

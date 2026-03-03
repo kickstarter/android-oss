@@ -53,6 +53,13 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.haze
+import dev.chrisbanes.haze.hazeChild
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import kotlinx.coroutines.delay
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -73,6 +80,8 @@ fun KSVideoPlayer(
         }
     }
 
+    // Create the HazeState to track background pixels
+    val hazeState = remember { HazeState() }
     var progress by remember { mutableFloatStateOf(0f) }
 
     var showControls by remember { mutableStateOf(false) }
@@ -115,7 +124,7 @@ fun KSVideoPlayer(
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().hazeSource(hazeState)
         )
 
         // 1. Central Controls (Hidden by default, shown on tap)
@@ -130,17 +139,18 @@ fun KSVideoPlayer(
                 horizontalArrangement = Arrangement.spacedBy(32.dp),
                 modifier = Modifier.pointerInput(Unit) {} // Stops click propagation
             ) {
-                // Rewind 5s
                 ControlIcon(
                     iconRes = R.drawable.rewind,
                     size = 36.dp,
+                    hazeState = hazeState,
                     onClick = { exoPlayer.seekTo(exoPlayer.currentPosition - 5000) }
                 )
 
                 // Play/Pause Center Button
                 ControlIcon(
                     iconRes = R.drawable.play,
-                    size = 62.dp, // Larger center button as seen in screenshot
+                    size = 62.dp,
+                    hazeState = hazeState,
                     onClick = {
                         showControls = !showControls
                         if (showControls) exoPlayer.pause()
@@ -148,10 +158,10 @@ fun KSVideoPlayer(
                     }
                 )
 
-                // Forward 5s
                 ControlIcon(
                     iconRes = R.drawable.forward,
                     size = 36.dp,
+                    hazeState = hazeState,
                     onClick = { exoPlayer.seekTo(exoPlayer.currentPosition + 5000) }
                 )
             }
@@ -188,6 +198,7 @@ fun KSVideoPlayer(
 private fun ControlIcon(
     @DrawableRes iconRes: Int,
     size: Dp,
+    hazeState: HazeState,
     onClick: () -> Unit
 ) {
     Box(
@@ -195,34 +206,25 @@ private fun ControlIcon(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .clickable(onClick = onClick)
-    ) {
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(brush = Brush.radialGradient(
-                    colors = listOf(
-                        Color(0xFF2B2B2D).copy(alpha = 0.45f), // Darker center
-                        Color(0xFF2B2B2D).copy(alpha = 0.25f), // Figma spec
-                        Color(0xFF2B2B2D).copy(alpha = 0.15f)  // Faded edge
-                    )
-                ))
-                .blur(30.dp)
-        )
-
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .matchParentSize()
-                .clip(CircleShape)
-                .border(1.dp, Color.White.copy(alpha = 0.25f), CircleShape)
-                .clickable(onClick = onClick)
-        ) {
-            Icon(
-                painter = painterResource(id = iconRes),
-                contentDescription = null, // TODO: add content description
-                tint = Color.White,
+            .hazeEffect(
+                state = hazeState,
+                style = HazeStyle(
+                    tint = HazeTint(Color(0xFF2B2B2D).copy(alpha = 0.25f)),
+                    blurRadius = 27.68.dp, // Figma 27.68px blur
+                )
             )
-        }
+            .border(
+                width = 1.38.dp, // Figma Spec
+                color = Color.White.copy(alpha = 0.25f), // Figma Spec
+                shape = CircleShape
+            )
+            .clickable(onClick = onClick)
+
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null, // TODO: add content description
+            tint = Color.White,
+        )
     }
 }

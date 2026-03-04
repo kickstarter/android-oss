@@ -297,47 +297,4 @@ class VideoFeedActivity : AppCompatActivity() {
             }
         }
     }
-
-    @OptIn(UnstableApi::class)
-    @Composable
-    fun VideoPlayer(videoUrl: String, isActive: Boolean) {
-        if (videoUrl.isEmpty()) return
-        val context = LocalContext.current
-        val exoPlayer = remember(videoUrl) {
-            ExoPlayer.Builder(context).build().apply {
-                setMediaItem(MediaItem.fromUri(videoUrl))
-                repeatMode = Player.REPEAT_MODE_ONE
-                prepare()
-                numberOfPlayers++
-                Log.d("VideoPlayer", "Active number of players:${numberOfPlayers} Creating new player for: $videoUrl")
-            }
-        }
-
-        LaunchedEffect(isActive) {
-            exoPlayer.playWhenReady = isActive
-        }
-
-        AndroidView(
-            factory = {
-                PlayerView(it).apply {
-                    player = exoPlayer
-                    useController = false
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                    layoutParams = FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-
-        DisposableEffect(videoUrl) {
-            onDispose {
-                exoPlayer.release()
-                numberOfPlayers--
-                Log.d("VideoPlayer", "Active number of players:${numberOfPlayers} Releasing player for: $videoUrl")
-            }
-        }
-    }
 }

@@ -77,7 +77,6 @@ val playButton: ImageVector
 
 private var _iconButton: ImageVector? = null
 
-
 val rewindIcon: ImageVector
     get() {
         if (_frame97545 != null) return _frame97545!!

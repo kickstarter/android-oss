@@ -1,11 +1,16 @@
 package com.kickstarter.ui.compose.designsystem
 
+import Forward
+import Play
+import Rewind
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons // TODO
 import androidx.compose.material.icons.filled.Close // TODO
@@ -29,15 +35,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.activities.compose.search.FilterRowPillType
@@ -250,6 +262,40 @@ fun KSOutlinedButtons() {
                 onClickAction = {},
                 text = "OutlinedButton Disabled",
                 isEnabled = false
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSPlayerControlButtonsPreview() {
+    KSTheme {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(32.dp),
+            modifier = Modifier.pointerInput(Unit) {} // Stops click propagation
+        ) {
+            KSControlIcon(
+                icon = Rewind,
+                size = 36.dp,
+                onClick = {
+                }
+            )
+
+            KSControlIcon(
+                icon = Play,
+                size = 62.dp,
+                onClick = {
+                }
+            )
+
+            KSControlIcon(
+                icon = Forward,
+                size = 36.dp,
+                onClick = {
+                }
             )
         }
     }
@@ -733,6 +779,69 @@ fun KSButton(
             textAlign = TextAlign.Center,
             color = if (isEnabled) textColor else colors.textSecondary,
             style = textStyle
+        )
+    }
+}
+
+/**
+* Icons that try to match Glassmorphism Effects
+* take a look as reference here: https://androidengineers.substack.com/p/creating-stunning-glassmorphism-effects
+*/
+@Composable
+fun KSControlIcon(
+//    @DrawableRes iconRes: Int,
+    icon: ImageVector,
+    size: Dp,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+    ) {
+        Box(
+            modifier = modifier
+                .matchParentSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf( // TODO move color to theme
+                            Color(0xFF2B2B2D).copy(alpha = 0.15f),
+                            Color(0xFF2B2B2D).copy(alpha = 0.35f),
+                            Color(0xFF2B2B2D).copy(alpha = 0.5f)
+                        ),
+                        start = Offset.Zero,
+                        end = Offset.Infinite
+                    )
+                )
+                .blur(50.dp)
+        )
+
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .border(
+                    width = 1.38.dp,
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.5f),
+                            Color.White.copy(alpha = 0.1f),
+                            Color.White.copy(alpha = 0.05f)
+                        ),
+                        start = Offset.Zero,
+                        end = Offset.Infinite
+                    ),
+                    shape = CircleShape
+                )
+        )
+
+        Icon(
+            // painter = painterResource(id = iconRes),
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color.White
         )
     }
 }

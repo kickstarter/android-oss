@@ -38,7 +38,7 @@ def internalPublicVersion = new File(project.rootDir.path + "/app/internal_versi
 def isCircle = "true" == System.getenv("CIRCLECI")
 def isPrivateCIEnv = ("android-private" == System.getenv("CIRCLE_PROJECT_REPONAME"))
 def isRelease = ("external" == System.getenv("CIRCLE_BRANCH"))
-def compose_version = '1.4.3'
+def compose_version = '1.7.0'
 
 ext.signing = [
         storeFilePath: "path/to/keystore",
@@ -284,10 +284,10 @@ dependencies {
 
     // Compose
     implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:1.8.3"
-    debugImplementation "androidx.compose.ui:ui-tooling:1.8.3"
+    implementation "androidx.compose.ui:ui-tooling:1.10.4"
+    debugImplementation "androidx.compose.ui:ui-tooling:1.10.4"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
-    implementation 'androidx.activity:activity-compose:1.10.1'
+    implementation 'androidx.activity:activity-compose:1.12.4'
     implementation 'androidx.constraintlayout:constraintlayout-compose:1.1.1'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.36.0"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.10.0"
@@ -318,6 +318,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.compose.material:material-icons-core:1.7.8'
     implementation 'androidx.compose.material3:material3:1.4.0'
+
+    // Glass effects
+    implementation("com.github.skydoves:cloudy:0.5.0")
 
     // Testing
     testImplementation "junit:junit:4.13.2"

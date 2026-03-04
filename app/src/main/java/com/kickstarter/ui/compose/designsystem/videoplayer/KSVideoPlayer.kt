@@ -1,17 +1,19 @@
 package com.kickstarter.ui.compose.designsystem.videoplayer
 
-import androidx.annotation.DrawableRes
+import Forward
+import Play
+import Rewind
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,17 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
@@ -51,8 +46,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSControlIcon
+import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import kotlinx.coroutines.delay
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -154,8 +151,8 @@ private fun ProgressBarContainer(
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
     ) {
-        LinearProgressIndicator(
-            progress = { progress },
+        KSLinearProgressIndicator(
+            progress = progress,
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .fillMaxWidth()
@@ -189,17 +186,16 @@ private fun ControlsContainer(
             horizontalArrangement = Arrangement.spacedBy(32.dp),
             modifier = Modifier.pointerInput(Unit) {} // Stops click propagation
         ) {
-            ControlIcon(
-                iconRes = R.drawable.rewind,
+            KSControlIcon(
+                icon = Rewind,
                 size = 36.dp,
                 onClick = {
                     rewindCallback.invoke()
                 }
             )
 
-            // Play/Pause Center Button
-            ControlIcon(
-                iconRes = R.drawable.play,
+            KSControlIcon(
+                icon = Play,
                 size = 62.dp,
                 onClick = {
                     showControls1 = !showControls1
@@ -208,77 +204,14 @@ private fun ControlsContainer(
                 }
             )
 
-            ControlIcon(
-                iconRes = R.drawable.forward,
+            KSControlIcon(
+                icon = Forward,
                 size = 36.dp,
                 onClick = {
                     forwardCallback.invoke()
                 }
             )
         }
-    }
-}
-
-/**
- * Icons that try to match Glassmorphism Effects
- * take a look as reference here: https://androidengineers.substack.com/p/creating-stunning-glassmorphism-effects
- */
-@Composable
-private fun ControlIcon(
-    @DrawableRes iconRes: Int,
-    size: Dp,
-    onClick: () -> Unit
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .clickable(onClick = onClick)
-    ) {
-        // - layer 1 Glass Surface
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color(0xFF2B2B2D).copy(alpha = 0.15f), // Top-left shine
-                            Color(0xFF2B2B2D).copy(alpha = 0.35f), // Middle tint
-                            Color(0xFF2B2B2D).copy(alpha = 0.5f) // Bottom-right shadow
-                        ),
-                        start = Offset.Zero,
-                        end = Offset.Infinite
-                    )
-                )
-                .blur(50.dp)
-        )
-
-        // - layer 2 Reflective border
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .border(
-                    width = 1.38.dp,
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.5f), // Bright reflection
-                            Color.White.copy(alpha = 0.1f), // Faded side
-                            Color.White.copy(alpha = 0.05f) // Bottom dark side
-                        ),
-                        start = Offset.Zero,
-                        end = Offset.Infinite
-                    ),
-                    shape = CircleShape
-                )
-        )
-
-        // - layer 3 icon
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            tint = Color.White
-        )
     }
 }
 
@@ -300,21 +233,24 @@ fun ControlsPreview() {
 @Composable
 @Preview(widthDp = 300, heightDp = 200)
 fun ProgressBarPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(KSTheme.colors.kds_white),
-    ) {
-
-        ProgressBarContainer(
-            modifier = Modifier.align(Alignment.Center),
-            progress = 0.0f
-        )
-        Spacer(Modifier.height(10.dp))
-
-        ProgressBarContainer(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            progress = 50.0f
-        )
+    KSTheme {
+        Column(
+            modifier = Modifier.padding(dimensions.paddingSmall),
+        ) {
+            ProgressBarContainer(
+                modifier = Modifier.fillMaxWidth(),
+                progress = 0.1f
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            ProgressBarContainer(
+                modifier = Modifier.fillMaxWidth(),
+                progress = 0.5f
+            )
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            ProgressBarContainer(
+                modifier = Modifier.fillMaxWidth(),
+                progress = 0.9f
+            )
+        }
     }
 }

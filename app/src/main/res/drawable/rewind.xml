@@ -3,16 +3,6 @@
     android:height="38dp"
     android:viewportWidth="38"
     android:viewportHeight="38">
-  <path
-      android:pathData="M1.006,18.721C1.006,8.937 8.937,1.007 18.721,1.007C28.504,1.007 36.435,8.937 36.435,18.721C36.435,28.504 28.504,36.435 18.721,36.435C8.937,36.435 1.006,28.504 1.006,18.721Z"
-      android:fillColor="#2B2B2D"
-      android:fillAlpha="0.25"/>
-  <path
-      android:pathData="M18.72,0.504C28.781,0.504 36.938,8.659 36.938,18.72C36.938,28.782 28.781,36.938 18.72,36.938C8.659,36.938 0.503,28.781 0.503,18.72C0.504,8.659 8.659,0.504 18.72,0.504Z"
-      android:strokeAlpha="0.25"
-      android:strokeWidth="1.00649"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
   <group>
     <clip-path
         android:pathData="M33.214,4.227l-28.987,0l-0,28.987l28.987,0z"/>

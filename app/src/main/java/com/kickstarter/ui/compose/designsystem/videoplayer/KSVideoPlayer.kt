@@ -36,9 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -183,6 +186,10 @@ fun KSVideoPlayer(
     }
 }
 
+/**
+ * Icons that try to match Glassmorphism Effects
+ * take a look as reference here: https://androidengineers.substack.com/p/creating-stunning-glassmorphism-effects
+ */
 @Composable
 private fun ControlIcon(
     @DrawableRes iconRes: Int,
@@ -194,27 +201,50 @@ private fun ControlIcon(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        Color(0xFF2B2B2D).copy(alpha = 0.3f),
-                        Color(0xFF2B2B2D).copy(alpha = 0.1f),
-                        Color(0xFF2B2B2D).copy(alpha = 0.05f)
+            .clickable(onClick = onClick)
+    ) {
+        // - layer 1 Glass Surface
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(0xFF2B2B2D).copy(alpha = 0.15f), // Top-left shine
+                            Color(0xFF2B2B2D).copy(alpha = 0.35f), // Middle tint
+                            Color(0xFF2B2B2D).copy(alpha = 0.5f)   // Bottom-right shadow
+                        ),
+                        start = Offset.Zero,
+                        end = Offset.Infinite
                     )
                 )
-            )
-            .border(
-                width = 1.38.dp, // Figma Spec
-                color = Color.White.copy(alpha = 0.25f),
-                shape = CircleShape
-            )
-            .clickable(onClick = onClick)
+                .blur(50.dp)
+        )
 
-    ) {
+        // - layer 2 Reflective border
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .border(
+                    width = 1.38.dp,
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.5f), // Bright reflection
+                            Color.White.copy(alpha = 0.1f), // Faded side
+                            Color.White.copy(alpha = 0.05f) // Bottom dark side
+                        ),
+                        start = Offset.Zero,
+                        end = Offset.Infinite
+                    ),
+                    shape = CircleShape
+                )
+        )
+
+        // - layer 3 icon
         Icon(
             painter = painterResource(id = iconRes),
-            contentDescription = null, // TODO: add content description
-            tint = Color.White,
+            contentDescription = null,
+            tint = Color.White
         )
     }
 }

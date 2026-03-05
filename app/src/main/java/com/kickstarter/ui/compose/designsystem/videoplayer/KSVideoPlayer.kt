@@ -3,6 +3,7 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 import Forward
 import Play
 import Rewind
+import android.graphics.Matrix
 import android.view.TextureView
 import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
@@ -22,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -47,8 +47,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.AspectRatioFrameLayout
-import androidx.media3.ui.PlayerView
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -67,28 +65,36 @@ import kotlinx.coroutines.delay
  * @param videoWidth The intrinsic width of the video source.
  * @param videoHeight The intrinsic height of the video source.
  */
-private fun applyZoomMatrix(textureView: TextureView, videoWidth: Int, videoHeight: Int) {
-    val viewWidth = textureView.width.toFloat()
-    val viewHeight = textureView.height.toFloat()
+fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
+    // - Guard against invalid dimensions to prevent division by zero
+    if (videoWidth <= 0 || videoHeight <= 0 || width <= 0 || height <= 0) return
+
+    val viewWidth = width.toFloat()
+    val viewHeight = height.toFloat()
 
     val videoRatio = videoWidth.toFloat() / videoHeight
     val viewRatio = viewWidth / viewHeight
 
-    var scaleX = 1f
-    var scaleY = 1f
-
-    // - Simulates RESIZE_MODE_ZOOM -> PlayerView(it).apply { resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM }
-    if (videoRatio > viewRatio) {
-        // - Video is wider than the view: scale X to overflow
-        scaleX = videoRatio / viewRatio
+    val (scaleX, scaleY) = if (videoRatio > viewRatio) {
+        // - Video is wider than the view: scale X to overflow (crop sides)
+        (videoRatio / viewRatio) to 1f
     } else {
-        // - Video is taller than the view: scale Y to overflow
-        scaleY = viewRatio / videoRatio
+        // - Video is taller than the view: scale Y to overflow (crop top/bottom)
+        1f to (viewRatio / videoRatio)
     }
 
-    val matrix = android.graphics.Matrix()
-    matrix.setScale(scaleX, scaleY, viewWidth / 2f, viewHeight / 2f)
-    textureView.setTransform(matrix)
+    // - Optimization: Only apply if a transformation is actually needed
+    if (scaleX == 1f && scaleY == 1f) {
+        setTransform(null)
+        return
+    }
+
+    val matrix = Matrix().apply {
+        // - Use internal center point for scaling
+        setScale(scaleX, scaleY, viewWidth / 2f, viewHeight / 2f)
+    }
+
+    setTransform(matrix)
 }
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -156,7 +162,7 @@ fun KSVideoPlayer(
                     exoPlayer.addListener(object : Player.Listener {
                         override fun onVideoSizeChanged(videoSize: VideoSize) {
                             if (videoSize.width > 0 && videoSize.height > 0) {
-                                applyZoomMatrix(this@apply, videoSize.width, videoSize.height)
+                                this@apply.applyZoomMatrix(videoSize.width, videoSize.height)
                             }
                         }
                     })

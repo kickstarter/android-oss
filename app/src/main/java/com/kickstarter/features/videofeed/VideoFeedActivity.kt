@@ -15,7 +15,7 @@ class VideoFeedActivity : ComponentActivity() {
         setContent {
             KSTheme {
                 KSVideoPlayer(
-                    videoUrl = "https://v.kickstarter.com/1715848316_0209e992928646b9783f60570b8054612459955e/projects/4836640/video-1311059-hls_playlist.m3u8",
+                    videoUrl = "https://v2.kickstarter.com/1772750628-dJKPaHstEs68OwPdrf7rxLRP3TxRvYCw4zL6p8vFMS4%3D/projects/5232086/video-1415838-hls_playlist.m3u8",
                     isActive = true
                 )
             }

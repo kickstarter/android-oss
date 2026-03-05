@@ -1,12 +1,10 @@
 package com.kickstarter.features.videofeed
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
-import com.kickstarter.utils.WindowInsetsUtil
 
 class VideoFeedActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

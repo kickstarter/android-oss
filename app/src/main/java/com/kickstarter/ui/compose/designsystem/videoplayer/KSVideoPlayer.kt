@@ -13,6 +13,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,7 +63,8 @@ enum class KSVideoPlayerTestTag {
     VIDEO_PLAYER_CONTROLS,
     VIDEO_PLAYER_PLAY_BUTTON,
     VIDEO_PLAYER_FORWARD_BUTTON,
-    VIDEO_PLAYER_REWIND_BUTTON
+    VIDEO_PLAYER_REWIND_BUTTON,
+    VIDEO_PLAYER_PROGRESS_BAR
 }
 
 /**
@@ -106,8 +108,6 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
     setTransform(matrix)
 }
 
-@androidx.annotation.OptIn(UnstableApi::class)
-@OptIn(UnstableApi::class)
 @Composable
 fun KSVideoPlayer(
     videoUrl: String,
@@ -204,7 +204,13 @@ fun KSVideoPlayer(
 
         ProgressBarContainer(
             modifier = Modifier.align(Alignment.BottomCenter),
-            progress = progress
+            progress = progress,
+            onSeek = { newProgress ->
+                val duration = exoPlayer.duration
+                if (duration > 0) {
+                    exoPlayer.seekTo((duration * newProgress).toLong())
+                }
+            }
         )
     }
 
@@ -216,13 +222,21 @@ fun KSVideoPlayer(
 @Composable
 private fun ProgressBarContainer(
     modifier: Modifier,
-    progress: Float
+    progress: Float,
+    onSeek: (Float) -> Unit = {}
 ) {
     Box(
         modifier = modifier
             .padding(bottom = 24.dp)
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
+            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    val tappedProgress = offset.x / size.width
+                    onSeek(tappedProgress.coerceIn(0f, 1f))
+                }
+            }
     ) {
         KSLinearProgressIndicator(
             progress = progress,

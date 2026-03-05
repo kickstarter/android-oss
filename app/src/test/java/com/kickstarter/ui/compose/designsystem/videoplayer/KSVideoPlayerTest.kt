@@ -2,13 +2,13 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 
 import android.graphics.Matrix
 import android.view.TextureView
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -131,8 +131,9 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         assert(points[0] < 0f || points[1] < 0f)
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun `test tapping surface shows controls and pauses`() {
+    fun `test tapping surface controls visible video pauses when tapping again hides controls and plays`() {
         val mockPlayer = mock(ExoPlayer::class.java)
         composeTestRule.setContent {
             KSTheme {
@@ -144,40 +145,19 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
             }
         }
 
-        // Initially controls should be hidden
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
-
-        // Tap surface
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
-
-        // Controls should be visible
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertIsDisplayed()
-
-        // Video should be paused
-        verify(mockPlayer).pause()
-    }
-
-    @Test
-    fun `test tapping surface when controls visible hides controls and plays`() {
-        val mockPlayer = mock(ExoPlayer::class.java)
-        composeTestRule.setContent {
-            KSTheme {
-                KSVideoPlayer(
-                    videoUrl = "https://example.com/video.mp4",
-                    isActive = true,
-                    player = mockPlayer
-                )
-            }
-        }
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true).assertDoesNotExist()
 
         // Tap to show controls
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name, useUnmergedTree = true).performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true).assertIsDisplayed()
+        // Video should be paused
+        verify(mockPlayer).pause()
 
         // Tap surface again
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
-
-        // Controls should be hidden
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name, useUnmergedTree = true).performClick()
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
 
         // Video should be playing

@@ -63,8 +63,8 @@ open class VideoFeedViewModel(
                 .asFlow()
                 .map { envelope ->
                     val pList = envelope.projects().filter {
-                        it.hasVideo() && it.video().isNotNull()
-                                && (it.video()?.hls()?.isNotEmpty().isTrue() || it.video()?.high()?.isNotEmpty().isTrue())
+                        it.hasVideo() && it.video().isNotNull() &&
+                            (it.video()?.hls()?.isNotEmpty().isTrue() || it.video()?.high()?.isNotEmpty().isTrue())
                     }.map {
                         VideoFeedActivity.Project(
                             id = it.id().toInt(),

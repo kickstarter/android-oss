@@ -23,8 +23,8 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.features.home.ui.HomeActivity
-import com.kickstarter.features.videofeed.ui.VideoFeedActivity
 import com.kickstarter.features.projectstory.ProjectStoryActivity
+import com.kickstarter.features.videofeed.ui.VideoFeedActivity
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.FirebaseHelper

@@ -142,7 +142,7 @@ fun KSVideoPlayer(
                 if (duration > 0) {
                     progress = exoPlayer.currentPosition.toFloat() / duration
                 }
-                delay(250)
+                delay(500)
             }
         }
     }

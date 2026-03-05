@@ -2,7 +2,12 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 
 import android.graphics.Matrix
 import android.view.TextureView
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -124,6 +129,111 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         // - If it scales from the center, the top-left (0,0) should move further away from the center (540, 960)
         assert(points[0] < 0f || points[1] < 0f)
+    }
+
+    @Test
+    fun `test tapping surface shows controls and pauses`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // Initially controls should be hidden
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
+
+        // Tap surface
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+
+        // Controls should be visible
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertIsDisplayed()
+
+        // Video should be paused
+        verify(mockPlayer).pause()
+    }
+
+    @Test
+    fun `test tapping surface when controls visible hides controls and plays`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // Tap to show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertIsDisplayed()
+
+        // Tap surface again
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+
+        // Controls should be hidden
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
+
+        // Video should be playing
+        verify(mockPlayer).play()
+    }
+
+    @Test
+    fun `test tapping play button hides controls and plays`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // Tap to show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+
+        // Tap play button
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name).performClick()
+
+        // Controls should be hidden
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
+
+        // Video should be playing
+        verify(mockPlayer).play()
+    }
+
+    @Test
+    fun `test forward and rewind buttons work`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.currentPosition).thenReturn(10000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // Show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+
+        // Tap rewind
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).performClick()
+        verify(mockPlayer).seekTo(5000L)
+
+        // Tap forward
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).performClick()
+        verify(mockPlayer).seekTo(15000L)
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -55,6 +56,14 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
+
+enum class KSVideoPlayerTestTag {
+    VIDEO_PLAYER_SURFACE,
+    VIDEO_PLAYER_CONTROLS,
+    VIDEO_PLAYER_PLAY_BUTTON,
+    VIDEO_PLAYER_FORWARD_BUTTON,
+    VIDEO_PLAYER_REWIND_BUTTON
+}
 
 /**
  * Applies a transformation matrix to the [TextureView] to emulate a "Center Crop" (RESIZE_MODE_ZOOM)
@@ -103,12 +112,13 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
 fun KSVideoPlayer(
     videoUrl: String,
     isActive: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    player: ExoPlayer? = null
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
     val exoPlayer = remember(videoUrl) { // - TODO will be extracted to a videoplayer pool, and the pool will be pass as dependency
-        ExoPlayer.Builder(context).build().apply {
+        player ?: ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             repeatMode = Player.REPEAT_MODE_ONE
             prepare()
@@ -137,22 +147,28 @@ fun KSVideoPlayer(
         }
     }
 
+    val onToggleControls = {
+        showControls = !showControls
+        if (showControls) exoPlayer.pause()
+        else exoPlayer.play()
+    }
+
     // Full screen player surface
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
+            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null // Remove ripple for the background tap
             ) {
-                showControls = !showControls
-                if (showControls) exoPlayer.pause()
-                else exoPlayer.play()
+                onToggleControls()
             }
     ) {
         AndroidView(
             factory = {
+                // - Required TextureView to work in tandem with haze to achieve glassmorphism on control buttons/badges
                 TextureView(context).apply {
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -167,11 +183,6 @@ fun KSVideoPlayer(
                         }
                     })
                 }
-//                PlayerView(it).apply {
-//                    player = exoPlayer
-//                    useController = false
-//                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-//                }
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -182,8 +193,7 @@ fun KSVideoPlayer(
             modifier = Modifier.align(Alignment.Center),
             showControls = showControls,
             hazeState = hazeState,
-            pauseCallback = { exoPlayer.pause() },
-            playCallback = { exoPlayer.play() },
+            playPauseCallback = onToggleControls,
             rewindCallback = {
                 exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
             },
@@ -199,7 +209,7 @@ fun KSVideoPlayer(
     }
 
     DisposableEffect(videoUrl) {
-        onDispose { exoPlayer.release() }
+        onDispose { if (player == null) exoPlayer.release() }
     }
 }
 
@@ -233,14 +243,12 @@ private fun ControlsContainer(
     modifier: Modifier,
     showControls: Boolean,
     hazeState: HazeState? = null,
-    pauseCallback: () -> Unit = {},
-    playCallback: () -> Unit = {},
+    playPauseCallback: () -> Unit = {},
     forwardCallback: () -> Unit = {},
     rewindCallback: () -> Unit = {},
 ) {
-    var showControls1 = showControls
     AnimatedVisibility(
-        visible = showControls1,
+        visible = showControls,
         enter = fadeIn() + scaleIn(initialScale = 0.8f),
         exit = fadeOut() + scaleOut(targetScale = 0.8f),
         modifier = modifier
@@ -248,7 +256,9 @@ private fun ControlsContainer(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(32.dp),
-            modifier = Modifier.pointerInput(Unit) {} // Stops click propagation
+            modifier = Modifier
+                .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name)
+                .pointerInput(Unit) {} // Stops click propagation
         ) {
             KSControlIcon(
                 icon = Rewind,
@@ -256,18 +266,18 @@ private fun ControlsContainer(
                 onClick = {
                     rewindCallback.invoke()
                 },
-                hazeState = hazeState
+                hazeState = hazeState,
+                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name)
             )
 
             KSControlIcon(
                 icon = Play,
                 size = 62.dp,
                 onClick = {
-                    showControls1 = !showControls1
-                    if (showControls1) pauseCallback.invoke()
-                    else playCallback.invoke()
+                    playPauseCallback.invoke()
                 },
-                hazeState = hazeState
+                hazeState = hazeState,
+                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name)
             )
 
             KSControlIcon(
@@ -276,7 +286,8 @@ private fun ControlsContainer(
                 onClick = {
                     forwardCallback.invoke()
                 },
-                hazeState = hazeState
+                hazeState = hazeState,
+                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name)
             )
         }
     }

@@ -3,6 +3,8 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 import Forward
 import Play
 import Rewind
+import android.view.TextureView
+import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -50,7 +53,43 @@ import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.delay
+
+/**
+ * Applies a transformation matrix to the [TextureView] to emulate a "Center Crop" (RESIZE_MODE_ZOOM)
+ * aspect ratio. This ensures the video fills the entire view area by scaling the smaller dimension
+ * to fit, while cropping the overflow.
+ *
+ * @param textureView The [TextureView] to which the transformation matrix will be applied.
+ * @param videoWidth The intrinsic width of the video source.
+ * @param videoHeight The intrinsic height of the video source.
+ */
+private fun applyZoomMatrix(textureView: TextureView, videoWidth: Int, videoHeight: Int) {
+    val viewWidth = textureView.width.toFloat()
+    val viewHeight = textureView.height.toFloat()
+
+    val videoRatio = videoWidth.toFloat() / videoHeight
+    val viewRatio = viewWidth / viewHeight
+
+    var scaleX = 1f
+    var scaleY = 1f
+
+    // - Simulates RESIZE_MODE_ZOOM -> PlayerView(it).apply { resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM }
+    if (videoRatio > viewRatio) {
+        // - Video is wider than the view: scale X to overflow
+        scaleX = videoRatio / viewRatio
+    } else {
+        // - Video is taller than the view: scale Y to overflow
+        scaleY = viewRatio / videoRatio
+    }
+
+    val matrix = android.graphics.Matrix()
+    matrix.setScale(scaleX, scaleY, viewWidth / 2f, viewHeight / 2f)
+    textureView.setTransform(matrix)
+}
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(UnstableApi::class)
@@ -73,6 +112,7 @@ fun KSVideoPlayer(
     var progress by remember { mutableFloatStateOf(0f) }
 
     var showControls by remember { mutableStateOf(false) }
+    val hazeState = rememberHazeState()
 
     LaunchedEffect(isActive) {
         exoPlayer.playWhenReady = isActive
@@ -107,18 +147,35 @@ fun KSVideoPlayer(
     ) {
         AndroidView(
             factory = {
-                PlayerView(it).apply {
-                    player = exoPlayer
-                    useController = false
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                TextureView(context).apply {
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    exoPlayer.setVideoTextureView(this)
+                    exoPlayer.addListener(object : Player.Listener {
+                        override fun onVideoSizeChanged(videoSize: VideoSize) {
+                            if (videoSize.width > 0 && videoSize.height > 0) {
+                                applyZoomMatrix(this@apply, videoSize.width, videoSize.height)
+                            }
+                        }
+                    })
                 }
+//                PlayerView(it).apply {
+//                    player = exoPlayer
+//                    useController = false
+//                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//                }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(state = hazeState)
         )
 
         ControlsContainer(
             modifier = Modifier.align(Alignment.Center),
             showControls = showControls,
+            hazeState = hazeState,
             pauseCallback = { exoPlayer.pause() },
             playCallback = { exoPlayer.play() },
             rewindCallback = {
@@ -169,6 +226,7 @@ private fun ProgressBarContainer(
 private fun ControlsContainer(
     modifier: Modifier,
     showControls: Boolean,
+    hazeState: HazeState? = null,
     pauseCallback: () -> Unit = {},
     playCallback: () -> Unit = {},
     forwardCallback: () -> Unit = {},
@@ -191,7 +249,8 @@ private fun ControlsContainer(
                 size = 36.dp,
                 onClick = {
                     rewindCallback.invoke()
-                }
+                },
+                hazeState = hazeState
             )
 
             KSControlIcon(
@@ -201,7 +260,8 @@ private fun ControlsContainer(
                     showControls1 = !showControls1
                     if (showControls1) pauseCallback.invoke()
                     else playCallback.invoke()
-                }
+                },
+                hazeState = hazeState
             )
 
             KSControlIcon(
@@ -209,7 +269,8 @@ private fun ControlsContainer(
                 size = 36.dp,
                 onClick = {
                     forwardCallback.invoke()
-                }
+                },
+                hazeState = hazeState
             )
         }
     }

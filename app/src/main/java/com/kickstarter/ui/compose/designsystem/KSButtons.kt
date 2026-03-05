@@ -35,13 +35,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,6 +57,7 @@ import com.kickstarter.ui.activities.compose.search.FilterRowPillType
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import dev.chrisbanes.haze.HazeTint
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -784,64 +786,60 @@ fun KSButton(
 }
 
 /**
-* Icons that try to match Glassmorphism Effects
-* take a look as reference here: https://androidengineers.substack.com/p/creating-stunning-glassmorphism-effects
-*/
+ * Glassmorphism-style icon button that blurs the content behind it.
+ *
+ * When [hazeState] is provided (from a parent [hazeSource]), the button uses a real
+ * background blur via the Haze library (API 31+, with tinted-overlay fallback on older devices).
+ * When [hazeState] is null, it falls back to a simple semi-transparent tinted overlay.
+ */
 @Composable
 fun KSControlIcon(
-//    @DrawableRes iconRes: Int,
     icon: ImageVector,
     size: Dp,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .size(size)
             .clip(CircleShape)
             .clickable(onClick = onClick)
     ) {
-        Box(
-            modifier = modifier
+        val glassModifier = if (hazeState != null) {
+            Modifier
                 .matchParentSize()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf( // TODO move color to theme
-                            Color(0xFF2B2B2D).copy(alpha = 0.15f),
-                            Color(0xFF2B2B2D).copy(alpha = 0.35f),
-                            Color(0xFF2B2B2D).copy(alpha = 0.5f)
-                        ),
-                        start = Offset.Zero,
-                        end = Offset.Infinite
-                    )
-                )
-                .blur(50.dp)
-        )
+                .hazeEffect(state = hazeState) {
+                    blurRadius = 28.dp
+                    noiseFactor = 0.05f
+                    val baseColor = Color(0xFF2B2B2D).copy(alpha = 0.25f)
+                    backgroundColor = baseColor
+                    tints = listOf(HazeTint(baseColor))
+                }
+        } else {
+            Modifier
+                .matchParentSize()
+                .background(Color(0xFF2B2B2D).copy(alpha = 0.25f))
+        }
 
+        Box(modifier = glassModifier)
+
+        // Border: #FFFFFF at 25%, 1.38px
         Box(
             modifier = Modifier
                 .matchParentSize()
                 .border(
                     width = 1.38.dp,
-                    brush = Brush.linearGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.5f),
-                            Color.White.copy(alpha = 0.1f),
-                            Color.White.copy(alpha = 0.05f)
-                        ),
-                        start = Offset.Zero,
-                        end = Offset.Infinite
-                    ),
+                    color = Color.White.copy(alpha = 0.25f),
                     shape = CircleShape
                 )
         )
 
         Icon(
-            // painter = painterResource(id = iconRes),
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White
+            tint = Color.White,
         )
     }
 }

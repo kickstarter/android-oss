@@ -13,9 +13,11 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,7 +48,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
@@ -62,7 +63,8 @@ enum class KSVideoPlayerTestTag {
     VIDEO_PLAYER_CONTROLS,
     VIDEO_PLAYER_PLAY_BUTTON,
     VIDEO_PLAYER_FORWARD_BUTTON,
-    VIDEO_PLAYER_REWIND_BUTTON
+    VIDEO_PLAYER_REWIND_BUTTON,
+    VIDEO_PLAYER_PROGRESS_BAR
 }
 
 /**
@@ -70,7 +72,7 @@ enum class KSVideoPlayerTestTag {
  * aspect ratio. This ensures the video fills the entire view area by scaling the smaller dimension
  * to fit, while cropping the overflow.
  *
- * @param textureView The [TextureView] to which the transformation matrix will be applied.
+ * @this textureView The [TextureView] to which the transformation matrix will be applied.
  * @param videoWidth The intrinsic width of the video source.
  * @param videoHeight The intrinsic height of the video source.
  */
@@ -106,14 +108,33 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
     setTransform(matrix)
 }
 
-@androidx.annotation.OptIn(UnstableApi::class)
-@OptIn(UnstableApi::class)
+/**
+ * A full-screen video player component that utilizes [ExoPlayer] to render video content.
+ * It supports automatic playback based on lifecycle/visibility, interactive playback controls,
+ * and a custom progress bar.
+ *
+ * The player uses a [TextureView] combined with a "Center Crop" transformation to ensure
+ * the video fills the available surface area. It also integrates with a glassmorphism (Haze)
+ * effect for the UI overlays.
+ *
+ * @param videoUrl The remote URL of the video to be played. If empty, the component renders nothing.
+ * @param isActive A boolean flag indicating if the video should be playing. When true, the video
+ * starts/resumes; when false, it pauses.
+ * @param modifier The [Modifier] to be applied to the player's outer container.
+ * //TODO will potentially change in future versions to not create internally any instance
+ * @param player An optional, pre-configured [ExoPlayer] instance. If null, a default instance
+ * is created and managed internally, then released when the Composable is disposed.
+ * @param overlayContent A slot for adding custom UI elements on top of the video player (e.g., Badges,
+ * titles, actionButtons). These elements are placed in a [BoxScope] and are drawn above the video but below the
+ * default controls.
+ */
 @Composable
 fun KSVideoPlayer(
     videoUrl: String,
     isActive: Boolean,
     modifier: Modifier = Modifier,
-    player: ExoPlayer? = null
+    player: ExoPlayer? = null,
+    overlayContent: @Composable BoxScope.() -> Unit = {}
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
@@ -147,10 +168,36 @@ fun KSVideoPlayer(
         }
     }
 
-    val onToggleControls = {
-        showControls = !showControls
-        if (showControls) exoPlayer.pause()
-        else exoPlayer.play()
+    // - control functions are wrapped in remember(exoPlayer).
+    // This is a performance optimization: it ensures these functions are only recreated if the exoPlayer instance changes.
+    // If the UI recomposes for other reasons (like a timer for the progressBar), these functions remain stable in memory.
+    val onToggleControls = remember(exoPlayer) {
+        {
+            showControls = !showControls
+            if (showControls) exoPlayer.pause()
+            else exoPlayer.play()
+        }
+    }
+
+    val onRewind = remember(exoPlayer) {
+        {
+            exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
+        }
+    }
+
+    val onForward = remember(exoPlayer) {
+        {
+            exoPlayer.seekTo(exoPlayer.currentPosition + 5000)
+        }
+    }
+
+    val onSeek = remember(exoPlayer) {
+        { newProgress: Float ->
+            val duration = exoPlayer.duration
+            if (duration > 0) {
+                exoPlayer.seekTo((duration * newProgress).toLong())
+            }
+        }
     }
 
     // Full screen player surface
@@ -189,22 +236,21 @@ fun KSVideoPlayer(
                 .hazeSource(state = hazeState)
         )
 
+        overlayContent()
+
         ControlsContainer(
             modifier = Modifier.align(Alignment.Center),
             showControls = showControls,
             hazeState = hazeState,
             playPauseCallback = onToggleControls,
-            rewindCallback = {
-                exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
-            },
-            forwardCallback = {
-                exoPlayer.seekTo(exoPlayer.currentPosition + 5000)
-            }
+            rewindCallback = onRewind,
+            forwardCallback = onForward
         )
 
         ProgressBarContainer(
             modifier = Modifier.align(Alignment.BottomCenter),
-            progress = progress
+            progressProvider = { progress },
+            onSeek = onSeek
         )
     }
 
@@ -213,19 +259,41 @@ fun KSVideoPlayer(
     }
 }
 
+/**
+ * A composable that displays a progress bar for the video player and handles user seeking.
+ *
+ * It uses a [KSLinearProgressIndicator] to visualize the current progress and wraps it in a larger
+ * touch target [Box] to detect tap gestures for seeking to specific timestamps.
+ *
+ * @param modifier The [Modifier] to be applied to the container.
+ * @param progressProvider A lambda that returns the current video progress as a [Float] between 0.0 and 1.0.
+ * Passing a lambda instead of a direct value is a performance optimization to defer reading the state
+ * until the draw phase, preventing unnecessary recompositions of the parent player.
+ * @param onSeek A callback invoked when the user taps the progress bar, providing the new progress value.
+ */
 @Composable
 private fun ProgressBarContainer(
     modifier: Modifier,
-    progress: Float
+    progressProvider: () -> Float,
+    onSeek: (Float) -> Unit = {}
 ) {
     Box(
         modifier = modifier
             .padding(bottom = 24.dp)
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
+            .height(48.dp) // Standard touch target height
+            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    val tappedProgress = offset.x / size.width
+                    onSeek(tappedProgress.coerceIn(0f, 1f))
+                }
+            },
+        contentAlignment = Alignment.BottomCenter
     ) {
         KSLinearProgressIndicator(
-            progress = progress,
+            progress = progressProvider(),
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .fillMaxWidth()
@@ -317,17 +385,17 @@ fun ProgressBarPreview() {
         ) {
             ProgressBarContainer(
                 modifier = Modifier.fillMaxWidth(),
-                progress = 0.1f
+                progressProvider = { 0.1f }
             )
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
             ProgressBarContainer(
                 modifier = Modifier.fillMaxWidth(),
-                progress = 0.5f
+                progressProvider = { 0.5f }
             )
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
             ProgressBarContainer(
                 modifier = Modifier.fillMaxWidth(),
-                progress = 0.9f
+                progressProvider = { 0.9f }
             )
         }
     }

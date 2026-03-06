@@ -2,10 +2,17 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 
 import android.graphics.Matrix
 import android.view.TextureView
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.click
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -147,20 +154,20 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true).assertDoesNotExist()
 
-        // Tap to show controls
+        // - Tap to show controls
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name, useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true).assertIsDisplayed()
-        // Video should be paused
+        // - Video should be paused
         verify(mockPlayer).pause()
 
-        // Tap surface again
+        // - Tap surface again
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name, useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
 
-        // Video should be playing
+        // - Video should be playing
         verify(mockPlayer).play()
     }
 
@@ -177,16 +184,10 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
             }
         }
 
-        // Tap to show controls
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
-
-        // Tap play button
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name).performClick()
-
-        // Controls should be hidden
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
 
-        // Video should be playing
         verify(mockPlayer).play()
     }
 
@@ -204,16 +205,58 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
             }
         }
 
-        // Show controls
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
 
-        // Tap rewind
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).performClick()
         verify(mockPlayer).seekTo(5000L)
 
-        // Tap forward
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).performClick()
         verify(mockPlayer).seekTo(15000L)
+    }
+
+    @Test
+    fun `test tapping progress bar seeks video`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L) // 100 seconds
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap the progress bar at 25% (offset x = 0.25 * width)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                click(position = Offset(x = width * 0.25f, y = height / 2f))
+            }
+
+        // - Should seek to 25% of 100000L = 25000L
+        verify(mockPlayer).seekTo(25000L)
+    }
+
+    @Test
+    fun `test overlay content is displayed`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        val testTag = "overlay_test_tag"
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer,
+                    overlayContent = {
+                        Text(text = "Overlay Text", modifier = Modifier.testTag(testTag))
+                    }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).isDisplayed()
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

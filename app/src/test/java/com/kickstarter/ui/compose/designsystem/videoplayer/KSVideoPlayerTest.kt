@@ -2,10 +2,14 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 
 import android.graphics.Matrix
 import android.view.TextureView
+import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -232,6 +236,27 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         // - Should seek to 25% of 100000L = 25000L
         verify(mockPlayer).seekTo(25000L)
+    }
+
+    @Test
+    fun `test overlay content is displayed`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        val testTag = "overlay_test_tag"
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer,
+                    overlayContent = {
+                        Text(text = "Overlay Text", modifier = Modifier.testTag(testTag))
+                    }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).isDisplayed()
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

@@ -17,6 +17,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -123,13 +124,17 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
  * //TODO will potentially change in future versions to not create internally any instance
  * @param player An optional, pre-configured [ExoPlayer] instance. If null, a default instance
  * is created and managed internally, then released when the Composable is disposed.
+ * @param overlayContent A slot for adding custom UI elements on top of the video player (e.g., Badges,
+ * titles, actionButtons). These elements are placed in a [BoxScope] and are drawn above the video but below the
+ * default controls.
  */
 @Composable
 fun KSVideoPlayer(
     videoUrl: String,
     isActive: Boolean,
     modifier: Modifier = Modifier,
-    player: ExoPlayer? = null
+    player: ExoPlayer? = null,
+    overlayContent: @Composable BoxScope.() -> Unit = {}
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
@@ -230,6 +235,8 @@ fun KSVideoPlayer(
                 .fillMaxSize()
                 .hazeSource(state = hazeState)
         )
+
+        overlayContent()
 
         ControlsContainer(
             modifier = Modifier.align(Alignment.Center),

@@ -125,8 +125,7 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
  * @param player An optional, pre-configured [ExoPlayer] instance. If null, a default instance
  * is created and managed internally, then released when the Composable is disposed.
  * @param overlayContent A slot for adding custom UI elements on top of the video player (e.g., Badges,
- * titles, actionButtons). These elements are placed in a [BoxScope] and are drawn above the video but below the
- * default controls.
+ * titles, actionButtons). These elements are placed in a [BoxScope] and are drawn above the video and its controls.
  */
 @Composable
 fun KSVideoPlayer(
@@ -236,8 +235,6 @@ fun KSVideoPlayer(
                 .hazeSource(state = hazeState)
         )
 
-        overlayContent()
-
         ControlsContainer(
             modifier = Modifier.align(Alignment.Center),
             showControls = showControls,
@@ -252,6 +249,8 @@ fun KSVideoPlayer(
             progressProvider = { progress },
             onSeek = onSeek
         )
+
+        overlayContent()
     }
 
     DisposableEffect(videoUrl) {

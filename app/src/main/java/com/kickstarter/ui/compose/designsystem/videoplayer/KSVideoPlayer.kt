@@ -71,7 +71,7 @@ enum class KSVideoPlayerTestTag {
  * aspect ratio. This ensures the video fills the entire view area by scaling the smaller dimension
  * to fit, while cropping the overflow.
  *
- * @param textureView The [TextureView] to which the transformation matrix will be applied.
+ * @this textureView The [TextureView] to which the transformation matrix will be applied.
  * @param videoWidth The intrinsic width of the video source.
  * @param videoHeight The intrinsic height of the video source.
  */
@@ -229,13 +229,15 @@ private fun ProgressBarContainer(
             .padding(bottom = 24.dp)
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
+            .height(48.dp) // Standard touch target height
             .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
                     val tappedProgress = offset.x / size.width
                     onSeek(tappedProgress.coerceIn(0f, 1f))
                 }
-            }
+            },
+        contentAlignment = Alignment.BottomCenter
     ) {
         KSLinearProgressIndicator(
             progress = progress,

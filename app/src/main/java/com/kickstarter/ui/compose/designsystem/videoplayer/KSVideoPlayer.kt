@@ -47,7 +47,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator

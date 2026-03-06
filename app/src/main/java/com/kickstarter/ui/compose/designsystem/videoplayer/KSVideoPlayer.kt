@@ -107,6 +107,23 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
     setTransform(matrix)
 }
 
+/**
+ * A full-screen video player component that utilizes [ExoPlayer] to render video content.
+ * It supports automatic playback based on lifecycle/visibility, interactive playback controls,
+ * and a custom progress bar.
+ *
+ * The player uses a [TextureView] combined with a "Center Crop" transformation to ensure
+ * the video fills the available surface area. It also integrates with a glassmorphism (Haze)
+ * effect for the UI overlays.
+ *
+ * @param videoUrl The remote URL of the video to be played. If empty, the component renders nothing.
+ * @param isActive A boolean flag indicating if the video should be playing. When true, the video
+ * starts/resumes; when false, it pauses.
+ * @param modifier The [Modifier] to be applied to the player's outer container.
+ * //TODO will potentially change in future versions to not create internally any instance
+ * @param player An optional, pre-configured [ExoPlayer] instance. If null, a default instance
+ * is created and managed internally, then released when the Composable is disposed.
+ */
 @Composable
 fun KSVideoPlayer(
     videoUrl: String,
@@ -146,10 +163,36 @@ fun KSVideoPlayer(
         }
     }
 
-    val onToggleControls = {
-        showControls = !showControls
-        if (showControls) exoPlayer.pause()
-        else exoPlayer.play()
+    // - control functions are wrapped in remember(exoPlayer).
+    // This is a performance optimization: it ensures these functions are only recreated if the exoPlayer instance changes.
+    // If the UI recomposes for other reasons (like a timer for the progressBar), these functions remain stable in memory.
+    val onToggleControls = remember(exoPlayer) {
+        {
+            showControls = !showControls
+            if (showControls) exoPlayer.pause()
+            else exoPlayer.play()
+        }
+    }
+
+    val onRewind = remember(exoPlayer) {
+        {
+            exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
+        }
+    }
+
+    val onForward = remember(exoPlayer) {
+        {
+            exoPlayer.seekTo(exoPlayer.currentPosition + 5000)
+        }
+    }
+
+    val onSeek = remember(exoPlayer) {
+        { newProgress: Float ->
+            val duration = exoPlayer.duration
+            if (duration > 0) {
+                exoPlayer.seekTo((duration * newProgress).toLong())
+            }
+        }
     }
 
     // Full screen player surface
@@ -193,23 +236,14 @@ fun KSVideoPlayer(
             showControls = showControls,
             hazeState = hazeState,
             playPauseCallback = onToggleControls,
-            rewindCallback = {
-                exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
-            },
-            forwardCallback = {
-                exoPlayer.seekTo(exoPlayer.currentPosition + 5000)
-            }
+            rewindCallback = onRewind,
+            forwardCallback = onForward
         )
 
         ProgressBarContainer(
             modifier = Modifier.align(Alignment.BottomCenter),
-            progress = progress,
-            onSeek = { newProgress ->
-                val duration = exoPlayer.duration
-                if (duration > 0) {
-                    exoPlayer.seekTo((duration * newProgress).toLong())
-                }
-            }
+            progressProvider = { progress },
+            onSeek = onSeek
         )
     }
 
@@ -218,10 +252,22 @@ fun KSVideoPlayer(
     }
 }
 
+/**
+ * A composable that displays a progress bar for the video player and handles user seeking.
+ *
+ * It uses a [KSLinearProgressIndicator] to visualize the current progress and wraps it in a larger
+ * touch target [Box] to detect tap gestures for seeking to specific timestamps.
+ *
+ * @param modifier The [Modifier] to be applied to the container.
+ * @param progressProvider A lambda that returns the current video progress as a [Float] between 0.0 and 1.0.
+ * Passing a lambda instead of a direct value is a performance optimization to defer reading the state
+ * until the draw phase, preventing unnecessary recompositions of the parent player.
+ * @param onSeek A callback invoked when the user taps the progress bar, providing the new progress value.
+ */
 @Composable
 private fun ProgressBarContainer(
     modifier: Modifier,
-    progress: Float,
+    progressProvider: () -> Float,
     onSeek: (Float) -> Unit = {}
 ) {
     Box(
@@ -240,7 +286,7 @@ private fun ProgressBarContainer(
         contentAlignment = Alignment.BottomCenter
     ) {
         KSLinearProgressIndicator(
-            progress = progress,
+            progress = progressProvider(),
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .fillMaxWidth()
@@ -332,17 +378,17 @@ fun ProgressBarPreview() {
         ) {
             ProgressBarContainer(
                 modifier = Modifier.fillMaxWidth(),
-                progress = 0.1f
+                progressProvider = { 0.1f }
             )
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
             ProgressBarContainer(
                 modifier = Modifier.fillMaxWidth(),
-                progress = 0.5f
+                progressProvider = { 0.5f }
             )
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
             ProgressBarContainer(
                 modifier = Modifier.fillMaxWidth(),
-                progress = 0.9f
+                progressProvider = { 0.9f }
             )
         }
     }

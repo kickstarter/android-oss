@@ -150,20 +150,20 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true).assertDoesNotExist()
 
-        // Tap to show controls
+        // - Tap to show controls
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name, useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true).assertIsDisplayed()
-        // Video should be paused
+        // - Video should be paused
         verify(mockPlayer).pause()
 
-        // Tap surface again
+        // - Tap surface again
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name, useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
 
-        // Video should be playing
+        // - Video should be playing
         verify(mockPlayer).play()
     }
 
@@ -180,16 +180,10 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
             }
         }
 
-        // Tap to show controls
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
-
-        // Tap play button
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name).performClick()
-
-        // Controls should be hidden
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
 
-        // Video should be playing
         verify(mockPlayer).play()
     }
 
@@ -207,14 +201,11 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
             }
         }
 
-        // Show controls
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
 
-        // Tap rewind
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).performClick()
         verify(mockPlayer).seekTo(5000L)
 
-        // Tap forward
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).performClick()
         verify(mockPlayer).seekTo(15000L)
     }
@@ -233,13 +224,13 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
             }
         }
 
-        // Tap the progress bar at 25% (offset x = 0.25 * width)
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
+        // - Tap the progress bar at 25% (offset x = 0.25 * width)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
             .performTouchInput {
                 click(position = Offset(x = width * 0.25f, y = height / 2f))
             }
 
-        // Should seek to 25% of 100000L = 25000L
+        // - Should seek to 25% of 100000L = 25000L
         verify(mockPlayer).seekTo(25000L)
     }
 

@@ -159,101 +159,104 @@ class VideoFeedActivity : AppCompatActivity() {
 
     @Composable
     fun ProjectFullscreenCard(project: Project, isVisible: Boolean, modifier: Modifier) {
-        Box(modifier = modifier.background(Color.Black)) {
-            KSVideoPlayer(videoUrl = project.videoUrl, isActive = isVisible)
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 12.dp, bottom = 180.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                ActionButton(Icons.Default.Favorite, "1k")
-                ActionButton(Icons.Default.Share, "50")
-                ActionButton(Icons.Default.MoreVert, "")
-            }
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp)
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ProjectBadge(text = project.category, icon = null)
-                    ProjectBadge(text = "3 days left", icon = Icons.Default.Settings)
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = project.title,
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            lineHeight = 24.sp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = project.subtitle,
-                            color = Color.LightGray,
-                            fontSize = 14.sp
-                        )
-                    }
-
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(44.dp)) {
-                        CircularProgressIndicator(
-                            progress = 1f, // The background track
-                            color = Color.White.copy(alpha = 0.2f),
-                            strokeWidth = 3.dp,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        CircularProgressIndicator(
-                            progress = project.percentageFunded / 100f,
-                            color = Color.White,
-                            strokeWidth = 3.dp,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        Text(
-                            text = "${project.percentageFunded}",
-                            color = Color.White,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Surface(
-                    onClick = { /* Action */ },
-                    color = Color.Transparent,
-                    shape = RoundedCornerShape(28.dp),
-                    border = BorderStroke(1.dp, Color.White),
+        KSVideoPlayer(
+            videoUrl = project.videoUrl,
+            isActive = isVisible,
+            modifier = modifier,
+            overlayContent = {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 12.dp, bottom = 180.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = "Back this project",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    ActionButton(Icons.Default.Favorite, "1k")
+                    ActionButton(Icons.Default.Share, "50")
+                    ActionButton(Icons.Default.MoreVert, "")
                 }
 
-                Spacer(modifier = Modifier.height(50.dp))
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 24.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        ProjectBadge(text = project.category, icon = null)
+                        ProjectBadge(text = "3 days left", icon = Icons.Default.Settings)
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = project.title,
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 24.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = project.subtitle,
+                                color = Color.LightGray,
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(44.dp)) {
+                            CircularProgressIndicator(
+                                progress = 1f, // The background track
+                                color = Color.White.copy(alpha = 0.2f),
+                                strokeWidth = 3.dp,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            CircularProgressIndicator(
+                                progress = project.percentageFunded / 100f,
+                                color = Color.White,
+                                strokeWidth = 3.dp,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Text(
+                                text = "${project.percentageFunded}",
+                                color = Color.White,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Surface(
+                        onClick = { /* Action */ },
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(28.dp),
+                        border = BorderStroke(1.dp, Color.White),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                text = "Back this project",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(50.dp))
+                }
             }
-        }
+        )
     }
 
     @Composable

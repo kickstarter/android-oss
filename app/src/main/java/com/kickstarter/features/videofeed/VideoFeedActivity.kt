@@ -21,7 +21,7 @@ class VideoFeedActivity : ComponentActivity() {
         setContent {
             KSTheme {
                 KSVideoPlayer(
-                    videoUrl = "https://v2.kickstarter.com/1772750628-dJKPaHstEs68OwPdrf7rxLRP3TxRvYCw4zL6p8vFMS4%3D/projects/5232086/video-1415838-hls_playlist.m3u8",
+                    videoUrl = "https://v2.kickstarter.com/1773073706-HOVpU84sHNp8zagSPildS7HOpqW2s%2BHtBG0zpREVy%2F4%3D/projects/5287238/video-1418061-hls_playlist.m3u8",
                     isActive = true,
                     overlayContent = {
                         Box(

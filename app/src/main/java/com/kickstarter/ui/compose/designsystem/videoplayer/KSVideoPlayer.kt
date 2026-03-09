@@ -133,7 +133,7 @@ fun KSVideoPlayer(
     isActive: Boolean,
     modifier: Modifier = Modifier,
     player: ExoPlayer? = null,
-    overlayContent: @Composable BoxScope.() -> Unit = {}
+    overlayContent: @Composable BoxScope.(HazeState) -> Unit = {}
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
@@ -244,13 +244,24 @@ fun KSVideoPlayer(
             forwardCallback = onForward
         )
 
-        ProgressBarContainer(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            progressProvider = { progress },
-            onSeek = onSeek
-        )
+        // Bottom area container for badges and progress bar
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                overlayContent(hazeState)
+            }
 
-        overlayContent()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProgressBarContainer(
+                modifier = Modifier,
+                progressProvider = { progress },
+                onSeek = onSeek
+            )
+        }
     }
 
     DisposableEffect(videoUrl) {

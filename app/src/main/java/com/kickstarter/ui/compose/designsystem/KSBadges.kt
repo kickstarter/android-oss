@@ -3,6 +3,7 @@ package com.kickstarter.ui.compose.designsystem
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,10 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,11 +26,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -76,6 +83,43 @@ fun KSBadgesPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSFeaturedRewardBadge()
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+
+            KSVideoBadge(text = "Just launched")
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Video Badges", backgroundColor = 0xFF000000, showBackground = true)
+fun KSVideoBadgesPreview() {
+    KSTheme {
+        Column(
+            Modifier
+                .padding(dimensions.paddingSmall)
+        ) {
+            KSProjectWeLoveVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSDaysLeftVideoBadge(text = "3 days left")
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSJustLaunchedVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSFirstTimeCreatorVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSSuperbackerVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSNearYouVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSNSFWVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSAlmostThereVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSTrendingVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSPopularVideoBadge()
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+            KSHotVideoBadge()
         }
     }
 }
@@ -307,4 +351,198 @@ fun KSFeaturedRewardBadge(
             style = typographyV2.headingSM
         )
     }
+}
+
+/**
+ * Generic badge designed for use within the Video Player.
+ * It features a semi-transparent background with optional glassmorphism effect via [HazeState].
+ */
+@Composable
+fun KSVideoBadge(
+    modifier: Modifier = Modifier,
+    text: String,
+    icon: ImageVector? = null,
+    iconTint: Color = Color.White,
+    hazeState: HazeState? = null
+) {
+    Box(
+        modifier = modifier
+            .clip(shapes.small)
+            .then(
+                if (hazeState != null) {
+                    Modifier.hazeEffect(state = hazeState) {
+                        blurRadius = 28.dp
+                        noiseFactor = 0.05f
+                        val baseColor = Color(0xFF2B2B2D).copy(alpha = 0.25f)
+                        backgroundColor = baseColor
+                        tints = listOf(HazeTint(baseColor))
+                    }
+                } else {
+                    Modifier.background(Color(0xFF2B2B2D).copy(alpha = 0.25f))
+                }
+            )
+            .border(
+                width = 1.38.dp,
+                color = Color.White.copy(alpha = 0.25f),
+                shape = shapes.small
+            )
+            .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier
+                        .padding(end = dimensions.paddingXSmall)
+                        .size(dimensions.alertIconSize)
+                )
+            }
+            Text(
+                text = text,
+                color = Color.White,
+                style = typographyV2.footNoteMedium
+            )
+        }
+    }
+}
+
+@Composable
+fun KSProjectWeLoveVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_Project_We_Love),
+        icon = projectWeLove,
+        iconTint = colors.kds_create_500,
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSDaysLeftVideoBadge(
+    modifier: Modifier = Modifier,
+    text: String,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = text,
+        icon = ImageVector.vectorResource(id = R.drawable.ic_clock),
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSJustLaunchedVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_Just_launched),
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSFirstTimeCreatorVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_First_time_creator),
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSSuperbackerVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_By_a_superbacker),
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSNearYouVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_Near_you),
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSNSFWVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = "NSFW",
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSAlmostThereVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.Almost_there),
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSTrendingVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_Trending),
+        icon = Whatshot,
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSPopularVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.Popular),
+        icon = Whatshot,
+        hazeState = hazeState
+    )
+}
+
+@Composable
+fun KSHotVideoBadge(
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    KSVideoBadge(
+        modifier = modifier,
+        text = stringResource(R.string.fpo_Hot_right_now),
+        icon = Whatshot,
+        hazeState = hazeState
+    )
 }

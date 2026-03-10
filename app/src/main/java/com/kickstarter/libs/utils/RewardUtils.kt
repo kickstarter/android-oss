@@ -68,9 +68,14 @@ object RewardUtils {
 
     /**
      * Returns only rewards that have started and are not expired.
-     * Use when displaying reward lists (e.g. carousel, add-ons) to hide future or expired rewards.
      */
     fun filterByTimeRange(rewards: List<Reward>): List<Reward> = rewards.filter { isValidTimeRange(it) }
+
+    /**
+     * Returns only rewards that have started.
+     * Use when displaying reward lists (e.g. carousel) to hide future rewards.
+     */
+    fun filterHasStarted(rewards: List<Reward>): List<Reward> = rewards.filter { hasStarted(it) }
 
     /**
      * Returns `true` if the reward has a valid expiration date on Starting date.

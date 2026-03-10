@@ -297,7 +297,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `filteredRw excludes rewards that have not started or are expired`() = runTest {
+    fun `filteredRw in campaign project excludes rewards that have not started`() = runTest {
         val config = ConfigFactory.configForUSUser()
 
         val validReward = RewardFactory.rewardWithShipping()
@@ -309,7 +309,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
             .toBuilder()
             .rewards(listOf(validReward, expiredReward, notStartedReward))
-            .state(Project.STATE_SUCCESSFUL)
+            .state(Project.STATE_LIVE)
             .isInPostCampaignPledgingPhase(false)
             .postCampaignPledgingEnabled(false)
             .build()
@@ -327,7 +327,7 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         val filtered = state.last().filteredRw
-        assertEquals(1, filtered.size)
-        assertEquals(validReward, filtered.first())
+        assertEquals(2, filtered.size)
+        assertEquals(listOf(validReward, expiredReward), filtered)
     }
 }

@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownDetail
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownUnit
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownValue
 import com.kickstarter.libs.utils.RewardUtils.filterByTimeRange
+import com.kickstarter.libs.utils.RewardUtils.filterHasStarted
 import com.kickstarter.libs.utils.RewardUtils.hasBackers
 import com.kickstarter.libs.utils.RewardUtils.hasStarted
 import com.kickstarter.libs.utils.RewardUtils.isAvailableForProject
@@ -49,7 +50,9 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     private lateinit var currentDate: MutableDateTime
     private lateinit var reward: Reward
     private lateinit var noReward: Reward
+    private lateinit var rewardEndingSoon: Reward
     private lateinit var rewardEnded: Reward
+    private lateinit var rewardNotStarted: Reward
     private lateinit var rewardLimitReached: Reward
     private lateinit var rewardMultipleShippingLocation: Reward
     private lateinit var rewardWorldWideShipping: Reward
@@ -65,6 +68,9 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         currentDate = MutableDateTime(date)
         noReward = RewardFactory.noReward()
         reward = RewardFactory.reward()
+        rewardNotStarted = RewardFactory.reward().toBuilder()
+            .startsAt(currentDate.toDateTime().plusDays(1)).build()
+        rewardEndingSoon = RewardFactory.endingSoon()
         rewardEnded = RewardFactory.ended()
         rewardLimitReached = RewardFactory.limitReached()
         rewardMultipleShippingLocation = RewardFactory.multipleLocationShipping()
@@ -457,27 +463,31 @@ class RewardUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun filterByTimeRange_returnsOnlyRewardsThatHaveStartedAndNotExpired() {
-        val notStarted = RewardFactory.reward().toBuilder()
-            .startsAt(DateTime.now().plusDays(1))
-            .build()
-        val expired = RewardFactory.ended()
-        val validNoTimeLimits = RewardFactory.reward()
-        val validEndingSoon = RewardFactory.endingSoon()
-
-        val filtered = filterByTimeRange(listOf(notStarted, expired, validNoTimeLimits, validEndingSoon))
+        val filtered = filterByTimeRange(listOf(rewardNotStarted, rewardEnded, reward, rewardEndingSoon))
 
         assertEquals(2, filtered.size)
-        assertTrue(filtered.contains(validNoTimeLimits))
-        assertTrue(filtered.contains(validEndingSoon))
-        assertFalse(filtered.contains(notStarted))
-        assertFalse(filtered.contains(expired))
+        assertTrue(filtered.contains(reward))
+        assertTrue(filtered.contains(rewardEndingSoon))
+        assertFalse(filtered.contains(rewardNotStarted))
+        assertFalse(filtered.contains(rewardEnded))
     }
 
     @Test
     fun filterByTimeRange_whenAllInvalid_returnsEmpty() {
-        val notStarted = RewardFactory.reward().toBuilder().startsAt(DateTime.now().plusDays(1)).build()
-        val expired = RewardFactory.ended()
-        assertTrue(filterByTimeRange(listOf(notStarted, expired)).isEmpty())
+        assertTrue(filterByTimeRange(listOf(rewardNotStarted, rewardEnded)).isEmpty())
+    }
+
+    @Test
+    fun `test filterHasStarted`() {
+        val filtered = filterHasStarted(listOf(reward, rewardNotStarted, rewardEndingSoon, rewardEnded))
+
+        assertEquals(3, filtered.size)
+
+        assertTrue(filtered.contains(reward))
+        assertTrue(filtered.contains(rewardEndingSoon))
+        assertTrue(filtered.contains(rewardEnded))
+
+        assertFalse(filtered.contains(rewardNotStarted))
     }
 
     @Test

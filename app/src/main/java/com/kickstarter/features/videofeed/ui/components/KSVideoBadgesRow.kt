@@ -1,38 +1,29 @@
 package com.kickstarter.features.videofeed.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.ui.compose.designsystem.KSAlmostThereVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSDaysLeftVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSFirstTimeCreatorVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSHotVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSJustLaunchedVideoBadge
-import com.kickstarter.ui.compose.designsystem.KSNearYouVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSNSFWVideoBadge
+import com.kickstarter.ui.compose.designsystem.KSNearYouVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSPopularVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSProjectWeLoveVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSSuperbackerVideoBadge
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTrendingVideoBadge
 import dev.chrisbanes.haze.HazeState
-
-sealed class KSVideoBadgeType {
-    object ProjectWeLove : KSVideoBadgeType()
-    data class DaysLeft(val text: String) : KSVideoBadgeType()
-    object JustLaunched : KSVideoBadgeType()
-    object FirstTimeCreator : KSVideoBadgeType()
-    object ByASuperbacker : KSVideoBadgeType()
-    object NearYou : KSVideoBadgeType()
-    object NSFW : KSVideoBadgeType()
-    object AlmostThere : KSVideoBadgeType()
-    object Trending : KSVideoBadgeType()
-    object Popular : KSVideoBadgeType()
-    object HotRightNow : KSVideoBadgeType()
-}
 
 @Composable
 fun KSVideoBadgesRow(
@@ -62,5 +53,20 @@ fun KSVideoBadgesRow(
                 KSVideoBadgeType.HotRightNow -> KSHotVideoBadge(hazeState = hazeState)
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun KSVideoBadgesRowPreview() {
+    KSTheme {
+        KSVideoBadgesRow(
+            modifier = Modifier.background(Color.Black),
+            badges = listOf(
+                KSVideoBadgeType.ProjectWeLove,
+                KSVideoBadgeType.DaysLeft("3 days left"),
+                KSVideoBadgeType.Trending
+            )
+        )
     }
 }

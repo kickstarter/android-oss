@@ -145,7 +145,6 @@ val secretRewardLock: ImageVector
 
 private var _secretRewardLock: ImageVector? = null
 
-
 val projectWeLove: ImageVector
     get() {
         if (_projectWeLove != null) return _projectWeLove!!
@@ -264,5 +263,3 @@ val Whatshot: ImageVector
 
 @Suppress("ObjectPropertyName")
 private var _Whatshot: ImageVector? = null
-
-

@@ -1,6 +1,7 @@
 package com.kickstarter.features.videofeed.ui.components
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
@@ -49,5 +50,22 @@ class KSVideoBadgesRowTest : KSRobolectricTestCase() {
         }
 
         composeTestRule.onNodeWithText("NSFW").assertIsDisplayed()
+    }
+
+    @Test
+    fun `KSVideoBadgesRow accessibility merge descendants`() {
+        val badges = listOf(KSVideoBadgeType.ProjectWeLove)
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoBadgesRow(badges = badges)
+            }
+        }
+
+        val projectWeLoveText = context().getString(R.string.fpo_Project_We_Love)
+
+        // - Verify that the node is found by content description (merged from text)
+        // - This confirms semantics(mergeDescendants = true) is working as expected
+        composeTestRule.onNodeWithContentDescription(projectWeLoveText).assertIsDisplayed()
     }
 }

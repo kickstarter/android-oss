@@ -65,7 +65,9 @@ fun KSVideoBadgesRowPreview() {
             badges = listOf(
                 KSVideoBadgeType.ProjectWeLove,
                 KSVideoBadgeType.DaysLeft("3 days left"),
-                KSVideoBadgeType.Trending
+                KSVideoBadgeType.Trending,
+                KSVideoBadgeType.HotRightNow,
+                KSVideoBadgeType.Popular,
             )
         )
     }

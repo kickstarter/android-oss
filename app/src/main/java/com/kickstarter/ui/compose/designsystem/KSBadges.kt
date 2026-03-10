@@ -24,7 +24,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -387,6 +390,9 @@ fun KSVideoBadge(
                 shape = shapes.small
             )
             .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+            .semantics(mergeDescendants = true) {
+                contentDescription = text
+            }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (icon != null) {
@@ -402,7 +408,9 @@ fun KSVideoBadge(
             Text(
                 text = text,
                 color = Color.White,
-                style = typographyV2.footNoteMedium
+                style = typographyV2.footNoteMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

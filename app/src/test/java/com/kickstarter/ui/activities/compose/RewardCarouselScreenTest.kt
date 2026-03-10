@@ -1,11 +1,21 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isEnabled
+import androidx.compose.ui.test.isNotEnabled
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollToIndex
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Project
@@ -103,5 +113,59 @@ class RewardCarouselScreenTest : KSRobolectricTestCase() {
         assertTrue(RewardUtils.isNoReward(rewards[0]))
         assertFalse(RewardUtils.isNoReward(rewards[1]))
         assertFalse(RewardUtils.isNoReward(rewards[2]))
+    }
+
+    @Test
+    fun `test expired rewards are not selectable`() {
+        val context = context()
+
+        val reward = RewardFactory.reward().toBuilder().id(0L).build()
+        val rewardEndingSoon = RewardFactory.endingSoon().toBuilder().id(1L).build()
+        val rewardExpired = RewardFactory.ended().toBuilder().id(2L).build()
+
+        val rewards = listOf(
+            reward, rewardEndingSoon, rewardExpired
+        )
+
+        val project = Project.builder().state(Project.STATE_LIVE).build()
+
+        composeTestRule.setContent {
+            KSTheme {
+                RewardCarouselScreen(
+                    lazyRowState = rememberLazyListState(),
+                    environment = com.kickstarter.libs.Environment.Builder().build(),
+                    rewards = rewards,
+                    project = project,
+                    onRewardSelected = {},
+                    currentShippingRule = ShippingRuleFactory.usShippingRule(),
+                    countryList = listOf(ShippingRuleFactory.usShippingRule()),
+                    onShippingRuleSelected = {}
+                )
+            }
+        }
+
+        with(rewardCarousel) {
+            performScrollToIndex(rewards.indexOf(reward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + reward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                )
+            )
+
+            performScrollToIndex(rewards.indexOf(rewardExpired))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + rewardExpired.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context().getString(R.string.No_longer_available))
+                        and isNotEnabled()
+                )
+            )
+        }
     }
 }

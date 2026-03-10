@@ -109,18 +109,18 @@ class GetShippingRulesUseCase(
                     project
                 )
 
-                setRewardsList(RewardUtils.filterByTimeRange(projectRewards))
+                setRewardsList(RewardUtils.filterHasStarted(projectRewards))
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
                 filteredRewards.clear()
-                filteredRewards.addAll(RewardUtils.filterByTimeRange(projectRewards))
+                filteredRewards.addAll(RewardUtils.filterHasStarted(projectRewards))
             }
 
             // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
                 filteredRewards.clear()
-                filteredRewards.addAll(RewardUtils.filterByTimeRange(project.rewards() ?: emptyList()))
+                filteredRewards.addAll(RewardUtils.filterHasStarted(projectRewards))
             }
 
             emitCurrentState(isLoading = false)

@@ -16,7 +16,7 @@ class VideoFeedActivity : ComponentActivity() {
 
         setContent {
             KSTheme {
-                // - Simulating a list of badges, this is what will be provided by the API
+                // TODO: In future tickets this hardcoded list will be substituted by the result of a query
                 val badges = listOf(
                     KSVideoBadgeType.ProjectWeLove,
                     KSVideoBadgeType.DaysLeft("3 days left"),

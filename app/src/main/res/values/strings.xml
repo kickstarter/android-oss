@@ -120,5 +120,9 @@
   <string name="fpo_Near_you" formatted="false">Near you</string>
   <string name="fpo_Trending" formatted="false">Trending</string>
   <string name="fpo_Hot_right_now" formatted="false">Hot right now</string>
+  <string name="fpo_Bookmark" formatted="false">Bookmark</string>
+  <string name="fpo_Share" formatted="false">Share</string>
+  <string name="fpo_More_options" formatted="false">More options</string>
+  <string name="fpo_Profile" formatted="false">Profile</string>
 
 </resources>

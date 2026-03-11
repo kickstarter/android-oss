@@ -9,12 +9,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +35,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,9 +53,13 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.activities.compose.search.FilterRowPillType
+import com.kickstarter.ui.compose.KSCircleImage
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -296,6 +303,46 @@ fun KSPlayerControlButtonsPreview() {
                 size = 36.dp,
                 onClick = {
                 }
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSVideoPlayerButtonsPreview() {
+    KSTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.Black.copy(alpha = 0.5f))
+                .padding(dimensions.paddingMedium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(dimensions.paddingMedium)
+        ) {
+            KSVideoPlayerProfileButton(
+                imageUrl = "https://www.kickstarter.com/assets/default/user_default-738555160848037617b84803d360098f99.png",
+                onClick = {}
+            )
+
+            KSVideoPlayerIconButton(
+                icon = Bookmark,
+                text = "1k",
+                onClick = {},
+                contentDescription = "Bookmark"
+            )
+
+            KSVideoPlayerIconButton(
+                icon = Share,
+                text = "50",
+                onClick = {},
+                contentDescription = "Share"
+            )
+
+            KSVideoPlayerIconButton(
+                icon = Ellipsis,
+                onClick = {},
+                contentDescription = "More options"
             )
         }
     }
@@ -839,5 +886,61 @@ fun KSControlIcon(
             contentDescription = null,
             tint = Color.White,
         )
+    }
+}
+
+@Composable
+fun KSVideoPlayerProfileButton(
+    imageUrl: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null
+) {
+    Box(
+        modifier = modifier
+            .size(dimensions.iconPillButtonSize)
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+    ) {
+        KSCircleImage(
+            url = imageUrl,
+            modifier = Modifier.fillMaxSize(),
+            contentDescription = contentDescription
+        )
+    }
+}
+
+@Composable
+fun KSVideoPlayerIconButton(
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    contentDescription: String? = null
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .padding(vertical = dimensions.paddingSmall)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = Color.White,
+            modifier = Modifier.size(28.dp)
+        )
+        if (!text.isNullOrEmpty()) {
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+            Text(
+                text = text,
+                color = Color.White,
+                style = typographyV2.bodyBoldXS
+            )
+        }
     }
 }

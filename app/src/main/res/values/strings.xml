@@ -112,4 +112,13 @@
   <!-- FPO's for Reward Card for Featured Reward Badge -->
   <string name="fpo_featured_reward" formatted="false">Featured</string>
 
+  <!-- FPO's for VideoFeed -->
+  <string name="fpo_Project_We_Love" formatted="false">Project We Love</string>
+  <string name="fpo_Just_launched" formatted="false">Just launched</string>
+  <string name="fpo_First_time_creator" formatted="false">First-time creator</string>
+  <string name="fpo_By_a_superbacker" formatted="false">By a superbacker</string>
+  <string name="fpo_Near_you" formatted="false">Near you</string>
+  <string name="fpo_Trending" formatted="false">Trending</string>
+  <string name="fpo_Hot_right_now" formatted="false">Hot right now</string>
+
 </resources>

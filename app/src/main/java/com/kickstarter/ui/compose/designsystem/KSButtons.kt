@@ -852,20 +852,20 @@ fun KSControlIcon(
             .clip(CircleShape)
             .clickable(onClick = onClick)
     ) {
+        val baseColor = colors.videoPlayerBackground.copy(alpha = 0.25f)
         val glassModifier = if (hazeState != null) {
             Modifier
                 .matchParentSize()
                 .hazeEffect(state = hazeState) {
                     blurRadius = 28.dp
                     noiseFactor = 0.05f
-                    val baseColor = Color(0xFF2B2B2D).copy(alpha = 0.25f)
                     backgroundColor = baseColor
                     tints = listOf(HazeTint(baseColor))
                 }
         } else {
             Modifier
                 .matchParentSize()
-                .background(Color(0xFF2B2B2D).copy(alpha = 0.25f))
+                .background(colors.videoPlayerBackground.copy(alpha = 0.25f))
         }
 
         Box(modifier = glassModifier)
@@ -876,7 +876,7 @@ fun KSControlIcon(
                 .matchParentSize()
                 .border(
                     width = 1.38.dp,
-                    color = Color.White.copy(alpha = 0.25f),
+                    color = colors.videoPlayerContent.copy(alpha = 0.25f),
                     shape = CircleShape
                 )
         )
@@ -884,7 +884,7 @@ fun KSControlIcon(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
+            tint = colors.videoPlayerContent,
         )
     }
 }
@@ -931,14 +931,14 @@ fun KSVideoPlayerIconButton(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = Color.White,
+            tint = colors.videoPlayerContent,
             modifier = Modifier.size(28.dp)
         )
         if (!text.isNullOrEmpty()) {
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
             Text(
                 text = text,
-                color = Color.White,
+                color = colors.videoPlayerContent,
                 style = typographyV2.bodyBoldXS
             )
         }

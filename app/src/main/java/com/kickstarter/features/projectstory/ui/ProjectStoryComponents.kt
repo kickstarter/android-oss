@@ -16,11 +16,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Bullet
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -31,8 +35,8 @@ import com.kickstarter.features.projectstory.data.RichTextItem
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.grey_03
+import com.kickstarter.ui.compose.designsystem.kds_create_700
 import timber.log.Timber
-import kotlin.collections.forEach
 
 object StoryTheme {
     object Typography {
@@ -41,6 +45,10 @@ object StoryTheme {
         val heading2 = TextStyle.Default.merge(fontSize = 26.sp)
         val heading3 = TextStyle.Default.merge(fontSize = 24.sp)
         val heading4 = TextStyle.Default.merge(fontSize = 22.sp)
+    }
+
+    object InlineStyles {
+        val link = SpanStyle(color = kds_create_700, textDecoration = TextDecoration.Underline)
     }
 }
 
@@ -56,7 +64,8 @@ fun RichTextItemTextComponent(item: RichTextItem.Text) {
             is RichTextItem.Text.ChildParagraph -> null
         }
 
-    /* Should always be empty for first-level items */
+    /* Currently, `styles` is empty for all first-level items except `Header`.
+     * At this point, the GQL transformer has already used `styles` to determine `Header.level` */
     val styles =
         when (item) {
             is RichTextItem.Text.Paragraph -> item.styles
@@ -120,21 +129,52 @@ fun RichTextItemTextComponent(item: RichTextItem.Text) {
 }
 
 private fun parseRichTextChildrenOfRichText(children: List<RichTextItem.Text.ChildParagraph>): AnnotatedString {
-    /* Look for ways to optimize */
     return buildAnnotatedString {
-        children.forEach {
-            Timber.d("")
-            if (it.styles.isNullOrEmpty()) {
-                append("${it.text} ")
-            } else {
-//                    append(" ")
-                withStyle(
-                    SpanStyle(
-                        fontWeight = if (it.styles.contains("STRONG")) FontWeight.Bold else null,
-                        fontStyle = if (it.styles.contains("EMPHASIS")) FontStyle.Italic else FontStyle.Normal
+        children.forEachIndexed { index, it ->
+            val text = it.text ?: ""
+
+            val style = it.styles?.let { styles ->
+                SpanStyle(
+                    fontWeight = if (styles.contains("STRONG")) FontWeight.Bold else null,
+                    fontStyle = if (styles.contains("EMPHASIS")) FontStyle.Italic else FontStyle.Normal
+                )
+            }
+
+            val linkAnnotation = it.link?.let {
+                /* Properties from the design system `link` SpanStyle will override any competing properties
+                 * in the `style` determined by the server response. As of 2026-03-03 there are none. */
+                val linkBaseStyle = StoryTheme.InlineStyles.link.let { default ->
+                    style?.merge(default) ?: default
+                }
+                LinkAnnotation.Url(
+                    it,
+                    styles = TextLinkStyles(
+                        style = linkBaseStyle
                     )
-                ) {
-                    append("${it.text}")
+                )
+            }
+
+            /* Join all sibling text with a space _except_ if the text starts with certain
+             * kinds of punctuation. This is to handle a peculiarity of how the server-side parser
+             * deals w/ spaces, and is likely to be changed on the server-side in the near future. */
+            val firstCharacter = text.firstOrNull()
+            if (index != 0 && firstCharacter.needsLeadingSpace()) {
+                append(" ")
+            }
+
+            when {
+                linkAnnotation != null -> {
+                    withLink(linkAnnotation) {
+                        append(text)
+                    }
+                }
+                style != null -> {
+                    withStyle(style) {
+                        append(text)
+                    }
+                }
+                else -> {
+                    append(text)
                 }
             }
         }
@@ -189,4 +229,13 @@ fun WebViewComponent(url: String) {
             pinnedHandle?.release()
         }
     )
+}
+
+private fun Char?.needsLeadingSpace(): Boolean {
+    if (this == null || isWhitespace()) return false
+
+    val type = Character.getType(this)
+    return type != Character.END_PUNCTUATION.toInt() &&
+        type != Character.FINAL_QUOTE_PUNCTUATION.toInt() &&
+        this !in ",.!?:;"
 }

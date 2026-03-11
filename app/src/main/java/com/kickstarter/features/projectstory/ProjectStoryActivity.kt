@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.features.projectstory.data.RichTextItem
@@ -39,6 +42,7 @@ import com.kickstarter.features.projectstory.ui.RichTextItemPhotoComponent
 import com.kickstarter.features.projectstory.ui.RichTextItemTextComponent
 import com.kickstarter.features.projectstory.ui.WebViewComponent
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
 import com.kickstarter.ui.compose.ProjectImageFromURl
@@ -63,12 +67,22 @@ class ProjectStoryActivity : ComponentActivity() {
             projectStoryViewModelFactory = ProjectStoryViewModel.Factory(env)
 
             setContent {
+                val context = LocalContext.current
+
+                val uriHandler = object : UriHandler {
+                    override fun openUri(uri: String) {
+                        ApplicationUtils.openUrlExternally(context, uri)
+                    }
+                }
+
                 KickstarterApp(
                     useDarkTheme = isDarkModeEnabled(env)
                 ) {
                     val uiState = projectStoryViewModel.projectStoryUiState.collectAsState()
                     val txtState = projectStoryViewModel.txt
-                    CampaignScreen(uiState, txtState)
+                    CompositionLocalProvider(LocalUriHandler provides uriHandler) {
+                        CampaignScreen(uiState, txtState)
+                    }
                 }
             }
         }

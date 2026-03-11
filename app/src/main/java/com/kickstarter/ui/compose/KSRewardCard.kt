@@ -442,7 +442,9 @@ fun KSRewardCard(
                     .background(KSTheme.colors.kds_white)
             ) {
 
-                Box {
+                Box(
+                    modifier = Modifier.zIndex(1f)
+                ) {
                     if (image != null) {
                         KSRewardAsyncImage(image = image)
                         if (isSecret || isFeatured) {

@@ -370,7 +370,8 @@ fun RewardCarouselScreen(
                                             selectedShippingRule = currentShippingRule,
                                             multipleQuantitiesAllowed = false,
                                             useUserPreference = false,
-                                            useAbout = true
+                                            useAbout = true,
+                                            forceSelectedShippingRule = true
                                         )
                                     }
                                 }

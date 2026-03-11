@@ -216,14 +216,23 @@ object RewardViewUtils {
         selectedShippingRule: ShippingRule,
         multipleQuantitiesAllowed: Boolean,
         useUserPreference: Boolean,
-        useAbout: Boolean
+        useAbout: Boolean,
+        forceSelectedShippingRule: Boolean = false,
     ): String {
         var min = ""
         var max = ""
         var minTotal = 0.0
         var maxtotal = 0.0
+
         rewards.forEach { reward ->
-            if (!RewardUtils.isDigital(reward) && RewardUtils.shipsToRestrictedLocations(reward) && !RewardUtils.isLocalPickup(reward)) {
+            val shippingRule = reward.shippingRules()?.firstOrNull {
+                it.location()?.id() == selectedShippingRule.location()?.id()
+            }
+
+            val selectedShippingRuleCondition =
+                (forceSelectedShippingRule && shippingRule != null)
+
+            if (!RewardUtils.isDigital(reward) && (selectedShippingRuleCondition || RewardUtils.shipsToRestrictedLocations(reward)) && !RewardUtils.isLocalPickup(reward)) {
                 reward.shippingRules()?.filter {
                     it.location()?.id() == selectedShippingRule.location()?.id()
                 }?.map {
@@ -232,7 +241,7 @@ object RewardViewUtils {
                 }
             }
 
-            if (RewardUtils.shipsWorldwide(reward) && !reward.shippingRules().isNullOrEmpty()) {
+            if (!selectedShippingRuleCondition && RewardUtils.shipsWorldwide(reward) && !reward.shippingRules().isNullOrEmpty()) {
                 reward.shippingRules()?.first()?.let {
                     minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
                     maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))

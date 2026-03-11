@@ -9,10 +9,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 
 import com.apollographql.apollo3.ApolloClient;
-import com.apollographql.apollo3.cache.normalized.NormalizedCache;
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver;
-import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator;
 import com.apollographql.apollo3.network.http.DefaultHttpEngine;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.FieldNamingPolicy;

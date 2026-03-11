@@ -220,6 +220,11 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/VideoPlayerActivity" />
         <activity
+            android:name=".features.videofeed.VideoFeedActivity"
+            android:configChanges="keyboardHidden|screenSize"
+            android:exported="false"
+            android:theme="@style/KSTheme" />
+        <activity
             android:name=".ui.activities.BackingActivity"
             android:parentActivityName=".ui.activities.ProjectPageActivity"
             android:theme="@style/BackingActivity" />

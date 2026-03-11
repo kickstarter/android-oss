@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -39,16 +42,21 @@ fun IndicatorsPreview() {
 @Composable
 fun KSLinearProgressIndicator(
     modifier: Modifier = Modifier,
-    progress: Float? = null
+    progress: Float? = null,
+    color: Color = colors.kds_create_700,
+    trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap
 ) {
     if (progress != null) {
         LinearProgressIndicator(
             modifier = modifier,
-            color = colors.kds_create_700,
-            progress = { progress }
+            color = color,
+            progress = { progress },
+            trackColor = trackColor,
+            strokeCap = strokeCap
         )
     } else {
-        LinearProgressIndicator(modifier = modifier, color = colors.kds_create_700)
+        LinearProgressIndicator(modifier = modifier, color = color)
     }
 }
 

@@ -1,5 +1,7 @@
 package com.kickstarter.features.videofeed.ui.components
 
+import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -7,11 +9,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoPlayerIconButton
 import com.kickstarter.ui.compose.designsystem.KSVideoPlayerProfileButton
@@ -73,6 +78,20 @@ fun KSVideoActionsColumn(
             onClick = onMoreOptionsClick,
             contentDescription = stringResource(id = R.string.fpo_More_options),
             onClickLabel = stringResource(id = R.string.fpo_View_more_options)
+        )
+    }
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSVideoActionsColumnPreview() {
+    KSTheme {
+        KSVideoActionsColumn(
+            modifier = Modifier.background(Color.Green.copy(alpha = 0.5f)),
+            profileImageUrl = "https://www.kickstarter.com/assets/default/user_default-738555160848037617b84803d360098f99.png",
+            bookmarkCount = "1.2k",
+            shareCount = "500"
         )
     }
 }

@@ -35,12 +35,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
@@ -50,6 +54,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
@@ -72,7 +77,7 @@ fun KSPrimaryButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSPrimaryGreenButton(
@@ -107,7 +112,7 @@ fun KSSecondaryButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSSecondaryGreyButton(
@@ -142,7 +147,7 @@ fun KSDisabledButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSPrimaryGreenButton(
@@ -161,7 +166,7 @@ fun KSOtherButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSFacebookButton(
@@ -316,7 +321,7 @@ fun KSVideoPlayerButtonsPreview() {
     KSTheme {
         Column(
             modifier = Modifier
-                .background(Color.Black.copy(alpha = 0.5f))
+                .background(colors.backgroundSurfaceRaised.copy(alpha = 0.5f))
                 .padding(dimensions.paddingMedium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(dimensions.paddingMedium)
@@ -489,7 +494,7 @@ fun KSFacebookButton(
         backgroundColor = colors.facebook_blue,
         imageId = R.drawable.com_facebook_button_icon,
         text = text,
-        textColor = kds_white
+        textColor = colors.kds_white
     )
 }
 
@@ -503,7 +508,7 @@ fun KSGooglePayButton(
         modifier = modifier,
         onClickAction = onClickAction,
         isEnabled = isEnabled,
-        backgroundColor = kds_black,
+        backgroundColor = colors.kds_black,
         imageId = R.drawable.googlepay_button_content
     )
 }
@@ -898,11 +903,15 @@ fun KSVideoPlayerProfileButton(
     contentDescription: String? = null,
     onClickLabel: String? = null
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Box(
         modifier = modifier
             .size(dimensions.iconPillButtonSize)
             .clip(CircleShape)
             .clickable(
+                interactionSource = interactionSource,
+                indication = null,
                 onClick = onClick,
                 onClickLabel = onClickLabel,
                 role = Role.Button
@@ -925,11 +934,13 @@ fun KSVideoPlayerIconButton(
     contentDescription: String? = null,
     onClickLabel: String? = null
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .clickable(
-                interactionSource = remember { MutableInteractionSource() },
+                interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick,
                 onClickLabel = onClickLabel,
@@ -941,14 +952,29 @@ fun KSVideoPlayerIconButton(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = colors.videoPlayerContent,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier
+                .size(dimensions.videoPlayerIconSize)
+                .dropShadow(
+                    shape = CircleShape,
+                    shadow = Shadow(
+                        radius = dimensions.videoPlayerShadowBlur,
+                        color = colors.videoPlayerIconShadow,
+                        offset = DpOffset.Zero
+                    )
+                )
         )
         if (!text.isNullOrEmpty()) {
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
             Text(
                 text = text,
                 color = colors.videoPlayerContent,
-                style = typographyV2.bodyBoldXS
+                style = typographyV2.bodyBoldXS.copy(
+                    shadow = androidx.compose.ui.graphics.Shadow(
+                        color = colors.videoPlayerIconShadow,
+                        offset = Offset(0f, 0f),
+                        blurRadius = dimensions.videoPlayerShadowBlur.value * 2f
+                    )
+                )
             )
         }
     }

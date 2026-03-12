@@ -234,6 +234,7 @@ data class KSCustomColors(
     // VideoPlayer semantic color naming
     val videoPlayerContent: Color = Color.Unspecified,
     val videoPlayerBackground: Color = Color.Unspecified,
+    val videoPlayerIconShadow: Color = Color.Unspecified,
 
     // OLD COLORS
     // Greens
@@ -379,6 +380,7 @@ val KSLightCustomColors = KSCustomColors(
     // VideoPlayer semantic color naming
     videoPlayerContent = white,
     videoPlayerBackground = grey_095,
+    videoPlayerIconShadow = black.copy(alpha = 0.1f),
 
     // OLD COLORS
     // Greens
@@ -522,6 +524,7 @@ val KSDarkCustomColors = KSCustomColors(
     // VideoPlayer semantic color naming
     videoPlayerContent = white,
     videoPlayerBackground = grey_095,
+    videoPlayerIconShadow = black.copy(alpha = 0.1f),
 
     // OLD COLORS
     // Greens

@@ -3,6 +3,7 @@ package com.kickstarter.features.videofeed.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,15 +11,30 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
+import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
+import kotlin.getValue
 
 class VideoFeedActivity : ComponentActivity() {
+
+    private lateinit var videoFeedFactory: VideoFeedViewModel.Factory
+    private val viewModel: VideoFeedViewModel by viewModels { videoFeedFactory }
+    private lateinit var env: Environment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        this.getEnvironment()?.let {
+            env = it
+            videoFeedFactory = VideoFeedViewModel.Factory(env)
+        }
 
         setContent {
             KSTheme {
@@ -30,8 +46,13 @@ class VideoFeedActivity : ComponentActivity() {
                     KSVideoBadgeType.Trending
                 )
 
+                // TODO: Following vm lines are for qa/demo purposes as of now!!! aiming here to avoid videoURL expiration real VM still to come
+                val videoFeedUIState = viewModel.videoFeedUIState.collectAsStateWithLifecycle()
+                val videoUrl = videoFeedUIState.value.project?.video()?.hls() ?: ""
+                val profileImage = videoFeedUIState.value.project?.creator()?.avatar()?.medium() ?: ""
+
                 KSVideoPlayer(
-                    videoUrl = "https://v2.kickstarter.com/1773073706-HOVpU84sHNp8zagSPildS7HOpqW2s%2BHtBG0zpREVy%2F4%3D/projects/5287238/video-1418061-hls_playlist.m3u8",
+                    videoUrl = videoUrl,
                     isActive = true,
                     overlayContent = { hazeState ->
                         Column(
@@ -39,7 +60,7 @@ class VideoFeedActivity : ComponentActivity() {
                         ) {
                             KSVideoActionsColumn(
                                 modifier = Modifier.align(Alignment.End),
-                                profileImageUrl = "https://www.kickstarter.com/assets/default/user_default-738555160848037617b84803d360098f99.png",
+                                profileImageUrl = profileImage,
                                 bookmarkCount = "1k",
                                 shareCount = "50",
                                 onProfileClick = { },

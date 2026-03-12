@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -894,13 +895,18 @@ fun KSVideoPlayerProfileButton(
     imageUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    onClickLabel: String? = null
 ) {
     Box(
         modifier = modifier
             .size(dimensions.iconPillButtonSize)
             .clip(CircleShape)
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                onClickLabel = onClickLabel,
+                role = Role.Button
+            )
     ) {
         KSCircleImage(
             url = imageUrl,
@@ -916,7 +922,8 @@ fun KSVideoPlayerIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     text: String? = null,
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    onClickLabel: String? = null
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -924,7 +931,9 @@ fun KSVideoPlayerIconButton(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = onClick
+                onClick = onClick,
+                onClickLabel = onClickLabel,
+                role = Role.Button
             )
             .padding(vertical = dimensions.paddingSmall)
     ) {

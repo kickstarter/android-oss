@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
-import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
+import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 

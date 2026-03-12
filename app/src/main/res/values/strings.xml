@@ -124,5 +124,9 @@
   <string name="fpo_Share" formatted="false">Share</string>
   <string name="fpo_More_options" formatted="false">More options</string>
   <string name="fpo_Profile" formatted="false">Profile</string>
+  <string name="fpo_Bookmark_this_project" formatted="false">Bookmark this project</string>
+  <string name="fpo_Share_this_project" formatted="false">Share this project</string>
+  <string name="fpo_View_more_options" formatted="false">View more options</string>
+  <string name="fpo_View_creator_profile" formatted="false">View creator profile</string>
 
 </resources>

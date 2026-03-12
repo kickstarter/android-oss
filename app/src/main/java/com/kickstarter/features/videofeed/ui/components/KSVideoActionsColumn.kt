@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -39,28 +41,38 @@ fun KSVideoActionsColumn(
             KSVideoPlayerProfileButton(
                 imageUrl = it,
                 onClick = onProfileClick,
-                contentDescription = stringResource(id = R.string.fpo_Profile)
+                contentDescription = stringResource(id = R.string.fpo_Profile),
+                onClickLabel = stringResource(id = R.string.fpo_View_creator_profile)
             )
         }
 
         KSVideoPlayerIconButton(
+            modifier = Modifier.semantics {
+                stateDescription = bookmarkCount ?: ""
+            },
             icon = Bookmark,
             text = bookmarkCount,
             onClick = onBookmarkClick,
-            contentDescription = stringResource(id = R.string.fpo_Bookmark)
+            contentDescription = stringResource(id = R.string.fpo_Bookmark),
+            onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
         )
 
         KSVideoPlayerIconButton(
+            modifier = Modifier.semantics {
+                stateDescription = shareCount ?: ""
+            },
             icon = Share,
             text = shareCount,
             onClick = onShareClick,
-            contentDescription = stringResource(id = R.string.fpo_Share)
+            contentDescription = stringResource(id = R.string.fpo_Share),
+            onClickLabel = stringResource(id = R.string.fpo_Share_this_project)
         )
 
         KSVideoPlayerIconButton(
             icon = Ellipsis,
             onClick = onMoreOptionsClick,
-            contentDescription = stringResource(id = R.string.fpo_More_options)
+            contentDescription = stringResource(id = R.string.fpo_More_options),
+            onClickLabel = stringResource(id = R.string.fpo_View_more_options)
         )
     }
 }

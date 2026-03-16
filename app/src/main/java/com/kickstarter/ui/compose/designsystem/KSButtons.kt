@@ -35,7 +35,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -331,21 +330,21 @@ fun KSVideoPlayerButtonsPreview() {
                 onClick = {}
             )
 
-            KSVideoPlayerIconButton(
+            KSProfileIconButton(
                 icon = Bookmark,
                 text = "1k",
                 onClick = {},
                 contentDescription = "Bookmark"
             )
 
-            KSVideoPlayerIconButton(
+            KSProfileIconButton(
                 icon = Share,
                 text = "50",
                 onClick = {},
                 contentDescription = "Share"
             )
 
-            KSVideoPlayerIconButton(
+            KSProfileIconButton(
                 icon = Ellipsis,
                 onClick = {},
                 contentDescription = "More options"
@@ -926,7 +925,7 @@ fun KSVideoPlayerProfileButton(
 }
 
 @Composable
-fun KSVideoPlayerIconButton(
+fun KSProfileIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

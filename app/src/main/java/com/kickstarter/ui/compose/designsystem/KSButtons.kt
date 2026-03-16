@@ -325,26 +325,26 @@ fun KSVideoPlayerButtonsPreview() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(dimensions.paddingMedium)
         ) {
-            KSVideoPlayerProfileButton(
+            KSProfileButton(
                 imageUrl = "https://www.kickstarter.com/assets/default/user_default-738555160848037617b84803d360098f99.png",
                 onClick = {}
             )
 
-            KSProfileIconButton(
+            KSVideoPlayerIconButton(
                 icon = Bookmark,
                 text = "1k",
                 onClick = {},
                 contentDescription = "Bookmark"
             )
 
-            KSProfileIconButton(
+            KSVideoPlayerIconButton(
                 icon = Share,
                 text = "50",
                 onClick = {},
                 contentDescription = "Share"
             )
 
-            KSProfileIconButton(
+            KSVideoPlayerIconButton(
                 icon = Ellipsis,
                 onClick = {},
                 contentDescription = "More options"
@@ -895,7 +895,7 @@ fun KSControlIcon(
 }
 
 @Composable
-fun KSVideoPlayerProfileButton(
+fun KSProfileButton(
     imageUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -925,7 +925,7 @@ fun KSVideoPlayerProfileButton(
 }
 
 @Composable
-fun KSProfileIconButton(
+fun KSVideoPlayerIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

@@ -16,10 +16,10 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.ui.compose.designsystem.KSProfileButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.KSProfileIconButton
-import com.kickstarter.ui.compose.designsystem.KSVideoPlayerProfileButton
+import com.kickstarter.ui.compose.designsystem.KSVideoPlayerIconButton
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share
@@ -43,7 +43,7 @@ fun KSVideoActionsColumn(
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
     ) {
         profileImageUrl?.let {
-            KSVideoPlayerProfileButton(
+            KSProfileButton(
                 imageUrl = it,
                 onClick = onProfileClick,
                 contentDescription = stringResource(id = R.string.fpo_Profile),
@@ -51,7 +51,7 @@ fun KSVideoActionsColumn(
             )
         }
 
-        KSProfileIconButton(
+        KSVideoPlayerIconButton(
             modifier = Modifier.semantics {
                 stateDescription = bookmarkCount ?: ""
             },
@@ -62,7 +62,7 @@ fun KSVideoActionsColumn(
             onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
         )
 
-        KSProfileIconButton(
+        KSVideoPlayerIconButton(
             modifier = Modifier.semantics {
                 stateDescription = shareCount ?: ""
             },
@@ -73,7 +73,7 @@ fun KSVideoActionsColumn(
             onClickLabel = stringResource(id = R.string.fpo_Share_this_project)
         )
 
-        KSProfileIconButton(
+        KSVideoPlayerIconButton(
             icon = Ellipsis,
             onClick = onMoreOptionsClick,
             contentDescription = stringResource(id = R.string.fpo_More_options),

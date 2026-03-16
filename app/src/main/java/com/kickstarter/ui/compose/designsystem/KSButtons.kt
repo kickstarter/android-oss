@@ -1,8 +1,5 @@
 package com.kickstarter.ui.compose.designsystem
 
-import Forward
-import Play
-import Rewind
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -64,6 +61,9 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Forward
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Rewind
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeTint
@@ -848,14 +848,20 @@ fun KSControlIcon(
     size: Dp,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    hazeState: HazeState? = null
+    hazeState: HazeState? = null,
+    contentDescription: String? = null,
+    onClickLabel: String? = null
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                onClickLabel = onClickLabel,
+                role = Role.Button
+            )
     ) {
         val baseColor = colors.videoPlayerBackground.copy(alpha = 0.25f)
         val glassModifier = if (hazeState != null) {
@@ -888,7 +894,7 @@ fun KSControlIcon(
 
         Icon(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = colors.videoPlayerContent,
         )
     }

@@ -128,5 +128,9 @@
   <string name="fpo_Share_this_project" formatted="false">Share this project</string>
   <string name="fpo_View_more_options" formatted="false">View more options</string>
   <string name="fpo_View_creator_profile" formatted="false">View creator profile</string>
+  <string name="fpo_Rewind">Rewind</string>
+  <string name="fpo_Rewind_10_seconds">Rewind 5 seconds</string>
+  <string name="fpo_Play">Play</string>
+  <string name="fpo_Forward">Forward 5 seconds</string>
 
 </resources>

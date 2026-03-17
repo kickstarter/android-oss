@@ -53,6 +53,7 @@ val grey_06 = Color(0xFF636363)
 val grey_07 = Color(0xFF4D4D4D)
 val grey_08 = Color(0xFF3C3C3C)
 val grey_09 = Color(0xFF2C2C2C)
+val grey_095 = Color(0xFF2B2B2D)
 val grey_10 = Color(0xFF171717)
 val grey_11 = Color(0xFF212121)
 val grey_100 = Color(0xFFF3F3F3)
@@ -230,6 +231,11 @@ data class KSCustomColors(
     val navIconBorderAvatar: Color = Color.Unspecified,
     val navBoxShadow: Color = Color.Unspecified,
 
+    // VideoPlayer semantic color naming
+    val videoPlayerContent: Color = Color.Unspecified,
+    val videoPlayerBackground: Color = Color.Unspecified,
+    val videoPlayerIconShadow: Color = Color.Unspecified,
+
     // OLD COLORS
     // Greens
     val kds_create_100: Color = Color.Unspecified,
@@ -282,8 +288,7 @@ val LocalKSCustomColors = staticCompositionLocalOf {
 }
 
 val KSLightCustomColors = KSCustomColors(
-    // NEW COLORS
-    // Text
+    // NEW COLORS    // Text
     textPrimary = grey_10,
     textInversePrimary = white,
     textSecondary = grey_07,
@@ -371,6 +376,11 @@ val KSLightCustomColors = KSCustomColors(
     navBackgroundTapped = green_100,
     navIconBorderAvatar = white,
     navBoxShadow = black,
+
+    // VideoPlayer semantic color naming
+    videoPlayerContent = white,
+    videoPlayerBackground = grey_095,
+    videoPlayerIconShadow = black.copy(alpha = 0.1f),
 
     // OLD COLORS
     // Greens
@@ -510,6 +520,11 @@ val KSDarkCustomColors = KSCustomColors(
     navBackgroundTapped = green_800,
     navIconBorderAvatar = grey_900,
     navBoxShadow = black,
+
+    // VideoPlayer semantic color naming
+    videoPlayerContent = white,
+    videoPlayerBackground = grey_095,
+    videoPlayerIconShadow = black.copy(alpha = 0.1f),
 
     // OLD COLORS
     // Greens

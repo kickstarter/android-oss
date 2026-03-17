@@ -1,8 +1,5 @@
 package com.kickstarter.ui.compose.designsystem.videoplayer
 
-import Forward
-import Play
-import Rewind
 import android.graphics.Matrix
 import android.view.TextureView
 import android.view.ViewGroup
@@ -53,6 +50,9 @@ import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Forward
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Rewind
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState

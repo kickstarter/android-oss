@@ -120,5 +120,17 @@
   <string name="fpo_Near_you" formatted="false">Near you</string>
   <string name="fpo_Trending" formatted="false">Trending</string>
   <string name="fpo_Hot_right_now" formatted="false">Hot right now</string>
+  <string name="fpo_Bookmark" formatted="false">Bookmark</string>
+  <string name="fpo_Share" formatted="false">Share</string>
+  <string name="fpo_More_options" formatted="false">More options</string>
+  <string name="fpo_Profile" formatted="false">Profile</string>
+  <string name="fpo_Bookmark_this_project" formatted="false">Bookmark this project</string>
+  <string name="fpo_Share_this_project" formatted="false">Share this project</string>
+  <string name="fpo_View_more_options" formatted="false">View more options</string>
+  <string name="fpo_View_creator_profile" formatted="false">View creator profile</string>
+  <string name="fpo_Rewind">Rewind</string>
+  <string name="fpo_Rewind_10_seconds">Rewind 5 seconds</string>
+  <string name="fpo_Play">Play</string>
+  <string name="fpo_Forward">Forward 5 seconds</string>
 
 </resources>

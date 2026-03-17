@@ -1,20 +1,19 @@
 package com.kickstarter.ui.compose.designsystem
 
-import Forward
-import Play
-import Rewind
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,26 +32,39 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.activities.compose.search.FilterRowPillType
+import com.kickstarter.ui.compose.KSCircleImage
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Forward
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Rewind
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
@@ -64,7 +76,7 @@ fun KSPrimaryButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSPrimaryGreenButton(
@@ -99,7 +111,7 @@ fun KSSecondaryButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSSecondaryGreyButton(
@@ -134,7 +146,7 @@ fun KSDisabledButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSPrimaryGreenButton(
@@ -153,7 +165,7 @@ fun KSOtherButtonsPreview() {
     KSTheme {
         Column(
             Modifier
-                .background(color = colors.kds_white)
+                .background(color = colors.backgroundSurfacePrimary)
                 .padding(all = dimensions.paddingSmall)
         ) {
             KSFacebookButton(
@@ -302,6 +314,46 @@ fun KSPlayerControlButtonsPreview() {
 }
 
 @Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSVideoPlayerButtonsPreview() {
+    KSTheme {
+        Column(
+            modifier = Modifier
+                .background(colors.backgroundSurfaceRaised.copy(alpha = 0.5f))
+                .padding(dimensions.paddingMedium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(dimensions.paddingMedium)
+        ) {
+            KSProfileButton(
+                imageUrl = "https://www.kickstarter.com/assets/default/user_default-738555160848037617b84803d360098f99.png",
+                onClick = {}
+            )
+
+            KSVideoPlayerIconButton(
+                icon = Bookmark,
+                text = "1k",
+                onClick = {},
+                contentDescription = "Bookmark"
+            )
+
+            KSVideoPlayerIconButton(
+                icon = Share,
+                text = "50",
+                onClick = {},
+                contentDescription = "Share"
+            )
+
+            KSVideoPlayerIconButton(
+                icon = Ellipsis,
+                onClick = {},
+                contentDescription = "More options"
+            )
+        }
+    }
+}
+
+@Composable
 fun KSPrimaryGreenButton(
     modifier: Modifier = Modifier,
     leadingIcon: @Composable () -> Unit = {},
@@ -441,7 +493,7 @@ fun KSFacebookButton(
         backgroundColor = colors.facebook_blue,
         imageId = R.drawable.com_facebook_button_icon,
         text = text,
-        textColor = kds_white
+        textColor = colors.kds_white
     )
 }
 
@@ -455,7 +507,7 @@ fun KSGooglePayButton(
         modifier = modifier,
         onClickAction = onClickAction,
         isEnabled = isEnabled,
-        backgroundColor = kds_black,
+        backgroundColor = colors.kds_black,
         imageId = R.drawable.googlepay_button_content
     )
 }
@@ -796,29 +848,35 @@ fun KSControlIcon(
     size: Dp,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    hazeState: HazeState? = null
+    hazeState: HazeState? = null,
+    contentDescription: String? = null,
+    onClickLabel: String? = null
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .clickable(onClick = onClick)
+            .clickable(
+                onClick = onClick,
+                onClickLabel = onClickLabel,
+                role = Role.Button
+            )
     ) {
+        val baseColor = colors.videoPlayerBackground.copy(alpha = 0.25f)
         val glassModifier = if (hazeState != null) {
             Modifier
                 .matchParentSize()
                 .hazeEffect(state = hazeState) {
                     blurRadius = 28.dp
                     noiseFactor = 0.05f
-                    val baseColor = Color(0xFF2B2B2D).copy(alpha = 0.25f)
                     backgroundColor = baseColor
                     tints = listOf(HazeTint(baseColor))
                 }
         } else {
             Modifier
                 .matchParentSize()
-                .background(Color(0xFF2B2B2D).copy(alpha = 0.25f))
+                .background(colors.videoPlayerBackground.copy(alpha = 0.25f))
         }
 
         Box(modifier = glassModifier)
@@ -829,15 +887,100 @@ fun KSControlIcon(
                 .matchParentSize()
                 .border(
                     width = 1.38.dp,
-                    color = Color.White.copy(alpha = 0.25f),
+                    color = colors.videoPlayerContent.copy(alpha = 0.25f),
                     shape = CircleShape
                 )
         )
 
         Icon(
             imageVector = icon,
-            contentDescription = null,
-            tint = Color.White,
+            contentDescription = contentDescription,
+            tint = colors.videoPlayerContent,
         )
+    }
+}
+
+@Composable
+fun KSProfileButton(
+    imageUrl: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    onClickLabel: String? = null
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
+        modifier = modifier
+            .size(dimensions.iconPillButtonSize)
+            .clip(CircleShape)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+                onClickLabel = onClickLabel,
+                role = Role.Button
+            )
+    ) {
+        KSCircleImage(
+            url = imageUrl,
+            modifier = Modifier.fillMaxSize(),
+            contentDescription = contentDescription
+        )
+    }
+}
+
+@Composable
+fun KSVideoPlayerIconButton(
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    text: String? = null,
+    contentDescription: String? = null,
+    onClickLabel: String? = null
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+                onClickLabel = onClickLabel,
+                role = Role.Button
+            )
+            .padding(vertical = dimensions.paddingSmall)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = colors.videoPlayerContent,
+            modifier = Modifier
+                .size(dimensions.videoPlayerIconSize)
+                .dropShadow(
+                    shape = CircleShape,
+                    shadow = Shadow(
+                        radius = dimensions.videoPlayerShadowBlur,
+                        color = colors.videoPlayerIconShadow,
+                        offset = DpOffset.Zero
+                    )
+                )
+        )
+        if (!text.isNullOrEmpty()) {
+            Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
+            Text(
+                text = text,
+                color = colors.videoPlayerContent,
+                style = typographyV2.bodyBoldXS.copy(
+                    shadow = androidx.compose.ui.graphics.Shadow(
+                        color = colors.videoPlayerIconShadow,
+                        offset = Offset(0f, 0f),
+                        blurRadius = dimensions.videoPlayerShadowBlur.value * 2f
+                    )
+                )
+            )
+        }
     }
 }

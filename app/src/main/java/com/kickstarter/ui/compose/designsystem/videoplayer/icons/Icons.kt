@@ -1,3 +1,5 @@
+package com.kickstarter.ui.compose.designsystem.videoplayer.icons
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding

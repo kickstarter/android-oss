@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import kotlin.getValue
 
@@ -62,7 +64,9 @@ class VideoFeedActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             KSVideoActionsColumn(
-                                modifier = Modifier.align(Alignment.End),
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(end = dimensions.paddingMediumLarge),
                                 profileImageUrl = profileImage,
                                 bookmarkCount = "1k",
                                 shareCount = "50",

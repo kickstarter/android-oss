@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.common.math.LinearTransformation.vertical
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.ui.compose.designsystem.KSAlmostThereVideoBadge
 import com.kickstarter.ui.compose.designsystem.KSDaysLeftVideoBadge
@@ -34,7 +35,8 @@ fun KSVideoBadgesRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensions.paddingMedium),
+            .padding(horizontal = dimensions.paddingMedium)
+            .padding(vertical = dimensions.paddingXSmall),
         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
     ) {
         // - Only show the first 2 badges from the list

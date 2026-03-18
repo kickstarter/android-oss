@@ -235,6 +235,8 @@ data class KSCustomColors(
     val videoPlayerContent: Color = Color.Unspecified,
     val videoPlayerBackground: Color = Color.Unspecified,
     val videoPlayerIconShadow: Color = Color.Unspecified,
+    val videoPlayerButtonBorder: Color = Color.Unspecified,
+    val videoPlayerButtonText: Color = Color.Unspecified,
 
     // OLD COLORS
     // Greens
@@ -381,6 +383,8 @@ val KSLightCustomColors = KSCustomColors(
     videoPlayerContent = white,
     videoPlayerBackground = grey_095,
     videoPlayerIconShadow = black.copy(alpha = 0.1f),
+    videoPlayerButtonBorder = white,
+    videoPlayerButtonText = white,
 
     // OLD COLORS
     // Greens
@@ -525,6 +529,8 @@ val KSDarkCustomColors = KSCustomColors(
     videoPlayerContent = white,
     videoPlayerBackground = grey_095,
     videoPlayerIconShadow = black.copy(alpha = 0.1f),
+    videoPlayerButtonBorder = white,
+    videoPlayerButtonText = white,
 
     // OLD COLORS
     // Greens

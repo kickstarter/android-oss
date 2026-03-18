@@ -73,7 +73,7 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
         }
 
         composeTestRule.onNodeWithText("50").assertIsDisplayed()
-        
+
         val backedDescription = context().getString(R.string.fpo_You_have_backed_this_project)
         composeTestRule.onNodeWithContentDescription(backedDescription).assertDoesNotExist()
     }

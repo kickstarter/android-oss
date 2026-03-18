@@ -132,6 +132,5 @@
   <string name="fpo_Rewind_10_seconds">Rewind 5 seconds</string>
   <string name="fpo_Play">Play</string>
   <string name="fpo_Forward">Forward 5 seconds</string>
-  <string name="fpo_You_have_backed_this_project" formatted="false">You have backed this project</string>
 
 </resources>

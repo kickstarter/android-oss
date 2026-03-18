@@ -42,7 +42,7 @@ class VideoFeedViewModel(
             )
 
     init {
-        getProject("musicalbeings/tembo-a-new-musical-instrument-for-playful-music-making")
+        getProject("locodanceco/loco-dance-cos-evening-length-work-wake-up")
     }
 
     private fun getProject(slug: String) {

@@ -52,7 +52,7 @@ class VideoFeedActivity : ComponentActivity() {
                 val videoUrl = videoFeedUIState.value.project?.video()?.hls() ?: ""
                 val profileImage = videoFeedUIState.value.project?.creator()?.avatar()?.medium() ?: ""
                 val projectTitle = videoFeedUIState.value.project?.name() ?: "Ringo Move - The Ultimate Workout Bottle"
-                val isBacked = videoFeedUIState.value.project?.isBacking() ?: true
+                val percentageFounded = videoFeedUIState.value.project?.percentageFunded() ?: 0f
 
                 KSVideoPlayer(
                     videoUrl = videoUrl,
@@ -84,8 +84,7 @@ class VideoFeedActivity : ComponentActivity() {
                                 subtitle = "$50,134 pledged • Join 431 backers",
                                 buttonText = "Back this project",
                                 onButtonClick = { },
-                                isBacked = isBacked,
-                                hazeState = hazeState
+                                progress = percentageFounded
                             )
                         }
                     }

@@ -370,7 +370,7 @@ fun KSVideoBadge(
 ) {
     Box(
         modifier = modifier
-            .clip(shapes.small)
+            .clip(RoundedCornerShape(8.dp))
             .then(
                 if (hazeState != null) {
                     Modifier.hazeEffect(state = hazeState) {
@@ -387,14 +387,17 @@ fun KSVideoBadge(
             .border(
                 width = 1.38.dp,
                 color = Color.White.copy(alpha = 0.25f),
-                shape = shapes.small
+                shape = RoundedCornerShape(8.dp)
             )
             .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
             .semantics(mergeDescendants = true) {
                 contentDescription = text
             }
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.padding(1.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (icon != null) {
                 Icon(
                     imageVector = icon,

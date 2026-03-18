@@ -254,8 +254,6 @@ fun KSVideoPlayer(
                 overlayContent(hazeState)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             ProgressBarContainer(
                 modifier = Modifier,
                 progressProvider = { progress },
@@ -290,7 +288,7 @@ private fun ProgressBarContainer(
     Box(
         modifier = modifier
             .padding(bottom = 24.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = dimensions.paddingMedium)
             .fillMaxWidth()
             .height(48.dp) // Standard touch target height
             .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)

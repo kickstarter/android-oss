@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -22,15 +21,14 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.kickstarter.R
-import com.kickstarter.ui.compose.designsystem.KSButton
-import com.kickstarter.ui.compose.designsystem.KSButtonType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSVideoProgressIndicator
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Check
-import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun KSVideoCampaignCard(
@@ -39,15 +37,13 @@ fun KSVideoCampaignCard(
     subtitle: String,
     buttonText: String,
     onButtonClick: () -> Unit,
-    isBacked: Boolean = false,
-    progress: Float? = null,
-    progressText: String? = null,
-    hazeState: HazeState? = null
+    progress: Float = 0f
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(dimensions.paddingMedium)
+            .padding(horizontal = dimensions.paddingMedium)
+            .padding(vertical = dimensions.paddingXSmall)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -64,47 +60,56 @@ fun KSVideoCampaignCard(
             ) {
                 Text(
                     text = title,
-                    style = typographyV2.headingLG,
+                    style = typographyV2.headingMD,
                     color = Color.White,
                     maxLines = 1,
+                    lineHeight = 20.sp,
                     overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = subtitle,
-                    style = typographyV2.bodySM,
+                    style = typographyV2.headingXS,
                     color = Color.White.copy(alpha = 0.8f),
                     maxLines = 1,
+                    lineHeight = 16.sp,
                     overflow = TextOverflow.Ellipsis
                 )
             }
 
-            if (isBacked) {
+            if (progress >= 100) {
                 KSVideoProgressIndicator(
                     progress = 1f,
                     icon = Check,
-                    contentDescription = stringResource(id = R.string.fpo_You_have_backed_this_project),
-                    hazeState = hazeState
                 )
-            } else if (progress != null && progressText != null) {
+            } else {
+                val progressText = try {
+                    progress.toInt().toString()
+                } catch (exception: Exception) {
+                    ""
+                }
+
                 KSVideoProgressIndicator(
-                    progress = progress,
-                    text = progressText,
-                    hazeState = hazeState
+                    progress = progress / 100,
+                    text = progressText
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-        KSButton(
+        KSOutlinedButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics {
                     role = Role.Button
                 },
-            type = KSButtonType.OUTLINED,
             text = buttonText,
-            onClickAction = onButtonClick
+            textColor = KSTheme.colors.videoPlayerButtonText,
+            backgroundColor = Color.Transparent,
+            onClickAction = {
+                onButtonClick.invoke()
+            }
         )
     }
 }
@@ -120,7 +125,7 @@ fun KSVideoCampaignCardPreview() {
                 subtitle = "$50,134 pledged • Join 431 backers",
                 buttonText = "Back this project",
                 onButtonClick = {},
-                isBacked = true
+                progress = 100.0F,
             )
         }
     }
@@ -136,9 +141,7 @@ fun KSVideoCampaignCardProgressPreview() {
                 subtitle = "$10,903 pledged • Help bring this idea to life",
                 buttonText = "Back this project",
                 onButtonClick = {},
-                isBacked = false,
-                progress = 0.5f,
-                progressText = "50"
+                progress = 50f,
             )
         }
     }

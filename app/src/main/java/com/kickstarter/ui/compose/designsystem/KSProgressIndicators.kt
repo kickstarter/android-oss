@@ -1,7 +1,6 @@
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,9 +33,6 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Check
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.HazeTint
-import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -108,8 +104,6 @@ fun KSCircularProgressIndicator(
 
 /**
  * Progress indicator designed for use within the Video Player.
- * It features a semi-transparent background with optional glassmorphism effect via [HazeState],
- * a circular progress bar and optional text or icon in the center.
  */
 @Composable
 fun KSVideoProgressIndicator(
@@ -118,24 +112,11 @@ fun KSVideoProgressIndicator(
     text: String? = null,
     icon: ImageVector? = null,
     contentDescription: String? = null,
-    hazeState: HazeState? = null
 ) {
     Box(
         modifier = modifier
             .size(44.dp)
             .clip(CircleShape)
-            .background(Color.Black.copy(alpha = 0.4f))
-            .then(
-                if (hazeState != null) {
-                    Modifier.hazeEffect(state = hazeState) {
-                        blurRadius = 28.dp
-                        noiseFactor = 0.05f
-                        val baseColor = Color.Black.copy(alpha = 0.4f)
-                        backgroundColor = baseColor
-                        tints = listOf(HazeTint(baseColor))
-                    }
-                } else Modifier
-            )
             .semantics(mergeDescendants = true) {
                 contentDescription?.let { this.contentDescription = it }
                 text?.let { this.stateDescription = it }
@@ -150,10 +131,10 @@ fun KSVideoProgressIndicator(
                 .fillMaxSize(),
             color = Color.White,
             trackColor = Color.White.copy(alpha = 0.15f),
-            strokeWidth = 4.dp,
+            strokeWidth = 5.dp,
             strokeCap = StrokeCap.Round
         )
-        
+
         if (icon != null) {
             Icon(
                 imageVector = icon,

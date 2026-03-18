@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
+import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -50,6 +51,8 @@ class VideoFeedActivity : ComponentActivity() {
                 val videoFeedUIState = viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 val videoUrl = videoFeedUIState.value.project?.video()?.hls() ?: ""
                 val profileImage = videoFeedUIState.value.project?.creator()?.avatar()?.medium() ?: ""
+                val projectTitle = videoFeedUIState.value.project?.name() ?: "Ringo Move - The Ultimate Workout Bottle"
+                val isBacked = videoFeedUIState.value.project?.isBacking() ?: true
 
                 KSVideoPlayer(
                     videoUrl = videoUrl,
@@ -73,6 +76,15 @@ class VideoFeedActivity : ComponentActivity() {
 
                             KSVideoBadgesRow(
                                 badges = badges,
+                                hazeState = hazeState
+                            )
+
+                            KSVideoCampaignCard(
+                                title = projectTitle,
+                                subtitle = "$50,134 pledged • Join 431 backers",
+                                buttonText = "Back this project",
+                                onButtonClick = { },
+                                isBacked = isBacked,
                                 hazeState = hazeState
                             )
                         }

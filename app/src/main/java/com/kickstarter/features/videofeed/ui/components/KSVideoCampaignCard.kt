@@ -22,7 +22,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -43,7 +42,7 @@ fun KSVideoCampaignCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = dimensions.paddingMedium)
-            .padding(vertical = dimensions.paddingXSmall)
+            .padding(top = dimensions.paddingXSmall)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -60,19 +59,17 @@ fun KSVideoCampaignCard(
             ) {
                 Text(
                     text = title,
-                    style = typographyV2.headingMD,
+                    style = typographyV2.headingLG,
                     color = Color.White,
                     maxLines = 1,
-                    lineHeight = 20.sp,
                     overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = subtitle,
-                    style = typographyV2.headingXS,
+                    style = typographyV2.headingSM,
                     color = Color.White.copy(alpha = 0.8f),
                     maxLines = 1,
-                    lineHeight = 16.sp,
                     overflow = TextOverflow.Ellipsis
                 )
             }

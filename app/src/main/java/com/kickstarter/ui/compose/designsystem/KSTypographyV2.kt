@@ -93,6 +93,7 @@ data class KSTypographyV2(
     val title2: TextStyle = TextStyle.Default,
     val title2Bold: TextStyle = TextStyle.Default,
     val titleRewardBold: TextStyle = TextStyle.Default,
+    val titleBoldSmall: TextStyle = TextStyle.Default,
     val headLine: TextStyle = TextStyle.Default,
     val body: TextStyle = TextStyle.Default,
     val footNote: TextStyle = TextStyle.Default,
@@ -337,6 +338,14 @@ val KSCustomTypographyV2 = KSTypographyV2(
         fontSize = 24.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
+        color = kds_support_700
+    ),
+    titleBoldSmall = TextStyle(
+        fontFamily = interFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = (-0.15).sp,
         color = kds_support_700
     ),
     headLine = TextStyle(

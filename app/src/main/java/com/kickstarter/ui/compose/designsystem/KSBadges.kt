@@ -389,13 +389,13 @@ fun KSVideoBadge(
                 color = Color.White.copy(alpha = 0.25f),
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+            .padding(6.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = text
-            }
+            },
+        contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.padding(1.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (icon != null) {
@@ -405,13 +405,13 @@ fun KSVideoBadge(
                     tint = iconTint,
                     modifier = Modifier
                         .padding(end = dimensions.paddingXSmall)
-                        .size(dimensions.alertIconSize)
+                        .size(16.dp)
                 )
             }
             Text(
                 text = text,
                 color = Color.White,
-                style = typographyV2.footNoteMedium,
+                style = typographyV2.titleBoldSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

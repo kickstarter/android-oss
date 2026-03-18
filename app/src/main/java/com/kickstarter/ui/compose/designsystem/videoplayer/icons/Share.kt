@@ -20,33 +20,33 @@ val Share: ImageVector
         }
         _Share = ImageVector.Builder(
             name = "Share",
-            defaultWidth = 19.dp,
-            defaultHeight = 16.dp,
-            viewportWidth = 19f,
-            viewportHeight = 16f
+            defaultWidth = 28.dp,
+            defaultHeight = 28.dp,
+            viewportWidth = 28f,
+            viewportHeight = 28f
         ).apply {
             path(
                 fill = SolidColor(Color.White),
                 pathFillType = PathFillType.EvenOdd
             ) {
-                moveTo(10.258f, 0.342f)
-                curveTo(10.714f, -0.114f, 11.453f, -0.114f, 11.908f, 0.342f)
-                lineTo(18.325f, 6.758f)
-                curveTo(18.781f, 7.214f, 18.781f, 7.953f, 18.325f, 8.408f)
-                lineTo(11.908f, 14.825f)
-                curveTo(11.453f, 15.281f, 10.714f, 15.281f, 10.258f, 14.825f)
-                curveTo(9.803f, 14.369f, 9.803f, 13.631f, 10.258f, 13.175f)
-                lineTo(14.683f, 8.75f)
-                horizontalLineTo(5.833f)
-                curveTo(3.9f, 8.75f, 2.333f, 10.317f, 2.333f, 12.25f)
-                verticalLineTo(14f)
-                curveTo(2.333f, 14.644f, 1.811f, 15.167f, 1.167f, 15.167f)
-                curveTo(0.522f, 15.167f, 0f, 14.644f, 0f, 14f)
-                verticalLineTo(12.25f)
-                curveTo(0f, 9.028f, 2.612f, 6.417f, 5.833f, 6.417f)
-                horizontalLineTo(14.683f)
-                lineTo(10.258f, 1.992f)
-                curveTo(9.803f, 1.536f, 9.803f, 0.797f, 10.258f, 0.342f)
+                moveTo(14.925f, 6.758f)
+                curveTo(15.381f, 6.303f, 16.119f, 6.303f, 16.575f, 6.758f)
+                lineTo(22.992f, 13.175f)
+                curveTo(23.447f, 13.631f, 23.447f, 14.369f, 22.992f, 14.825f)
+                lineTo(16.575f, 21.242f)
+                curveTo(16.119f, 21.697f, 15.381f, 21.697f, 14.925f, 21.242f)
+                curveTo(14.469f, 20.786f, 14.469f, 20.047f, 14.925f, 19.592f)
+                lineTo(19.35f, 15.167f)
+                horizontalLineTo(10.5f)
+                curveTo(8.567f, 15.167f, 7f, 16.734f, 7f, 18.667f)
+                verticalLineTo(20.417f)
+                curveTo(7f, 21.061f, 6.478f, 21.583f, 5.833f, 21.583f)
+                curveTo(5.189f, 21.583f, 4.667f, 21.061f, 4.667f, 20.417f)
+                verticalLineTo(18.667f)
+                curveTo(4.667f, 15.445f, 7.278f, 12.833f, 10.5f, 12.833f)
+                horizontalLineTo(19.35f)
+                lineTo(14.925f, 8.408f)
+                curveTo(14.469f, 7.953f, 14.469f, 7.214f, 14.925f, 6.758f)
                 close()
             }
         }.build()
@@ -59,7 +59,7 @@ private var _Share: ImageVector? = null
 
 @Preview
 @Composable
-private fun SharePreview() {
+private fun ReplyPreview() {
     Box(modifier = Modifier.padding(12.dp)) {
         Image(imageVector = Share, contentDescription = null)
     }

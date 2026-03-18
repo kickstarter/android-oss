@@ -187,6 +187,6 @@ val KSStandardDimensions = KSDimensions(
     navAvatarSize = 32.dp,
 
     // Video Player dimensions
-    videoPlayerIconSize = 28.dp,
+    videoPlayerIconSize = 32.dp,
     videoPlayerShadowBlur = 2.42.dp
 )

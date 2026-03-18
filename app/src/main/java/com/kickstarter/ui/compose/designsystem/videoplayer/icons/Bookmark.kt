@@ -42,7 +42,7 @@ val Bookmark: ImageVector
                 verticalLineTo(23.326f)
                 curveTo(5.833f, 24.289f, 6.934f, 24.837f, 7.702f, 24.257f)
                 lineTo(13.298f, 20.039f)
-                curveTo(13.713f, 19.725f, 14.287f, 19.725f, 14.702f, 20.039f)
+                curveTo(13.713f, 19.725f, 14.286f, 19.725f, 14.702f, 20.039f)
                 lineTo(20.298f, 24.257f)
                 curveTo(21.066f, 24.837f, 22.167f, 24.289f, 22.167f, 23.326f)
                 verticalLineTo(4.667f)

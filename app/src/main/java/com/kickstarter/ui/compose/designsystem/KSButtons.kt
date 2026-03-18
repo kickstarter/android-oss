@@ -912,7 +912,7 @@ fun KSProfileButton(
 
     Box(
         modifier = modifier
-            .size(dimensions.iconPillButtonSize)
+            .size(dimensions.videoPlayerIconSize)
             .clip(CircleShape)
             .clickable(
                 interactionSource = interactionSource,
@@ -953,10 +953,9 @@ fun KSVideoPlayerIconButton(
             )
             .padding(vertical = dimensions.paddingSmall)
     ) {
-        Icon(
+        Image(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = colors.videoPlayerContent,
             modifier = Modifier
                 .size(dimensions.videoPlayerIconSize)
                 .dropShadow(

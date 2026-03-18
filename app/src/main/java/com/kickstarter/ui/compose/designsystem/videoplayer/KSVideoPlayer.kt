@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
@@ -244,10 +245,17 @@ fun KSVideoPlayer(
             forwardCallback = onForward
         )
 
-        // Bottom area container for badges and progress bar
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0f),
+                            Color.Black.copy(alpha = 0.75f)
+                        )
+                    )
+                )
                 .fillMaxWidth()
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {

@@ -42,7 +42,7 @@ class VideoFeedViewModel(
             )
 
     init {
-        getProject("locodanceco/loco-dance-cos-evening-length-work-wake-up")
+        getProject("ringobottle/ringo-move")
     }
 
     private fun getProject(slug: String) {

@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.PathData
 import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +20,22 @@ import androidx.compose.ui.unit.dp
 private fun WhatshotPreview() {
     Box(modifier = Modifier.padding(12.dp)) {
         Image(imageVector = Whatshot, contentDescription = null)
+    }
+}
+
+@Preview
+@Composable
+private fun ProjectWeLovePreview() {
+    Box(modifier = Modifier.padding(12.dp)) {
+        Image(imageVector = ProjectWeLove, contentDescription = null)
+    }
+}
+
+@Preview
+@Composable
+private fun ClockPreview() {
+    Box(modifier = Modifier.padding(12.dp)) {
+        Image(imageVector = Clock, contentDescription = null)
     }
 }
 
@@ -145,63 +162,6 @@ val secretRewardLock: ImageVector
 
 private var _secretRewardLock: ImageVector? = null
 
-val projectWeLove: ImageVector
-    get() {
-        if (_projectWeLove != null) return _projectWeLove!!
-
-        _projectWeLove = ImageVector.Builder(
-            name = "projectWeLove",
-            defaultWidth = 16.dp,
-            defaultHeight = 16.dp,
-            viewportWidth = 16f,
-            viewportHeight = 16f
-        ).apply {
-            path(
-                fill = SolidColor(green_05),
-                pathFillType = PathFillType.EvenOdd
-            ) {
-                moveTo(5.787f, 1.669f)
-                curveTo(6.792f, 0.003f, 9.208f, 0.003f, 10.213f, 1.669f)
-                curveTo(10.672f, 2.429f, 11.489f, 2.901f, 12.377f, 2.918f)
-                curveTo(14.322f, 2.955f, 15.53f, 5.048f, 14.59f, 6.751f)
-                curveTo(14.16f, 7.528f, 14.16f, 8.472f, 14.59f, 9.249f)
-                curveTo(15.53f, 10.953f, 14.322f, 13.045f, 12.377f, 13.082f)
-                curveTo(11.489f, 13.099f, 10.672f, 13.571f, 10.213f, 14.331f)
-                curveTo(9.208f, 15.997f, 6.792f, 15.997f, 5.787f, 14.331f)
-                curveTo(5.328f, 13.571f, 4.511f, 13.099f, 3.623f, 13.082f)
-                curveTo(1.678f, 13.045f, 0.47f, 10.953f, 1.41f, 9.249f)
-                curveTo(1.84f, 8.472f, 1.84f, 7.528f, 1.41f, 6.751f)
-                curveTo(0.47f, 5.048f, 1.678f, 2.955f, 3.623f, 2.918f)
-                curveTo(4.511f, 2.901f, 5.328f, 2.429f, 5.787f, 1.669f)
-                close()
-                moveTo(8.036f, 7.034f)
-                curveTo(8.372f, 7.022f, 8.68f, 6.841f, 8.854f, 6.554f)
-                curveTo(8.855f, 6.554f, 8.855f, 6.553f, 8.856f, 6.552f)
-                curveTo(8.861f, 6.545f, 8.873f, 6.527f, 8.894f, 6.502f)
-                curveTo(8.935f, 6.451f, 9.003f, 6.376f, 9.098f, 6.3f)
-                curveTo(9.282f, 6.154f, 9.569f, 6f, 10f, 6f)
-                curveTo(10.42f, 6f, 10.615f, 6.141f, 10.733f, 6.293f)
-                curveTo(10.88f, 6.482f, 11f, 6.821f, 11f, 7.322f)
-                curveTo(11f, 7.674f, 10.864f, 8.235f, 10.176f, 8.925f)
-                lineTo(8f, 10.707f)
-                lineTo(5.824f, 8.925f)
-                curveTo(5.136f, 8.235f, 5f, 7.674f, 5f, 7.322f)
-                curveTo(5f, 6.786f, 5.109f, 6.444f, 5.239f, 6.261f)
-                curveTo(5.329f, 6.134f, 5.482f, 6f, 5.896f, 6f)
-                curveTo(6.333f, 6f, 6.656f, 6.158f, 6.879f, 6.323f)
-                curveTo(6.992f, 6.406f, 7.076f, 6.488f, 7.128f, 6.545f)
-                curveTo(7.153f, 6.574f, 7.17f, 6.595f, 7.179f, 6.605f)
-                curveTo(7.18f, 6.608f, 7.182f, 6.609f, 7.183f, 6.611f)
-                curveTo(7.377f, 6.886f, 7.698f, 7.046f, 8.036f, 7.034f)
-                close()
-            }
-        }.build()
-
-        return _projectWeLove!!
-    }
-
-private var _projectWeLove: ImageVector? = null
-
 val Whatshot: ImageVector
     get() {
         if (_Whatshot != null) {
@@ -263,3 +223,153 @@ val Whatshot: ImageVector
 
 @Suppress("ObjectPropertyName")
 private var _Whatshot: ImageVector? = null
+
+val ProjectWeLove: ImageVector
+    get() {
+        if (_ProjectWeLove != null) {
+            return _ProjectWeLove!!
+        }
+        _ProjectWeLove = ImageVector.Builder(
+            name = "ProjectWeLove",
+            defaultWidth = 16.dp,
+            defaultHeight = 16.dp,
+            viewportWidth = 16f,
+            viewportHeight = 16f
+        ).apply {
+            group(
+                clipPathData = PathData {
+                    moveTo(0f, 0f)
+                    horizontalLineToRelative(16f)
+                    verticalLineToRelative(16f)
+                    horizontalLineToRelative(-16f)
+                    close()
+                }
+            ) {
+                path(fill = SolidColor(Color(0xFF05CE78))) {
+                    moveTo(5.787f, 1.669f)
+                    curveTo(6.792f, 0.003f, 9.208f, 0.003f, 10.213f, 1.669f)
+                    curveTo(10.672f, 2.429f, 11.489f, 2.901f, 12.377f, 2.918f)
+                    curveTo(14.322f, 2.955f, 15.53f, 5.048f, 14.59f, 6.751f)
+                    curveTo(14.16f, 7.528f, 14.16f, 8.472f, 14.59f, 9.249f)
+                    curveTo(15.53f, 10.953f, 14.322f, 13.045f, 12.377f, 13.082f)
+                    curveTo(11.489f, 13.099f, 10.672f, 13.571f, 10.213f, 14.331f)
+                    curveTo(9.208f, 15.997f, 6.792f, 15.997f, 5.787f, 14.331f)
+                    curveTo(5.328f, 13.571f, 4.511f, 13.099f, 3.623f, 13.082f)
+                    curveTo(1.678f, 13.045f, 0.47f, 10.953f, 1.41f, 9.249f)
+                    curveTo(1.84f, 8.472f, 1.84f, 7.528f, 1.41f, 6.751f)
+                    curveTo(0.47f, 5.048f, 1.678f, 2.955f, 3.623f, 2.918f)
+                    curveTo(4.511f, 2.901f, 5.328f, 2.429f, 5.787f, 1.669f)
+                    close()
+                }
+                path(
+                    fill = SolidColor(Color(0xFF024629)),
+                    pathFillType = PathFillType.EvenOdd
+                ) {
+                    moveTo(3.61f, 5.1f)
+                    curveTo(4.119f, 4.386f, 4.914f, 4f, 5.896f, 4f)
+                    curveTo(6.796f, 4f, 7.492f, 4.315f, 7.971f, 4.645f)
+                    curveTo(8.437f, 4.307f, 9.112f, 4f, 10f, 4f)
+                    curveTo(10.976f, 4f, 11.781f, 4.38f, 12.314f, 5.068f)
+                    curveTo(12.818f, 5.72f, 13f, 6.543f, 13f, 7.322f)
+                    curveTo(13f, 8.293f, 12.586f, 9.359f, 11.548f, 10.381f)
+                    curveTo(11.526f, 10.402f, 11.503f, 10.422f, 11.48f, 10.441f)
+                    lineTo(8.634f, 12.774f)
+                    curveTo(8.265f, 13.075f, 7.735f, 13.075f, 7.366f, 12.774f)
+                    lineTo(4.52f, 10.441f)
+                    curveTo(4.497f, 10.422f, 4.474f, 10.402f, 4.452f, 10.381f)
+                    curveTo(3.414f, 9.359f, 3f, 8.293f, 3f, 7.322f)
+                    curveTo(3f, 6.577f, 3.141f, 5.759f, 3.61f, 5.1f)
+                    close()
+                    moveTo(8.863f, 6.539f)
+                    curveTo(8.86f, 6.544f, 8.857f, 6.549f, 8.854f, 6.554f)
+                    curveTo(8.853f, 6.556f, 8.853f, 6.557f, 8.854f, 6.555f)
+                    lineTo(8.857f, 6.549f)
+                    lineTo(8.86f, 6.545f)
+                    lineTo(8.862f, 6.542f)
+                    lineTo(8.863f, 6.54f)
+                    lineTo(8.863f, 6.539f)
+                    close()
+                    moveTo(10.176f, 8.925f)
+                    curveTo(10.864f, 8.235f, 11f, 7.674f, 11f, 7.322f)
+                    curveTo(11f, 6.821f, 10.88f, 6.482f, 10.733f, 6.293f)
+                    curveTo(10.615f, 6.141f, 10.42f, 6f, 10f, 6f)
+                    curveTo(9.569f, 6f, 9.282f, 6.154f, 9.098f, 6.3f)
+                    curveTo(9.003f, 6.376f, 8.935f, 6.451f, 8.894f, 6.502f)
+                    curveTo(8.873f, 6.527f, 8.861f, 6.545f, 8.856f, 6.552f)
+                    curveTo(8.855f, 6.553f, 8.855f, 6.554f, 8.854f, 6.554f)
+                    curveTo(8.68f, 6.841f, 8.372f, 7.022f, 8.036f, 7.034f)
+                    curveTo(7.698f, 7.046f, 7.377f, 6.886f, 7.183f, 6.611f)
+                    curveTo(7.182f, 6.609f, 7.18f, 6.608f, 7.179f, 6.605f)
+                    curveTo(7.17f, 6.595f, 7.153f, 6.574f, 7.128f, 6.545f)
+                    curveTo(7.076f, 6.488f, 6.992f, 6.406f, 6.879f, 6.323f)
+                    curveTo(6.656f, 6.158f, 6.333f, 6f, 5.896f, 6f)
+                    curveTo(5.482f, 6f, 5.329f, 6.134f, 5.239f, 6.261f)
+                    curveTo(5.109f, 6.444f, 5f, 6.786f, 5f, 7.322f)
+                    curveTo(5f, 7.674f, 5.136f, 8.235f, 5.824f, 8.925f)
+                    lineTo(8f, 10.707f)
+                    lineTo(10.176f, 8.925f)
+                    close()
+                }
+            }
+        }.build()
+
+        return _ProjectWeLove!!
+    }
+
+@Suppress("ObjectPropertyName")
+private var _ProjectWeLove: ImageVector? = null
+
+val Clock: ImageVector
+    get() {
+        if (_Clock != null) {
+            return _Clock!!
+        }
+        _Clock = ImageVector.Builder(
+            name = "Clock",
+            defaultWidth = 16.dp,
+            defaultHeight = 16.dp,
+            viewportWidth = 16f,
+            viewportHeight = 16f
+        ).apply {
+            group(
+                clipPathData = PathData {
+                    moveTo(0f, 0f)
+                    horizontalLineToRelative(16f)
+                    verticalLineToRelative(16f)
+                    horizontalLineToRelative(-16f)
+                    close()
+                }
+            ) {
+                path(fill = SolidColor(Color.White)) {
+                    moveTo(8f, 0f)
+                    curveTo(12.418f, 0f, 16f, 3.582f, 16f, 8f)
+                    curveTo(16f, 12.418f, 12.418f, 16f, 8f, 16f)
+                    curveTo(3.582f, 16f, 0f, 12.418f, 0f, 8f)
+                    curveTo(0f, 3.582f, 3.582f, 0f, 8f, 0f)
+                    close()
+                    moveTo(8f, 2f)
+                    curveTo(4.686f, 2f, 2f, 4.686f, 2f, 8f)
+                    curveTo(2f, 11.314f, 4.686f, 14f, 8f, 14f)
+                    curveTo(11.314f, 14f, 14f, 11.314f, 14f, 8f)
+                    curveTo(14f, 4.686f, 11.314f, 2f, 8f, 2f)
+                    close()
+                    moveTo(8f, 3f)
+                    curveTo(8.552f, 3f, 9f, 3.448f, 9f, 4f)
+                    verticalLineTo(8f)
+                    horizontalLineTo(11f)
+                    curveTo(11.552f, 8f, 12f, 8.448f, 12f, 9f)
+                    curveTo(12f, 9.552f, 11.552f, 10f, 11f, 10f)
+                    horizontalLineTo(8f)
+                    curveTo(7.448f, 10f, 7f, 9.552f, 7f, 9f)
+                    verticalLineTo(4f)
+                    curveTo(7f, 3.448f, 7.448f, 3f, 8f, 3f)
+                    close()
+                }
+            }
+        }.build()
+
+        return _Clock!!
+    }
+
+@Suppress("ObjectPropertyName")
+private var _Clock: ImageVector? = null

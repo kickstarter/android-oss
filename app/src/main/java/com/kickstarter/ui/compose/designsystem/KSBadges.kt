@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -365,7 +364,6 @@ fun KSVideoBadge(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector? = null,
-    iconTint: Color = Color.White,
     hazeState: HazeState? = null
 ) {
     Box(
@@ -399,10 +397,9 @@ fun KSVideoBadge(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (icon != null) {
-                Icon(
+                Image(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = iconTint,
                     modifier = Modifier
                         .padding(end = dimensions.paddingXSmall)
                         .size(16.dp)
@@ -427,8 +424,7 @@ fun KSProjectWeLoveVideoBadge(
     KSVideoBadge(
         modifier = modifier,
         text = stringResource(R.string.fpo_Project_We_Love),
-        icon = projectWeLove,
-        iconTint = colors.kds_create_500,
+        icon = ProjectWeLove,
         hazeState = hazeState
     )
 }
@@ -442,7 +438,7 @@ fun KSDaysLeftVideoBadge(
     KSVideoBadge(
         modifier = modifier,
         text = text,
-        icon = ImageVector.vectorResource(id = R.drawable.ic_clock),
+        icon = Clock,
         hazeState = hazeState
     )
 }

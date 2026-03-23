@@ -39,7 +39,7 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `KSVideoCampaignCard shows backed indicator when isBacked is true`() {
+    fun `KSVideoCampaignCard indicator when funded progress less than 100`() {
         composeTestRule.setContent {
             KSTheme {
                 KSVideoCampaignCard(
@@ -47,17 +47,15 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
                     subtitle = "Subtitle",
                     buttonText = "Button",
                     onButtonClick = {},
-                    isBacked = true
+                    progress = 0.5f
                 )
             }
         }
 
-        val backedDescription = context().getString(R.string.fpo_You_have_backed_this_project)
-        composeTestRule.onNodeWithContentDescription(backedDescription).assertIsDisplayed()
     }
 
     @Test
-    fun `KSVideoCampaignCard shows progress indicator when not backed but progress provided`() {
+    fun `KSVideoCampaignCard indicator when funded progress equals of more than 100`() {
         composeTestRule.setContent {
             KSTheme {
                 KSVideoCampaignCard(
@@ -65,34 +63,10 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
                     subtitle = "Subtitle",
                     buttonText = "Button",
                     onButtonClick = {},
-                    isBacked = false,
-                    progress = 0.5f,
-                    progressText = "50"
+                    progress = 1.0f
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("50").assertIsDisplayed()
-
-        val backedDescription = context().getString(R.string.fpo_You_have_backed_this_project)
-        composeTestRule.onNodeWithContentDescription(backedDescription).assertDoesNotExist()
-    }
-
-    @Test
-    fun `KSVideoCampaignCard does not show backed indicator when isBacked is false`() {
-        composeTestRule.setContent {
-            KSTheme {
-                KSVideoCampaignCard(
-                    title = "Title",
-                    subtitle = "Subtitle",
-                    buttonText = "Button",
-                    onButtonClick = {},
-                    isBacked = false
-                )
-            }
-        }
-
-        val backedDescription = context().getString(R.string.fpo_You_have_backed_this_project)
-        composeTestRule.onNodeWithContentDescription(backedDescription).assertDoesNotExist()
     }
 }

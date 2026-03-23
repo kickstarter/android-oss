@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -29,6 +30,20 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSVideoProgressIndicator
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Check
 
+enum class KSVideoCampaignCardTestTag {
+    CARD_CONTAINER,
+    TITLE_SUBTITLE_CONTAINER,
+    PROGRESS_INDICATOR,
+    BUTTON
+}
+
+/**
+ * A composable card component used within the video feed to display campaign information and progress.
+ *
+ * This component displays the project title, subtitle, a circular progress indicator,
+ * and a primary call-to-action button. It is designed to be used as an overlay or
+ * complementary UI element in a video-focused interface.
+ */
 @Composable
 fun KSVideoCampaignCard(
     modifier: Modifier = Modifier,
@@ -43,14 +58,17 @@ fun KSVideoCampaignCard(
             .fillMaxWidth()
             .padding(horizontal = dimensions.paddingMedium)
             .padding(top = dimensions.paddingXSmall)
+            .testTag(KSVideoCampaignCardTestTag.CARD_CONTAINER.name)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-            modifier = Modifier.semantics(mergeDescendants = true) {
-                // Combine title and subtitle for a better screen reader experience
-                contentDescription = "$title, $subtitle"
-            }
+            modifier = Modifier
+                .semantics(mergeDescendants = true) {
+                    // Combine title and subtitle for a better screen reader experience
+                    contentDescription = "$title, $subtitle"
+                }
+                .testTag(KSVideoCampaignCardTestTag.TITLE_SUBTITLE_CONTAINER.name)
         ) {
             Column(
                 modifier = Modifier
@@ -74,23 +92,16 @@ fun KSVideoCampaignCard(
                 )
             }
 
-            if (progress >= 100) {
-                KSVideoProgressIndicator(
-                    progress = 1f,
-                    icon = Check,
-                )
-            } else {
-                val progressText = try {
-                    progress.toInt().toString()
-                } catch (exception: Exception) {
-                    ""
-                }
+            val isComplete = progress >= 100
+            val progressValue = (progress / 100f).coerceIn(0f, 1f)
 
-                KSVideoProgressIndicator(
-                    progress = progress / 100,
-                    text = progressText
-                )
-            }
+            KSVideoProgressIndicator(
+                modifier = Modifier.testTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name),
+                progress = progressValue,
+                icon = if (isComplete) Check else null,
+                text = if (!isComplete) progress.toInt().toString() else "",
+                contentDescription = if (isComplete) "Campaign goal reached" else "" // TODO extract to resources
+            )
         }
 
         Spacer(modifier = Modifier.height(dimensions.paddingMedium))
@@ -100,7 +111,8 @@ fun KSVideoCampaignCard(
                 .fillMaxWidth()
                 .semantics {
                     role = Role.Button
-                },
+                }
+                .testTag(KSVideoCampaignCardTestTag.BUTTON.name),
             text = buttonText,
             textColor = KSTheme.colors.videoPlayerButtonText,
             backgroundColor = Color.Transparent,

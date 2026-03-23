@@ -109,17 +109,17 @@ fun KSCircularProgressIndicator(
 fun KSVideoProgressIndicator(
     modifier: Modifier = Modifier,
     progress: Float,
-    text: String? = null,
+    text: String = "",
     icon: ImageVector? = null,
-    contentDescription: String? = null,
+    contentDescription: String = "",
 ) {
     Box(
         modifier = modifier
             .size(44.dp)
             .clip(CircleShape)
             .semantics(mergeDescendants = true) {
-                contentDescription?.let { this.contentDescription = it }
-                text?.let { this.stateDescription = it }
+                this.contentDescription = contentDescription
+                this.stateDescription = text
                 this.progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
             },
         contentAlignment = Alignment.Center
@@ -142,12 +142,12 @@ fun KSVideoProgressIndicator(
                 tint = Color.White,
                 modifier = Modifier.size(dimensions.iconSizeMedium)
             )
-        } else if (text != null) {
-            Text(
-                text = text,
-                color = Color.White,
-                style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
-            )
         }
+
+        Text(
+            text = text,
+            color = Color.White,
+            style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
+        )
     }
 }

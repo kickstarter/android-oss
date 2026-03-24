@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -365,12 +364,11 @@ fun KSVideoBadge(
     modifier: Modifier = Modifier,
     text: String,
     icon: ImageVector? = null,
-    iconTint: Color = Color.White,
     hazeState: HazeState? = null
 ) {
     Box(
         modifier = modifier
-            .clip(shapes.small)
+            .clip(RoundedCornerShape(8.dp))
             .then(
                 if (hazeState != null) {
                     Modifier.hazeEffect(state = hazeState) {
@@ -387,28 +385,30 @@ fun KSVideoBadge(
             .border(
                 width = 1.38.dp,
                 color = Color.White.copy(alpha = 0.25f),
-                shape = shapes.small
+                shape = RoundedCornerShape(8.dp)
             )
-            .padding(horizontal = dimensions.paddingSmall, vertical = dimensions.paddingXSmall)
+            .padding(6.dp)
             .semantics(mergeDescendants = true) {
                 contentDescription = text
-            }
+            },
+        contentAlignment = Alignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (icon != null) {
-                Icon(
+                Image(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = iconTint,
                     modifier = Modifier
                         .padding(end = dimensions.paddingXSmall)
-                        .size(dimensions.alertIconSize)
+                        .size(16.dp)
                 )
             }
             Text(
                 text = text,
                 color = Color.White,
-                style = typographyV2.footNoteMedium,
+                style = typographyV2.titleBoldSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -424,8 +424,7 @@ fun KSProjectWeLoveVideoBadge(
     KSVideoBadge(
         modifier = modifier,
         text = stringResource(R.string.fpo_Project_We_Love),
-        icon = projectWeLove,
-        iconTint = colors.kds_create_500,
+        icon = ProjectWeLove,
         hazeState = hazeState
     )
 }
@@ -439,7 +438,7 @@ fun KSDaysLeftVideoBadge(
     KSVideoBadge(
         modifier = modifier,
         text = text,
-        icon = ImageVector.vectorResource(id = R.drawable.ic_clock),
+        icon = Clock,
         hazeState = hazeState
     )
 }

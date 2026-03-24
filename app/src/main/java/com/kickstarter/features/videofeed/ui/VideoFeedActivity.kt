@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,10 +16,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
+import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import kotlin.getValue
 
@@ -50,6 +53,8 @@ class VideoFeedActivity : ComponentActivity() {
                 val videoFeedUIState = viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 val videoUrl = videoFeedUIState.value.project?.video()?.hls() ?: ""
                 val profileImage = videoFeedUIState.value.project?.creator()?.avatar()?.medium() ?: ""
+                val projectTitle = videoFeedUIState.value.project?.name() ?: "Ringo Move - The Ultimate Workout Bottle"
+                val percentageFounded = videoFeedUIState.value.project?.percentageFunded() ?: 0f
 
                 KSVideoPlayer(
                     videoUrl = videoUrl,
@@ -59,7 +64,9 @@ class VideoFeedActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             KSVideoActionsColumn(
-                                modifier = Modifier.align(Alignment.End),
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(end = dimensions.paddingMediumLarge),
                                 profileImageUrl = profileImage,
                                 bookmarkCount = "1k",
                                 shareCount = "50",
@@ -74,6 +81,14 @@ class VideoFeedActivity : ComponentActivity() {
                             KSVideoBadgesRow(
                                 badges = badges,
                                 hazeState = hazeState
+                            )
+
+                            KSVideoCampaignCard(
+                                title = projectTitle,
+                                subtitle = "$50,134 pledged • Join 431 backers",
+                                buttonText = "Back this project",
+                                onButtonClick = { },
+                                progress = percentageFounded
                             )
                         }
                     }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.ui.compose.designsystem.KSAlmostThereVideoBadge
@@ -25,6 +27,10 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTrendingVideoBadge
 import dev.chrisbanes.haze.HazeState
 
+enum class KSVideoBadgesRowTestTag {
+    BADGES_ROW_CONTAINER
+}
+
 @Composable
 fun KSVideoBadgesRow(
     modifier: Modifier = Modifier,
@@ -34,7 +40,10 @@ fun KSVideoBadgesRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensions.paddingMedium),
+            .padding(horizontal = dimensions.paddingMedium)
+            .padding(vertical = dimensions.paddingXSmall)
+            .semantics(mergeDescendants = true) {}
+            .testTag(KSVideoBadgesRowTestTag.BADGES_ROW_CONTAINER.name),
         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
     ) {
         // - Only show the first 2 badges from the list

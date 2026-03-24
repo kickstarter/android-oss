@@ -42,7 +42,8 @@ class VideoFeedViewModel(
             )
 
     init {
-        getProject("musicalbeings/tembo-a-new-musical-instrument-for-playful-music-making")
+        // getProject("wowfactories/the-combine-driver-2-in-1-ratchet-and-torque-screwdriver")
+        getProject("ringobottle/ringo-move")
     }
 
     private fun getProject(slug: String) {

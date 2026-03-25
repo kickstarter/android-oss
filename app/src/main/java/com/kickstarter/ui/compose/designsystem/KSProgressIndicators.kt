@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -210,7 +211,10 @@ fun KSVideoProgressIndicator(
         modifier = modifier
             .size(44.dp)
             .semantics(mergeDescendants = true) {
-                this.contentDescription = contentDescription
+                if (contentDescription.isNotEmpty()) {
+                    this.contentDescription = contentDescription
+                }
+                this.stateDescription = text
                 this.progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
             },
         contentAlignment = Alignment.Center

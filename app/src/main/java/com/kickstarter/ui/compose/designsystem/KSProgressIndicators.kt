@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -123,51 +124,57 @@ fun KSCircularProgressIndicator(
  */
 @Composable
 fun KSVideoProgressIndicator(
-    progress: Float, // Expected 0.0 to 1.0 from the Card
+    progress: Float,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     text: String = "",
     contentDescription: String = "",
     baseColor: Color = Color.White,
-    completeColor: Color = Color(0xFF8CE71A), // JSON Green
+    completeColor: Color = Color(0xFF8CE71A), // [0.55, 0.906, 0.1] from JSON
     trackColor: Color = Color.White.copy(alpha = 0.2f)
 ) {
-    // 1. Technical Constants from JSON
     val lottieEasing = CubicBezierEasing(0.15f, 0f, 0.27f, 1f)
-    val strokeRatio = 120f / 638f
 
-    // 2. Animation State Management
-    var targetProgress by remember { mutableFloatStateOf(0f) }
+    // Animation States
+    var targetProgressValue by remember { mutableFloatStateOf(0f) }
     val pulseScale = remember { Animatable(1f) }
-    var isAnimationComplete by remember { mutableStateOf(false) }
+
+    // 0: Initial, 1: Success (Green), 2: Settle (White)
+    var completionPhase by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(progress) {
-        targetProgress = progress
+        targetProgressValue = progress
     }
 
-    // The "Running" Sweep Animation
     val animatedProgress by animateFloatAsState(
-        targetValue = targetProgress.coerceIn(0f, 1f),
+        targetValue = targetProgressValue.coerceIn(0f, 1f),
         animationSpec = tween(durationMillis = 800, easing = lottieEasing),
         label = "ProgressSweep"
     )
 
-    // 3. Phase Trigger: Run Pulse and Color shift once sweep hits 100%
+    // Sequence Trigger: Handles the Green -> White transition from frames 216-252
     LaunchedEffect(animatedProgress >= 1f) {
         if (animatedProgress >= 1f) {
-            isAnimationComplete = true
-            // Pulse Up (Frames 125-150 in JSON)
+            // Step 1: Hit Success Phase (Green + Pulse Up)
+            completionPhase = 1
             pulseScale.animateTo(1.06f, tween(300, easing = lottieEasing))
-            // Settle Down (Frames 216-252 in JSON)
+
+            // Step 2: Settle Phase (Back to White + Scale Down)
+            completionPhase = 2
             pulseScale.animateTo(1f, tween(300, easing = lottieEasing))
         } else {
-            isAnimationComplete = false
+            completionPhase = 0
             pulseScale.snapTo(1f)
         }
     }
 
+    // Color logic mapping to the JSON keyframes
     val animatedColor by animateColorAsState(
-        targetValue = if (isAnimationComplete) completeColor else baseColor,
+        targetValue = when (completionPhase) {
+            1 -> completeColor // Success Green
+            2 -> baseColor     // Settles back to White
+            else -> baseColor
+        },
         animationSpec = tween(500),
         label = "ColorPhase"
     )
@@ -183,42 +190,34 @@ fun KSVideoProgressIndicator(
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val strokeWidthPx = size.width * strokeRatio
+            val strokeWidthPx = size.width * (120f / 638f)
             val radius = (size.width - strokeWidthPx) / 2
 
-            // Background Track (Layer 3)
-            drawCircle(
-                color = trackColor,
-                radius = radius,
-                style = Stroke(width = strokeWidthPx)
-            )
+            // Track
+            drawCircle(color = trackColor, radius = radius, style = Stroke(width = strokeWidthPx))
 
-            // Progress Arc (Layer 2)
+            // Progress Arc
             if (animatedProgress > 0f) {
                 drawArc(
                     color = animatedColor,
                     startAngle = -90f,
                     sweepAngle = 360f * animatedProgress,
                     useCenter = false,
-                    style = Stroke(
-                        width = strokeWidthPx,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round
-                    )
+                    style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
             }
         }
 
-        // Layer 1: Icon/Text Reveal
-        Crossfade(targetState = isAnimationComplete, label = "ContentFade") { completed ->
-            if (completed && icon != null) {
+        // Show Icon/Text based on the completion phase
+        Crossfade(targetState = completionPhase >= 1, label = "ContentFade") { isFinished ->
+            if (isFinished && icon != null) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     tint = animatedColor,
                     modifier = Modifier.fillMaxSize(0.5f)
                 )
-            } else if (!completed && text.isNotEmpty()) {
+            } else if (!isFinished && text.isNotEmpty()) {
                 Text(
                     text = text,
                     color = Color.White,

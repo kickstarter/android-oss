@@ -63,9 +63,9 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
             }
         }
 
-        // Verify progress indicator tag and its state/range info
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name)
             .assertIsDisplayed()
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf(""))) // No content description when not fully funded
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "50"))
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.ProgressBarRangeInfo, ProgressBarRangeInfo(0.5f, 0f..1f)))
     }
@@ -85,7 +85,6 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
             }
         }
 
-        // Verify content description for completion and state description is empty
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name)
             .assertIsDisplayed()
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf("Campaign goal reached")))

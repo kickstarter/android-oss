@@ -1,6 +1,13 @@
 package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,11 +22,20 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
@@ -107,47 +123,108 @@ fun KSCircularProgressIndicator(
  */
 @Composable
 fun KSVideoProgressIndicator(
+    progress: Float, // Expected 0.0 to 1.0 from the Card
     modifier: Modifier = Modifier,
-    progress: Float,
-    text: String = "",
     icon: ImageVector? = null,
+    text: String = "",
     contentDescription: String = "",
+    baseColor: Color = Color.White,
+    completeColor: Color = Color(0xFF8CE71A), // JSON Green
+    trackColor: Color = Color.White.copy(alpha = 0.2f)
 ) {
+    // 1. Technical Constants from JSON
+    val lottieEasing = CubicBezierEasing(0.15f, 0f, 0.27f, 1f)
+    val strokeRatio = 120f / 638f
+
+    // 2. Animation State Management
+    var targetProgress by remember { mutableFloatStateOf(0f) }
+    val pulseScale = remember { Animatable(1f) }
+    var isAnimationComplete by remember { mutableStateOf(false) }
+
+    LaunchedEffect(progress) {
+        targetProgress = progress
+    }
+
+    // The "Running" Sweep Animation
+    val animatedProgress by animateFloatAsState(
+        targetValue = targetProgress.coerceIn(0f, 1f),
+        animationSpec = tween(durationMillis = 800, easing = lottieEasing),
+        label = "ProgressSweep"
+    )
+
+    // 3. Phase Trigger: Run Pulse and Color shift once sweep hits 100%
+    LaunchedEffect(animatedProgress >= 1f) {
+        if (animatedProgress >= 1f) {
+            isAnimationComplete = true
+            // Pulse Up (Frames 125-150 in JSON)
+            pulseScale.animateTo(1.06f, tween(300, easing = lottieEasing))
+            // Settle Down (Frames 216-252 in JSON)
+            pulseScale.animateTo(1f, tween(300, easing = lottieEasing))
+        } else {
+            isAnimationComplete = false
+            pulseScale.snapTo(1f)
+        }
+    }
+
+    val animatedColor by animateColorAsState(
+        targetValue = if (isAnimationComplete) completeColor else baseColor,
+        animationSpec = tween(500),
+        label = "ColorPhase"
+    )
+
     Box(
         modifier = modifier
             .size(44.dp)
-            .clip(CircleShape)
+            .graphicsLayer(scaleX = pulseScale.value, scaleY = pulseScale.value)
             .semantics(mergeDescendants = true) {
                 this.contentDescription = contentDescription
-                this.stateDescription = text
                 this.progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
             },
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(
-            progress = { progress },
-            modifier = Modifier
-                .padding(4.dp)
-                .fillMaxSize(),
-            color = Color.White,
-            trackColor = Color.White.copy(alpha = 0.15f),
-            strokeWidth = 5.dp,
-            strokeCap = StrokeCap.Round
-        )
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val strokeWidthPx = size.width * strokeRatio
+            val radius = (size.width - strokeWidthPx) / 2
 
-        if (icon != null) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(dimensions.iconSizeMedium)
+            // Background Track (Layer 3)
+            drawCircle(
+                color = trackColor,
+                radius = radius,
+                style = Stroke(width = strokeWidthPx)
             )
+
+            // Progress Arc (Layer 2)
+            if (animatedProgress > 0f) {
+                drawArc(
+                    color = animatedColor,
+                    startAngle = -90f,
+                    sweepAngle = 360f * animatedProgress,
+                    useCenter = false,
+                    style = Stroke(
+                        width = strokeWidthPx,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round
+                    )
+                )
+            }
         }
 
-        Text(
-            text = text,
-            color = Color.White,
-            style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
-        )
+        // Layer 1: Icon/Text Reveal
+        Crossfade(targetState = isAnimationComplete, label = "ContentFade") { completed ->
+            if (completed && icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = animatedColor,
+                    modifier = Modifier.fillMaxSize(0.5f)
+                )
+            } else if (!completed && text.isNotEmpty()) {
+                Text(
+                    text = text,
+                    color = Color.White,
+                    style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
+                )
+            }
+        }
     }
 }

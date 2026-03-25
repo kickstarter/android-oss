@@ -211,12 +211,8 @@ fun KSVideoProgressIndicator(
         modifier = modifier
             .size(44.dp)
             .semantics(mergeDescendants = true) {
+                this.contentDescription = contentDescription
                 this.stateDescription = text
-
-                if (contentDescription.isNotEmpty()) {
-                    this.contentDescription = contentDescription
-                }
-
                 this.progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
             },
         contentAlignment = Alignment.Center

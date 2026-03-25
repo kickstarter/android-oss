@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -26,15 +25,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,7 +40,6 @@ import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -172,7 +169,7 @@ fun KSVideoProgressIndicator(
     val animatedColor by animateColorAsState(
         targetValue = when (completionPhase) {
             1 -> completeColor // Success Green
-            2 -> baseColor     // Settles back to White
+            2 -> baseColor // Settles back to White
             else -> baseColor
         },
         animationSpec = tween(500),
@@ -190,20 +187,41 @@ fun KSVideoProgressIndicator(
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
+            // 1. Calculate a consistent stroke width based on your design ratio
             val strokeWidthPx = size.width * (120f / 638f)
-            val radius = (size.width - strokeWidthPx) / 2
 
-            // Track
-            drawCircle(color = trackColor, radius = radius, style = Stroke(width = strokeWidthPx))
+            // 2. Calculate a shared radius that accounts for the stroke width
+            // to prevent the edges from being clipped at the Canvas bounds
+            val radius = (size.minDimension - strokeWidthPx) / 2f
 
-            // Progress Arc
+            // 3. Define the bounding box for the Arc so it matches the Circle's path
+            val arcSize = Size(radius * 2, radius * 2)
+            val arcTopLeft = Offset(
+                x = (size.width / 2f) - radius,
+                y = (size.height / 2f) - radius
+            )
+
+            // TRACK: Draws the static background circle
+            drawCircle(
+                color = trackColor,
+                radius = radius,
+                center = center,
+                style = Stroke(width = strokeWidthPx)
+            )
+
+            // PROGRESS: Draws the moving arc on top using the animated values
             if (animatedProgress > 0f) {
                 drawArc(
-                    color = animatedColor,
+                    color = animatedColor, // Keeps your Green -> White transition
                     startAngle = -90f,
-                    sweepAngle = 360f * animatedProgress,
+                    sweepAngle = 360f * animatedProgress, // Keeps your 0.0 -> 1.0 motion
                     useCenter = false,
-                    style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round, join = StrokeJoin.Round)
+                    topLeft = arcTopLeft,
+                    size = arcSize,
+                    style = Stroke(
+                        width = strokeWidthPx,
+                        cap = StrokeCap.Round // Creates the rounded "pill" look
+                    )
                 )
             }
         }

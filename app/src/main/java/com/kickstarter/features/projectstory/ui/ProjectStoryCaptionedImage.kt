@@ -41,7 +41,7 @@ import com.kickstarter.ui.compose.designsystem.grey_04
 import org.joda.time.DateTime
 
 enum class ProjectStoryCaptionedImageTestTag {
-    CAPTION,
+    IMAGE, CAPTION, LOADING_INDICATOR
 }
 
 private val placeholderPainter = object : Painter() {
@@ -160,11 +160,12 @@ fun ProjectStoryCaptionedImage(
             .then(clickableModifier)
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             ConstrainedImage(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(ProjectStoryCaptionedImageTestTag.IMAGE.name),
                 painter = asyncPainter,
                 contentDescription = caption,
                 contentScale = contentScale,
@@ -177,7 +178,8 @@ fun ProjectStoryCaptionedImage(
                 LinearProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .testTag(ProjectStoryCaptionedImageTestTag.LOADING_INDICATOR.name),
                     color = grey_04,
                     trackColor = Color.Transparent
                 )

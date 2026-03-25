@@ -9,14 +9,13 @@ import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.printToString
 import androidx.test.core.app.ApplicationProvider
 import coil.Coil
 import coil.ImageLoader
@@ -34,7 +33,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -115,39 +113,34 @@ class ProjectStoryComponentsTest : KSRobolectricTestCase() {
             )
         }
 
-        println("${DateTime.now()} ${composeTestRule.onRoot().printToString()}")
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.LOADING_INDICATOR.name))
+            .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo))
+            .assertIsDisplayed()
 
-        composeTestRule.onNode(
-            SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
-        ).assertIsDisplayed()
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.IMAGE.name))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image))
+            .assertContentDescriptionEquals(caption)
+            .assertIsNotDisplayed()
 
-        composeTestRule.onNode(
-            SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image)
-                and hasContentDescription(caption)
-        ).assertExists()
-
-        composeTestRule.onNode(
-            hasText(caption)
-        ).assertIsDisplayed()
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name))
+            .assertTextEquals(caption)
+            .assertIsDisplayed()
 
         advanceUntilIdle()
 
         composeTestRule.waitForIdle()
 
-        println("${DateTime.now()} ${composeTestRule.onRoot().printToString()}")
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.LOADING_INDICATOR.name))
+            .assertDoesNotExist()
 
-        composeTestRule.onNode(
-            SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
-        ).assertDoesNotExist()
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.IMAGE.name))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image))
+            .assertContentDescriptionEquals(caption)
+            .assertIsDisplayed()
 
-        composeTestRule.onNode(
-            SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image)
-                and hasContentDescription(caption)
-        ).assertIsDisplayed()
-
-        composeTestRule.onNode(
-            hasText(caption)
-        ).assertIsDisplayed()
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name))
+            .assertTextEquals(caption)
+            .assertIsDisplayed()
     }
 
     @Test
@@ -172,9 +165,8 @@ class ProjectStoryComponentsTest : KSRobolectricTestCase() {
             )
         }
 
-        composeTestRule.onAllNodes(
-            SemanticsMatcher.keyIsDefined(SemanticsProperties.Text)
-        ).assertCountEquals(0)
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name))
+            .assertDoesNotExist()
     }
 
     @Test
@@ -210,18 +202,11 @@ class ProjectStoryComponentsTest : KSRobolectricTestCase() {
             }
         }
 
-        println("${DateTime.now()} ${composeTestRule.onRoot(true).printToString()}")
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.IMAGE.name), true)
+            .performClick()
 
-        composeTestRule.onNode(
-            SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image)
-                and hasContentDescription(caption),
-            true
-        ).performClick()
-
-        composeTestRule.onNode(
-            hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name),
-            true
-        ).performClick()
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name), true)
+            .performClick()
 
         assertEquals(2, clickCount)
     }

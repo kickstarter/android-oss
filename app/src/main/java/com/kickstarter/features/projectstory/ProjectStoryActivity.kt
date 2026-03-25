@@ -82,6 +82,7 @@ class ProjectStoryActivity : ComponentActivity() {
                     val txtState = projectStoryViewModel.txt
                     CompositionLocalProvider(LocalUriHandler provides uriHandler) {
                         CampaignScreen(uiState, txtState)
+//                        CaptionedImageScreen()
                     }
                 }
             }
@@ -172,10 +173,13 @@ class ProjectStoryActivity : ComponentActivity() {
                                 is RichTextItem.Text -> {
                                     when (item) {
                                         is RichTextItem.Text.Paragraph -> {
-                                            if (item.children?.any { it is RichTextItem.Photo } == true) {
-                                                Timber.w("MISSING LINKED IMAGE")
-                                            } else {
-                                                RichTextItemTextComponent(item as RichTextItem.Text)
+                                            val childPhoto = item.children?.firstOrNull { it is RichTextItem.Photo } as? RichTextItem.Photo
+                                            when {
+                                                childPhoto != null -> {
+                                                    val link = item.link
+                                                    RichTextItemPhotoComponent(childPhoto, link)
+                                                }
+                                                else -> RichTextItemTextComponent(item)
                                             }
                                         }
                                         else -> {

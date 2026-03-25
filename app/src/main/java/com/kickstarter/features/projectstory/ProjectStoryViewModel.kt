@@ -38,7 +38,8 @@ class ProjectStoryViewModel(
 
     private var project: Project? = null
 
-    val txt = mutableStateOf("https://www.kickstarter.com/projects/peak-design/roller-pro-carry-on-luggage-by-peak-design")
+//    val txt = mutableStateOf("https://www.kickstarter.com/projects/peak-design/roller-pro-carry-on-luggage-by-peak-design")
+    val txt = mutableStateOf("https://www.kickstarter.com/projects/glennf/flong-time-no-see")
 
     private var job: Job? = null
 

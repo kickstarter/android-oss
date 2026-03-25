@@ -5,14 +5,10 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Bullet
@@ -26,15 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import coil.compose.AsyncImage
 import com.kickstarter.features.projectstory.data.RichTextItem
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.getEnvironment
-import com.kickstarter.ui.compose.designsystem.grey_03
 import com.kickstarter.ui.compose.designsystem.kds_create_700
 import timber.log.Timber
 
@@ -182,14 +175,15 @@ private fun parseRichTextChildrenOfRichText(children: List<RichTextItem.Text.Chi
 }
 
 @Composable
-fun RichTextItemPhotoComponent(item: RichTextItem.Photo) {
+fun RichTextItemPhotoComponent(item: RichTextItem.Photo, link: String? = null) {
+    // Consider special handling of empty image url
     val imageUrl = item.asset?.url ?: item.url
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = item.altText,
-        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 30.dp),
-        placeholder = ColorPainter(color = grey_03),
-        contentScale = ContentScale.FillWidth
+    // `item.caption` can be empty
+    val caption = item.caption.ifBlank { null }
+    ProjectStoryCaptionedImage(
+        image = imageUrl,
+        caption = caption,
+        link = link
     )
 }
 

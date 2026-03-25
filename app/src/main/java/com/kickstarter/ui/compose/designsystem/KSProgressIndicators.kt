@@ -219,7 +219,7 @@ fun KSVideoProgressIndicator(
             },
         contentAlignment = Alignment.Center
     ) {
-            // Scale to fit max pulsed outer circle (680 + 120 = 800 Lottie units)
+        // Scale to fit max pulsed outer circle (680 + 120 = 800 Lottie units)
         Canvas(
             modifier = Modifier
                 .fillMaxSize()

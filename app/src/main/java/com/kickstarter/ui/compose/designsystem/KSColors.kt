@@ -49,6 +49,7 @@ val grey_02 = Color(0xFFF2F2F2)
 val grey_03 = Color(0xFFE0E0E0)
 val grey_04 = Color(0xFFC9C9C9)
 val grey_05 = Color(0xFFB3B3B3)
+val grey_055 = Color(0xFF6B6B6B)
 val grey_06 = Color(0xFF636363)
 val grey_07 = Color(0xFF4D4D4D)
 val grey_08 = Color(0xFF3C3C3C)
@@ -74,6 +75,7 @@ val green_09 = Color(0xFF01321D)
 val green_10 = Color(0xFF011E11)
 val green_100 = Color(0xFFDAFFBB)
 val green_200 = Color(0xFFA3FF55)
+val green_300 = Color(0xFF8CE71A)
 val green_400 = Color(0xFF71F701)
 val green_800 = Color(0xFF244F00)
 
@@ -237,6 +239,9 @@ data class KSCustomColors(
     val videoPlayerIconShadow: Color = Color.Unspecified,
     val videoPlayerButtonBorder: Color = Color.Unspecified,
     val videoPlayerButtonText: Color = Color.Unspecified,
+    val videoPlayerProgressBase: Color = Color.Unspecified,
+    val videoPlayerProgressComplete: Color = Color.Unspecified,
+    val videoPlayerProgressTrack: Color = Color.Unspecified,
 
     // OLD COLORS
     // Greens
@@ -385,6 +390,9 @@ val KSLightCustomColors = KSCustomColors(
     videoPlayerIconShadow = black.copy(alpha = 0.1f),
     videoPlayerButtonBorder = white,
     videoPlayerButtonText = white,
+    videoPlayerProgressBase = white,
+    videoPlayerProgressComplete = green_300,
+    videoPlayerProgressTrack = grey_055,
 
     // OLD COLORS
     // Greens
@@ -531,6 +539,9 @@ val KSDarkCustomColors = KSCustomColors(
     videoPlayerIconShadow = black.copy(alpha = 0.1f),
     videoPlayerButtonBorder = white,
     videoPlayerButtonText = white,
+    videoPlayerProgressBase = white,
+    videoPlayerProgressComplete = green_300,
+    videoPlayerProgressTrack = grey_055,
 
     // OLD COLORS
     // Greens

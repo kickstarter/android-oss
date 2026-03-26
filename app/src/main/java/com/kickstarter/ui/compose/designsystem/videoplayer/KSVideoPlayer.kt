@@ -47,6 +47,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -139,7 +140,7 @@ fun KSVideoPlayer(
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
     val exoPlayer = remember(videoUrl) { // - TODO will be extracted to a videoplayer pool, and the pool will be pass as dependency
-        player ?: ExoPlayer.Builder(context).build().apply {
+        player ?: context.initializeExoplayer().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             repeatMode = Player.REPEAT_MODE_ONE
             prepare()

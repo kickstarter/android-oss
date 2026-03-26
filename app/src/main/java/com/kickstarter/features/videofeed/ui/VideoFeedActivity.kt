@@ -6,9 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -56,43 +59,51 @@ class VideoFeedActivity : ComponentActivity() {
                 val projectTitle = videoFeedUIState.value.project?.name() ?: "Ringo Move - The Ultimate Workout Bottle"
                 val percentageFounded = videoFeedUIState.value.project?.percentageFunded() ?: 0f
 
-                KSVideoPlayer(
-                    videoUrl = videoUrl,
-                    isActive = true,
-                    overlayContent = { hazeState ->
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            KSVideoActionsColumn(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(end = dimensions.paddingMediumLarge),
-                                profileImageUrl = profileImage,
-                                bookmarkCount = "1k",
-                                shareCount = "50",
-                                onProfileClick = { },
-                                onBookmarkClick = { },
-                                onShareClick = { },
-                                onMoreOptionsClick = { }
-                            )
+                val pagerState = rememberPagerState(pageCount = { 5 })
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                VerticalPager(
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState,
+                    beyondViewportPageCount = 1
+                ) { page ->
+                    KSVideoPlayer(
+                        videoUrl = videoUrl,
+                        isActive = pagerState.currentPage == page,
+                        overlayContent = { hazeState ->
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                KSVideoActionsColumn(
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(end = dimensions.paddingMediumLarge),
+                                    profileImageUrl = profileImage,
+                                    bookmarkCount = "1k",
+                                    shareCount = "50",
+                                    onProfileClick = { },
+                                    onBookmarkClick = { },
+                                    onShareClick = { },
+                                    onMoreOptionsClick = { }
+                                )
 
-                            KSVideoBadgesRow(
-                                badges = badges,
-                                hazeState = hazeState
-                            )
+                                Spacer(modifier = Modifier.height(24.dp))
 
-                            KSVideoCampaignCard(
-                                title = projectTitle,
-                                subtitle = "$50,134 pledged • Join 431 backers",
-                                buttonText = "Back this project",
-                                onButtonClick = { },
-                                progress = percentageFounded
-                            )
+                                KSVideoBadgesRow(
+                                    badges = badges,
+                                    hazeState = hazeState
+                                )
+
+                                KSVideoCampaignCard(
+                                    title = projectTitle,
+                                    subtitle = "$50,134 pledged • Join 431 backers",
+                                    buttonText = "Back this project",
+                                    onButtonClick = { },
+                                    progress = percentageFounded
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

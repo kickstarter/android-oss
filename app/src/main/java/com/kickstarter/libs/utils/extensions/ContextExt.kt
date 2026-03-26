@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import com.kickstarter.KSApplication
@@ -39,13 +40,43 @@ fun Context.getEnvironment(): Environment? {
 }
 
 /**
+ * Returns true if the current device is an emulator.
+ */
+fun isEmulator(): Boolean {
+    return (
+        Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic") ||
+            Build.FINGERPRINT.startsWith("generic") ||
+            Build.FINGERPRINT.startsWith("unknown") ||
+            Build.HARDWARE.contains("goldfish") ||
+            Build.HARDWARE.contains("ranchu") ||
+            Build.MODEL.contains("google_sdk") ||
+            Build.MODEL.contains("Emulator") ||
+            Build.MODEL.contains("Android SDK built for x86") ||
+            Build.MANUFACTURER.contains("Genymotion") ||
+            Build.PRODUCT.contains("sdk_google") ||
+            Build.PRODUCT.contains("google_sdk") ||
+            Build.PRODUCT.contains("sdk") ||
+            Build.PRODUCT.contains("sdk_x86") ||
+            Build.PRODUCT.contains("vbox86p") ||
+            Build.PRODUCT.contains("emulator") ||
+            Build.PRODUCT.contains("simulator")
+        )
+}
+
+/**
  * Initializes and returns a configured [ExoPlayer] instance.
  *
  * This player is preconfigured with KS custom User-Agent and uses a [DefaultDataSource.Factory]
  * to support media playback over HTTP(S).
  *
- * Note: This method opts into Media3's [UnstableApi] due to the usage of [setMediaSourceFactory],
- * which is required for setting custom HTTP headers such as User-Agent.
+ * It also configures the [DefaultRenderersFactory] to disable asynchronous codec queuing
+ * specifically when running on an emulator. This helps avoid
+ * [androidx.media3.exoplayer.mediacodec.MediaCodecRenderer.DecoderInitializationException]
+ * (specifically "Decoder init failed: c2.goldfish.h264.decoder") which is a known issue
+ * with the emulator's H.264 decoder and Media3's asynchronous implementation.
+ *
+ * Note: This method opts into Media3's [UnstableApi] due to the usage of [setMediaSourceFactory] and
+ * [setRenderersFactory], which are required for setting custom HTTP headers and codec configurations.
  */
 @OptIn(UnstableApi::class)
 fun Context.initializeExoplayer(): ExoPlayer {
@@ -54,7 +85,13 @@ fun Context.initializeExoplayer(): ExoPlayer {
 
     val dataSourceFactory = DefaultDataSource.Factory(this, httpDataSourceFactory)
 
-    val player = ExoPlayer.Builder(this)
+    val renderersFactory = DefaultRenderersFactory(this)
+    if (isEmulator()) {
+        // - Disable asynchronous codec queuing to avoid "Decoder init failed: c2.goldfish.h264.decoder" on emulators
+        renderersFactory.forceDisableMediaCodecAsynchronousQueueing()
+    }
+
+    val player = ExoPlayer.Builder(this, renderersFactory)
         .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
         .build()
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -23,6 +24,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -100,7 +102,7 @@ fun KSVideoCampaignCard(
                 progress = progressValue,
                 icon = if (isComplete) Check else null,
                 text = if (!isComplete) progress.toInt().toString() else "",
-                contentDescription = if (isComplete) "Campaign goal reached" else "" // TODO extract to resources
+                contentDescription = if (isComplete) stringResource(id = R.string.fpo_Campaign_goal_reached) else ""
             )
         }
 

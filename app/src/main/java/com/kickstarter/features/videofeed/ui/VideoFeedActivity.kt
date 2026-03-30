@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
@@ -54,18 +57,30 @@ class VideoFeedActivity : ComponentActivity() {
 
                 // TODO: Following vm lines are for qa/demo purposes as of now!!! aiming here to avoid videoURL expiration real VM still to come
                 val videoFeedUIState = viewModel.videoFeedUIState.collectAsStateWithLifecycle()
-                val videoUrl = videoFeedUIState.value.project?.video()?.hls() ?: ""
-                val profileImage = videoFeedUIState.value.project?.creator()?.avatar()?.medium() ?: ""
-                val projectTitle = videoFeedUIState.value.project?.name() ?: "Ringo Move - The Ultimate Workout Bottle"
-                val percentageFounded = videoFeedUIState.value.project?.percentageFunded() ?: 0f
+                val projectsList = videoFeedUIState.value.projects
 
-                val pagerState = rememberPagerState(pageCount = { 5 })
+                val pagerState = rememberPagerState(pageCount = { projectsList.size })
+
+//                val pool = remember { VideoPlayerPool(this) }
+//                DisposableEffect(pool) { onDispose { pool.releaseAll() } }
 
                 VerticalPager(
                     modifier = Modifier.fillMaxSize(),
                     state = pagerState,
-                    beyondViewportPageCount = 1
+                    beyondViewportPageCount = 1,
+                    key = { index -> projectsList[index].id() }
                 ) { page ->
+
+                    val project = projectsList[page]
+                    val videoUrl = project.video()?.hls() ?: ""
+                    val profileImage = project.creator()?.avatar()?.medium() ?: ""
+                    val projectTitle = project.name()
+                    val percentageFounded = project.percentageFunded()
+
+//                    val player = remember(page, videoUrl) {
+//                        pool.getPlayer(page, videoUrl, pagerState.currentPage)
+//                    }
+
                     KSVideoPlayer(
                         videoUrl = videoUrl,
                         isActive = pagerState.currentPage == page,

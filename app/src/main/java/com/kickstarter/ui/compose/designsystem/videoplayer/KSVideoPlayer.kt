@@ -139,7 +139,10 @@ fun KSVideoPlayer(
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
-    val exoPlayer = remember(videoUrl) { // - TODO will be extracted to a videoplayer pool, and the pool will be pass as dependency
+    // When an external player is provided, key on the player instance so that the pool can
+    // recycle it across pages without triggering spurious recomputations. When managed
+    // internally, key on videoUrl so the player is replaced if the URL changes.
+    val exoPlayer = remember(player ?: videoUrl) {
         player ?: context.initializeExoplayer().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             repeatMode = Player.REPEAT_MODE_ONE
@@ -152,12 +155,9 @@ fun KSVideoPlayer(
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
 
-    LaunchedEffect(isActive) {
-        exoPlayer.playWhenReady = isActive
-    }
-
     // - Updated progress bar only when active
     LaunchedEffect(isActive) {
+        exoPlayer.playWhenReady = isActive
         if (isActive) {
             while (true) {
                 val duration = exoPlayer.duration
@@ -215,22 +215,27 @@ fun KSVideoPlayer(
             }
     ) {
         AndroidView(
-            factory = {
-                // - Required TextureView to work in tandem with haze to achieve glassmorphism on control buttons/badges
-                TextureView(context).apply {
+            // - Required TextureView to work in tandem with haze to achieve glassmorphism on control buttons/badges
+            factory = { ctx ->
+                TextureView(ctx).apply {
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
-                    exoPlayer.setVideoTextureView(this)
-                    exoPlayer.addListener(object : Player.Listener {
+                    val listener = object : Player.Listener {
                         override fun onVideoSizeChanged(videoSize: VideoSize) {
                             if (videoSize.width > 0 && videoSize.height > 0) {
                                 this@apply.applyZoomMatrix(videoSize.width, videoSize.height)
                             }
                         }
-                    })
+                    }
+                    tag = listener
+                    exoPlayer.setVideoTextureView(this)
+                    exoPlayer.addListener(listener)
                 }
+            },
+            onRelease = { view ->
+                (view.tag as? Player.Listener)?.let { exoPlayer.removeListener(it) }
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -271,7 +276,9 @@ fun KSVideoPlayer(
         }
     }
 
-    DisposableEffect(videoUrl) {
+    // Key on the player instance: release only when the internal player is replaced or disposed.
+    // External (pool) players are never released here — the pool owns their lifecycle.
+    DisposableEffect(exoPlayer) {
         onDispose { if (player == null) exoPlayer.release() }
     }
 }

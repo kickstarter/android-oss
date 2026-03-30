@@ -236,6 +236,7 @@ fun KSVideoPlayer(
             },
             onRelease = { view ->
                 (view.tag as? Player.Listener)?.let { exoPlayer.removeListener(it) }
+                exoPlayer.clearVideoTextureView(view)
             },
             modifier = Modifier
                 .fillMaxSize()

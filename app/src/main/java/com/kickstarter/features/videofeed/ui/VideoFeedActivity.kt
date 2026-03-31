@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,10 +60,23 @@ class VideoFeedActivity : ComponentActivity() {
                 val videoFeedUIState = viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 val projectsList = videoFeedUIState.value.projects
 
+                val context = LocalContext.current
+                val pool = remember { VideoPlayerPool(context) }
+                DisposableEffect(pool) { onDispose { pool.releaseAll() } }
+
                 val pagerState = rememberPagerState(pageCount = { projectsList.size })
 
-//                val pool = remember { VideoPlayerPool(this) }
-//                DisposableEffect(pool) { onDispose { pool.releaseAll() } }
+                // Proactively buffer current±2 — outside the composition window — so the user
+                // can scroll back two pages instantly without waiting for re-buffering.
+                LaunchedEffect(pagerState.currentPage) {
+                    val current = pagerState.currentPage
+                    projectsList.getOrNull(current + 2)?.video()?.hls()?.takeIf { it.isNotEmpty() }?.let { url ->
+                        pool.preload(current + 2, url, current)
+                    }
+                    projectsList.getOrNull(current - 2)?.video()?.hls()?.takeIf { it.isNotEmpty() }?.let { url ->
+                        pool.preload(current - 2, url, current)
+                    }
+                }
 
                 VerticalPager(
                     modifier = Modifier.fillMaxSize(),
@@ -77,12 +91,13 @@ class VideoFeedActivity : ComponentActivity() {
                     val projectTitle = project.name()
                     val percentageFounded = project.percentageFunded()
 
-//                    val player = remember(page, videoUrl) {
-//                        pool.getPlayer(page, videoUrl, pagerState.currentPage)
-//                    }
+                    val player = remember(page, videoUrl) {
+                        pool.getPlayer(page, videoUrl, pagerState.currentPage)
+                    }
 
                     KSVideoPlayer(
                         videoUrl = videoUrl,
+                        player = player,
                         isActive = pagerState.currentPage == page,
                         overlayContent = { hazeState ->
                             Column(

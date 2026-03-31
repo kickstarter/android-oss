@@ -1,11 +1,13 @@
 package com.kickstarter.features.videofeed.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.VideoFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -17,10 +19,13 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         val project2Id = 102L
         val project3Id = 103L
 
+        // KSVideoPlayer needs a valid hls url
+        val video = VideoFactory.hlsVideo()
+
         val projects = listOf(
-            ProjectFactory.project().toBuilder().id(project1Id).build(),
-            ProjectFactory.caProject().toBuilder().id(project2Id).build(),
-            ProjectFactory.ukProject().toBuilder().id(project3Id).build()
+            ProjectFactory.project().toBuilder().id(project1Id).video(video).build(),
+            ProjectFactory.caProject().toBuilder().id(project2Id).video(video).build(),
+            ProjectFactory.ukProject().toBuilder().id(project3Id).video(video).build()
         )
 
         composeTestRule.setContent {
@@ -29,38 +34,40 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             }
         }
 
-        // --- Initial State (Page 0) ---
-        // Verify Pager exists
         composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
-            .assertIsDisplayed()
-
-        // Verify Page 0 is displayed and associated with correct Project ID
-        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project1Id", useUnmergedTree = true)
-            .assertIsDisplayed()
-
-        // Verify beyondViewportPageCount = 1: Page 1 should exist in composition but not necessarily be fully displayed
-        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project2Id", useUnmergedTree = true)
             .assertExists()
 
-        // 3. Verify Page 2 does NOT exist (it's beyond the viewport + 1)
+        // Page 0 is in the tree and associated with correct Project ID (key test), and displayed
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project1Id", useUnmergedTree = true)
+            .assertExists()
+            .assertIsDisplayed()
+
+        // beyondViewportPageCount = 1: Page 1 should exist in composition, not yet displayed
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project2Id", useUnmergedTree = true)
+            .assertExists()
+            .assertIsNotDisplayed()
+
+        // Page 2 does NOT exist (it's beyond the viewport + 1)
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project3Id", useUnmergedTree = true)
             .assertDoesNotExist()
 
-        // --- Swipe to Page 1 ---
         composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
             .performTouchInput { swipeUp() }
         composeTestRule.waitForIdle()
 
-        // 4. Verify Page 1 is now "displayed" (active page)
+        // Page 1 exists and displayed
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project2Id", useUnmergedTree = true)
             .assertExists()
+            .assertIsDisplayed()
 
-        // 5. Verify Page 0 still exists (it's 1 page behind now)
+        // Page 0 still exists (1 page behind) and not displayed
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project1Id", useUnmergedTree = true)
             .assertExists()
+            .assertIsNotDisplayed()
 
-        // 6. Verify Page 2 now exists (it's 1 page ahead)
+        // Page 2 now exists (1 page ahead)
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project3Id", useUnmergedTree = true)
             .assertExists()
+            .assertIsNotDisplayed()
     }
 }

@@ -139,9 +139,7 @@ fun KSVideoPlayer(
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
-    // When an external player is provided, key on the player instance so that the pool can
-    // recycle it across pages without triggering spurious recomputations. When managed
-    // internally, key on videoUrl so the player is replaced if the URL changes.
+
     val exoPlayer = remember(player ?: videoUrl) {
         player ?: context.initializeExoplayer().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))

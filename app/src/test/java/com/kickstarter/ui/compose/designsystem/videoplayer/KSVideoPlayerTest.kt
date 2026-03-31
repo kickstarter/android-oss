@@ -189,6 +189,10 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name).assertDoesNotExist()
 
         verify(mockPlayer).play()
+
+        // Check Video Player Surface has click label
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name)
+            .assertExists()
     }
 
     @Test
@@ -236,6 +240,10 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         // - Should seek to 25% of 100000L = 25000L
         verify(mockPlayer).seekTo(25000L)
+
+        // Check Progress Bar semantics
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .assertExists()
     }
 
     @Test

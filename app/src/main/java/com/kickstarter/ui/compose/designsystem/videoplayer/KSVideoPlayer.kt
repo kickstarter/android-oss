@@ -40,6 +40,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -47,6 +52,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
+import com.kickstarter.R
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -138,8 +145,9 @@ fun KSVideoPlayer(
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
-    val exoPlayer = remember(videoUrl) { // - TODO will be extracted to a videoplayer pool, and the pool will be pass as dependency
-        player ?: ExoPlayer.Builder(context).build().apply {
+
+    val exoPlayer = remember(player ?: videoUrl) {
+        player ?: context.initializeExoplayer().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             repeatMode = Player.REPEAT_MODE_ONE
             prepare()
@@ -151,12 +159,9 @@ fun KSVideoPlayer(
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
 
-    LaunchedEffect(isActive) {
-        exoPlayer.playWhenReady = isActive
-    }
-
     // - Updated progress bar only when active
     LaunchedEffect(isActive) {
+        exoPlayer.playWhenReady = isActive
         if (isActive) {
             while (true) {
                 val duration = exoPlayer.duration
@@ -208,28 +213,35 @@ fun KSVideoPlayer(
             .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = null // Remove ripple for the background tap
+                indication = null, // Remove ripple for the background tap
+                onClickLabel = stringResource(id = if (showControls) R.string.accessibility_discovery_buttons_close else R.string.fpo_Play)
             ) {
                 onToggleControls()
             }
     ) {
         AndroidView(
-            factory = {
-                // - Required TextureView to work in tandem with haze to achieve glassmorphism on control buttons/badges
-                TextureView(context).apply {
+            // - Required TextureView to work in tandem with haze to achieve glassmorphism on control buttons/badges
+            factory = { ctx ->
+                TextureView(ctx).apply {
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
-                    exoPlayer.setVideoTextureView(this)
-                    exoPlayer.addListener(object : Player.Listener {
+                    val listener = object : Player.Listener {
                         override fun onVideoSizeChanged(videoSize: VideoSize) {
                             if (videoSize.width > 0 && videoSize.height > 0) {
                                 this@apply.applyZoomMatrix(videoSize.width, videoSize.height)
                             }
                         }
-                    })
+                    }
+                    tag = listener
+                    exoPlayer.setVideoTextureView(this)
+                    exoPlayer.addListener(listener)
                 }
+            },
+            onRelease = { view ->
+                (view.tag as? Player.Listener)?.let { exoPlayer.removeListener(it) }
+                exoPlayer.clearVideoTextureView(view)
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -270,7 +282,9 @@ fun KSVideoPlayer(
         }
     }
 
-    DisposableEffect(videoUrl) {
+    // Key on the player instance: release only when the internal player is replaced or disposed.
+    // External (pool) players are never released here — the pool owns their lifecycle.
+    DisposableEffect(exoPlayer) {
         onDispose { if (player == null) exoPlayer.release() }
     }
 }
@@ -300,6 +314,14 @@ private fun ProgressBarContainer(
             .fillMaxWidth()
             .height(48.dp) // Standard touch target height
             .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
+            .semantics {
+                val progress = progressProvider()
+                progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
+                setProgress { targetProgress ->
+                    onSeek(targetProgress)
+                    true
+                }
+            }
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
                     val tappedProgress = offset.x / size.width
@@ -361,7 +383,8 @@ private fun ControlsContainer(
                     playPauseCallback.invoke()
                 },
                 hazeState = hazeState,
-                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name)
+                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name),
+                contentDescription = stringResource(id = R.string.fpo_Play)
             )
 
             KSControlIcon(

@@ -10,7 +10,7 @@ class DiscoveryVideoFeedBannerViewHolder(
 ) : KSViewHolder(binding.root) {
 
     interface Delegate {
-        fun discoveryVideoFeedBannerViewHolderClick(viewHolder: DiscoveryVideoFeedBannerViewHolder)
+        fun discoveryVideoFeedBannerViewHolderClick(viewHolder: DiscoveryVideoFeedBannerViewHolder?)
     }
 
     init {

@@ -28,8 +28,8 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
 import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter
 import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter
-import com.kickstarter.ui.adapters.DiscoveryVideoFeedBannerAdapter
 import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter
+import com.kickstarter.ui.adapters.DiscoveryVideoFeedBannerAdapter
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.ProjectData.Companion.builder
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
@@ -96,6 +96,9 @@ interface DiscoveryFragmentViewModel {
         /** Emits a boolean that determines if the video feed banner should be shown.  */
         fun shouldShowVideoFeedBanner(): Observable<Boolean>
 
+        /** Emits when the video feed activity should be started.  */
+        fun startVideoFeedActivity(): Observable<Unit>
+
         /** Emits when the activity feed should be shown.  */
         fun showActivityFeed(): Observable<Boolean>
 
@@ -157,6 +160,7 @@ interface DiscoveryFragmentViewModel {
         private val clearPage = PublishSubject.create<Unit>()
         private val discoveryOnboardingLoginToutClick = PublishSubject.create<Boolean>()
         private val editorialClicked = PublishSubject.create<Editorial>()
+        private val videoFeedBannerClicked = PublishSubject.create<Unit>()
         private val nextPage = PublishSubject.create<Unit>()
         private val paramsFromActivity = PublishSubject.create<DiscoveryParams>()
         private val projectCardClicked = PublishSubject.create<Project>()
@@ -176,6 +180,7 @@ interface DiscoveryFragmentViewModel {
         private val shouldShowVideoFeedBanner = BehaviorSubject.create<Boolean>()
         private val startSetPasswordActivity = BehaviorSubject.create<String>()
         private val startEditorialActivity = PublishSubject.create<Editorial>()
+        private val startVideoFeedActivity = PublishSubject.create<Unit>()
         private val startPreLaunchProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val startProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
         private val startUpdateActivity: Observable<Activity>
@@ -338,6 +343,10 @@ interface DiscoveryFragmentViewModel {
                 .subscribe { startEditorialActivity.onNext(it) }
                 .addToDisposable(disposables)
 
+            videoFeedBannerClicked
+                .subscribe { startVideoFeedActivity.onNext(Unit) }
+                .addToDisposable(disposables)
+
             paramsFromActivity
                 .compose(Transformers.combineLatestPair(userIsLoggedIn))
                 .map { pu: Pair<DiscoveryParams, Boolean> ->
@@ -349,14 +358,10 @@ interface DiscoveryFragmentViewModel {
                 .subscribe { shouldShowOnboardingView.onNext(it) }
                 .addToDisposable(disposables)
 
-            currentUser.observable()
-                .compose(Transformers.combineLatestPair(paramsFromActivity))
-                .map { userAndParams ->
-                    val user = userAndParams.first.getValue()
-                    val params = userAndParams.second
+            paramsFromActivity
+                .map {
                     isVideoFeedBannerVisible(
-                        params = params,
-                        user = user,
+                        params = it,
                         isGateOn = statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
                     )
                 }
@@ -573,16 +578,13 @@ interface DiscoveryFragmentViewModel {
 
         private fun isVideoFeedBannerVisible(
             params: DiscoveryParams,
-            user: User?,
             isGateOn: Boolean
         ): Boolean {
             if (!isGateOn) return false
-            return if (user != null) {
-                params == DiscoveryParams.getDefaultParams(user)
-            } else {
-                val isSortHome = DiscoveryParams.Sort.MAGIC == params.sort()
-                params.isAllProjects.isTrue() && isSortHome
-            }
+            val isSortHome = DiscoveryParams.Sort.MAGIC == params.sort()
+            val isHomeView = params.isAllProjects.isTrue() && isSortHome
+            val isPwl = params.staffPicks().isTrue() && isSortHome
+            return isHomeView || isPwl
         }
 
         private fun isSavedVisible(params: DiscoveryParams): Boolean {
@@ -642,9 +644,8 @@ interface DiscoveryFragmentViewModel {
             activityUpdateClick.onNext(activity)
         override fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?) =
             discoveryOnboardingLoginToutClick.onNext(true)
-        override fun discoveryVideoFeedBannerViewHolderClick(viewHolder: DiscoveryVideoFeedBannerViewHolder) {
-            // TODO: Handle video feed banner click
-        }
+        override fun discoveryVideoFeedBannerViewHolderClick(viewHolder: DiscoveryVideoFeedBannerViewHolder?) =
+            videoFeedBannerClicked.onNext(Unit)
         override fun projectCardViewHolderClicked(project: Project) = projectCardClicked.onNext(project)
         override fun nextPage() = nextPage.onNext(Unit)
         override fun paramsFromActivity(params: DiscoveryParams) = paramsFromActivity.onNext(params)
@@ -665,6 +666,7 @@ interface DiscoveryFragmentViewModel {
         override fun startPreLaunchProjectActivity(): Observable<Pair<Project, RefTag>> = startPreLaunchProjectActivity
         override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
         override fun shouldShowVideoFeedBanner(): Observable<Boolean> = shouldShowVideoFeedBanner
+        override fun startVideoFeedActivity(): Observable<Unit> = startVideoFeedActivity
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
         override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject

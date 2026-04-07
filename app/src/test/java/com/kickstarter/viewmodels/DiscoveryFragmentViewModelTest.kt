@@ -9,7 +9,9 @@ import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.collection
 import com.kickstarter.libs.RefTag.Companion.discovery
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.preferences.MockIntPreference
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.ListUtils
@@ -66,6 +68,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     private val showSavedPromptTest = TestSubscriber<Unit>()
     private val startSetPasswordActivity = TestSubscriber<String>()
     private val startPreLaunchProjectActivity = TestSubscriber<Pair<Project, RefTag>>()
+    private val shouldShowVideoFeedBanner = TestSubscriber<Boolean>()
+    private val startVideoFeedActivity = TestSubscriber<Unit>()
 
     private val disposables = CompositeDisposable()
 
@@ -101,6 +105,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         vm.outputs.showSavedPrompt().subscribe { showSavedPromptTest.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startSetPasswordActivity().subscribe { startSetPasswordActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.shouldShowVideoFeedBanner().subscribe { shouldShowVideoFeedBanner.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startVideoFeedActivity().subscribe { startVideoFeedActivity.onNext(it) }.addToDisposable(disposables)
     }
 
     private fun setUpInitialHomeAllProjectsParams() {
@@ -730,9 +736,153 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         activityTest.assertValues(activity)
     }
 
+    @Test
+    fun testShouldShowVideoFeedBanner_gateOn_homeParams() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        setUpInitialHomeAllProjectsParams()
+        shouldShowVideoFeedBanner.assertValues(true)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_gateOn_pwlParams() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        vm.inputs.paramsFromActivity(
+            builder()
+                .staffPicks(true)
+                .sort(DiscoveryParams.Sort.MAGIC)
+                .build()
+        )
+        shouldShowVideoFeedBanner.assertValues(true)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_gateOn_otherParams() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        vm.inputs.paramsFromActivity(
+            builder()
+                .category(artCategory())
+                .sort(DiscoveryParams.Sort.MAGIC)
+                .build()
+        )
+        shouldShowVideoFeedBanner.assertValues(false)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_gateOn_nonMagicSort() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        vm.inputs.paramsFromActivity(
+            builder().sort(DiscoveryParams.Sort.NEWEST).build()
+        )
+        shouldShowVideoFeedBanner.assertValues(false)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_gateOff() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to false)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        setUpInitialHomeAllProjectsParams()
+        shouldShowVideoFeedBanner.assertValues(false)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_gateOn_loggedInUser_homeParams() {
+        val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUser)
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        setUpInitialHomeAllProjectsParams()
+        shouldShowVideoFeedBanner.assertValues(true)
+
+        logUserIn(currentUser)
+        shouldShowVideoFeedBanner.assertValues(true, true)
+    }
+
+    @Test
+    fun testStartVideoFeedActivity_onBannerClick() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        setUpInitialHomeAllProjectsParams()
+        shouldShowVideoFeedBanner.assertValues(true)
+
+        vm.inputs.discoveryVideoFeedBannerViewHolderClick(null)
+        startVideoFeedActivity.assertValueCount(1)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_clearPage() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        setUpInitialHomeAllProjectsParams()
+        shouldShowVideoFeedBanner.assertValues(true)
+
+        vm.inputs.clearPage()
+        shouldShowVideoFeedBanner.assertValues(true, false)
+    }
+
     private fun logUserIn(currentUser: CurrentUserTypeV2) {
         val user = user()
         currentUser.refresh(user)
         vm.inputs.paramsFromActivity(getDefaultParams(user))
     }
+
 }

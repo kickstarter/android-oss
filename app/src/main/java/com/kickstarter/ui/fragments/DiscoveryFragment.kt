@@ -48,6 +48,7 @@ import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter
 import com.kickstarter.ui.adapters.DiscoveryVideoFeedBannerAdapter
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.startVideoFeed
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -163,6 +164,11 @@ class DiscoveryFragment : Fragment() {
             .subscribe { discoveryVideoFeedBannerAdapter.setShouldShowBanner(it) }
             .addToDisposable(disposables)
 
+        this.viewModel.outputs.startVideoFeedActivity()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startVideoFeedActivity() }
+            .addToDisposable(disposables)
+
         this.viewModel.outputs.showActivityFeed()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { startActivityFeedActivity() }
@@ -272,6 +278,10 @@ class DiscoveryFragment : Fragment() {
         context?.let {
             startActivity(Intent(context, ActivityFeedActivity::class.java))
         }
+    }
+
+    private fun startVideoFeedActivity() {
+        activity?.startVideoFeed()
     }
 
     private fun startSetPasswordActivity(email: String) {

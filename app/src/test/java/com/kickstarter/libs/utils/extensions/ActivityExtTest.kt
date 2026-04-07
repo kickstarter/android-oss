@@ -10,6 +10,7 @@ import com.kickstarter.ui.activities.PreLaunchProjectPageActivity
 import com.kickstarter.ui.activities.ProjectPageActivity
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startProjectActivity
+import com.kickstarter.ui.extensions.startVideoFeed
 import org.junit.Test
 import org.robolectric.Robolectric
 import org.robolectric.Shadows.shadowOf
@@ -91,5 +92,21 @@ class ActivityExtTest : KSRobolectricTestCase() {
 
         assertNotNull(intent)
         assertFalse(intent.hasExtra(IntentKey.PREVIOUS_SCREEN) && intent.getStringExtra(IntentKey.PREVIOUS_SCREEN) != null)
+    }
+
+    @Test
+    fun testStartVideoFeed_StartsVideoFeedActivity() {
+        val activity = Robolectric.buildActivity(ProjectPageActivity::class.java).setup().get()
+
+        activity.startVideoFeed()
+
+        val shadowActivity = shadowOf(activity)
+        val intent = shadowActivity.nextStartedActivity
+
+        assertNotNull(intent)
+        assertEquals(
+            "com.kickstarter.features.videofeed.ui.VideoFeedActivity",
+            intent.component?.className
+        )
     }
 }

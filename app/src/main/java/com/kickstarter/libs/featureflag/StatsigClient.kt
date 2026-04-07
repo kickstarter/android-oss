@@ -9,18 +9,21 @@ import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.Statsig
+import com.statsig.androidsdk.StatsigOptions
 import com.statsig.androidsdk.StatsigUser
+import com.statsig.androidsdk.Tier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
+class StatsigException(cause: Throwable) : Exception(cause)
 interface StatsigClientType {
-    suspend fun init(application: KSApplication, sdkKey: String): InitializationDetails? = Statsig.initialize(application, sdkKey)
     fun getSDKKey(): String
     fun isInitialized(): Boolean = Statsig.isInitialized()
     fun checkGate(gateName: String) = Statsig.checkGate(gateName) // TODO: For feature flags, will expand in the future
@@ -41,17 +44,28 @@ open class StatsigClient(
         if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
         else Secrets.Statsig.STAGING
 
-    fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Exception) -> Unit) {
+    fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Throwable) -> Unit) {
         this.scope = scope
+        var details: InitializationDetails? = null
+        val options = StatsigOptions().apply {
+            setTier(
+                if (build.isRelease && Build.isExternal()) Tier.PRODUCTION
+                else Tier.STAGING
+            )
+        }
         scope.launch(context = dispatcher) {
             try {
-                val initDetails = init(
-                    application = context as KSApplication,
-                    sdkKey = getSDKKey()
-                )
+                async {
+                    details = Statsig.initialize(
+                        application = context as KSApplication,
+                        "client-gMosuzVPIQ4U1y6WTCjBM1HF3Y4nIouVqUfciWzH729",
+                        StatsigUser(),
+                        options = options
+                    )
+                }.await()
 
-                if (initDetails?.success.isFalse()) {
-                    initDetails?.failureDetails?.exception?.let { errorCallback.invoke(it) }
+                if (details?.success.isFalse()) {
+                    errorCallback.invoke(Throwable(details?.failureDetails?.exception))
                 }
             } catch (e: Exception) {
                 errorCallback.invoke(e)

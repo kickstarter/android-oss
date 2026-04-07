@@ -25,8 +25,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -92,7 +90,6 @@ fun KSVideoFeedBanner(
                 color = colors.discoveryBanner.text,
                 modifier = Modifier
                     .testTag(KSVideoFeedBannerTestTag.BANNER_TITLE.name)
-                    .semantics { heading() }
             )
 
             Text(
@@ -121,7 +118,7 @@ fun KSVideoFeedBanner(
 
         Image(
             painter = painterResource(id = R.drawable.entrypoint_banner),
-            contentDescription = stringResource(id = R.string.fpo_try_our_new_discovery_mode),
+            contentDescription = null,
             modifier = Modifier
                 .size(width = dimensions.discoveryBannerImageWidth, height = dimensions.discoveryBannerImageHeight)
                 .testTag(KSVideoFeedBannerTestTag.BANNER_IMAGE.name),

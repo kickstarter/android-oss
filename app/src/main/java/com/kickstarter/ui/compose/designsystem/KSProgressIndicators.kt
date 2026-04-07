@@ -139,9 +139,9 @@ fun KSVideoProgressIndicator(
     icon: ImageVector? = null,
     text: String = "",
     contentDescription: String = "",
-    baseColor: Color = colors.videoPlayerProgressBase,
-    completeColor: Color = colors.videoPlayerProgressComplete,
-    trackColor: Color = colors.videoPlayerProgressTrack
+    baseColor: Color = colors.videoPlayer.progressBase,
+    completeColor: Color = colors.videoPlayer.progressComplete,
+    trackColor: Color = colors.videoPlayer.progressTrack
 ) {
     val arcSweepEasing = CubicBezierEasing(0.741f, 0f, 0.545f, 1f)
     val fadeInEasing = CubicBezierEasing(0.5f, 0f, 0f, 1f)

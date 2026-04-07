@@ -7,7 +7,7 @@ import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
-import com.statsig.androidsdk.InitializationDetails
+import com.statsig.androidsdk.FeatureGate
 import com.statsig.androidsdk.Statsig
 import com.statsig.androidsdk.StatsigOptions
 import com.statsig.androidsdk.StatsigUser
@@ -22,11 +22,26 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
+enum class StatsigGateKey(val key: String) {
+    ANDROID_VIDEO_FEED("android_video_feed")
+}
+
 class StatsigException(cause: Throwable) : Exception(cause)
 interface StatsigClientType {
     fun getSDKKey(): String
     fun isInitialized(): Boolean = Statsig.isInitialized()
-    fun checkGate(gateName: String) = Statsig.checkGate(gateName) // TODO: For feature flags, will expand in the future
+    fun checkGate(gateName: String) = Statsig.checkGate(gateName)
+
+    /**
+     * Returns the full [FeatureGate] object for [gateName], including the evaluated boolean value,
+     * the matched [com.statsig.androidsdk.FeatureGate.getRuleID] (which rule in the Statsig
+     * console was responsible for the result), and [com.statsig.androidsdk.EvaluationDetails]
+     * describing how the value was resolved (network, cache, etc.).
+     *
+     * Prefer this over [checkGate] when you need more than just the boolean — e.g. for logging
+     * which rule was evaluated or for debugging targeting behaviour.
+     */
+    fun getFeatureGate(gateName: String): FeatureGate = Statsig.getFeatureGate(gateName)
     fun getExperiment(experimentName: String) = Statsig.getExperiment(experimentName) // TODO: for test MOCK statsig DynamicConfig type or expose to the rest of the app just the json values, will explore in the future
     suspend fun updateUser(id: String) = Statsig.updateUser(StatsigUser(id))
     fun getStableId() = Statsig.getStableID()
@@ -44,21 +59,32 @@ open class StatsigClient(
         if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
         else Secrets.Statsig.STAGING
 
-    fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Throwable) -> Unit) {
+    /**
+     * Initializes the Statsig SDK using the recommended `async { }.await()` pattern from the
+     * Statsig Android documentation for structured concurrency.
+     *
+     * This method is `open` so that tests can override it to avoid calling the real [Statsig]
+     * singleton, which requires a live Application context and network access. Test subclasses
+     * should replace the body entirely to simulate success or failure scenarios.
+     *
+     * @param scope the [CoroutineScope] used to launch initialization; stored for later use by [updateExperimentUser]
+     * @param dispatcher the [CoroutineDispatcher] for the initialization coroutine, defaults to [Dispatchers.IO]
+     * @param errorCallback invoked with the error when initialization fails or throws
+     */
+    open fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Throwable) -> Unit) {
         this.scope = scope
-        var details: InitializationDetails? = null
-        val options = StatsigOptions().apply {
-            setTier(
-                if (build.isRelease && Build.isExternal()) Tier.PRODUCTION
-                else Tier.STAGING
-            )
-        }
         scope.launch(context = dispatcher) {
             try {
-                async {
-                    details = Statsig.initialize(
+                val options = StatsigOptions().apply {
+                    setTier(
+                        if (build.isRelease && Build.isExternal()) Tier.PRODUCTION
+                        else Tier.STAGING
+                    )
+                }
+                val details = async {
+                    Statsig.initialize(
                         application = context as KSApplication,
-                        "client-gMosuzVPIQ4U1y6WTCjBM1HF3Y4nIouVqUfciWzH729",
+                        getSDKKey(),
                         StatsigUser(),
                         options = options
                     )

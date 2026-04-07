@@ -45,6 +45,7 @@ import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
 import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter
 import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter
 import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter
+import com.kickstarter.ui.adapters.DiscoveryVideoFeedBannerAdapter
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
@@ -87,9 +88,10 @@ class DiscoveryFragment : Fragment() {
         val discoveryActivitySampleAdapter = DiscoveryActivitySampleAdapter(this.viewModel.inputs)
         val discoveryEditorialAdapter = DiscoveryEditorialAdapter(this.viewModel.inputs)
         val discoveryOnboardingAdapter = DiscoveryOnboardingAdapter(this.viewModel.inputs)
+        val discoveryVideoFeedBannerAdapter = DiscoveryVideoFeedBannerAdapter(this.viewModel.inputs)
         val discoveryProjectCardAdapter = DiscoveryProjectCardAdapter(this.viewModel.inputs)
 
-        val discoveryAdapter = ConcatAdapter(discoveryOnboardingAdapter, discoveryEditorialAdapter, discoveryActivitySampleAdapter, discoveryProjectCardAdapter)
+        val discoveryAdapter = ConcatAdapter(discoveryVideoFeedBannerAdapter, discoveryOnboardingAdapter, discoveryEditorialAdapter, discoveryActivitySampleAdapter, discoveryProjectCardAdapter)
         this.discoveryEditorialAdapter = discoveryEditorialAdapter
 
         binding?.discoveryRecyclerView?.apply {
@@ -154,6 +156,11 @@ class DiscoveryFragment : Fragment() {
         this.viewModel.outputs.shouldShowOnboardingView()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { discoveryOnboardingAdapter.setShouldShowOnboardingView(it) }
+            .addToDisposable(disposables)
+
+        this.viewModel.outputs.shouldShowVideoFeedBanner()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { discoveryVideoFeedBannerAdapter.setShouldShowBanner(it) }
             .addToDisposable(disposables)
 
         this.viewModel.outputs.showActivityFeed()

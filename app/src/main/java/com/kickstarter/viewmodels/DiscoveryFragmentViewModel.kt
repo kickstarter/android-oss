@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.loadmore.ApolloPaginateV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.DISCOVER
@@ -27,6 +28,7 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope
 import com.kickstarter.ui.adapters.DiscoveryActivitySampleAdapter
 import com.kickstarter.ui.adapters.DiscoveryEditorialAdapter
 import com.kickstarter.ui.adapters.DiscoveryOnboardingAdapter
+import com.kickstarter.ui.adapters.DiscoveryVideoFeedBannerAdapter
 import com.kickstarter.ui.adapters.DiscoveryProjectCardAdapter
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.ProjectData.Companion.builder
@@ -34,6 +36,7 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
+import com.kickstarter.ui.viewholders.DiscoveryVideoFeedBannerViewHolder
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -44,7 +47,8 @@ interface DiscoveryFragmentViewModel {
         DiscoveryProjectCardAdapter.Delegate,
         DiscoveryOnboardingAdapter.Delegate,
         DiscoveryEditorialAdapter.Delegate,
-        DiscoveryActivitySampleAdapter.Delegate {
+        DiscoveryActivitySampleAdapter.Delegate,
+        DiscoveryVideoFeedBannerAdapter.Delegate {
 
         fun fragmentLifeCycle(lifecycleEvent: Lifecycle.State)
 
@@ -89,6 +93,9 @@ interface DiscoveryFragmentViewModel {
         /** Emits a boolean that determines if the onboarding view should be shown.  */
         fun shouldShowOnboardingView(): Observable<Boolean>
 
+        /** Emits a boolean that determines if the video feed banner should be shown.  */
+        fun shouldShowVideoFeedBanner(): Observable<Boolean>
+
         /** Emits when the activity feed should be shown.  */
         fun showActivityFeed(): Observable<Boolean>
 
@@ -130,13 +137,13 @@ interface DiscoveryFragmentViewModel {
         private val apiClient = requireNotNull(environment.apiClientV2())
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val activitySamplePreference = environment.activitySamplePreference()
-        private val ffClient = requireNotNull(environment.featureFlagClient())
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val cookieManager = requireNotNull(environment.cookieManager())
         private val currentUser = requireNotNull(environment.currentUserV2())
         private val lifecycleObservable = BehaviorSubject.create<Lifecycle.State>()
         private val featureFlagClient = environment.featureFlagClient()
         private val analyticEvents = requireNotNull(environment.analytics())
+        private val statsigClient = requireNotNull(environment.statsigClient())
 
         @JvmField
         val inputs: Inputs = this
@@ -166,6 +173,7 @@ interface DiscoveryFragmentViewModel {
         private val shouldShowEditorial = BehaviorSubject.create<Editorial?>()
         private val shouldShowEmptySavedView = BehaviorSubject.create<Boolean>()
         private val shouldShowOnboardingView = BehaviorSubject.create<Boolean>()
+        private val shouldShowVideoFeedBanner = BehaviorSubject.create<Boolean>()
         private val startSetPasswordActivity = BehaviorSubject.create<String>()
         private val startEditorialActivity = PublishSubject.create<Editorial>()
         private val startPreLaunchProjectActivity = PublishSubject.create<Pair<Project, RefTag>>()
@@ -305,6 +313,7 @@ interface DiscoveryFragmentViewModel {
             clearPage
                 .subscribe {
                     shouldShowOnboardingView.onNext(false)
+                    shouldShowVideoFeedBanner.onNext(false)
                     clearActivities.onNext(Unit)
                     projectList.onNext(emptyList())
                 }.addToDisposable(disposables)
@@ -338,6 +347,20 @@ interface DiscoveryFragmentViewModel {
                     )
                 }
                 .subscribe { shouldShowOnboardingView.onNext(it) }
+                .addToDisposable(disposables)
+
+            currentUser.observable()
+                .compose(Transformers.combineLatestPair(paramsFromActivity))
+                .map { userAndParams ->
+                    val user = userAndParams.first.getValue()
+                    val params = userAndParams.second
+                    isVideoFeedBannerVisible(
+                        params = params,
+                        user = user,
+                        isGateOn = statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+                    )
+                }
+                .subscribe { shouldShowVideoFeedBanner.onNext(it) }
                 .addToDisposable(disposables)
 
             paramsFromActivity
@@ -548,6 +571,20 @@ interface DiscoveryFragmentViewModel {
             return params.isAllProjects.isTrue() && isSortHome && !isLoggedIn
         }
 
+        private fun isVideoFeedBannerVisible(
+            params: DiscoveryParams,
+            user: User?,
+            isGateOn: Boolean
+        ): Boolean {
+            if (!isGateOn) return false
+            return if (user != null) {
+                params == DiscoveryParams.getDefaultParams(user)
+            } else {
+                val isSortHome = DiscoveryParams.Sort.MAGIC == params.sort()
+                params.isAllProjects.isTrue() && isSortHome
+            }
+        }
+
         private fun isSavedVisible(params: DiscoveryParams): Boolean {
             return params.isSavedProjects
         }
@@ -605,6 +642,9 @@ interface DiscoveryFragmentViewModel {
             activityUpdateClick.onNext(activity)
         override fun discoveryOnboardingViewHolderLoginToutClick(viewHolder: DiscoveryOnboardingViewHolder?) =
             discoveryOnboardingLoginToutClick.onNext(true)
+        override fun discoveryVideoFeedBannerViewHolderClick(viewHolder: DiscoveryVideoFeedBannerViewHolder) {
+            // TODO: Handle video feed banner click
+        }
         override fun projectCardViewHolderClicked(project: Project) = projectCardClicked.onNext(project)
         override fun nextPage() = nextPage.onNext(Unit)
         override fun paramsFromActivity(params: DiscoveryParams) = paramsFromActivity.onNext(params)
@@ -624,6 +664,7 @@ interface DiscoveryFragmentViewModel {
         override fun startProjectActivity(): Observable<Pair<Project, RefTag>> = startProjectActivity
         override fun startPreLaunchProjectActivity(): Observable<Pair<Project, RefTag>> = startPreLaunchProjectActivity
         override fun shouldShowOnboardingView(): Observable<Boolean> = shouldShowOnboardingView
+        override fun shouldShowVideoFeedBanner(): Observable<Boolean> = shouldShowVideoFeedBanner
         override fun startUpdateActivity(): Observable<Activity> = startUpdateActivity
         override fun onHeartButtonClicked(project: Project) = onHeartButtonClicked.onNext(project)
         override fun startLoginToutActivityToSaveProject(): Observable<Project> = this.startLoginToutActivityToSaveProject

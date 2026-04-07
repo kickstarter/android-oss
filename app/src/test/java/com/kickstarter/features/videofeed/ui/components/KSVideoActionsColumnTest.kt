@@ -5,6 +5,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase
@@ -36,11 +37,15 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
         val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
         composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
         composeTestRule.onNodeWithText("1.2k").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .assertExists()
 
         // Verify share button and count
         val shareDesc = context().getString(R.string.fpo_Share)
         composeTestRule.onNodeWithContentDescription(shareDesc).assertIsDisplayed()
         composeTestRule.onNodeWithText("45").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name, useUnmergedTree = true)
+            .assertExists()
 
         // Verify more options button
         val moreDesc = context().getString(R.string.fpo_More_options)

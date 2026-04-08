@@ -20,6 +20,7 @@ import com.kickstarter.libs.SegmentTrackingClient
 import com.kickstarter.libs.braze.RemotePushClientType
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.featureflag.StatsigClient
+import com.kickstarter.libs.featureflag.StatsigException
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.viewmodels.InitializationState
@@ -136,7 +137,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent, Image
         statsigClient.initialize(
             scope = applicationScope,
             errorCallback = { exception ->
-                FirebaseCrashlytics.getInstance().recordException(exception)
+                FirebaseCrashlytics.getInstance().recordException(StatsigException(exception))
             }
         )
 

@@ -80,6 +80,15 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
             statsigClient = requireNotNull(env.statsigClient())
         }
 
+//        val gateValueExtended = statsigClient.getFeatureGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+//        val gateValue = statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+//
+//        if (gateValue) Timber.d("*** statsig gate open!")
+//        else Timber.d("*** statsig gate closed!")
+//
+//        if (gateValueExtended.getValue()) Timber.d("*** statsig gate open with group=${gateValueExtended.getName()} and rule${gateValueExtended.getRuleID()}")
+//        else Timber.d("*** statsig gate closed with group=${gateValueExtended.getName()} and rule${gateValueExtended.getRuleID()}")
+
         /*
          * Provide the Intent _after_ the view tree (most importantly the ViewPager)
          * has completed a first-pass render, ensuring that the Intent workflows begin

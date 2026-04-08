@@ -349,7 +349,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     // Statsig
-    implementation 'com.github.statsig-io:android-sdk:4.37.0'
+    implementation 'com.statsig:android-sdk:4.45.6'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

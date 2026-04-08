@@ -41,6 +41,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.rx2.asObservable
 
 interface DiscoveryFragmentViewModel {
     interface Inputs :
@@ -359,10 +360,15 @@ interface DiscoveryFragmentViewModel {
                 .addToDisposable(disposables)
 
             paramsFromActivity
+                .compose(
+                    Transformers.combineLatestPair(
+                        statsigClient.isReady.asObservable()
+                    )
+                )
                 .map {
                     isVideoFeedBannerVisible(
-                        params = it,
-                        isGateOn = statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+                        params = it.first,
+                        isGateOn = it.second && statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
                     )
                 }
                 .subscribe { shouldShowVideoFeedBanner.onNext(it) }

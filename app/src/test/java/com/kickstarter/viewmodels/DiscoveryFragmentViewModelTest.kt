@@ -6,10 +6,10 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.RefTag.Companion.collection
 import com.kickstarter.libs.RefTag.Companion.discovery
-import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.preferences.MockIntPreference
@@ -740,7 +740,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShouldShowVideoFeedBanner_gateOn_homeParams() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -755,7 +755,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShouldShowVideoFeedBanner_gateOn_pwlParams() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -775,7 +775,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShouldShowVideoFeedBanner_gateOn_otherParams() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -795,7 +795,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShouldShowVideoFeedBanner_gateOn_nonMagicSort() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -812,7 +812,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShouldShowVideoFeedBanner_gateOff() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to false)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to false)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -828,7 +828,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         val currentUser: CurrentUserTypeV2 = MockCurrentUserV2()
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .currentUserV2(currentUser)
@@ -847,7 +847,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testStartVideoFeedActivity_onBannerClick() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -865,7 +865,7 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShouldShowVideoFeedBanner_clearPage() {
         val statsigClient = MockStatsigClient(
             context = application(),
-            gateValues = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
         )
         val environment = environment().toBuilder()
             .statsigClient(statsigClient)
@@ -884,5 +884,4 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         currentUser.refresh(user)
         vm.inputs.paramsFromActivity(getDefaultParams(user))
     }
-
 }

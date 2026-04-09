@@ -196,9 +196,8 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test forward and rewind buttons work`() {
+    fun `test forward and rewind buttons are not present`() {
         val mockPlayer = mock(ExoPlayer::class.java)
-        `when`(mockPlayer.currentPosition).thenReturn(10000L)
         composeTestRule.setContent {
             KSTheme {
                 KSVideoPlayer(
@@ -211,11 +210,8 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
 
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).performClick()
-        verify(mockPlayer).seekTo(5000L)
-
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).performClick()
-        verify(mockPlayer).seekTo(15000L)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).assertDoesNotExist()
     }
 
     @Test

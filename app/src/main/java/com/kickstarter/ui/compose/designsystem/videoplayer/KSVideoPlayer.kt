@@ -11,7 +11,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,18 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
-import androidx.compose.ui.semantics.progressBarRangeInfo
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -54,9 +46,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
-import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.KSVideoScrubBar
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
@@ -273,16 +265,14 @@ fun KSVideoPlayer(
 }
 
 /**
- * A composable that displays a progress bar for the video player and handles user seeking.
+ * A composable that displays a scrub bar for the video player with a draggable playhead.
  *
- * It uses a [KSLinearProgressIndicator] to visualize the current progress and wraps it in a larger
- * touch target [Box] to detect tap gestures for seeking to specific timestamps.
+ * It uses [KSVideoScrubBar] to provide a progress track with a visible thumb circle
+ * that supports both tap-to-seek and drag-to-scrub gestures.
  *
  * @param modifier The [Modifier] to be applied to the container.
  * @param progressProvider A lambda that returns the current video progress as a [Float] between 0.0 and 1.0.
- * Passing a lambda instead of a direct value is a performance optimization to defer reading the state
- * until the draw phase, preventing unnecessary recompositions of the parent player.
- * @param onSeek A callback invoked when the user taps the progress bar, providing the new progress value.
+ * @param onSeek A callback invoked when the user seeks to a new position, providing the new progress value.
  */
 @Composable
 private fun ProgressBarContainer(
@@ -290,41 +280,16 @@ private fun ProgressBarContainer(
     progressProvider: () -> Float,
     onSeek: (Float) -> Unit = {}
 ) {
-    Box(
+    KSVideoScrubBar(
+        progress = progressProvider(),
+        onSeek = onSeek,
         modifier = modifier
             .padding(bottom = 24.dp)
             .padding(horizontal = dimensions.paddingMedium)
-            .fillMaxWidth()
-            .height(48.dp) // Standard touch target height
-            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
-            .semantics {
-                val progress = progressProvider()
-                progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
-                setProgress { targetProgress ->
-                    onSeek(targetProgress)
-                    true
-                }
-            }
-            .pointerInput(Unit) {
-                detectTapGestures { offset ->
-                    val tappedProgress = offset.x / size.width
-                    onSeek(tappedProgress.coerceIn(0f, 1f))
-                }
-            },
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        KSLinearProgressIndicator(
-            progress = progressProvider(),
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .fillMaxWidth()
-                .height(4.dp)
-                .clip(CircleShape),
-            color = Color.White,
-            trackColor = KSTheme.colors.grey_05,
-            strokeCap = StrokeCap.Round
-        )
-    }
+            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name),
+        activeColor = Color.White,
+        trackColor = KSTheme.colors.grey_05
+    )
 }
 
 @Composable

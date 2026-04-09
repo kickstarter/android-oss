@@ -408,7 +408,7 @@ fun KSVideoBadge(
             Text(
                 text = text,
                 color = Color.White,
-                style = typographyV2.titleBoldSmall,
+                style = typographyV2.headingSM,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

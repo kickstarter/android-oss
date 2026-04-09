@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -79,7 +80,7 @@ fun KSVideoCampaignCard(
             ) {
                 Text(
                     text = title,
-                    style = typographyV2.headingLG,
+                    style = typographyV2.headingXL,
                     color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -87,7 +88,7 @@ fun KSVideoCampaignCard(
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = subtitle,
-                    style = typographyV2.headingSM,
+                    style = typographyV2.headingMD,
                     color = Color.White.copy(alpha = 0.8f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -117,7 +118,9 @@ fun KSVideoCampaignCard(
                 .testTag(KSVideoCampaignCardTestTag.BUTTON.name),
             text = buttonText,
             textColor = KSTheme.colors.videoPlayerButtonText,
+            textStyle = typographyV2.headingXL,
             backgroundColor = Color.Transparent,
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
             onClickAction = {
                 onButtonClick.invoke()
             }

@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -56,7 +59,12 @@ fun VideoFeedScreen(
         val videoUrl = project.video()?.hls() ?: ""
         val profileImage = project.creator().avatar().medium()
         val projectTitle = project.name()
-        val percentageFounded = project.percentageFunded()
+        // Derive progress per-page: only recomposes this page when its own settled state flips
+        val percentageFounded by remember(page) {
+            derivedStateOf {
+                if (pagerState.settledPage == page) project.percentageFunded() else 0f
+            }
+        }
 
         KSVideoPlayer(
             videoUrl = videoUrl,

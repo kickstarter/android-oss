@@ -116,7 +116,7 @@ fun KSVideoCampaignCard(
                 }
                 .testTag(KSVideoCampaignCardTestTag.BUTTON.name),
             text = buttonText,
-            textColor = KSTheme.colors.videoPlayerButtonText,
+            textColor = KSTheme.colors.videoPlayer.buttonText,
             backgroundColor = Color.Transparent,
             onClickAction = {
                 onButtonClick.invoke()

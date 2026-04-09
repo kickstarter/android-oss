@@ -863,7 +863,7 @@ fun KSControlIcon(
                 role = Role.Button
             )
     ) {
-        val baseColor = colors.videoPlayerBackground.copy(alpha = 0.25f)
+        val baseColor = colors.videoPlayer.background.copy(alpha = 0.25f)
         val glassModifier = if (hazeState != null) {
             Modifier
                 .matchParentSize()
@@ -876,7 +876,7 @@ fun KSControlIcon(
         } else {
             Modifier
                 .matchParentSize()
-                .background(colors.videoPlayerBackground.copy(alpha = 0.25f))
+                .background(colors.videoPlayer.background.copy(alpha = 0.25f))
         }
 
         Box(modifier = glassModifier)
@@ -887,7 +887,7 @@ fun KSControlIcon(
                 .matchParentSize()
                 .border(
                     width = 1.38.dp,
-                    color = colors.videoPlayerContent.copy(alpha = 0.25f),
+                    color = colors.videoPlayer.content.copy(alpha = 0.25f),
                     shape = CircleShape
                 )
         )
@@ -895,7 +895,7 @@ fun KSControlIcon(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = colors.videoPlayerContent,
+            tint = colors.videoPlayer.content,
         )
     }
 }
@@ -962,7 +962,7 @@ fun KSVideoPlayerIconButton(
                     shape = CircleShape,
                     shadow = Shadow(
                         radius = dimensions.videoPlayerShadowBlur,
-                        color = colors.videoPlayerIconShadow,
+                        color = colors.videoPlayer.iconShadow,
                         offset = DpOffset.Zero
                     )
                 )
@@ -971,10 +971,10 @@ fun KSVideoPlayerIconButton(
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
             Text(
                 text = text,
-                color = colors.videoPlayerContent,
+                color = colors.videoPlayer.content,
                 style = typographyV2.bodyBoldXS.copy(
                     shadow = androidx.compose.ui.graphics.Shadow(
-                        color = colors.videoPlayerIconShadow,
+                        color = colors.videoPlayer.iconShadow,
                         offset = Offset(0f, 0f),
                         blurRadius = dimensions.videoPlayerShadowBlur.value * 2f
                     )

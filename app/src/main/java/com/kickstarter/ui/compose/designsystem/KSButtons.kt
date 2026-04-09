@@ -955,7 +955,6 @@ fun KSVideoPlayerIconButton(
                 onClickLabel = onClickLabel,
                 role = Role.Button
             )
-            .padding(vertical = dimensions.paddingSmall)
     ) {
         Image(
             imageVector = icon,

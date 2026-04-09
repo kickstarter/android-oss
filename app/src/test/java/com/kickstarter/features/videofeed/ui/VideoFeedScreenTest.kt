@@ -1,8 +1,13 @@
 package com.kickstarter.features.videofeed.ui
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import com.kickstarter.KSRobolectricTestCase
@@ -69,5 +74,48 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_$project3Id", useUnmergedTree = true)
             .assertExists()
             .assertIsNotDisplayed()
+    }
+
+    @Test
+    fun `close button is displayed with correct accessibility role`() {
+        val video = VideoFactory.hlsVideo()
+        val projects = listOf(
+            ProjectFactory.project().toBuilder().video(video).build()
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(projectsList = projects)
+            }
+        }
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name)
+            .assertIsDisplayed()
+            .assert(
+                SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+            )
+    }
+
+    @Test
+    fun `close button triggers onClose callback`() {
+        var closeCalled = false
+        val video = VideoFactory.hlsVideo()
+        val projects = listOf(
+            ProjectFactory.project().toBuilder().video(video).build()
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    projectsList = projects,
+                    onClose = { closeCalled = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name)
+            .performClick()
+
+        assertTrue(closeCalled)
     }
 }

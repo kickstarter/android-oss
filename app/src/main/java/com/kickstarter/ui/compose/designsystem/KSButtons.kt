@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -776,6 +777,8 @@ fun KSOutlinedButton(
     backgroundColor: Color,
     text: String,
     textColor: Color = colors.textPrimary,
+    textStyle: TextStyle = typographyV2.buttonLabel,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     isEnabled: Boolean = true,
 ) {
     OutlinedButton(
@@ -786,10 +789,11 @@ fun KSOutlinedButton(
         ),
         enabled = isEnabled,
         border = BorderStroke(dimensions.borderThickness, colors.borderBold),
+        contentPadding = contentPadding,
         onClick = { onClickAction.invoke() }
     ) {
         Text(
-            style = typographyV2.buttonLabel,
+            style = textStyle,
             color = if (isEnabled) textColor else textColor.copy(alpha = 0.38f),
             text = text
         )
@@ -972,7 +976,7 @@ fun KSVideoPlayerIconButton(
             Text(
                 text = text,
                 color = colors.videoPlayer.content,
-                style = typographyV2.bodyBoldXS.copy(
+                style = typographyV2.bodyBoldSM.copy(
                     shadow = androidx.compose.ui.graphics.Shadow(
                         color = colors.videoPlayer.iconShadow,
                         offset = Offset(0f, 0f),

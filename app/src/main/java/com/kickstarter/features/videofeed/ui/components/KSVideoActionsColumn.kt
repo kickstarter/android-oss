@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSProfileButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
-import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoPlayerIconButton
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis

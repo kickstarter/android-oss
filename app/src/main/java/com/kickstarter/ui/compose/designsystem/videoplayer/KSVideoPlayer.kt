@@ -4,6 +4,7 @@ import android.graphics.Matrix
 import android.view.TextureView
 import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -12,11 +13,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,9 +57,7 @@ import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Forward
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
-import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Rewind
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -184,18 +181,6 @@ fun KSVideoPlayer(
         }
     }
 
-    val onRewind = remember(exoPlayer) {
-        {
-            exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
-        }
-    }
-
-    val onForward = remember(exoPlayer) {
-        {
-            exoPlayer.seekTo(exoPlayer.currentPosition + 5000)
-        }
-    }
-
     val onSeek = remember(exoPlayer) {
         { newProgress: Float ->
             val duration = exoPlayer.duration
@@ -252,9 +237,7 @@ fun KSVideoPlayer(
             modifier = Modifier.align(Alignment.Center),
             showControls = showControls,
             hazeState = hazeState,
-            playPauseCallback = onToggleControls,
-            rewindCallback = onRewind,
-            forwardCallback = onForward
+            playPauseCallback = onToggleControls
         )
 
         Column(
@@ -350,51 +333,33 @@ private fun ControlsContainer(
     showControls: Boolean,
     hazeState: HazeState? = null,
     playPauseCallback: () -> Unit = {},
-    forwardCallback: () -> Unit = {},
-    rewindCallback: () -> Unit = {},
 ) {
     AnimatedVisibility(
         visible = showControls,
-        enter = fadeIn() + scaleIn(initialScale = 0.8f),
+        enter = fadeIn() + scaleIn(
+            initialScale = 0.6f,
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = 300f
+            )
+        ),
         exit = fadeOut() + scaleOut(targetScale = 0.8f),
         modifier = modifier
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
+        Box(
             modifier = Modifier
                 .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name)
                 .pointerInput(Unit) {} // Stops click propagation
         ) {
             KSControlIcon(
-                icon = Rewind,
-                size = 36.dp,
-                onClick = {
-                    rewindCallback.invoke()
-                },
-                hazeState = hazeState,
-                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name)
-            )
-
-            KSControlIcon(
                 icon = Play,
-                size = 62.dp,
+                size = 80.dp,
                 onClick = {
                     playPauseCallback.invoke()
                 },
                 hazeState = hazeState,
                 modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name),
                 contentDescription = stringResource(id = R.string.fpo_Play)
-            )
-
-            KSControlIcon(
-                icon = Forward,
-                size = 36.dp,
-                onClick = {
-                    forwardCallback.invoke()
-                },
-                hazeState = hazeState,
-                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name)
             )
         }
     }

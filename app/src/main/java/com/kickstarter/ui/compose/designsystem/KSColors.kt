@@ -141,34 +141,6 @@ val blue_10 = Color(0xFF050543)
 
 val red_light = Color(0xFFF5E8E9)
 
-// Extracted into its own data class to work around a JVM limitation:
-// Kotlin data classes with many defaulted parameters generate synthetic constructors
-// that can exceed the 255-parameter JVM limit (ClassFormatError: Too many arguments).
-// Grouping component-specific colors reduces the parameter count on KSCustomColors.
-@Immutable
-data class KSDiscoveryBannerColors(
-    val background: Color = Color.Unspecified,
-    val text: Color = Color.Unspecified,
-    val buttonBackground: Color = Color.Unspecified,
-    val buttonText: Color = Color.Unspecified,
-)
-
-// Extracted into its own data class to work around a JVM limitation:
-// Kotlin data classes with many defaulted parameters generate synthetic constructors
-// that can exceed the 255-parameter JVM limit (ClassFormatError: Too many arguments).
-// Grouping component-specific colors reduces the parameter count on KSCustomColors.
-@Immutable
-data class KSVideoPlayerColors(
-    val content: Color = Color.Unspecified,
-    val background: Color = Color.Unspecified,
-    val iconShadow: Color = Color.Unspecified,
-    val buttonBorder: Color = Color.Unspecified,
-    val buttonText: Color = Color.Unspecified,
-    val progressBase: Color = Color.Unspecified,
-    val progressComplete: Color = Color.Unspecified,
-    val progressTrack: Color = Color.Unspecified,
-)
-
 @Immutable
 data class KSCustomColors(
     // NEW COLORS
@@ -261,9 +233,15 @@ data class KSCustomColors(
     val navIconBorderAvatar: Color = Color.Unspecified,
     val navBoxShadow: Color = Color.Unspecified,
 
-    // Component semantic colors
-    val discoveryBanner: KSDiscoveryBannerColors = KSDiscoveryBannerColors(),
-    val videoPlayer: KSVideoPlayerColors = KSVideoPlayerColors(),
+    // VideoPlayer semantic color naming
+    val videoPlayerContent: Color = Color.Unspecified,
+    val videoPlayerBackground: Color = Color.Unspecified,
+    val videoPlayerIconShadow: Color = Color.Unspecified,
+    val videoPlayerButtonBorder: Color = Color.Unspecified,
+    val videoPlayerButtonText: Color = Color.Unspecified,
+    val videoPlayerProgressBase: Color = Color.Unspecified,
+    val videoPlayerProgressComplete: Color = Color.Unspecified,
+    val videoPlayerProgressTrack: Color = Color.Unspecified,
 
     // OLD COLORS
     // Greens
@@ -406,25 +384,15 @@ val KSLightCustomColors = KSCustomColors(
     navIconBorderAvatar = white,
     navBoxShadow = black,
 
-    // DiscoveryBanner semantic color naming
-    discoveryBanner = KSDiscoveryBannerColors(
-        background = purple_03,
-        text = grey_10,
-        buttonBackground = white,
-        buttonText = grey_10,
-    ),
-
     // VideoPlayer semantic color naming
-    videoPlayer = KSVideoPlayerColors(
-        content = white,
-        background = grey_095,
-        iconShadow = black.copy(alpha = 0.1f),
-        buttonBorder = white,
-        buttonText = white,
-        progressBase = white,
-        progressComplete = green_300,
-        progressTrack = grey_055,
-    ),
+    videoPlayerContent = white,
+    videoPlayerBackground = grey_095,
+    videoPlayerIconShadow = black.copy(alpha = 0.1f),
+    videoPlayerButtonBorder = white,
+    videoPlayerButtonText = white,
+    videoPlayerProgressBase = white,
+    videoPlayerProgressComplete = green_300,
+    videoPlayerProgressTrack = grey_055,
 
     // OLD COLORS
     // Greens
@@ -565,25 +533,15 @@ val KSDarkCustomColors = KSCustomColors(
     navIconBorderAvatar = grey_900,
     navBoxShadow = black,
 
-    // DiscoveryBanner semantic color naming
-    discoveryBanner = KSDiscoveryBannerColors(
-        background = purple_03,
-        text = grey_10,
-        buttonBackground = white,
-        buttonText = grey_10,
-    ),
-
     // VideoPlayer semantic color naming
-    videoPlayer = KSVideoPlayerColors(
-        content = white,
-        background = grey_095,
-        iconShadow = black.copy(alpha = 0.1f),
-        buttonBorder = white,
-        buttonText = white,
-        progressBase = white,
-        progressComplete = green_300,
-        progressTrack = grey_055,
-    ),
+    videoPlayerContent = white,
+    videoPlayerBackground = grey_095,
+    videoPlayerIconShadow = black.copy(alpha = 0.1f),
+    videoPlayerButtonBorder = white,
+    videoPlayerButtonText = white,
+    videoPlayerProgressBase = white,
+    videoPlayerProgressComplete = green_300,
+    videoPlayerProgressTrack = grey_055,
 
     // OLD COLORS
     // Greens

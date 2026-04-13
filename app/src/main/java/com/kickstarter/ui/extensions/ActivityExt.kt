@@ -35,7 +35,6 @@ import com.kickstarter.libs.utils.extensions.getRootCommentsActivityIntent
 import com.kickstarter.libs.utils.extensions.getSearchIntent
 import com.kickstarter.libs.utils.extensions.getUpdatesActivityIntent
 import com.kickstarter.libs.utils.extensions.getVideoActivityIntent
-import com.kickstarter.libs.utils.extensions.getVideoFeedIntent
 import com.kickstarter.libs.utils.extensions.isPMOrderEditUri
 import com.kickstarter.libs.utils.extensions.isPMUri
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
@@ -165,16 +164,6 @@ fun Activity.showRatingDialogWidget() {
 fun Activity.startPledgeRedemption(project: Project) {
     startActivity(
         Intent().getPledgeRedemptionIntent(this, project)
-    )
-
-    this.let {
-        TransitionUtils.transition(it, TransitionUtils.slideInFromRight())
-    }
-}
-
-fun Activity.startVideoFeed() {
-    startActivity(
-        Intent().getVideoFeedIntent(this)
     )
 
     this.let {

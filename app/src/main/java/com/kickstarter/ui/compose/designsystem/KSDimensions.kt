@@ -94,11 +94,7 @@ data class KSDimensions(
 
     // Video Player dimensions
     val videoPlayerIconSize: Dp = Dp.Unspecified,
-    val videoPlayerShadowBlur: Dp = Dp.Unspecified,
-
-    // Discovery Banner dimensions
-    val discoveryBannerImageWidth: Dp = Dp.Unspecified,
-    val discoveryBannerImageHeight: Dp = Dp.Unspecified
+    val videoPlayerShadowBlur: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -192,9 +188,5 @@ val KSStandardDimensions = KSDimensions(
 
     // Video Player dimensions
     videoPlayerIconSize = 32.dp,
-    videoPlayerShadowBlur = 2.42.dp,
-
-    // Discovery Banner dimensions
-    discoveryBannerImageWidth = 86.dp,
-    discoveryBannerImageHeight = 116.dp
+    videoPlayerShadowBlur = 2.42.dp
 )

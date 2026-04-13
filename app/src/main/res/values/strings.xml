@@ -133,9 +133,5 @@
   <string name="fpo_Play">Play</string>
   <string name="fpo_Forward">Forward 5 seconds</string>
   <string name="fpo_Campaign_goal_reached" formatted="false">Campaign goal reached</string>
-  <string name="fpo_try_our_new_discovery_mode" formatted="false">Try our new discovery mode</string>
-  <string name="fpo_swipe_through_a_video_feed_tuning_your_recommendations_along_the_way" formatted="false">Swipe through a video feed, tuning your recommendations along the way.</string>
-  <string name="fpo_try_it_now" formatted="false">Try it now</string>
-  <string name="fpo_discovery_banner_image_content_description" formatted="false">Discovery mode preview</string>
 
 </resources>

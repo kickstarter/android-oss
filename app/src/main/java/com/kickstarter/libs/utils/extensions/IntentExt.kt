@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import com.kickstarter.features.pledgeredemption.ui.PledgeRedemptionActivity
 import com.kickstarter.features.search.ui.SearchAndFilterActivity
-import com.kickstarter.features.videofeed.ui.VideoFeedActivity
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CommentsActivity
@@ -54,13 +53,6 @@ fun Intent.getPledgeRedemptionIntent(
 ): Intent {
     this.setClass(context, PledgeRedemptionActivity::class.java)
         .putExtra(IntentKey.PROJECT, project)
-    return this
-}
-
-fun Intent.getVideoFeedIntent(
-    context: Context
-): Intent {
-    this.setClass(context, VideoFeedActivity::class.java)
     return this
 }
 

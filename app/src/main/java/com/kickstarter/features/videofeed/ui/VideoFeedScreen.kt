@@ -65,93 +65,95 @@ fun VideoFeedScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         VerticalPager(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
-        state = pagerState,
-        beyondViewportPageCount = 1,
-        key = { index -> projectsList[index].id() }
-    ) { page ->
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
+            state = pagerState,
+            beyondViewportPageCount = 1,
+            key = { index -> projectsList[index].id() }
+        ) { page ->
 
-        val project = projectsList[page]
-        val videoUrl = project.video()?.hls() ?: ""
-        val profileImage = project.creator().avatar().medium()
-        val projectTitle = project.name()
-        // Derive progress per-page: only recomposes this page when its own settled state flips
-        val percentageFounded by remember(page) {
-            derivedStateOf {
-                if (pagerState.settledPage == page) project.percentageFunded() else 0f
+            val project = projectsList[page]
+            val videoUrl = project.video()?.hls() ?: ""
+            val profileImage = project.creator().avatar().medium()
+            val projectTitle = project.name()
+            // Derive progress per-page: only recomposes this page when its own settled state flips
+            val percentageFounded by remember(page) {
+                derivedStateOf {
+                    if (pagerState.settledPage == page) project.percentageFunded() else 0f
+                }
+            }
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                KSVideoPlayer(
+                    videoUrl = videoUrl,
+                    isActive = pagerState.currentPage == page,
+                    overlayContent = { hazeState ->
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project.id()}")
+                        ) {
+                            KSVideoActionsColumn(
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .padding(end = dimensions.paddingMediumLarge),
+                                profileImageUrl = profileImage,
+                                bookmarkCount = "1k",
+                                shareCount = "50",
+                                onProfileClick = { },
+                                onBookmarkClick = { },
+                                onShareClick = { },
+                                onMoreOptionsClick = { }
+                            )
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            KSVideoBadgesRow(
+                                badges = badges,
+                                hazeState = hazeState
+                            )
+
+                            KSVideoCampaignCard(
+                                title = projectTitle,
+                                subtitle = "$50,134 pledged • Join 431 backers",
+                                buttonText = "Back this project",
+                                onButtonClick = { },
+                                progress = percentageFounded
+                            )
+                        }
+                    }
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.close),
+                    contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = 12.dp, top = 66.dp)
+                        .size(40.dp)
+                        .dropShadow(
+                            shape = CircleShape,
+                            shadow = Shadow(
+                                radius = dimensions.videoPlayerShadowBlur,
+                                color = KSTheme.colors.videoPlayerIconShadow,
+                                offset = DpOffset.Zero
+                            )
+                        )
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = onClose,
+                            onClickLabel = stringResource(id = R.string.accessibility_discovery_buttons_close),
+                            role = Role.Button
+                        )
+                        .semantics {
+                            role = Role.Button
+                        }
+                        .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
+                )
             }
         }
-
-        KSVideoPlayer(
-            videoUrl = videoUrl,
-            isActive = pagerState.currentPage == page,
-            overlayContent = { hazeState ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project.id()}")
-                ) {
-                    KSVideoActionsColumn(
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(end = dimensions.paddingMediumLarge),
-                        profileImageUrl = profileImage,
-                        bookmarkCount = "1k",
-                        shareCount = "50",
-                        onProfileClick = { },
-                        onBookmarkClick = { },
-                        onShareClick = { },
-                        onMoreOptionsClick = { }
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    KSVideoBadgesRow(
-                        badges = badges,
-                        hazeState = hazeState
-                    )
-
-                    KSVideoCampaignCard(
-                        title = projectTitle,
-                        subtitle = "$50,134 pledged • Join 431 backers",
-                        buttonText = "Back this project",
-                        onButtonClick = { },
-                        progress = percentageFounded
-                    )
-                }
-            }
-        )
-    }
-
-        Image(
-            painter = painterResource(id = R.drawable.close),
-            contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close),
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(start = 12.dp, top = 66.dp)
-                .size(40.dp)
-                .dropShadow(
-                    shape = CircleShape,
-                    shadow = Shadow(
-                        radius = dimensions.videoPlayerShadowBlur,
-                        color = KSTheme.colors.videoPlayerIconShadow,
-                        offset = DpOffset.Zero
-                    )
-                )
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onClose,
-                    onClickLabel = stringResource(id = R.string.accessibility_discovery_buttons_close),
-                    role = Role.Button
-                )
-                .semantics {
-                    role = Role.Button
-                }
-                .testTag(VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name)
-        )
     }
 }
 

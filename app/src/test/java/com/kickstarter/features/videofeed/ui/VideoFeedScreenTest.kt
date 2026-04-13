@@ -79,9 +79,8 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     @Test
     fun `close button is displayed with correct accessibility role`() {
         val video = VideoFactory.hlsVideo()
-        val projects = listOf(
-            ProjectFactory.project().toBuilder().video(video).build()
-        )
+        val project = ProjectFactory.project().toBuilder().id(201L).video(video).build()
+        val projects = listOf(project)
 
         composeTestRule.setContent {
             KSTheme {
@@ -89,7 +88,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             }
         }
 
-        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name)
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
             .assertIsDisplayed()
             .assert(
                 SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
@@ -100,9 +99,8 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     fun `close button triggers onClose callback`() {
         var closeCalled = false
         val video = VideoFactory.hlsVideo()
-        val projects = listOf(
-            ProjectFactory.project().toBuilder().video(video).build()
-        )
+        val project = ProjectFactory.project().toBuilder().id(301L).video(video).build()
+        val projects = listOf(project)
 
         composeTestRule.setContent {
             KSTheme {
@@ -113,9 +111,47 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             }
         }
 
-        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name)
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
             .performClick()
 
         assertTrue(closeCalled)
+    }
+
+    @Test
+    fun `each page has its own close button`() {
+        val project1Id = 401L
+        val project2Id = 402L
+
+        val video = VideoFactory.hlsVideo()
+        val projects = listOf(
+            ProjectFactory.project().toBuilder().id(project1Id).video(video).build(),
+            ProjectFactory.caProject().toBuilder().id(project2Id).video(video).build()
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(projectsList = projects)
+            }
+        }
+
+        // Page 0 close button is displayed
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_$project1Id", useUnmergedTree = true)
+            .assertExists()
+            .assertIsDisplayed()
+
+        // Page 1 close button exists (beyondViewportPageCount = 1) but is not displayed
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_$project2Id", useUnmergedTree = true)
+            .assertExists()
+            .assertIsNotDisplayed()
+
+        // Swipe to page 1
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        // Page 1 close button is now displayed
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_$project2Id", useUnmergedTree = true)
+            .assertExists()
+            .assertIsDisplayed()
     }
 }

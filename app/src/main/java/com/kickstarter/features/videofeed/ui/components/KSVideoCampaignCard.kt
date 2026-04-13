@@ -24,7 +24,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -85,7 +84,7 @@ fun KSVideoCampaignCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(dimensions.videoFeedCampaignTitleSubtitleSpacing))
                 Text(
                     text = subtitle,
                     style = typographyV2.headingMD,
@@ -120,7 +119,7 @@ fun KSVideoCampaignCard(
             textColor = KSTheme.colors.videoPlayer.buttonText,
             textStyle = typographyV2.headingXL,
             backgroundColor = Color.Transparent,
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+            contentPadding = PaddingValues(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMediumSmall),
             onClickAction = {
                 onButtonClick.invoke()
             }

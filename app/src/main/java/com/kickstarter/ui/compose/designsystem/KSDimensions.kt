@@ -96,6 +96,12 @@ data class KSDimensions(
     val videoPlayerIconSize: Dp = Dp.Unspecified,
     val videoPlayerShadowBlur: Dp = Dp.Unspecified,
 
+    // Video Feed dimensions
+    val videoFeedCloseButtonSize: Dp = Dp.Unspecified,
+    val videoFeedCloseButtonTopPadding: Dp = Dp.Unspecified,
+    val videoFeedActionsSpacing: Dp = Dp.Unspecified,
+    val videoFeedCampaignTitleSubtitleSpacing: Dp = Dp.Unspecified,
+
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
     val discoveryBannerImageHeight: Dp = Dp.Unspecified
@@ -193,6 +199,12 @@ val KSStandardDimensions = KSDimensions(
     // Video Player dimensions
     videoPlayerIconSize = 32.dp,
     videoPlayerShadowBlur = 2.42.dp,
+
+    // Video Feed dimensions
+    videoFeedCloseButtonSize = 40.dp,
+    videoFeedCloseButtonTopPadding = 66.dp,
+    videoFeedActionsSpacing = 20.dp,
+    videoFeedCampaignTitleSubtitleSpacing = 5.dp,
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 86.dp,

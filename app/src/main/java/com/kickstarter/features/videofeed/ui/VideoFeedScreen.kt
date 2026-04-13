@@ -30,7 +30,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
@@ -107,7 +106,7 @@ fun VideoFeedScreen(
                                 onMoreOptionsClick = { }
                             )
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
                             KSVideoBadgesRow(
                                 badges = badges,
@@ -130,8 +129,8 @@ fun VideoFeedScreen(
                     contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close),
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = 12.dp, top = 66.dp)
-                        .size(40.dp)
+                        .padding(start = dimensions.paddingMediumSmall, top = dimensions.videoFeedCloseButtonTopPadding)
+                        .size(dimensions.videoFeedCloseButtonSize)
                         .dropShadow(
                             shape = CircleShape,
                             shadow = Shadow(

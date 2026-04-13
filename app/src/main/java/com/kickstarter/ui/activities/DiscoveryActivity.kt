@@ -21,7 +21,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.DiscoveryLayoutBinding
 import com.kickstarter.features.pledgedprojectsoverview.ui.PledgedProjectsOverviewActivity
 import com.kickstarter.libs.InternalToolsType
-import com.kickstarter.libs.featureflag.StatsigClient
+import com.kickstarter.libs.featureflag.StatsigClientType
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.checkPermissions
@@ -51,7 +51,7 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
     private lateinit var drawerLayoutManager: LinearLayoutManager
     private lateinit var pagerAdapter: DiscoveryPagerAdapter
     private lateinit var consentManagementDialogFragment: ConsentManagementDialogFragment
-    private lateinit var statsigClient: StatsigClient
+    private lateinit var statsigClient: StatsigClientType
     private var internalTools: InternalToolsType? = null
     private lateinit var binding: DiscoveryLayoutBinding
     private lateinit var viewModelFactory: DiscoveryViewModel.Factory
@@ -281,8 +281,6 @@ class DiscoveryActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefere
             .compose(Transformers.observeForUIV2())
             .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it ?: "") }
             .addToDisposable(disposables)
-
-        statsigClient.updateExperimentUser()
     }
 
     override fun onDestroy() {

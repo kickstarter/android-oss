@@ -24,7 +24,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.UrlUtils.commentId
@@ -54,8 +53,6 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private var disposables = CompositeDisposable()
 
-    private lateinit var statsigClient: StatsigClient
-
     private lateinit var environment: Environment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,9 +67,6 @@ class SplashScreenActivity : AppCompatActivity() {
         this.getEnvironment()?.let {
             environment = it
             viewModelFactory = SplashScreenViewModel.Factory(it, intent = intent)
-            it.statsigClient()?.let { stClient ->
-                statsigClient = stClient
-            }
         }
 
         compatSplashScreen.setKeepOnScreenCondition {
@@ -180,8 +174,6 @@ class SplashScreenActivity : AppCompatActivity() {
 
                 startPMActivity(uri.toString())
             }.addToDisposable(disposables)
-
-        statsigClient.updateExperimentUser()
     }
 
     private fun projectIntent(uri: Uri): Intent {

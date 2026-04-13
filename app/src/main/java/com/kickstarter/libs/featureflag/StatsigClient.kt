@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.statsig.androidsdk.FeatureGate
+import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.Statsig
 import com.statsig.androidsdk.StatsigOptions
 import com.statsig.androidsdk.StatsigUser
@@ -15,12 +16,10 @@ import com.statsig.androidsdk.Tier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlow
 
 enum class StatsigGateKey(val key: String) {
     ANDROID_VIDEO_FEED("android_video_feed")
@@ -45,80 +44,72 @@ interface StatsigClientType {
     fun getExperiment(experimentName: String) = Statsig.getExperiment(experimentName) // TODO: for test MOCK statsig DynamicConfig type or expose to the rest of the app just the json values, will explore in the future
     suspend fun updateUser(id: String) = Statsig.updateUser(StatsigUser(id))
     fun getStableId() = Statsig.getStableID()
+
+    /** Emits true once the SDK has been successfully initialized. */
+    val isReady: StateFlow<Boolean>
 }
 
-open class StatsigClient(
+/**
+ * @param build the app [Build] info, used to determine production vs staging environment.
+ * @param context the application [Context], cast to [KSApplication] during SDK initialization.
+ * @param currentUser provides the current user observable for updating the Statsig user on login/logout.
+ * @param sdkInitializer a suspend lambda that performs the actual SDK initialization and returns
+ *   [InitializationDetails]. The default calls [Statsig.initialize] with the appropriate
+ *   environment tier and SDK key. Tests can inject a fake lambda (e.g. `{ null }`) to avoid
+ *   hitting the real Statsig SDK.
+ */
+open class StatsigClient @JvmOverloads constructor(
     internal val build: Build,
     private val context: Context,
-    private val currentUser: CurrentUserTypeV2
+    private val currentUser: CurrentUserTypeV2,
+    private val sdkInitializer: suspend () -> InitializationDetails? = {
+        val isProduction = build.isRelease && Build.isExternal()
+        val options = StatsigOptions().apply {
+            setTier(if (isProduction) Tier.PRODUCTION else Tier.STAGING)
+        }
+        Statsig.initialize(
+            application = context as KSApplication,
+            if (isProduction) Secrets.Statsig.PRODUCTION else Secrets.Statsig.STAGING,
+            StatsigUser(),
+            options = options
+        )
+    }
 ) : StatsigClientType {
 
     lateinit var scope: CoroutineScope
+
+    protected val _isReady = MutableStateFlow(false)
+    override val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
 
     override fun getSDKKey() =
         if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
         else Secrets.Statsig.STAGING
 
     /**
-     * Initializes the Statsig SDK using the recommended `async { }.await()` pattern from the
-     * Statsig Android documentation for structured concurrency.
+     * Initializes the Statsig SDK by invoking [sdkInitializer], a suspend lambda that
+     * encapsulates the actual SDK call. Production code uses the default lambda which calls
+     * [Statsig.initialize]; tests can inject a fake lambda to avoid the real SDK.
      *
-     * This method is `open` so that tests can override it to avoid calling the real [Statsig]
-     * singleton, which requires a live Application context and network access. Test subclasses
-     * should replace the body entirely to simulate success or failure scenarios.
+     * On success, [_isReady] is set to `true`, signalling downstream consumers (via [isReady])
+     * that gate checks will return accurate values.
      *
      * @param scope the [CoroutineScope] used to launch initialization; stored for later use by [updateExperimentUser]
      * @param dispatcher the [CoroutineDispatcher] for the initialization coroutine, defaults to [Dispatchers.IO]
      * @param errorCallback invoked with the error when initialization fails or throws
      */
-    open fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Throwable) -> Unit) {
+    fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Throwable) -> Unit) {
         this.scope = scope
         scope.launch(context = dispatcher) {
             try {
-                val options = StatsigOptions().apply {
-                    setTier(
-                        if (build.isRelease && Build.isExternal()) Tier.PRODUCTION
-                        else Tier.STAGING
-                    )
-                }
-                val details = async {
-                    Statsig.initialize(
-                        application = context as KSApplication,
-                        getSDKKey(),
-                        StatsigUser(),
-                        options = options
-                    )
-                }.await()
+                val details = sdkInitializer()
+
+                _isReady.value = details?.success.isTrue()
 
                 if (details?.success.isFalse()) {
                     errorCallback.invoke(Throwable(details?.failureDetails?.exception))
                 }
             } catch (e: Exception) {
                 errorCallback.invoke(e)
-            }
-        }
-    }
-
-    fun updateExperimentUser(dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Exception) -> Unit = {}) {
-        // TODO: updateExperimentUser might be called before SDK gets initialized add queue for requests to this method happening before initialization
-        if (isInitialized()) {
-            scope.launch(dispatcher) {
-                // TODO: Ideally concatenate with userprivacy to obtain email and other user details not available on V1
-                currentUser.observable().asFlow().distinctUntilChanged()
-                    .catch {
-                        errorCallback.invoke(Exception(it))
-                    }
-                    .collectLatest { user ->
-                        if (isInitialized()) {
-                            try {
-                                if (user?.isPresent().isTrue())
-                                    updateUser(user?.getValue()?.id().toString())
-                                else updateUser(getStableId()) // Logged out user use StableID from SDK to identify session
-                            } catch (e: Exception) {
-                                errorCallback.invoke(e)
-                            }
-                        }
-                    }
             }
         }
     }

@@ -333,5 +333,59 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).isDisplayed()
     }
 
+    @Test
+    fun `test empty video url does not render player surface`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun `test player does not autoplay when inactive`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = false,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        // - playWhenReady should be set to false when inactive
+        verify(mockPlayer).playWhenReady = false
+        verify(mockPlayer, never()).play()
+    }
+
+    @Test
+    fun `test progress bar is displayed on render`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+    }
+
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()
 }

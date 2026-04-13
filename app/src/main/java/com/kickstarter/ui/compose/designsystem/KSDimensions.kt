@@ -101,6 +101,8 @@ data class KSDimensions(
     val videoFeedCloseButtonTopPadding: Dp = Dp.Unspecified,
     val videoFeedActionsSpacing: Dp = Dp.Unspecified,
     val videoFeedCampaignTitleSubtitleSpacing: Dp = Dp.Unspecified,
+    val videoFeedScrubBarTrackHeight: Dp = Dp.Unspecified,
+    val videoFeedScrubBarThumbSize: Dp = Dp.Unspecified,
 
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
@@ -205,6 +207,8 @@ val KSStandardDimensions = KSDimensions(
     videoFeedCloseButtonTopPadding = 66.dp,
     videoFeedActionsSpacing = 20.dp,
     videoFeedCampaignTitleSubtitleSpacing = 5.dp,
+    videoFeedScrubBarTrackHeight = 4.dp,
+    videoFeedScrubBarThumbSize = 16.dp,
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 86.dp,

@@ -342,8 +342,8 @@ fun KSVideoScrubBar(
     onSeek: (Float) -> Unit,
     onScrubStart: () -> Unit = {},
     onScrubEnd: () -> Unit = {},
-    trackHeight: Dp = 4.dp,
-    thumbSize: Dp = 16.dp,
+    trackHeight: Dp = dimensions.videoFeedScrubBarTrackHeight,
+    thumbSize: Dp = dimensions.videoFeedScrubBarThumbSize,
     thumbScaleOnDrag: Float = 1.4f,
     activeColor: Color = Color.White,
     trackColor: Color = colors.grey_05
@@ -366,7 +366,7 @@ fun KSVideoScrubBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp) // Standard touch target
+            .height(dimensions.clickableButtonHeight) // Standard touch target
             .onSizeChanged { trackWidthPx = it.width.toFloat() }
             .testTag(KSVideoScrubBarTestTag.SCRUB_BAR_CONTAINER.name)
             .semantics {

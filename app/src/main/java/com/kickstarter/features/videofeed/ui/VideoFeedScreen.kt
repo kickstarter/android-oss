@@ -136,7 +136,7 @@ fun VideoFeedScreen(
                             shape = CircleShape,
                             shadow = Shadow(
                                 radius = dimensions.videoPlayerShadowBlur,
-                                color = KSTheme.colors.videoPlayerIconShadow,
+                                color = KSTheme.colors.videoPlayer.iconShadow,
                                 offset = DpOffset.Zero
                             )
                         )

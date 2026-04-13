@@ -326,6 +326,8 @@ enum class KSVideoScrubBarTestTag {
  *
  * @param progress The current video progress as a [Float] between 0.0 and 1.0.
  * @param onSeek A callback invoked when the user seeks to a new position, providing the new progress value.
+ * @param onScrubStart A callback invoked when the user begins a scrub gesture (touch down).
+ * @param onScrubEnd A callback invoked when the user finishes a scrub gesture (touch released).
  * @param modifier The [Modifier] to be applied to the scrub bar container.
  * @param trackHeight The height of the progress track.
  * @param thumbSize The diameter of the playhead thumb circle.
@@ -335,9 +337,11 @@ enum class KSVideoScrubBarTestTag {
  */
 @Composable
 fun KSVideoScrubBar(
+    modifier: Modifier = Modifier,
     progress: Float,
     onSeek: (Float) -> Unit,
-    modifier: Modifier = Modifier,
+    onScrubStart: () -> Unit = {},
+    onScrubEnd: () -> Unit = {},
     trackHeight: Dp = 4.dp,
     thumbSize: Dp = 16.dp,
     thumbScaleOnDrag: Float = 1.4f,
@@ -377,6 +381,7 @@ fun KSVideoScrubBar(
                     // - detect touch down for scale animation
                     val down = awaitFirstDown()
                     isDragging = true
+                    onScrubStart()
                     dragProgress = (down.position.x / size.width).coerceIn(0f, 1f)
                     onSeek(dragProgress)
 
@@ -388,6 +393,7 @@ fun KSVideoScrubBar(
                     }
 
                     isDragging = false
+                    onScrubEnd()
                 }
             },
         contentAlignment = Alignment.CenterStart

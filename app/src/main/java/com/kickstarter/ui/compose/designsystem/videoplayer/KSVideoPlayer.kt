@@ -144,18 +144,21 @@ fun KSVideoPlayer(
     }
 
     var progress by remember { mutableFloatStateOf(0f) }
+    var isScrubbing by remember { mutableStateOf(false) }
 
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
 
-    // - Updated progress bar only when active
+    // - Updated progress bar only when active and not scrubbing
     LaunchedEffect(isActive) {
         exoPlayer.playWhenReady = isActive
         if (isActive) {
             while (true) {
-                val duration = exoPlayer.duration
-                if (duration > 0) {
-                    progress = exoPlayer.currentPosition.toFloat() / duration
+                if (!isScrubbing) {
+                    val duration = exoPlayer.duration
+                    if (duration > 0) {
+                        progress = exoPlayer.currentPosition.toFloat() / duration
+                    }
                 }
                 delay(500)
             }
@@ -175,10 +178,25 @@ fun KSVideoPlayer(
 
     val onSeek = remember(exoPlayer) {
         { newProgress: Float ->
+            progress = newProgress
             val duration = exoPlayer.duration
             if (duration > 0) {
                 exoPlayer.seekTo((duration * newProgress).toLong())
             }
+        }
+    }
+
+    val onScrubStart = remember(exoPlayer) {
+        {
+            isScrubbing = true
+            exoPlayer.pause()
+        }
+    }
+
+    val onScrubEnd = remember(exoPlayer) {
+        {
+            isScrubbing = false
+            if (!showControls) exoPlayer.play()
         }
     }
 
@@ -252,7 +270,9 @@ fun KSVideoPlayer(
             ProgressBarContainer(
                 modifier = Modifier,
                 progressProvider = { progress },
-                onSeek = onSeek
+                onSeek = onSeek,
+                onScrubStart = onScrubStart,
+                onScrubEnd = onScrubEnd
             )
         }
     }
@@ -278,11 +298,15 @@ fun KSVideoPlayer(
 private fun ProgressBarContainer(
     modifier: Modifier,
     progressProvider: () -> Float,
-    onSeek: (Float) -> Unit = {}
+    onSeek: (Float) -> Unit = {},
+    onScrubStart: () -> Unit = {},
+    onScrubEnd: () -> Unit = {}
 ) {
     KSVideoScrubBar(
         progress = progressProvider(),
         onSeek = onSeek,
+        onScrubStart = onScrubStart,
+        onScrubEnd = onScrubEnd,
         modifier = modifier
             .padding(bottom = 24.dp)
             .padding(horizontal = dimensions.paddingMedium)

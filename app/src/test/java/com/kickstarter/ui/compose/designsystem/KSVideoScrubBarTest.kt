@@ -153,6 +153,59 @@ class KSVideoScrubBarTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `tapping scrub bar invokes onScrubStart and onScrubEnd`() {
+        var scrubStartCount = 0
+        var scrubEndCount = 0
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoScrubBar(
+                    progress = 0f,
+                    onSeek = {},
+                    onScrubStart = { scrubStartCount++ },
+                    onScrubEnd = { scrubEndCount++ }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoScrubBarTestTag.SCRUB_BAR_CONTAINER.name)
+            .performTouchInput {
+                click(position = Offset(x = width * 0.5f, y = height / 2f))
+            }
+
+        assert(scrubStartCount == 1) { "onScrubStart should have been called once but was called $scrubStartCount times" }
+        assert(scrubEndCount == 1) { "onScrubEnd should have been called once but was called $scrubEndCount times" }
+    }
+
+    @Test
+    fun `dragging scrub bar invokes onScrubStart on touch down and onScrubEnd on release`() {
+        var scrubStartCount = 0
+        var scrubEndCount = 0
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoScrubBar(
+                    progress = 0f,
+                    onSeek = {},
+                    onScrubStart = { scrubStartCount++ },
+                    onScrubEnd = { scrubEndCount++ }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoScrubBarTestTag.SCRUB_BAR_CONTAINER.name)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+                moveBy(Offset(x = width * 0.3f, y = 0f))
+                moveBy(Offset(x = width * 0.2f, y = 0f))
+                up()
+            }
+
+        assert(scrubStartCount == 1) { "onScrubStart should have been called exactly once but was called $scrubStartCount times" }
+        assert(scrubEndCount == 1) { "onScrubEnd should have been called exactly once but was called $scrubEndCount times" }
+    }
+
+    @Test
     fun `tapping at different positions produces correct seek values`() {
         val seekValues = mutableListOf<Float>()
 

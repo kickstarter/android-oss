@@ -243,6 +243,76 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test dragging progress bar pauses video and releasing resumes`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Drag on the progress bar: down → move → up
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+            }
+
+        composeTestRule.waitForIdle()
+
+        // - Player should be paused while scrubbing
+        verify(mockPlayer).pause()
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                moveBy(Offset(x = width * 0.3f, y = 0f))
+                up()
+            }
+
+        composeTestRule.waitForIdle()
+
+        // - Player should resume after scrub ends (controls are not visible)
+        verify(mockPlayer).play()
+    }
+
+    @Test
+    fun `test scrubbing while controls visible does not resume playback on release`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap surface to show controls (pauses video)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        verify(mockPlayer).pause()
+
+        // - Drag on the progress bar while controls are visible
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+                moveBy(Offset(x = width * 0.5f, y = 0f))
+                up()
+            }
+
+        composeTestRule.waitForIdle()
+
+        // - play() should NOT have been called since controls are still showing
+        verify(mockPlayer, never()).play()
+    }
+
+    @Test
     fun `test overlay content is displayed`() {
         val mockPlayer = mock(ExoPlayer::class.java)
         val testTag = "overlay_test_tag"

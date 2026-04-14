@@ -28,7 +28,10 @@ class VideoFeedActivity : ComponentActivity() {
         setContent {
             KSTheme {
                 val videoFeedUIState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
-                VideoFeedScreen(projectsList = videoFeedUIState.projects)
+                VideoFeedScreen(
+                    projectsList = videoFeedUIState.projects,
+                    onClose = { onBackPressedDispatcher.onBackPressed() }
+                )
             }
         }
     }

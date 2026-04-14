@@ -30,7 +30,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.kickstarter.R
-import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Close
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
@@ -40,6 +39,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Close
 
 enum class VideoFeedScreenTestTag {
     VIDEO_FEED_PAGER,

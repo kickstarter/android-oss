@@ -272,7 +272,8 @@ fun KSVideoPlayer(
                 progressProvider = { progress },
                 onSeek = onSeek,
                 onScrubStart = onScrubStart,
-                onScrubEnd = onScrubEnd
+                onScrubEnd = onScrubEnd,
+                showThumb = showControls
             )
         }
     }
@@ -300,7 +301,8 @@ private fun ProgressBarContainer(
     progressProvider: () -> Float,
     onSeek: (Float) -> Unit = {},
     onScrubStart: () -> Unit = {},
-    onScrubEnd: () -> Unit = {}
+    onScrubEnd: () -> Unit = {},
+    showThumb: Boolean = true
 ) {
     KSVideoScrubBar(
         progress = progressProvider(),
@@ -312,7 +314,8 @@ private fun ProgressBarContainer(
             .padding(horizontal = dimensions.paddingMedium)
             .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name),
         activeColor = Color.White,
-        trackColor = KSTheme.colors.grey_05
+        trackColor = KSTheme.colors.grey_05,
+        showThumb = showThumb
     )
 }
 

@@ -346,7 +346,8 @@ fun KSVideoScrubBar(
     thumbSize: Dp = dimensions.videoFeedScrubBarThumbSize,
     thumbScaleOnDrag: Float = 1.4f,
     activeColor: Color = Color.White,
-    trackColor: Color = colors.grey_05
+    trackColor: Color = colors.grey_05,
+    showThumb: Boolean = true
 ) {
     var isDragging by remember { mutableStateOf(false) }
     var dragProgress by remember { mutableFloatStateOf(progress) }
@@ -359,6 +360,12 @@ fun KSVideoScrubBar(
             stiffness = 400f
         ),
         label = "thumbScale"
+    )
+
+    val thumbAlpha by animateFloatAsState(
+        targetValue = if (showThumb || isDragging) 1f else 0f,
+        animationSpec = tween(durationMillis = 250),
+        label = "thumbAlpha"
     )
 
     val displayProgress = if (isDragging) dragProgress else progress
@@ -419,6 +426,7 @@ fun KSVideoScrubBar(
                     .graphicsLayer {
                         scaleX = thumbScale
                         scaleY = thumbScale
+                        alpha = thumbAlpha
                         translationX = displayProgress * trackWidthPx - (size.width / 2f)
                     }
                     .align(Alignment.CenterStart)

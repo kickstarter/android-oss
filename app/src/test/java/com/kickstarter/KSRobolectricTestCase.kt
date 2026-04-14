@@ -2,7 +2,7 @@ package com.kickstarter
 
 import android.app.Application
 import android.content.Context
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.AttributionEvents

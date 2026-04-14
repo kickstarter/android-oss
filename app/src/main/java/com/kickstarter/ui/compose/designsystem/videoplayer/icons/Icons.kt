@@ -71,6 +71,15 @@ private fun ReplyPreview() {
     }
 }
 
+@Preview
+@Composable
+private fun ClosePreview() {
+    Box(modifier = Modifier.padding(12.dp)) {
+        Image(imageVector = Close, contentDescription = null)
+    }
+}
+
+
 val Play: ImageVector
     get() {
         if (_Play != null) {
@@ -449,3 +458,43 @@ val Share: ImageVector
 
 @Suppress("ObjectPropertyName")
 private var _Share: ImageVector? = null
+
+val Close: ImageVector
+    get() {
+        if (_Close != null) {
+            return _Close!!
+        }
+        _Close = ImageVector.Builder(
+            name = "Close",
+            defaultWidth = 45.dp,
+            defaultHeight = 45.dp,
+            viewportWidth = 45f,
+            viewportHeight = 45f
+        ).apply {
+            path(fill = SolidColor(Color.White)) {
+                moveTo(29.495f, 15.352f)
+                curveTo(29.983f, 15.84f, 29.983f, 16.631f, 29.495f, 17.119f)
+                lineTo(24.191f, 22.423f)
+                lineTo(29.495f, 27.727f)
+                curveTo(29.983f, 28.215f, 29.983f, 29.007f, 29.495f, 29.495f)
+                curveTo(29.007f, 29.983f, 28.215f, 29.983f, 27.727f, 29.495f)
+                lineTo(22.423f, 24.191f)
+                lineTo(17.12f, 29.494f)
+                curveTo(16.632f, 29.982f, 15.841f, 29.982f, 15.353f, 29.494f)
+                curveTo(14.865f, 29.006f, 14.865f, 28.214f, 15.353f, 27.726f)
+                lineTo(20.655f, 22.423f)
+                lineTo(15.353f, 17.121f)
+                curveTo(14.864f, 16.633f, 14.865f, 15.841f, 15.353f, 15.353f)
+                curveTo(15.841f, 14.865f, 16.632f, 14.865f, 17.12f, 15.353f)
+                lineTo(22.423f, 20.656f)
+                lineTo(27.727f, 15.352f)
+                curveTo(28.215f, 14.863f, 29.007f, 14.864f, 29.495f, 15.352f)
+                close()
+            }
+        }.build()
+
+        return _Close!!
+    }
+
+@Suppress("ObjectPropertyName")
+private var _Close: ImageVector? = null

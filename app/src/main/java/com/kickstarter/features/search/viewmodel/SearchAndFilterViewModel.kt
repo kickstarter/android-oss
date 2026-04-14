@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.models.Category
@@ -44,6 +45,10 @@ class SearchAndFilterViewModel(
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val analyticEvents = requireNotNull(environment.analytics())
+    private val statsigClient = requireNotNull(environment.statsigClient())
+
+    private val _isVideoFeedBannerVisible = MutableStateFlow(false)
+    val isVideoFeedBannerVisible: StateFlow<Boolean> = _isVideoFeedBannerVisible.asStateFlow()
 
     private val _searchUIState = MutableStateFlow(SearchUIState())
     val searchUIState: StateFlow<SearchUIState>
@@ -76,6 +81,8 @@ class SearchAndFilterViewModel(
     private var isLoadingMore = false
 
     init {
+        _isVideoFeedBannerVisible.value = statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+
         scope.launch {
             val debounced = _searchTerm
                 .debounce(debouncePeriod)

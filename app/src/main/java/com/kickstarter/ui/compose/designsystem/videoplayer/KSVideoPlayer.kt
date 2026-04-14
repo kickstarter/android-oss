@@ -4,25 +4,22 @@ import android.graphics.Matrix
 import android.view.TextureView
 import android.view.ViewGroup
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -33,18 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
-import androidx.compose.ui.semantics.progressBarRangeInfo
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -55,12 +46,10 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
-import com.kickstarter.ui.compose.designsystem.KSLinearProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
-import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Forward
+import com.kickstarter.ui.compose.designsystem.KSVideoScrubBar
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
-import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Rewind
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -155,18 +144,21 @@ fun KSVideoPlayer(
     }
 
     var progress by remember { mutableFloatStateOf(0f) }
+    var isScrubbing by remember { mutableStateOf(false) }
 
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
 
-    // - Updated progress bar only when active
+    // - Updated progress bar only when active and not scrubbing
     LaunchedEffect(isActive) {
         exoPlayer.playWhenReady = isActive
         if (isActive) {
             while (true) {
-                val duration = exoPlayer.duration
-                if (duration > 0) {
-                    progress = exoPlayer.currentPosition.toFloat() / duration
+                if (!isScrubbing) {
+                    val duration = exoPlayer.duration
+                    if (duration > 0) {
+                        progress = exoPlayer.currentPosition.toFloat() / duration
+                    }
                 }
                 delay(500)
             }
@@ -184,24 +176,27 @@ fun KSVideoPlayer(
         }
     }
 
-    val onRewind = remember(exoPlayer) {
-        {
-            exoPlayer.seekTo(exoPlayer.currentPosition - 5000)
-        }
-    }
-
-    val onForward = remember(exoPlayer) {
-        {
-            exoPlayer.seekTo(exoPlayer.currentPosition + 5000)
-        }
-    }
-
     val onSeek = remember(exoPlayer) {
         { newProgress: Float ->
+            progress = newProgress
             val duration = exoPlayer.duration
             if (duration > 0) {
                 exoPlayer.seekTo((duration * newProgress).toLong())
             }
+        }
+    }
+
+    val onScrubStart = remember(exoPlayer) {
+        {
+            isScrubbing = true
+            exoPlayer.pause()
+        }
+    }
+
+    val onScrubEnd = remember(exoPlayer) {
+        {
+            isScrubbing = false
+            if (!showControls) exoPlayer.play()
         }
     }
 
@@ -252,9 +247,7 @@ fun KSVideoPlayer(
             modifier = Modifier.align(Alignment.Center),
             showControls = showControls,
             hazeState = hazeState,
-            playPauseCallback = onToggleControls,
-            rewindCallback = onRewind,
-            forwardCallback = onForward
+            playPauseCallback = onToggleControls
         )
 
         Column(
@@ -277,7 +270,10 @@ fun KSVideoPlayer(
             ProgressBarContainer(
                 modifier = Modifier,
                 progressProvider = { progress },
-                onSeek = onSeek
+                onSeek = onSeek,
+                onScrubStart = onScrubStart,
+                onScrubEnd = onScrubEnd,
+                showThumb = showControls
             )
         }
     }
@@ -290,58 +286,37 @@ fun KSVideoPlayer(
 }
 
 /**
- * A composable that displays a progress bar for the video player and handles user seeking.
+ * A composable that displays a scrub bar for the video player with a draggable playhead.
  *
- * It uses a [KSLinearProgressIndicator] to visualize the current progress and wraps it in a larger
- * touch target [Box] to detect tap gestures for seeking to specific timestamps.
+ * It uses [KSVideoScrubBar] to provide a progress track with a visible thumb circle
+ * that supports both tap-to-seek and drag-to-scrub gestures.
  *
  * @param modifier The [Modifier] to be applied to the container.
  * @param progressProvider A lambda that returns the current video progress as a [Float] between 0.0 and 1.0.
- * Passing a lambda instead of a direct value is a performance optimization to defer reading the state
- * until the draw phase, preventing unnecessary recompositions of the parent player.
- * @param onSeek A callback invoked when the user taps the progress bar, providing the new progress value.
+ * @param onSeek A callback invoked when the user seeks to a new position, providing the new progress value.
  */
 @Composable
 private fun ProgressBarContainer(
     modifier: Modifier,
     progressProvider: () -> Float,
-    onSeek: (Float) -> Unit = {}
+    onSeek: (Float) -> Unit = {},
+    onScrubStart: () -> Unit = {},
+    onScrubEnd: () -> Unit = {},
+    showThumb: Boolean = true
 ) {
-    Box(
+    KSVideoScrubBar(
+        progress = progressProvider(),
+        onSeek = onSeek,
+        onScrubStart = onScrubStart,
+        onScrubEnd = onScrubEnd,
         modifier = modifier
             .padding(bottom = 24.dp)
             .padding(horizontal = dimensions.paddingMedium)
-            .fillMaxWidth()
-            .height(48.dp) // Standard touch target height
-            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name)
-            .semantics {
-                val progress = progressProvider()
-                progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
-                setProgress { targetProgress ->
-                    onSeek(targetProgress)
-                    true
-                }
-            }
-            .pointerInput(Unit) {
-                detectTapGestures { offset ->
-                    val tappedProgress = offset.x / size.width
-                    onSeek(tappedProgress.coerceIn(0f, 1f))
-                }
-            },
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        KSLinearProgressIndicator(
-            progress = progressProvider(),
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .fillMaxWidth()
-                .height(4.dp)
-                .clip(CircleShape),
-            color = Color.White,
-            trackColor = KSTheme.colors.grey_05,
-            strokeCap = StrokeCap.Round
-        )
-    }
+            .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name),
+        activeColor = Color.White,
+        trackColor = KSTheme.colors.grey_05,
+        showThumb = showThumb
+    )
 }
 
 @Composable
@@ -350,51 +325,33 @@ private fun ControlsContainer(
     showControls: Boolean,
     hazeState: HazeState? = null,
     playPauseCallback: () -> Unit = {},
-    forwardCallback: () -> Unit = {},
-    rewindCallback: () -> Unit = {},
 ) {
     AnimatedVisibility(
         visible = showControls,
-        enter = fadeIn() + scaleIn(initialScale = 0.8f),
+        enter = fadeIn() + scaleIn(
+            initialScale = 0.6f,
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = 300f
+            )
+        ),
         exit = fadeOut() + scaleOut(targetScale = 0.8f),
         modifier = modifier
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(32.dp),
+        Box(
             modifier = Modifier
                 .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name)
                 .pointerInput(Unit) {} // Stops click propagation
         ) {
             KSControlIcon(
-                icon = Rewind,
-                size = 36.dp,
-                onClick = {
-                    rewindCallback.invoke()
-                },
-                hazeState = hazeState,
-                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name)
-            )
-
-            KSControlIcon(
                 icon = Play,
-                size = 62.dp,
+                size = 80.dp,
                 onClick = {
                     playPauseCallback.invoke()
                 },
                 hazeState = hazeState,
                 modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name),
                 contentDescription = stringResource(id = R.string.fpo_Play)
-            )
-
-            KSControlIcon(
-                icon = Forward,
-                size = 36.dp,
-                onClick = {
-                    forwardCallback.invoke()
-                },
-                hazeState = hazeState,
-                modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name)
             )
         }
     }

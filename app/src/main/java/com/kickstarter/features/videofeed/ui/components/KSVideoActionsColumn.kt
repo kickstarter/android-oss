@@ -44,7 +44,7 @@ fun KSVideoActionsColumn(
     Column(
         modifier = modifier.testTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
+        verticalArrangement = Arrangement.spacedBy(dimensions.videoFeedActionsSpacing)
     ) {
         profileImageUrl?.let {
             KSProfileButton(

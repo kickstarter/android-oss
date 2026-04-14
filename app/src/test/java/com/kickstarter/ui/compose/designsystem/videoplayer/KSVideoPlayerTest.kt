@@ -196,9 +196,8 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test forward and rewind buttons work`() {
+    fun `test forward and rewind buttons are not present`() {
         val mockPlayer = mock(ExoPlayer::class.java)
-        `when`(mockPlayer.currentPosition).thenReturn(10000L)
         composeTestRule.setContent {
             KSTheme {
                 KSVideoPlayer(
@@ -211,11 +210,8 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
 
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).performClick()
-        verify(mockPlayer).seekTo(5000L)
-
-        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).performClick()
-        verify(mockPlayer).seekTo(15000L)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_REWIND_BUTTON.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_FORWARD_BUTTON.name).assertDoesNotExist()
     }
 
     @Test
@@ -247,6 +243,76 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test dragging progress bar pauses video and releasing resumes`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Drag on the progress bar: down → move → up
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+            }
+
+        composeTestRule.waitForIdle()
+
+        // - Player should be paused while scrubbing
+        verify(mockPlayer).pause()
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                moveBy(Offset(x = width * 0.3f, y = 0f))
+                up()
+            }
+
+        composeTestRule.waitForIdle()
+
+        // - Player should resume after scrub ends (controls are not visible)
+        verify(mockPlayer).play()
+    }
+
+    @Test
+    fun `test scrubbing while controls visible does not resume playback on release`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap surface to show controls (pauses video)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        verify(mockPlayer).pause()
+
+        // - Drag on the progress bar while controls are visible
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+                moveBy(Offset(x = width * 0.5f, y = 0f))
+                up()
+            }
+
+        composeTestRule.waitForIdle()
+
+        // - play() should NOT have been called since controls are still showing
+        verify(mockPlayer, never()).play()
+    }
+
+    @Test
     fun `test overlay content is displayed`() {
         val mockPlayer = mock(ExoPlayer::class.java)
         val testTag = "overlay_test_tag"
@@ -265,6 +331,60 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).assertExists()
         composeTestRule.onNodeWithTag(testTag, useUnmergedTree = true).isDisplayed()
+    }
+
+    @Test
+    fun `test empty video url does not render player surface`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun `test player does not autoplay when inactive`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = false,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        // - playWhenReady should be set to false when inactive
+        verify(mockPlayer).playWhenReady = false
+        verify(mockPlayer, never()).play()
+    }
+
+    @Test
+    fun `test progress bar is displayed on render`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .assertIsDisplayed()
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

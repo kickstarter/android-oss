@@ -212,7 +212,7 @@ dependencies {
     /* Compose BOM */
     Dependency composeBom = platform('androidx.compose:compose-bom:2026.03.01')
     // BOM version override for `androidx.compose.ui:ui-test-junit4` and `androidx.compose.ui:ui-test-manifest`
-    def androidxComposeUiTestVersion = "1.11.0-beta02"
+    def androidxComposeUiTestVersion = "1.11.0-rc01"
     implementation composeBom
     testImplementation composeBom
     androidTestImplementation composeBom

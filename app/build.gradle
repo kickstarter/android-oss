@@ -198,12 +198,6 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    // Compose BOM
-    Dependency composeBom = platform('androidx.compose:compose-bom:2026.03.01')
-    implementation composeBom
-    testImplementation composeBom
-    androidTestImplementation composeBom
-
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.appcompat:appcompat:1.7.1'
@@ -214,6 +208,14 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.10.3'
     // Chrome Tabs library
     implementation 'androidx.browser:browser:1.8.0'
+
+    /* Compose BOM */
+    Dependency composeBom = platform('androidx.compose:compose-bom:2026.03.01')
+    // BOM version override for `androidx.compose.ui:ui-test-junit4` and `androidx.compose.ui:ui-test-manifest`
+    def androidxComposeUiTestVersion = "1.11.0-rc01"
+    implementation composeBom
+    testImplementation composeBom
+    androidTestImplementation composeBom
 
     // Fonts
     implementation 'androidx.compose.ui:ui-text-google-fonts'
@@ -333,8 +335,8 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.15.1'
     testImplementation "androidx.test:core:1.7.0"
     androidTestImplementation 'androidx.annotation:annotation:1.9.1'
-    testImplementation 'androidx.compose.ui:ui-test-junit4'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    testImplementation "androidx.compose.ui:ui-test-junit4:$androidxComposeUiTestVersion"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$androidxComposeUiTestVersion"
     def mockkVersion = '1.13.4'
     testImplementation "io.mockk:mockk-android:$mockkVersion"
     testImplementation "io.mockk:mockk-agent:$mockkVersion"

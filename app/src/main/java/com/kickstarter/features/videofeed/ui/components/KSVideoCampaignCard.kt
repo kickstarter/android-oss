@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -79,15 +79,15 @@ fun KSVideoCampaignCard(
             ) {
                 Text(
                     text = title,
-                    style = typographyV2.headingLG,
+                    style = typographyV2.headingXL,
                     color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(dimensions.videoFeedCampaignTitleSubtitleSpacing))
                 Text(
                     text = subtitle,
-                    style = typographyV2.headingSM,
+                    style = typographyV2.headingMD,
                     color = Color.White.copy(alpha = 0.8f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -117,7 +117,9 @@ fun KSVideoCampaignCard(
                 .testTag(KSVideoCampaignCardTestTag.BUTTON.name),
             text = buttonText,
             textColor = KSTheme.colors.videoPlayer.buttonText,
+            textStyle = typographyV2.headingXL,
             backgroundColor = Color.Transparent,
+            contentPadding = PaddingValues(horizontal = dimensions.paddingLarge, vertical = dimensions.paddingMediumSmall),
             onClickAction = {
                 onButtonClick.invoke()
             }

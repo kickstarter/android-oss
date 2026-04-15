@@ -18,6 +18,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.v2.runComposeUiTest
 import androidx.test.core.app.ApplicationProvider
 import coil.Coil
 import coil.ImageLoader
@@ -163,9 +164,12 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
     }
 
-    @Test /* For Reference */
+    @Test
     @OptIn(ExperimentalTestApi::class)
     fun `test image loading with caption (mainClock)`() {
+        /* This test exists for educational purposes.
+         * It verifies the same behavior as the two tests below.
+         * If this test breaks, delete it. */
         val caption = "Aye aye, Caption"
 
         composeTestRule.mainClock.autoAdvance = false
@@ -177,9 +181,9 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
             )
         }
 
-        composeTestRule.waitUntilExactlyOneExists(
+        composeTestRule.onNode(
             SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
-        )
+        ).assertIsDisplayed()
 
         composeTestRule.onNode(
             SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
@@ -204,7 +208,10 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
 
     @Test
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun `test image loading with caption`() = runTest {
+    fun `test image loading with caption (runTest)`() = runTest {
+        /* This test exists for educational purposes.
+         * It verifies the same behavior as the test above and test below.
+         * If this test breaks, delete it. */
         val standardDispatcher = StandardTestDispatcher(testScheduler)
 
         setUpImageLoader(
@@ -233,8 +240,6 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
         advanceTimeBy(REQUEST_DELAY)
         runCurrent()
 
-        composeTestRule.waitForIdle()
-
         composeTestRule.onNode(
             SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
         ).assertDoesNotExist()
@@ -245,6 +250,48 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
 
         composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name))
+            .assertTextEquals(caption)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    @OptIn(ExperimentalTestApi::class)
+    fun `test image loading with caption (runComposeUiTest)`() = runComposeUiTest {
+        val standardDispatcher = StandardTestDispatcher(mainClock.scheduler)
+
+        setUpImageLoader(
+            ImageLoader.Builder(context)
+                .components { add(fakeImageLoaderEngine()) }
+                .dispatcher(standardDispatcher)
+                .interceptorDispatcher(standardDispatcher)
+                .build()
+        )
+
+        val caption = "Aye aye, Caption"
+
+        setContent {
+            ProjectStoryCaptionedImage(
+                image = "https://www.example.com/blue.jpg",
+                caption = caption,
+            )
+        }
+
+        onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.LOADING_INDICATOR.name))
+            .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo))
+            .assertIsDisplayed()
+
+        mainClock.advanceTimeBy(REQUEST_DELAY)
+
+        onNode(
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
+        ).assertDoesNotExist()
+
+        onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.IMAGE.name))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image))
+            .assertContentDescriptionEquals(caption)
+            .assertIsDisplayed()
+
+        onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name))
             .assertTextEquals(caption)
             .assertIsDisplayed()
     }

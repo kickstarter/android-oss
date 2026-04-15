@@ -11,6 +11,9 @@ dependencies: secrets
 
 secrets:
 	-@rm -rf vendor/native-secrets
+	-mkdir -p ~/.ssh
+	-touch ~/.ssh/known_hosts
+	-ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 	-@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo 'You do not have access to the native-secrets repo. Falling back to placeholder values.'
 
 	# Copy java secrets over.

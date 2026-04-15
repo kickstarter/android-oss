@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities.compose.search
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -550,104 +549,94 @@ fun SearchScreen(
                 }
             )
         } else {
-            Column(
+            LazyColumn(
                 modifier = Modifier
+                    .testTag(SearchScreenTestTag.LIST_VIEW.name)
                     .padding(padding)
                     .background(colors.backgroundSurfacePrimary)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(
+                    start = dimensions.paddingMediumLarge,
+                    end = dimensions.paddingMediumLarge
+                ),
+                state = lazyColumnListState,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if (isVideoFeedBannerVisible) {
-                    KSVideoFeedBanner(
-                        modifier = Modifier.padding(
-                            start = dimensions.paddingMediumLarge,
-                            end = dimensions.paddingMediumLarge,
-                            top = dimensions.paddingMedium,
-                            bottom = dimensions.paddingMedium
-                        ),
-                        onButtonClick = onVideoFeedBannerClicked
-                    )
+                    item {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        KSVideoFeedBanner(onButtonClick = onVideoFeedBannerClicked)
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    }
                 }
 
-                LazyColumn(
-                    modifier = Modifier
-                        .testTag(SearchScreenTestTag.LIST_VIEW.name)
-                        .background(colors.backgroundSurfacePrimary)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(
-                        start = dimensions.paddingMediumLarge,
-                        end = dimensions.paddingMediumLarge
-                    ),
-                    state = lazyColumnListState,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    itemsIndexed(itemsList) { index, project ->
-                        if (index == 0 && isDefaultList) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                itemsIndexed(itemsList) { index, project ->
+                    if (index == 0 && isDefaultList) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
 
-                            Text(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
-                                    .fillMaxWidth(),
-                                text = stringResource(id = R.string.activity_empty_state_logged_in_button),
-                                style = typographyV2.title2,
-                                color = colors.kds_support_700,
-                                textAlign = TextAlign.Start
-                            )
-                        }
-
-                        val state = getCardProjectState(project)
-                        val fundingInfoString = getFundingInfoString(state, environment, project)
-
-                        if (index == 0) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                            KSProjectCardLarge(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
-                                photo = project.photo(),
-                                title = project.name(),
-                                state = state,
-                                fundingInfoString = fundingInfoString,
-                                fundedPercentage = project.percentageFunded().toInt(),
-                            ) {
-                                onItemClicked(project)
-                            }
-
-                            if (itemsList.size > 1) {
-                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                            }
-                        } else {
-                            KSProjectCardSmall(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
-                                photo = project.photo(),
-                                title = project.name(),
-                                state = state,
-                                fundingInfoString = fundingInfoString,
-                                fundedPercentage = project.percentageFunded().toInt(),
-                            ) {
-                                onItemClicked(project)
-                            }
-
-                            if (index < itemsList.size - 1) {
-                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                            } else {
-                                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
-                            }
-                        }
+                        Text(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
+                                .fillMaxWidth(),
+                            text = stringResource(id = R.string.activity_empty_state_logged_in_button),
+                            style = typographyV2.title2,
+                            color = colors.kds_support_700,
+                            textAlign = TextAlign.Start
+                        )
                     }
 
-                    item(isLoading) {
-                        if (isLoading && itemsList.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    val state = getCardProjectState(project)
+                    val fundingInfoString = getFundingInfoString(state, environment, project)
 
-                            KSCircularProgressIndicator(
-                                modifier = Modifier
-                                    .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
-                                    .size(size = dimensions.imageSizeLarge)
-                            )
+                    if (index == 0) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        KSProjectCardLarge(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
+                            photo = project.photo(),
+                            title = project.name(),
+                            state = state,
+                            fundingInfoString = fundingInfoString,
+                            fundedPercentage = project.percentageFunded().toInt(),
+                        ) {
+                            onItemClicked(project)
+                        }
 
+                        if (itemsList.size > 1) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                         }
+                    } else {
+                        KSProjectCardSmall(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
+                            photo = project.photo(),
+                            title = project.name(),
+                            state = state,
+                            fundingInfoString = fundingInfoString,
+                            fundedPercentage = project.percentageFunded().toInt(),
+                        ) {
+                            onItemClicked(project)
+                        }
+
+                        if (index < itemsList.size - 1) {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        } else {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                        }
+                    }
+                }
+
+                item(isLoading) {
+                    if (isLoading && itemsList.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                        KSCircularProgressIndicator(
+                            modifier = Modifier
+                                .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
+                                .size(size = dimensions.imageSizeLarge)
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                     }
                 }
             }

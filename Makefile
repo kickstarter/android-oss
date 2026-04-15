@@ -14,7 +14,7 @@ secrets:
 	-mkdir -p ~/.ssh
 	-touch ~/.ssh/known_hosts
 	-ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-	-@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo 'You do not have access to the native-secrets repo. Falling back to placeholder values.'
+	-@git clone git@github.com:kickstarter/native-secrets vendor/native-secrets
 
 	# Copy java secrets over.
 	cp vendor/native-secrets/android/Secrets.java app/src/main/java/com/kickstarter/libs/utils/Secrets.java \

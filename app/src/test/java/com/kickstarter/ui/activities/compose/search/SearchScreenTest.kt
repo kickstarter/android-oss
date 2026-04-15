@@ -25,6 +25,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSVideoFeedBannerTestTag
 import org.junit.Test
 
 class SearchScreenTest : KSRobolectricTestCase() {
@@ -525,5 +526,78 @@ class SearchScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         assertEquals(page, FilterPages.MAIN_FILTER.ordinal)
+    }
+
+    @Test
+    fun testVideoFeedBannerVisibleWhenEnabled() {
+        var bannerClicked = false
+
+        composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = true,
+                        itemsList = List(5) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {},
+                        isVideoFeedBannerVisible = true,
+                        onVideoFeedBannerClicked = { bannerClicked = true }
+                    )
+                }
+            }
+        }
+
+        val banner = composeTestRule.onNodeWithTag(KSVideoFeedBannerTestTag.BANNER_CONTAINER.name)
+        banner.assertIsDisplayed()
+        banner.performClick()
+        assertTrue(bannerClicked)
+    }
+
+    @Test
+    fun testVideoFeedBannerNotVisibleWhenDisabled() {
+        composeTestRule.setContent {
+            val env = environment()
+            val fakeViewModel = FilterMenuViewModel(env)
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchScreen(
+                        onBackClicked = { },
+                        isLoading = false,
+                        lazyColumnListState = rememberLazyListState(),
+                        showEmptyView = false,
+                        isDefaultList = true,
+                        itemsList = List(5) {
+                            Project.builder()
+                                .name("This is a test $it")
+                                .pledged((it * 2).toDouble())
+                                .goal(20.0)
+                                .state(Project.STATE_LIVE)
+                                .build()
+                        },
+                        categories = listOf(),
+                        onSearchTermChanged = {},
+                        onItemClicked = {},
+                        isVideoFeedBannerVisible = false
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoFeedBannerTestTag.BANNER_CONTAINER.name)
+            .assertDoesNotExist()
     }
 }

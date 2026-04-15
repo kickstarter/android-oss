@@ -3,7 +3,9 @@ package com.kickstarter.features.search.viewmodel
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
@@ -47,7 +49,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.success(SearchEnvelope(projectList))
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -81,7 +85,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.failure(Exception())
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -117,7 +123,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.success(SearchEnvelope(projectList))
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -154,7 +162,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.success(SearchEnvelope(projectList))
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -196,7 +206,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.success(SearchEnvelope(projectList))
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -242,7 +254,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.success(SearchEnvelope(projectList))
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -287,7 +301,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         params = discoveryParams
                         return Result.success(SearchEnvelope(projectList))
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -337,7 +353,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         else SearchEnvelope(projectList)
                         return Result.success(envelope)
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -393,7 +411,9 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
                         else SearchEnvelope(projectList)
                         return Result.success(envelope)
                     }
-                }).build()
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
 
         setUpEnvironment(environment, dispatcher)
 
@@ -439,5 +459,43 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
 
         // - When updating search term or new params selected new events should be sent
         segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun `test isVideoFeedBannerVisible is true when gate is enabled`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .statsigClient(
+                MockStatsigClient(
+                    context = application(),
+                    gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+                )
+            )
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        advanceUntilIdle()
+        assertTrue(viewModel.isVideoFeedBannerVisible.value)
+    }
+
+    @Test
+    fun `test isVideoFeedBannerVisible is false when gate is disabled`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .statsigClient(
+                MockStatsigClient(
+                    context = application(),
+                    gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to false)
+                )
+            )
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        advanceUntilIdle()
+        assertFalse(viewModel.isVideoFeedBannerVisible.value)
     }
 }

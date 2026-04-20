@@ -61,7 +61,7 @@ sync_private_to_oss:
 
 regression:
 	@echo "Adding remotes..."
-	@git remote add private https://github.com/kickstarter/android-private
+	@git remote add private git@github.com:kickstarter/android-private.git
 
 	@echo "Deploying private/internal"
 
@@ -73,7 +73,7 @@ regression:
 
 internal:
 	@echo "Adding remotes..."
-	@git remote add private https://github.com/kickstarter/android-private
+	@git remote add private git@github.com:kickstarter/android-private.git
 
 	@echo "Deploying private/internal"
 
@@ -85,7 +85,7 @@ internal:
 
 release:
 	@echo "Adding remotes..."
-	@git remote add private https://github.com/kickstarter/android-private
+	@git remote add private git@github.com:kickstarter/android-private.git
 
 	@echo "Deploying private/internal"
 

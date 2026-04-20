@@ -14,6 +14,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startProjectActivity
+import com.kickstarter.ui.extensions.startVideoFeed
 
 // TODO: Improve error message
 val LocalFilterMenuViewModel = staticCompositionLocalOf<FilterMenuViewModel> {
@@ -57,6 +58,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 previousScreen = ThirdPartyEventValues.ScreenName.SEARCH.value
                             )
                         },
+                        onVideoFeedBannerClicked = { startVideoFeed() }
                     )
                 }
             }

@@ -88,6 +88,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.KSVideoFeedBanner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -219,7 +220,8 @@ fun SearchAndFilterScreen(
     searchViewModel: SearchAndFilterViewModel,
     onBackClicked: () -> Unit = {},
     preLaunchedCallback: (project: Project, reftag: RefTag) -> Unit = { a, b -> },
-    projectCallback: (projAndRef: Pair<Project, RefTag>) -> Unit = { a -> }
+    projectCallback: (projAndRef: Pair<Project, RefTag>) -> Unit = { a -> },
+    onVideoFeedBannerClicked: () -> Unit = {}
 ) {
     val phaseff = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_SEARCH_FILTER) ?: false
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
@@ -231,6 +233,7 @@ fun SearchAndFilterScreen(
     val searchedProjects = searchUIState.searchList
     val isLoading = searchUIState.isLoading
     val hasMorePages = searchUIState.hasMore
+    val isVideoFeedBannerVisible by searchViewModel.isVideoFeedBannerVisible.collectAsStateWithLifecycle()
 
     val categoriesState by filterMenuVM.filterMenuUIState.collectAsStateWithLifecycle()
     val categories = categoriesState.categoriesList
@@ -290,7 +293,9 @@ fun SearchAndFilterScreen(
                     social = social
                 )
             },
-            shouldShowPhase = phaseff
+            shouldShowPhase = phaseff,
+            isVideoFeedBannerVisible = isVideoFeedBannerVisible,
+            onVideoFeedBannerClicked = onVideoFeedBannerClicked
         )
     }
 
@@ -361,7 +366,9 @@ fun SearchScreen(
         DiscoveryParams.GoalBuckets?
     ) -> Unit = { _, _, _, _, _, _, _, _, _, _, _ ->
     },
-    shouldShowPhase: Boolean = true
+    shouldShowPhase: Boolean = true,
+    isVideoFeedBannerVisible: Boolean = false,
+    onVideoFeedBannerClicked: () -> Unit = {}
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
@@ -555,6 +562,14 @@ fun SearchScreen(
                 state = lazyColumnListState,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if (isVideoFeedBannerVisible) {
+                    item {
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                        KSVideoFeedBanner(onButtonClick = onVideoFeedBannerClicked)
+                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                    }
+                }
+
                 itemsIndexed(itemsList) { index, project ->
                     if (index == 0 && isDefaultList) {
                         Spacer(modifier = Modifier.height(dimensions.paddingMedium))

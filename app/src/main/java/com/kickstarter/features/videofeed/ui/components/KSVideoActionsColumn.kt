@@ -1,10 +1,12 @@
 package com.kickstarter.features.videofeed.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
+import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSProfileButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -35,12 +38,18 @@ fun KSVideoActionsColumn(
     modifier: Modifier = Modifier,
     profileImageUrl: String? = null,
     bookmarkCount: String? = null,
+    isBookmarked: Boolean = false,
     shareCount: String? = null,
     onProfileClick: () -> Unit = {},
     onBookmarkClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
     onMoreOptionsClick: () -> Unit = {}
 ) {
+    val bookmarkTint by animateColorAsState(
+        targetValue = if (isBookmarked) kds_create_500 else Color.Unspecified,
+        label = "bookmarkTint"
+    )
+
     Column(
         modifier = modifier.testTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,6 +72,7 @@ fun KSVideoActionsColumn(
                 }
                 .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
             icon = Bookmark,
+            iconTint = bookmarkTint,
             text = bookmarkCount,
             onClick = onBookmarkClick,
             contentDescription = stringResource(id = R.string.fpo_Bookmark),

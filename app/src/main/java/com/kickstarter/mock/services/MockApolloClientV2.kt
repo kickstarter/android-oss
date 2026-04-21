@@ -392,6 +392,14 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return Result.success(VideoFeedEnvelope())
     }
 
+    override suspend fun watchProjectSuspend(project: Project): Result<Project> {
+        return Result.success(project.toBuilder().isStarred(true).build())
+    }
+
+    override suspend fun unWatchProjectSuspend(project: Project): Result<Project> {
+        return Result.success(project.toBuilder().isStarred(false).build())
+    }
+
     override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {
         return Result.success(listOf())
     }

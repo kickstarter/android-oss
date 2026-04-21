@@ -56,6 +56,7 @@ fun VideoFeedScreen(
     items: List<VideoFeedItem>,
     onClose: () -> Unit = {},
     onProfileClick: (project: Project) -> Unit = { _ -> },
+    onBookmarkClick: (project: Project) -> Unit = { _ -> },
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
 ) {
@@ -103,9 +104,10 @@ fun VideoFeedScreen(
                                     .padding(end = dimensions.paddingMediumLarge),
                                 profileImageUrl = profileImage,
                                 bookmarkCount = "1k",
+                                isBookmarked = project.isStarred(),
                                 shareCount = "50",
                                 onProfileClick = { onProfileClick(project) },
-                                onBookmarkClick = { },
+                                onBookmarkClick = { onBookmarkClick(project) },
                                 onShareClick = { },
                                 onMoreOptionsClick = { }
                             )

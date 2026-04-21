@@ -332,4 +332,56 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
 
         assertFalse(projectCallbackCalled)
     }
+
+    @Test
+    fun `bookmark button triggers onBookmarkClick with the current page project`() {
+        var capturedProject: Project? = null
+
+        val project = ProjectFactory.project().toBuilder().id(1001L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onBookmarkClick = { capturedProject = it }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+    }
+
+    @Test
+    fun `bookmark button on second page passes the correct project`() {
+        var capturedProject: Project? = null
+
+        val project1 = ProjectFactory.project().toBuilder().id(1002L).build()
+        val project2 = ProjectFactory.caProject().toBuilder().id(1003L).build()
+        val items = listOf(
+            VideoFeedItem(badges = emptyList(), project = project1, hlsUrl = hlsUrl),
+            VideoFeedItem(badges = emptyList(), project = project2, hlsUrl = hlsUrl)
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onBookmarkClick = { capturedProject = it }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project2, capturedProject)
+    }
 }

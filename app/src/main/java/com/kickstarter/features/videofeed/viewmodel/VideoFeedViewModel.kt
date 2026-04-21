@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.Environment
+import com.kickstarter.models.Project
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,32 @@ class VideoFeedViewModel(
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
+    }
+
+    fun bookmarkProject(project: Project) {
+        scope.launch {
+            val isStarred = project.isStarred()
+            val result = if (isStarred) {
+                apolloClient.unWatchProjectSuspend(project)
+            } else {
+                apolloClient.watchProjectSuspend(project)
+            }
+
+            if (result.isFailure) {
+                Timber.e(result.exceptionOrNull())
+                errorAction.invoke(null)
+            }
+
+            if (result.isSuccess) {
+                val updatedStarred = !isStarred
+                val updatedItems = _videoFeedUIState.value.items.map { item ->
+                    if (item.project.id() == project.id()) {
+                        item.copy(project = item.project.toBuilder().isStarred(updatedStarred).build())
+                    } else item
+                }
+                _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = updatedItems))
+            }
+        }
     }
 
     private fun loadVideoFeed() {

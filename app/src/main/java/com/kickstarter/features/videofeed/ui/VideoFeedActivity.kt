@@ -42,6 +42,9 @@ class VideoFeedActivity : ComponentActivity() {
                     onProfileClick = { project ->
                         startCreatorBioWebViewActivity(project)
                     },
+                    onBookmarkClick = { project ->
+                        viewModel.bookmarkProject(project)
+                    },
                     preLaunchedCallback = { project, refTag ->
                         startPreLaunchProjectActivity(
                             project = project,

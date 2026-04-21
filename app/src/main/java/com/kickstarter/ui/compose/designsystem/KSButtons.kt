@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -939,6 +940,7 @@ fun KSVideoPlayerIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    iconTint: Color = Color.Unspecified,
     text: String? = null,
     contentDescription: String? = null,
     onClickLabel: String? = null
@@ -959,6 +961,7 @@ fun KSVideoPlayerIconButton(
         Image(
             imageVector = icon,
             contentDescription = contentDescription,
+            colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             modifier = Modifier
                 .size(dimensions.videoPlayerIconSize)
                 .dropShadow(

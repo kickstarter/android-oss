@@ -142,4 +142,42 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithContentDescription(context().getString(R.string.fpo_More_options)).performClick()
         verify(onMoreClick).invoke()
     }
+
+    @Test
+    fun `bookmark button fires callback when isBookmarked is false`() {
+        val onBookmarkClick: () -> Unit = mock()
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    isBookmarked = false,
+                    onBookmarkClick = onBookmarkClick
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        verify(onBookmarkClick).invoke()
+    }
+
+    @Test
+    fun `bookmark button fires callback when isBookmarked is true`() {
+        val onBookmarkClick: () -> Unit = mock()
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    isBookmarked = true,
+                    onBookmarkClick = onBookmarkClick
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        verify(onBookmarkClick).invoke()
+    }
 }

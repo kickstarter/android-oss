@@ -261,6 +261,9 @@ interface ApolloClientTypeV2 {
 
     suspend fun getVideoFeed(first: Int, cursor: String? = null, categoryId: String? = null): Result<VideoFeedEnvelope>
 
+    suspend fun watchProjectSuspend(project: Project): Result<Project>
+    suspend fun unWatchProjectSuspend(project: Project): Result<Project>
+
     fun cleanDisposables()
 }
 
@@ -1995,6 +1998,29 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             throw buildClientException(response.errors)
 
         response.data?.videoFeed.toVideoFeedEnvelope()
+    }
+
+    override suspend fun watchProjectSuspend(project: Project): Result<Project> = executeForResult {
+        val mutation = WatchProjectMutation(id = encodeRelayId(project))
+        val response = this.service.mutation(mutation).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        // TODO: review, might not require this part, "update" the project on the UI side,
+        // risking here overriding VideoFeed information
+        projectTransformer(response.data?.watchProject?.project?.fullProject)
+    }
+
+    // TODO: review if we can join watchProjectSuspend with unWatchProjectSuspend and namming
+    override suspend fun unWatchProjectSuspend(project: Project): Result<Project> = executeForResult {
+        val mutation = UnwatchProjectMutation(id = encodeRelayId(project))
+        val response = this.service.mutation(mutation).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        projectTransformer(response.data?.watchProject?.project?.fullProject)
     }
 
     override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> = executeForResult {

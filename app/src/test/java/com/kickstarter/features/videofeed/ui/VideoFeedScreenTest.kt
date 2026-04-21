@@ -13,6 +13,7 @@ import androidx.compose.ui.test.swipeUp
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
+import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumnTestTag
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCardTestTag
 import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
@@ -177,6 +178,61 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_$project2Id", useUnmergedTree = true)
             .assertExists()
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `profile button triggers onProfileClick with the current page project`() {
+        var capturedProject: Project? = null
+
+        val project = ProjectFactory.project().toBuilder().id(901L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onProfileClick = { capturedProject = it }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.PROFILE_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+    }
+
+    @Test
+    fun `profile button on second page passes the correct project`() {
+        var capturedProject: Project? = null
+
+        val project1 = ProjectFactory.project().toBuilder().id(902L).build()
+        val project2 = ProjectFactory.caProject().toBuilder().id(903L).build()
+        val items = listOf(
+            VideoFeedItem(badges = emptyList(), project = project1, hlsUrl = hlsUrl),
+            VideoFeedItem(badges = emptyList(), project = project2, hlsUrl = hlsUrl)
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onProfileClick = { capturedProject = it }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project2.id()}", useUnmergedTree = true)
+            .assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.PROFILE_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project2, capturedProject)
     }
 
     @Test

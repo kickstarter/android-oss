@@ -11,6 +11,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startProjectActivity
 
@@ -38,6 +39,9 @@ class VideoFeedActivity : ComponentActivity() {
                 VideoFeedScreen(
                     items = uiState.items,
                     onClose = { onBackPressedDispatcher.onBackPressed() },
+                    onProfileClick = { project ->
+                        startCreatorBioWebViewActivity(project)
+                    },
                     preLaunchedCallback = { project, refTag ->
                         startPreLaunchProjectActivity(
                             project = project,

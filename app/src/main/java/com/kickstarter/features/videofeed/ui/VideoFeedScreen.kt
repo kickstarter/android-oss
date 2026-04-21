@@ -55,6 +55,7 @@ enum class VideoFeedScreenTestTag {
 fun VideoFeedScreen(
     items: List<VideoFeedItem>,
     onClose: () -> Unit = {},
+    onProfileClick: (project: Project) -> Unit = { _ -> },
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
 ) {
@@ -103,7 +104,7 @@ fun VideoFeedScreen(
                                 profileImageUrl = profileImage,
                                 bookmarkCount = "1k",
                                 shareCount = "50",
-                                onProfileClick = { },
+                                onProfileClick = { onProfileClick(project) },
                                 onBookmarkClick = { },
                                 onShareClick = { },
                                 onMoreOptionsClick = { }

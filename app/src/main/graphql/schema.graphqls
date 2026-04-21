@@ -52,6 +52,11 @@ type Query {
   """
   defaultTaxCategories: [TaxCategory!]!
 
+  """
+  Fetches a digital library given its id.
+  """
+  digitalLibrary(id: ID!): DigitalLibrary!
+
   editorial("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, slug: String!, revision: String, admin: Boolean = false): EditorialConnection
 
   editorialPage(slug: String!): EditorialPage
@@ -135,6 +140,11 @@ type Query {
   partner(partnerId: ID!): Partner
 
   """
+  Fetches the partner case study collection
+  """
+  partnerCaseStudyCollection("Whether to only return published revision. Used for previewing unpublished revisions." published: Boolean): PartnerCaseStudyCollection!
+
+  """
   Languages that partners can support
   """
   partnerLanguages: [PartnerLanguage!]!
@@ -145,6 +155,11 @@ type Query {
   partnerLocations: [Location!]!
 
   partners("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, searchQuery: PartnersSearchQuery, "Filter by one or more partner tiers." partnerTier: [PartnerTier!]): PartnersConnection!
+
+  """
+  Fetches the partner for 'Meet our partners' grid.
+  """
+  partnersGrid("Whether to only return published revision. Used for previewing unpublished revisions." published: Boolean): [Partner!]!
 
   photoForEditor(id: ID!): Photo
 
@@ -175,7 +190,7 @@ type Query {
   """
   project(slug: String, pid: Int): Project
 
-  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [AdminProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], owners: [ID!], projectDeadlineSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, reportsCountSort: OpenSearchSort, reportsOpenCountSort: OpenSearchSort, reportsUnassignedCountSort: OpenSearchSort, zendeskTicketsCountSort: OpenSearchSort, openZendeskTicketsCountSort: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
+  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [AdminProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], assigneeFilter: TaskAssigneeFilter, owners: [ID!], sortColumn: ProjectInvestigationSort, sortDirection: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
 
   """
   Get some projects
@@ -265,6 +280,16 @@ type Query {
   Validates a digital resource CSV file
   """
   validateDigitalResourceCsv(s3Key: String!, projectId: ID!, searchQuery: JSON): ValidateDigitalResource!
+
+  """
+  Reasons for opting out of VAT collection in the pledge manager
+  """
+  vatOptOutReasons: [VatOptOutReason!]!
+
+  """
+  Paginated feed of live projects with vertical videos, for the mobile discovery experience.
+  """
+  videoFeed("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filter to projects in this category." categoryId: String): VideoFeedConnection
 
   """
   Countries that are visible to the current user. This may include countries that cannot launch projects.
@@ -552,6 +577,11 @@ type User implements Node {
   isEmailVerified: Boolean
 
   """
+  Whether the user is badged as one of our Expert Partners
+  """
+  isExpertPartner: Boolean!
+
+  """
   Whether or not the user is connected to Facebook.
   """
   isFacebookConnected: Boolean
@@ -570,6 +600,11 @@ type User implements Node {
   Whether or not you are a KSR admin.
   """
   isKsrAdmin: Boolean
+
+  """
+  Whether the user is badged as one of our Premier Partners
+  """
+  isPremierPartner: Boolean!
 
   """
   Whether the user is registered
@@ -931,6 +966,8 @@ enum Feature {
 
   backer_report_update_2024
 
+  self_serve_backer_removal
+
   delay_backer_trust_module_2024
 
   reset_backer_survey_2024
@@ -1051,9 +1088,19 @@ enum Feature {
 
   collaborator_creator_dashboard_access
 
-  polls_2026
+  backer_type_filters_2026
 
-  digital_files_2026
+  background_task_management_2026
+
+  improving_refund_orchestration_2026
+
+  vat_flexibility_2026
+
+  vertical_video_feed_2026
+
+  backer_survey_edits_2026
+
+  backer_additional_addons_2026
 }
 
 """
@@ -1521,6 +1568,16 @@ type Project implements Node & Commentable {
   averageSentiment: Float!
 
   """
+  The date on which backer additional addons should end, if custom end date option selected. If this field is null, assume the feature is not enabled, the end condition is not custom end date, or the creator has not set this value yet
+  """
+  backerAdditionalAddonsEndAt: DateTime
+
+  """
+  When backer additional addon order edits should end, if enabled by the creator. If this field is null, assume the feature is not enabled, or the creator has not set this value yet
+  """
+  backerAdditionalAddonsEndCondition: BackerAdditionalAddonsEndConditionType
+
+  """
   The lockout date for address collection
   """
   backerAddressLockoutDate: DateTime
@@ -1539,6 +1596,16 @@ type Project implements Node & Commentable {
   Backer survey for the project
   """
   backerSurvey: BackerSurvey
+
+  """
+  The date on which backer survey edits should end, if creator select the custom end date option
+  """
+  backerSurveyEditsEndAt: DateTime
+
+  """
+  When should backer survey edits end, if enabled by the creator
+  """
+  backerSurveyEditsEndCondition: BackerSurveyEditsEndConditionType
 
   """
   An optional introduction to the backer survey.
@@ -1759,6 +1826,11 @@ type Project implements Node & Commentable {
   The path to destroy the current user's pledge for this project.
   """
   destroyProjectPledgePath: String!
+
+  """
+  The digital file library for the project.
+  """
+  digitalLibrary: DigitalLibrary
 
   """
   Funding duration in days
@@ -2028,7 +2100,12 @@ type Project implements Node & Commentable {
   items("Whether to exclude the items that are not attached to any reward or addon." excludeItemsWithoutRewards: Boolean): [RewardItem!]!
 
   """
-  A project's last uploaded video, if it's processing, or the current project video.
+  A project's last uploaded vertical video, if it's processing, or the current vertical video.
+  """
+  lastUploadedVerticalVideo: Video
+
+  """
+  A project's last uploaded horizontal video, if it's processing, or the current project video.
   """
   lastUploadedVideo: Video
 
@@ -2138,7 +2215,7 @@ type Project implements Node & Commentable {
   newBackersEnabled: Boolean!
 
   """
-  Whether the project's shipping rules designate no vat collection
+  Whether the project's shipping rules designate no vat collection or the creator has opted out of vat collection for the project
   """
   noVatCollection: Boolean!
 
@@ -2403,6 +2480,26 @@ type Project implements Node & Commentable {
   Shipping zones configured for the project.
   """
   shippingZones: [ShippingZone!]!
+
+  """
+  Whether the project ships to the Canada
+  """
+  shipsToCanada: Boolean!
+
+  """
+  Whether the project has any rewards that ship to the EU
+  """
+  shipsToEu: Boolean!
+
+  """
+  Whether the project has any rewards that ship to the UK
+  """
+  shipsToUk: Boolean!
+
+  """
+  Whether the project ships to the US
+  """
+  shipsToUs: Boolean!
 
   """
   Whether the project ships to the US or Canada
@@ -2697,6 +2794,11 @@ type Comment implements Node {
   canPin: Boolean!
 
   """
+  Whether current user can remove the backer
+  """
+  canRemoveBacker: Boolean!
+
+  """
   Whether current user can report a comment
   """
   canReport: Boolean!
@@ -2722,6 +2824,16 @@ type Comment implements Node {
   hasFlaggings: Boolean!
 
   id: ID!
+
+  """
+  Whether the project is currently live
+  """
+  isProjectLive: Boolean!
+
+  """
+  Whether the project is successful
+  """
+  isProjectSuccessful: Boolean!
 
   """
   The ID of the parent comment
@@ -2891,7 +3003,7 @@ type Backing implements Node {
   """
   Digital Access Resources provided by a creator to fulfill digital rewards
   """
-  digitalAccessResources: [DigitalAccessResource!]!
+  digitalAccessResources(accessibleOnly: Boolean): [DigitalAccessResource!]!
 
   """
   The reason for an errored backing
@@ -2939,6 +3051,11 @@ type Backing implements Node {
   The backing location.
   """
   location: Location
+
+  """
+  URL for backer to edit their Order
+  """
+  newOrderEditUrl: String!
 
   """
   The order associated with the backing
@@ -3786,6 +3903,11 @@ type Cart {
   baseRewardQuestions: [CartQuestion!]!
 
   """
+  When backer edits to the Cart/Order will end, if an end date is set
+  """
+  editableUntil: DateTime
+
+  """
   When the cart was finalized (i.e., when the backer submitted responses)
   """
   finalizedAt: DateTime
@@ -3801,6 +3923,11 @@ type Cart {
   Whether the backer has begun answering their survey
   """
   inProgress: Boolean!
+
+  """
+  Can the backer currently make edits to their Cart/Order
+  """
+  isEditable: Boolean!
 
   """
   The associated line items
@@ -3869,6 +3996,11 @@ type LineItem {
 A unique item variant aka SKU
 """
 type ItemVariant {
+  """
+  Whether this item variant has associated digital files
+  """
+  hasFileAttachments: Boolean!
+
   id: ID!
 
   """
@@ -3949,6 +4081,11 @@ type RewardItem implements Node {
   Whether backers have backed rewards this item belongs to
   """
   hasBackers: Boolean!
+
+  """
+  Whether this item has associated digital files
+  """
+  hasFileAttachments: Boolean!
 
   id: ID!
 
@@ -4079,7 +4216,7 @@ type Reward implements Node {
   """
   A reward description.
   """
-  description: String!
+  description: String
 
   """
   A reward's title plus the amount, or a default title (the reward amount) if it doesn't have a title.
@@ -4481,6 +4618,11 @@ type ShippingRule implements Node {
   cost: Money
 
   """
+  Whether shipping rule was created via shipping rate creation flow
+  """
+  createdViaShippingRate: Boolean!
+
+  """
   The estimated maximum shipping cost
   """
   estimatedMax: Money
@@ -4683,7 +4825,7 @@ type Answer {
   id: ID!
 
   """
-  The poll object associated with the answer (e.g. Post)
+  The poll object associated with the answer
   """
   pollAnswerable: PollAnswerable!
 
@@ -4910,9 +5052,14 @@ A poll with questions
 """
 type Poll {
   """
-  Whether or not the current user can manage the poll
+  Whether or not the current user can close the poll
   """
-  canEdit: Boolean!
+  canClose: Boolean!
+
+  """
+  Whether or not the current user can participate in the poll
+  """
+  canParticipate: Boolean!
 
   """
   The poll duration in seconds
@@ -5252,9 +5399,31 @@ An access code or URL for retrieving a digital reward
 """
 type DigitalAccessResource {
   """
-  A description of the resource or instructions for activation
+  When access expires
   """
-  description: String!
+  accessExpiresAt: DateTime
+
+  """
+  Instructions for accessing the resource, if provided
+  """
+  description: String
+
+  """
+  The digital file associated with this resource, if applicable
+  """
+  digitalFile: DigitalFile
+
+  """
+  The number of attempted downloads
+  """
+  downloadAttempts: Int!
+
+  id: ID!
+
+  """
+  When the last download was attempted
+  """
+  lastDownloadAttemptAt: DateTime
 
   """
   The project associated with the reward
@@ -5262,10 +5431,94 @@ type DigitalAccessResource {
   project: Project!
 
   """
-  The access code or URL
+  The access code or URL, if applicable
   """
-  resource: String!
+  resource: String
 }
+
+"""
+A digital file for distribution to backers
+"""
+type DigitalFile {
+  """
+  The attachments for the digital file
+  """
+  attachments: [DigitalFileAttachable!]!
+
+  """
+  The active storage blob associated with the file
+  """
+  blob: ActiveStorageBlob
+
+  """
+  The number of users the file has been distributed to
+  """
+  distributionCount: Int!
+
+  """
+  The number of users who have downloaded the file
+  """
+  downloadedCount: Int!
+
+  """
+  The name of the file
+  """
+  filename: String!
+
+  """
+  The icon for the file
+  """
+  iconName: String!
+
+  id: ID!
+
+  """
+  Optional instructions for accessing the file
+  """
+  instructions: String
+}
+
+"""
+An active storage blob
+"""
+type ActiveStorageBlob {
+  """
+  The size of the file in bytes
+  """
+  byteSize: Int!
+
+  """
+  The content type of the file
+  """
+  contentType: String!
+
+  """
+  The file extension
+  """
+  extension: String!
+
+  """
+  The name of the file
+  """
+  filename: String!
+
+  """
+  The icon for the blob
+  """
+  iconName: String!
+
+  """
+  The signed id
+  """
+  signedId: String!
+
+  """
+  Human readable file size
+  """
+  size: String!
+}
+
+union DigitalFileAttachable = RewardItem|ItemVariant
 
 """
 Selected fields on a SetupIntent from Stripe for a given backing.
@@ -6212,11 +6465,6 @@ type OrderEdit {
   A link to detailed order edit information
   """
   url: String!
-
-  """
-  Whether the order edit will change the deemed supplier on taxes
-  """
-  willChangeDeemedSupplier: Boolean!
 }
 
 """
@@ -6377,6 +6625,11 @@ type Shipment {
   The tracking number for this shipment.
   """
   trackingNumber: String
+
+  """
+  Audit record of when tracking numbers were created
+  """
+  trackingNumberCreatedAt: DateTime!
 
   """
   Datetime the shipment was last updated
@@ -7904,6 +8157,110 @@ enum DepositAccountBusiness {
 }
 
 """
+A digital file library scoped to a project
+"""
+type DigitalLibrary {
+  """
+  Allowed content types for the library
+  """
+  allowedContentTypes: [String!]!
+
+  """
+  The digital files in the library
+  """
+  digitalFiles("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, searchQuery: DigitalFilesSearchQuery): DigitalFileConnection!
+
+  id: ID!
+
+  """
+  The max total upload size for library
+  """
+  libraryUploadLimit: String!
+
+  """
+  The percentage of the library upload limit that has been used
+  """
+  percentageUsed: Int!
+
+  """
+  The project associated with the file library
+  """
+  project: Project!
+
+  """
+  The max upload size for a single file
+  """
+  singleFileUploadLimit: String!
+
+  """
+  The max upload size for a single file
+  """
+  singleFileUploadLimitInBytes: Int!
+
+  """
+  The total size of all uploaded files in the library
+  """
+  totalUploadedSize: String!
+
+  """
+  The number of all uploaded files in the library
+  """
+  uploadedFilesCount: Int!
+}
+
+"""
+The connection type for DigitalFile.
+"""
+type DigitalFileConnection {
+  """
+  A list of edges.
+  """
+  edges: [DigitalFileEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [DigitalFile]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type DigitalFileEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: DigitalFile
+}
+
+"""
+Search parameters for digital files.
+"""
+input DigitalFilesSearchQuery {
+  """
+  Filter by filename
+  """
+  filename: String
+
+  """
+  Filter by item or item variant ids
+  """
+  attachableIds: [ID!]
+}
+
+"""
 An AI disclosure.
 """
 type AiDisclosure implements Node {
@@ -8100,6 +8457,8 @@ enum CollaboratorPermission {
   fulfillment
 
   configure_pledge_manager
+
+  edit_analytics_ids
 
   manage_fulfillment_partner_integrations
 
@@ -9661,9 +10020,19 @@ type PledgeManager {
   id: ID!
 
   """
+  Whether the creator intends to use the pledge manager
+  """
+  intendsToUsePm: IntendsToUsePmEnum
+
+  """
   Notes associated with the pledge manager
   """
   notes: [String!]!
+
+  """
+  Whether the creator has opted out of VAT collection
+  """
+  optOutOfVat: Boolean!
 
   """
   Whether the creator opted out of the pledge manager.
@@ -9694,6 +10063,16 @@ type PledgeManager {
   Whether the pledge manager can be used to charge for tariffs.
   """
   tariffSurchargesEnabled: Boolean
+
+  """
+  Whether the creator uses VAT-inclusive pricing
+  """
+  usingVatInclusivePricing: Boolean!
+
+  """
+  The reason the creator opted out of VAT collection
+  """
+  vatOptOutReason: VatOptOutReasonEnum
 }
 
 """
@@ -9719,6 +10098,56 @@ enum PledgeManagerStateEnum {
   denied
   """
   denied
+}
+
+"""
+Whether the creator intends to use the pledge manager
+"""
+enum IntendsToUsePmEnum {
+  """
+  yes
+  """
+  yes
+
+  """
+  no
+  """
+  no
+
+  """
+  not_sure
+  """
+  not_sure
+}
+
+"""
+Reasons for opting out of VAT collection in the pledge manager
+"""
+enum VatOptOutReasonEnum {
+  """
+  below_vat_threshold
+  """
+  below_vat_threshold
+
+  """
+  vat_inclusive_pricing
+  """
+  vat_inclusive_pricing
+
+  """
+  vat_handled_off_platform
+  """
+  vat_handled_off_platform
+
+  """
+  delivery_duty_unpaid
+  """
+  delivery_duty_unpaid
+
+  """
+  other_custom
+  """
+  other_custom
 }
 
 """
@@ -10872,6 +11301,32 @@ type ProjectActions {
 }
 
 """
+Options for when a creator wants backer survey edits to end
+"""
+enum BackerSurveyEditsEndConditionType {
+  disabled
+
+  manual
+
+  custom_date
+
+  pledge_manager_closed
+}
+
+"""
+Options for when a creator wants backer additional add-ons to end
+"""
+enum BackerAdditionalAddonsEndConditionType {
+  disabled
+
+  manual
+
+  custom_date
+
+  pledge_manager_closed
+}
+
+"""
 All available fulfillment statuses
 """
 enum FulfillmentStatus {
@@ -11188,6 +11643,21 @@ input BackerReportSearchQuery {
   pledgeOverTime: [Boolean!]
 
   """
+  Filter by whether backer is follower
+  """
+  backerType: [BackerType!]
+
+  """
+  Filter by whether backer has backed previous campaign
+  """
+  previousProjectsBacked: [ID!]
+
+  """
+  AND the item IDs instead of ORing them
+  """
+  sqlFilterPreviousProjects: SqlFilterOperator
+
+  """
   Filter by backing status
   """
   status: [String!]
@@ -11259,6 +11729,15 @@ enum SqlFilterOperator {
 }
 
 """
+type of follower a backer is
+"""
+enum BackerType {
+  PRELAUNCH_FOLLOWER
+
+  PROJECT_FOLLOWER
+}
+
+"""
 Sort order for OpenSearch queries
 """
 enum OpenSearchSort {
@@ -11302,7 +11781,7 @@ type ShipStationConfiguration implements Node {
   """
   External ID for a Store in ShipStation
   """
-  storeId: String!
+  storeId: String
 
   """
   Errors that have occured while trying to sync orders to ShipStation
@@ -12991,6 +13470,103 @@ enum ProjectSort {
 }
 
 """
+The connection type for VideoFeedItem.
+"""
+type VideoFeedConnection {
+  """
+  A list of edges.
+  """
+  edges: [VideoFeedItemEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [VideoFeedItem]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type VideoFeedItemEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: VideoFeedItem
+}
+
+"""
+A single item in the vertical video discovery feed, containing project data and computed badges
+"""
+type VideoFeedItem {
+  """
+  Computed badges for this project (e.g. "Project We Love", "3 days left")
+  """
+  badges: [Badge!]!
+
+  """
+  The project associated with this feed item
+  """
+  project: Project!
+}
+
+"""
+A badge displayed on a project card in the video discovery feed
+"""
+type Badge {
+  """
+  Optional icon identifier for the badge (e.g. "heart", "clock", "fire")
+  """
+  icon: String
+
+  """
+  Human-readable badge label (e.g. "3 days left", "Project We Love")
+  """
+  text: String!
+
+  """
+  The category of badge
+  """
+  type: BadgeTypeEnum!
+}
+
+"""
+Badge types displayed on projects in the video discovery feed
+"""
+enum BadgeTypeEnum {
+  """
+  Project selected as a staff pick by Kickstarter
+  """
+  PROJECT_WE_LOVE
+
+  """
+  Project deadline is within 7 days
+  """
+  DAYS_LEFT
+
+  """
+  Project launched within the last 3 days
+  """
+  JUST_LAUNCHED
+
+  """
+  Project is trending based on momentum
+  """
+  TRENDING
+}
+
+"""
 A maximum valid filesize for an upload.
 """
 type UploadLimit {
@@ -13340,7 +13916,7 @@ type EditorialRevisionMetadata {
   title: String!
 }
 
-union Editorial = ProjectCollection|NewsletterSignUp|PromoCollection|NewsCollection|FeaturedProjectCollection|SingleProjectContainer|BespokeComponent|Header|MastheadImage|ExploreSubcategories|Article|ShortText|EditorialRichText|SurveyEmbed
+union Editorial = ProjectCollection|NewsletterSignUp|PromoCollection|NewsCollection|FeaturedProjectCollection|SingleProjectContainer|BespokeComponent|Header|MastheadImage|ExploreSubcategories|Article|ShortText|EditorialRichText|SurveyEmbed|ProjectPartnersGrid|PartnerCaseStudyCollection
 
 """
 A curated set of projects based off a search query
@@ -13351,7 +13927,7 @@ type ProjectCollection {
   """
   The projects to display in this collection
   """
-  projects("The number of projects needed for this collection" count: Int = 4): [Project!]!
+  projects("The number of projects needed for this collection" count: Int = 4, "Whether to use V3 of our Recommendations API for this data" useApiV3: Boolean = false): [Project!]!
 
   """
   The raw search query to populate the project collection
@@ -13976,6 +14552,189 @@ type SurveyEmbed {
   id: ID!
 }
 
+"""
+A Project Partners grid for Editorial pages
+"""
+type ProjectPartnersGrid {
+  id: ID!
+
+  partnerIds: [Int!]!
+
+  """
+  The selected partners in the specified order
+  """
+  partners: [Partner!]!
+}
+
+"""
+A Kickstarter partner providing services to creators
+"""
+type Partner {
+  approvalStatus: PartnerApprovalStatus!
+
+  avatarUrl: String
+
+  categories: [Category!]!
+
+  description: String!
+
+  featured: Boolean!
+
+  id: ID!
+
+  """
+  Raw language ISO codes
+  """
+  languageCodes: [String!]!
+
+  """
+  Localized language names
+  """
+  languages: [String!]!
+
+  """
+  Localized location names
+  """
+  locationNames: [String!]!
+
+  locations: [Location!]!
+
+  logoUrl: String
+
+  name: String!
+
+  """
+  Localized partner tier (Premier/Expert)
+  """
+  partnerTier: String!
+
+  """
+  Raw partner tier code
+  """
+  partnerTierCode: PartnerTier!
+
+  """
+  Raw service type codes
+  """
+  serviceTypeCodes: [PartnerService!]!
+
+  """
+  Localized service types
+  """
+  serviceTypes: [String!]!
+
+  siteUrl: String!
+
+  user: User
+}
+
+"""
+Approval status of partner
+"""
+enum PartnerApprovalStatus {
+  APPROVED
+
+  NOT_APPROVED
+}
+
+"""
+Partner tier levels
+"""
+enum PartnerTier {
+  PREMIER
+
+  EXPERT
+}
+
+"""
+Types of services partners can provide
+"""
+enum PartnerService {
+  """
+  Campaign Strategy
+  """
+  CAMPAIGN_STRATEGY
+
+  """
+  Marketing Promotion
+  """
+  MARKETING_PROMOTION
+
+  """
+  Fulfillment Logistics
+  """
+  FULFILLMENT_LOGISTICS
+
+  """
+  Manufacturing Production
+  """
+  MANUFACTURING_PRODUCTION
+
+  """
+  Retail Distribution
+  """
+  RETAIL_DISTRIBUTION
+
+  """
+  Product Design
+  """
+  PRODUCT_DESIGN
+}
+
+"""
+A collection of featured partner case studies.
+"""
+type PartnerCaseStudyCollection {
+  """
+  The case studies in this collection
+  """
+  caseStudies: [PartnerCaseStudy!]!
+
+  id: ID!
+}
+
+"""
+An individual partner case study.
+"""
+type PartnerCaseStudy {
+  """
+  The url link to the case study.
+  """
+  caseStudyUrl: String!
+
+  """
+  The localized description of this case study.
+  """
+  description: String!
+
+  id: ID!
+
+  """
+  The url link to the image.
+  """
+  imageUrl: String!
+
+  """
+  The partner associated with the case study
+  """
+  partner: Partner!
+
+  """
+  The database ID for the associated partner
+  """
+  partnerId: Int!
+
+  """
+  The position of the case study in the carousel
+  """
+  position: Int!
+
+  """
+  The localized title of this case study.
+  """
+  title: String!
+}
+
 type EditorialTranslationStatus {
   """
   The language
@@ -14428,6 +15187,12 @@ enum PledgeProjectsOverviewSort {
 
   PLEDGE_MANAGEMENT
 
+  CAMPAIGN_LIVE
+
+  CAMPAIGN_FUNDED
+
+  CAMPAIGN_ENDED
+
   SURVEY_SUBMITTED
 
   PLEDGE_COLLECTED
@@ -14437,12 +15202,6 @@ enum PledgeProjectsOverviewSort {
   AWAITING_REWARD
 
   REWARD_RECEIVED
-
-  CAMPAIGN_LIVE
-
-  CAMPAIGN_FUNDED
-
-  CAMPAIGN_ENDED
 
   CAMPAIGN_FAILED
 
@@ -14643,6 +15402,17 @@ enum OptOutReasonEnum {
 }
 
 """
+A reason for opting out of VAT collection in the pledge manager
+"""
+type VatOptOutReason {
+  description: String!
+
+  key: VatOptOutReasonEnum!
+
+  title: String!
+}
+
+"""
 The connection type for ProjectInvestigation.
 """
 type ProjectInvestigationConnection {
@@ -14720,7 +15490,7 @@ type ProjectInvestigation implements Node {
   """
   The tasks associated with the investigation
   """
-  tasks(reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], adminIds: [ID!], stateSort: OpenSearchSort, createdAtSort: OpenSearchSort, flaggingsCountSort: OpenSearchSort, latestFlaggingAtSort: OpenSearchSort, latestAdminNoteAtSort: OpenSearchSort): [Task!]!
+  tasks(reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], assigneeFilter: TaskAssigneeFilter, adminIds: [ID!], sortColumn: ProjectInvestigationTaskSort, sortDirection: OpenSearchSort): [Task!]!
 
   """
   The number of Zendesk tickets in the project.
@@ -15110,6 +15880,32 @@ type ZendeskTicket implements Node {
 }
 
 """
+How to filter tasks by assignee (or lack of assignee)
+"""
+enum TaskAssigneeFilter {
+  assigned
+
+  unassigned
+
+  non_admin
+}
+
+"""
+What order to sort project investigation tasks in
+"""
+enum ProjectInvestigationTaskSort {
+  state
+
+  created_at
+
+  flaggings_count
+
+  latest_flagging_at
+
+  latest_admin_note_at
+}
+
+"""
 Creator HRC status tiers.
 """
 enum CreatorHrcStatusTier {
@@ -15145,118 +15941,22 @@ enum CreatorHrcStatusTier {
 }
 
 """
-A Kickstarter partner providing services to creators
+What order to sort project investigations in
 """
-type Partner {
-  approvalStatus: PartnerApprovalStatus!
+enum ProjectInvestigationSort {
+  project_deadline
 
-  avatarUrl: String
+  flaggings_count
 
-  categories: [Category!]!
+  reports_count
 
-  description: String!
+  reports_open_count
 
-  featured: Boolean!
+  reports_unassigned_count
 
-  id: ID!
+  zendesk_tickets_count
 
-  """
-  Raw language ISO codes
-  """
-  languageCodes: [String!]!
-
-  """
-  Localized language names
-  """
-  languages: [String!]!
-
-  """
-  Localized location names
-  """
-  locationNames: [String!]!
-
-  locations: [Location!]!
-
-  logoUrl: String
-
-  name: String!
-
-  """
-  Localized partner tier (Premier/Expert)
-  """
-  partnerTier: String!
-
-  """
-  Raw partner tier code
-  """
-  partnerTierCode: PartnerTier!
-
-  """
-  Raw service type codes
-  """
-  serviceTypeCodes: [PartnerService!]!
-
-  """
-  Localized service types
-  """
-  serviceTypes: [String!]!
-
-  siteUrl: String!
-
-  user: User
-}
-
-"""
-Approval status of partner
-"""
-enum PartnerApprovalStatus {
-  APPROVED
-
-  NOT_APPROVED
-}
-
-"""
-Partner tier levels
-"""
-enum PartnerTier {
-  PREMIER
-
-  EXPERT
-}
-
-"""
-Types of services partners can provide
-"""
-enum PartnerService {
-  """
-  Campaign Strategy
-  """
-  CAMPAIGN_STRATEGY
-
-  """
-  Marketing Promotion
-  """
-  MARKETING_PROMOTION
-
-  """
-  Fulfillment Logistics
-  """
-  FULFILLMENT_LOGISTICS
-
-  """
-  Manufacturing Production
-  """
-  MANUFACTURING_PRODUCTION
-
-  """
-  Retail Distribution
-  """
-  RETAIL_DISTRIBUTION
-
-  """
-  Product Design
-  """
-  PRODUCT_DESIGN
+  open_zendesk_tickets_count
 }
 
 """
@@ -15498,6 +16198,11 @@ type Mutation {
   completeZeroDollarOrderEdit(input: CompleteZeroDollarOrderEditInput!): CompleteZeroDollarOrderEditPayload
 
   """
+  Allow a creator to configure backers' ability to update their own orders
+  """
+  configureBackerOrderEdits(input: ConfigureBackerOrderEditsInput!): ConfigureBackerOrderEditsPayload
+
+  """
   Finalizes the Apple ID disconnect. Destroys apple_account and sets a new email and password
   """
   confirmAppleIdDisconnect(input: ConfirmAppleIdDisconnectInput!): ConfirmAppleIdDisconnectPayload
@@ -15600,6 +16305,11 @@ type Mutation {
   createOrUpdateBackingAddress(input: CreateOrUpdateBackingAddressInput!): CreateOrUpdateBackingAddressPayload
 
   """
+  Creates a digital file
+  """
+  createOrUpdateDigitalFile(input: CreateOrUpdateDigitalFileInput!): CreateOrUpdateDigitalFilePayload
+
+  """
   Create or update a discover saved search segment
   """
   createOrUpdateDiscoverSavedSearch(input: CreateOrUpdateDiscoverSavedSearchInput!): CreateOrUpdateDiscoverSavedSearchPayload
@@ -15678,11 +16388,6 @@ type Mutation {
   Start a Kickstarter project.
   """
   createProject(input: CreateProjectInput!): CreateProjectPayload
-
-  """
-  Post a project comment
-  """
-  createProjectComment(input: PostProjectCommentInput!): PostProjectCommentPayload
 
   """
   Creates a Deposit Account on Rosie, and a Stripe Connect Account.
@@ -15804,6 +16509,11 @@ type Mutation {
   deleteComment(input: DeleteCommentInput!): DeleteCommentPayload
 
   """
+  Deletes a digital file
+  """
+  deleteDigitalFile(input: DeleteDigitalFileInput!): DeleteDigitalFilePayload
+
+  """
   Delete a discover saved search
   """
   deleteDiscoverSavedSearch(input: DeleteDiscoverSavedSearchInput!): DeleteDiscoverSavedSearchPayload
@@ -15832,11 +16542,6 @@ type Mutation {
   Delete an unlaunched Kickstarter project.
   """
   deleteProject(input: DeleteProjectInput!): DeleteProjectPayload
-
-  """
-  Delete a comment
-  """
-  deleteProjectComment(input: DeleteProjectCommentInput!): DeleteProjectCommentPayload
 
   """
   Delete a project image.
@@ -15904,9 +16609,14 @@ type Mutation {
   dismissTrackedBatch(input: DismissTrackedBatchInput!): DismissTrackedBatchPayload
 
   """
-  Distribute digital access resources like access keys or URLs to backers with digital rewards
+  Distribute digital access resources like access keys, URLs, or hosted files to backers with digital rewards
   """
   distributeDigitalAccessResources(input: DistributeDigitalAccessResourcesInput!): DistributeDigitalAccessResourcesPayload
+
+  """
+  Generates a download URL for a digital access resource and tracks the download attempt.
+  """
+  downloadDigitalAccessResource(input: DownloadDigitalAccessResourceInput!): DownloadDigitalAccessResourcePayload
 
   """
   End late pledges for a Kickstarter project.
@@ -15917,6 +16627,11 @@ type Mutation {
   Feature a reward for a Kickstarter project.
   """
   featureReward(input: FeatureRewardInput!): FeatureRewardPayload
+
+  """
+  Calculates the final refund totals for the requested refund amounts. Returns a full refund summary to be displayed to the user for confirmation.
+  """
+  finalizeRefund(input: FinalizeRefundInput!): FinalizeRefundPayload
 
   """
   Adds the Notification update entries for a user who should have them but does not
@@ -15942,6 +16657,11 @@ type Mutation {
   Issue a refund for a backer. Can include the refunding of both the pledge and the PM transactions.
   """
   issueRefund(input: IssueRefundInput!): IssueRefundPayload
+
+  """
+  Issue a refund for a backer. Can include the refunding of both the pledge and the PM transactions.
+  """
+  issueRefunds(input: IssueRefundsInput!): IssueRefundsPayload
 
   """
   Launch a Kickstarter project.
@@ -16344,6 +17064,11 @@ type Mutation {
   updatePledgeManagerState(input: UpdatePledgeManagerStateInput!): UpdatePledgeManagerStatePayload
 
   """
+  Updates VAT-related settings on the pledge manager
+  """
+  updatePledgeManagerVatSettings(input: UpdatePledgeManagerVatSettingsInput!): UpdatePledgeManagerVatSettingsPayload
+
+  """
   Update a project post
   """
   updatePost(input: UpdatePostInput!): UpdatePostPayload
@@ -16711,6 +17436,11 @@ input PollInput {
   image: S3AssetInput
 
   duration: Int
+
+  """
+  Whether to delete the existing image.
+  """
+  deleteImage: Boolean
 }
 
 """
@@ -17187,6 +17917,10 @@ input UpdateProjectInput {
 
   prelaunchStory: HTML
 
+  intendsToUsePm: IntendsToUsePmEnum
+
+  optOutOfVat: Boolean
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -17229,6 +17963,8 @@ input FaqInput {
   question: String!
 
   answer: String!
+
+  destroy: Boolean = false
 }
 
 """
@@ -18194,70 +18930,6 @@ input ToggleCommentPinInput {
 }
 
 """
-Autogenerated return type of PostProjectComment
-"""
-type PostProjectCommentPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  comment: Comment
-}
-
-"""
-Autogenerated input type of PostProjectComment
-"""
-input PostProjectCommentInput {
-  """
-  The ID of the project you are commenting on
-  """
-  projectId: ID!
-
-  """
-  The body of the comment
-  """
-  body: String!
-
-  """
-  The ID of the comment you are replying to
-  """
-  parentId: ID
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
-Autogenerated return type of DeleteProjectComment
-"""
-type DeleteProjectCommentPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  project: Project
-}
-
-"""
-Autogenerated input type of DeleteProjectComment
-"""
-input DeleteProjectCommentInput {
-  """
-  The comment ID
-  """
-  id: ID!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
 Autogenerated return type of CreateAsset
 """
 type CreateAssetPayload {
@@ -18712,6 +19384,21 @@ input BackerReportSelection {
   Filter by pledge type
   """
   pledgeOverTime: [Boolean!]
+
+  """
+  Filter by whether backer is follower
+  """
+  backerType: [BackerType!]
+
+  """
+  Filter by whether backer has backed previous campaign
+  """
+  previousProjectsBacked: [ID!]
+
+  """
+  AND the item IDs instead of ORing them
+  """
+  sqlFilterPreviousProjects: SqlFilterOperator
 
   """
   Filter by backing status
@@ -19557,6 +20244,8 @@ input CreateRewardInput {
 
   vatInclusivePricing: Boolean
 
+  sourceRewardId: ID
+
   """
   A unique identifier for the client performing the mutation.
   """
@@ -20396,6 +21085,16 @@ enum EditorialModuleType {
   SurveyEmbed
   """
   SurveyEmbed
+
+  """
+  ProjectPartnersGrid
+  """
+  ProjectPartnersGrid
+
+  """
+  PartnerCaseStudyCollection
+  """
+  PartnerCaseStudyCollection
 }
 
 """
@@ -21609,14 +22308,16 @@ Autogenerated input type of DistributeDigitalAccessResources
 input DistributeDigitalAccessResourcesInput {
   projectId: ID!
 
-  resources: String!
+  resources: String
 
   """
-  Type of resource distribution: 'unique' or 'shared'
+  Type of resource distribution: 'unique', 'shared', or 'file'
   """
   resourcesType: ResourcesTypeEnum!
 
-  description: String!
+  digitalFileId: ID
+
+  description: String
 
   searchQuery: JSON!
 
@@ -21636,6 +22337,106 @@ enum ResourcesTypeEnum {
   All backers share the same resource
   """
   SHARED
+
+  """
+  Each backer gets access to the selected digital file
+  """
+  FILE
+
+  """
+  Each backer will get a code or URL (UNIQUE and SHARED are sub-types of CODE_OR_URL)
+  """
+  CODE_OR_URL
+}
+
+"""
+Autogenerated return type of DownloadDigitalAccessResource
+"""
+type DownloadDigitalAccessResourcePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  digitalAccessResource: DigitalAccessResource!
+
+  downloadUrl: String!
+}
+
+"""
+Autogenerated input type of DownloadDigitalAccessResource
+"""
+input DownloadDigitalAccessResourceInput {
+  id: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeleteDigitalFile
+"""
+type DeleteDigitalFilePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Succeeds if digital file is deleted.
+  """
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of DeleteDigitalFile
+"""
+input DeleteDigitalFileInput {
+  digitalFileId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateDigitalFile
+"""
+type CreateOrUpdateDigitalFilePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The newly created digital file.
+  """
+  digitalFile: DigitalFile!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateDigitalFile
+"""
+input CreateOrUpdateDigitalFileInput {
+  digitalLibraryId: ID!
+
+  filename: String!
+
+  instructions: String
+
+  blobId: String!
+
+  attachableIds: [ID!]
+
+  previousDigitalFileId: ID
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
 }
 
 """
@@ -23141,7 +23942,7 @@ type CreateOrUpdateTrackingNumbersPayload {
   """
   clientMutationId: String
 
-  shipments: [Shipment!]!
+  success: Boolean!
 }
 
 """
@@ -23177,6 +23978,11 @@ type ProcessTrackingNumbersPayload {
   clientMutationId: String
 
   project: Project!
+
+  """
+  When the request was made
+  """
+  timestamp: Int!
 }
 
 """
@@ -23654,6 +24460,79 @@ input CompleteZeroDollarOrderEditInput {
   The order edit id
   """
   orderEditId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UpdatePledgeManagerVatSettings
+"""
+type UpdatePledgeManagerVatSettingsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Updated project
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of UpdatePledgeManagerVatSettings
+"""
+input UpdatePledgeManagerVatSettingsInput {
+  """
+  ID of the project related to the pledge manager
+  """
+  projectId: ID!
+
+  """
+  Whether the project uses VAT inclusive pricing
+  """
+  usingVatInclusivePricing: Boolean!
+
+  """
+  Whether the creator is opting out of VAT collection
+  """
+  optOutOfVat: Boolean!
+
+  """
+  The reason for opting out of VAT collection
+  """
+  vatOptOutReason: VatOptOutReasonEnum
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of ConfigureBackerOrderEdits
+"""
+type ConfigureBackerOrderEditsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project!
+}
+
+"""
+Autogenerated input type of ConfigureBackerOrderEdits
+"""
+input ConfigureBackerOrderEditsInput {
+  projectId: ID!
+
+  backerSurveyEditsEndCondition: String
+
+  backerSurveyEditsEndAt: Int
 
   """
   A unique identifier for the client performing the mutation.
@@ -24424,6 +25303,319 @@ input IssueRefundInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
+}
+
+"""
+Autogenerated return type of IssueRefunds
+"""
+type IssueRefundsPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  refund: Refund!
+}
+
+"""
+Autogenerated input type of IssueRefunds
+"""
+input IssueRefundsInput {
+  """
+  Existing Adjustments::Refund ID for refund
+  """
+  refundId: ID!
+
+  """
+  Refund charge ID of refund charge funding the refund
+  """
+  refundChargeId: ID
+
+  """
+  Reason for the refund
+  """
+  reason: String!
+
+  """
+  Message to include with the refund
+  """
+  message: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of FinalizeRefund
+"""
+type FinalizeRefundPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  serializedRefundData: SerializedRefundData!
+}
+
+"""
+A refund summary.
+"""
+type SerializedRefundData {
+  """
+  If it is a mid plot refund, this tells us if it is a deducted amount (in cents)
+  """
+  deductedRefundAmountCents: Int
+
+  """
+  Deducted refund amount formatted as currency string
+  """
+  deductedRefundAmountFormatted: String
+
+  """
+  Amount of associated refund charge (in cents)
+  """
+  refundChargeAmountCents: Int!
+
+  """
+  Refund charge amount formatted as currency string
+  """
+  refundChargeAmountFormatted: String!
+
+  """
+  An array of adjustments associated with the RefundSummary
+  """
+  refundSummary: [RefundSummary!]!
+
+  """
+  Total refund amount to the backer, including taxes (in cents)
+  """
+  refundTotalCents: Int!
+
+  """
+  Total refund amount formatted as currency string
+  """
+  refundTotalFormatted: String!
+
+  """
+  Total refundable amount after subtracting the current requested refund (in cents)
+  """
+  totalRefundableBalanceCents: Int!
+
+  """
+  Total refundable balance formatted as currency string
+  """
+  totalRefundableBalanceFormatted: String!
+
+  """
+  The total refundable amount for the backer (in cents)
+  """
+  totalRefundableCents: Int!
+
+  """
+  The total refundable amount formatted as currency string
+  """
+  totalRefundableFormatted: String!
+}
+
+"""
+Summary of refund information for a transaction
+"""
+type RefundSummary {
+  """
+  Creator tax amount in cents
+  """
+  creatorTaxCents: Int
+
+  """
+  Creator tax amount formatted as currency string
+  """
+  creatorTaxFormatted: String
+
+  """
+  KSR tax amount in cents
+  """
+  ksrTaxCents: Int
+
+  """
+  KSR tax amount formatted as currency string
+  """
+  ksrTaxFormatted: String
+
+  """
+  List of refund items
+  """
+  refunds: [RefundItem!]!
+
+  """
+  GraphQL relay ID of the transaction being refunded
+  """
+  transactionId: String
+
+  """
+  Non-decoded ID of the transaction being refunded
+  """
+  transactionIdRaw: Int
+
+  """
+  Type of transaction (pledge, order, or order_edit)
+  """
+  transactionType: String!
+}
+
+"""
+Individual refund item with type and amount
+"""
+type RefundItem {
+  """
+  Refund amount in cents
+  """
+  amountCents: Int!
+
+  """
+  Refund amount formatted as currency string
+  """
+  amountFormatted: String!
+
+  """
+  The refund type (e.g., reward, bonus_amount, shipping_credit)
+  """
+  refundLineItem: String!
+}
+
+"""
+Autogenerated input type of FinalizeRefund
+"""
+input FinalizeRefundInput {
+  """
+  ID of associated adjustments refund
+  """
+  adjustmentsRefundId: ID
+
+  isFullRefund: Boolean
+
+  refundSource: String!
+
+  """
+  Line items to refund for partial refund
+  """
+  partialRefundInput: PartialRefundInput
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Line items to refund for partial refund.
+"""
+input PartialRefundInput {
+  """
+  Pledge line items for refund
+  """
+  pledge: PartialRefundPledgeInput
+
+  """
+  Order line items for refund
+  """
+  order: PartialRefundOrderInput
+
+  """
+  List of order edits to refund
+  """
+  orderEdits: [JSON!]
+}
+
+"""
+Pledge line items for refund.
+"""
+input PartialRefundPledgeInput {
+  """
+  Rewards to be refunded
+  """
+  rewards: [RewardRefundInput!]
+
+  """
+  Addons to be refunded
+  """
+  addons: [RewardRefundInput!]
+
+  """
+  Bonus amount to be refunded
+  """
+  bonusAmount: Float
+
+  """
+  Shipping amount to be refunded
+  """
+  shippingAmount: Float
+
+  """
+  General amount to be refunded
+  """
+  general: Float
+}
+
+"""
+Single reward or addon being refunded.
+"""
+input RewardRefundInput {
+  """
+  ID of the reward or addon being refunded
+  """
+  id: ID!
+
+  """
+  Amount to be refunded
+  """
+  amount: Float
+
+  """
+  Refund item ID
+  """
+  refundItemId: String
+
+  """
+  Shipping amount to be refunded
+  """
+  removed: Boolean
+}
+
+"""
+Input for partial order refund with line items
+"""
+input PartialRefundOrderInput {
+  """
+  Upgraded reward to refund
+  """
+  upgradedReward: RewardRefundInput
+
+  """
+  Cross-sell items to refund
+  """
+  crossSells: [RewardRefundInput!]
+
+  """
+  Shipments to refund
+  """
+  shipments: [OrderShipmentInput!]
+}
+
+"""
+Shipment information for refund processing
+"""
+input OrderShipmentInput {
+  """
+  ID of the shipment being refunded
+  """
+  id: ID!
+
+  """
+  Shipment amount in dollars
+  """
+  amount: Float!
 }
 
 """

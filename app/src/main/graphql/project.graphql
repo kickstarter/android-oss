@@ -286,6 +286,10 @@ query VideoFeed($first: Int!, $after: String, $categoryId: String) {
         percentFunded
         deadlineAt
         launchedAt
+        backersCount
+        pledged {
+          ...amount
+        }
         creator {
           name
           imageUrl(blur: false, width: 200)

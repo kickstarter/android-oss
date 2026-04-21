@@ -11,12 +11,15 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.features.videofeed.data.KSVideoBadgeType
+import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.VideoFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
 class VideoFeedScreenTest : KSRobolectricTestCase() {
+
+    private val hlsUrl = "https://ksr-video.imgix.net/projects/3275127/video-865539-hls_playlist.m3u8"
 
     @Test
     fun `VideoFeedScreen displays pager and verifies beyondViewportPageCount and key usage`() {
@@ -24,18 +27,27 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         val project2Id = 102L
         val project3Id = 103L
 
-        // KSVideoPlayer needs a valid hls url
-        val video = VideoFactory.hlsVideo()
-
-        val projects = listOf(
-            ProjectFactory.project().toBuilder().id(project1Id).video(video).build(),
-            ProjectFactory.caProject().toBuilder().id(project2Id).video(video).build(),
-            ProjectFactory.ukProject().toBuilder().id(project3Id).video(video).build()
+        val items = listOf(
+            VideoFeedItem(
+                badges = listOf(KSVideoBadgeType.ProjectWeLove),
+                project = ProjectFactory.project().toBuilder().id(project1Id).build(),
+                hlsUrl = hlsUrl
+            ),
+            VideoFeedItem(
+                badges = listOf(KSVideoBadgeType.JustLaunched),
+                project = ProjectFactory.caProject().toBuilder().id(project2Id).build(),
+                hlsUrl = hlsUrl
+            ),
+            VideoFeedItem(
+                badges = listOf(KSVideoBadgeType.Trending),
+                project = ProjectFactory.ukProject().toBuilder().id(project3Id).build(),
+                hlsUrl = hlsUrl
+            )
         )
 
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(projectsList = projects)
+                VideoFeedScreen(items = items)
             }
         }
 
@@ -78,13 +90,14 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
 
     @Test
     fun `close button is displayed with correct accessibility role`() {
-        val video = VideoFactory.hlsVideo()
-        val project = ProjectFactory.project().toBuilder().id(201L).video(video).build()
-        val projects = listOf(project)
+        val project = ProjectFactory.project().toBuilder().id(201L).build()
+        val items = listOf(
+            VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl)
+        )
 
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(projectsList = projects)
+                VideoFeedScreen(items = items)
             }
         }
 
@@ -98,14 +111,15 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     @Test
     fun `close button triggers onClose callback`() {
         var closeCalled = false
-        val video = VideoFactory.hlsVideo()
-        val project = ProjectFactory.project().toBuilder().id(301L).video(video).build()
-        val projects = listOf(project)
+        val project = ProjectFactory.project().toBuilder().id(301L).build()
+        val items = listOf(
+            VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl)
+        )
 
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
-                    projectsList = projects,
+                    items = items,
                     onClose = { closeCalled = true }
                 )
             }
@@ -122,15 +136,22 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         val project1Id = 401L
         val project2Id = 402L
 
-        val video = VideoFactory.hlsVideo()
-        val projects = listOf(
-            ProjectFactory.project().toBuilder().id(project1Id).video(video).build(),
-            ProjectFactory.caProject().toBuilder().id(project2Id).video(video).build()
+        val items = listOf(
+            VideoFeedItem(
+                badges = emptyList(),
+                project = ProjectFactory.project().toBuilder().id(project1Id).build(),
+                hlsUrl = hlsUrl
+            ),
+            VideoFeedItem(
+                badges = emptyList(),
+                project = ProjectFactory.caProject().toBuilder().id(project2Id).build(),
+                hlsUrl = hlsUrl
+            )
         )
 
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(projectsList = projects)
+                VideoFeedScreen(items = items)
             }
         }
 

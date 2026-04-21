@@ -35,6 +35,7 @@ import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
+import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -69,6 +70,11 @@ fun VideoFeedScreen(
             val videoUrl = item.hlsUrl ?: ""
             val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
+            val subtitle = remember(project) {
+                val pledged = "${project.currencySymbol()}${NumberUtils.format(project.pledged().toInt())}"
+                val backers = NumberUtils.format(project.backersCount())
+                "$pledged pledged • Join $backers backers"
+            }
             val percentageFounded by remember(page) {
                 derivedStateOf {
                     if (pagerState.settledPage == page) project.percentageFunded() else 0f
@@ -107,7 +113,7 @@ fun VideoFeedScreen(
 
                             KSVideoCampaignCard(
                                 title = projectTitle,
-                                subtitle = "$50,134 pledged • Join 431 backers",
+                                subtitle = subtitle,
                                 buttonText = "Back this project",
                                 onButtonClick = { },
                                 progress = percentageFounded

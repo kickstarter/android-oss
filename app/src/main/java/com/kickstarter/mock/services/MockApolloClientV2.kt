@@ -12,6 +12,7 @@ import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.search.data.SearchEnvelope
+import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CommentFactory
@@ -385,6 +386,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {
         return Result.success(SearchEnvelope())
+    }
+
+    override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
+        return Result.success(VideoFeedEnvelope())
     }
 
     override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {

@@ -1,5 +1,8 @@
 package com.kickstarter.features.videofeed.data
 
+import com.kickstarter.models.Project
+import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
+
 sealed class KSVideoBadgeType {
     object ProjectWeLove : KSVideoBadgeType()
     data class DaysLeft(val text: String) : KSVideoBadgeType()
@@ -13,3 +16,13 @@ sealed class KSVideoBadgeType {
     object Popular : KSVideoBadgeType()
     object HotRightNow : KSVideoBadgeType()
 }
+
+data class VideoFeedItem(
+    val badges: List<KSVideoBadgeType>,
+    val project: Project
+)
+
+data class VideoFeedEnvelope(
+    val items: List<VideoFeedItem> = emptyList(),
+    val pageInfo: PageInfoEnvelope? = null
+)

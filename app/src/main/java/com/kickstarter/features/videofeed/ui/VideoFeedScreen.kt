@@ -114,7 +114,7 @@ fun VideoFeedScreen(
                             KSVideoCampaignCard(
                                 title = projectTitle,
                                 subtitle = subtitle,
-                                buttonText = "Back this project",
+                                buttonText = stringResource(R.string.project_back_button),
                                 onButtonClick = { },
                                 progress = percentageFounded
                             )

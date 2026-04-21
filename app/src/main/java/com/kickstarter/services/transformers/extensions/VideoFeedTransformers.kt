@@ -45,7 +45,11 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
             .creator(creator)
             .category(category)
             .build()
-        VideoFeedItem(badges = badges, project = project)
+        VideoFeedItem(
+            badges = badges,
+            project = project,
+            hlsUrl = node.project.lastUploadedVerticalVideo?.videoSources?.hls?.src
+        )
     } ?: emptyList()
 
     val pageInfo = this?.pageInfo?.pageInfo?.let {

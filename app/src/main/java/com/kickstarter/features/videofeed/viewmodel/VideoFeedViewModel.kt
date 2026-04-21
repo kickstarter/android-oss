@@ -3,22 +3,20 @@ package com.kickstarter.features.videofeed.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.Environment
-import com.kickstarter.models.Project
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.rx2.asFlow
 import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
 
 data class VideoFeedUIState(
-    val projects: List<Project> = emptyList()
+    val items: List<VideoFeedItem> = emptyList(),
+    val isLoading: Boolean = false
 )
 
 class VideoFeedViewModel(
@@ -30,35 +28,39 @@ class VideoFeedViewModel(
     private val apolloClient = requireNotNull(environment.apolloClientV2())
 
     private val _videoFeedUIState = MutableStateFlow(VideoFeedUIState())
-
     val videoFeedUIState: StateFlow<VideoFeedUIState> = _videoFeedUIState.asStateFlow()
 
+    private var errorAction: (message: String?) -> Unit = {}
+
     init {
-        loadDemoProjects()
+        loadVideoFeed()
     }
 
-    private fun loadDemoProjects() {
-        // TODO: replace with a single paginated feed query.
-        listOf(
-            "ringobottle/ringo-move",
-            "cameraintelligence/caira-worlds-first-ai-native-mirrorless-camera",
-            "rollbed/roll-real-bed-in-an-unreal-size",
-            "wowfactories/the-combine-driver-2-in-1-ratchet-and-torque-screwdriver",
-            "hyodo/magbasetm-swappable-wallet-for-magsafe-designed-by-hyodo",
-            "kode/kode-dot-the-all-in-one-pocket-size-maker-device",
-        ).forEach { getProject(it) }
+    fun provideErrorAction(errorAction: (message: String?) -> Unit) {
+        this.errorAction = errorAction
     }
 
-    private fun getProject(slug: String) {
+    private fun loadVideoFeed() {
         scope.launch {
-            apolloClient.getProject(slug)
-                .asFlow()
-                .catch { Timber.d(it) }
-                .collect { project ->
-                    _videoFeedUIState.update { state ->
-                        state.copy(projects = state.projects + project)
-                    }
-                }
+            _videoFeedUIState.emit(VideoFeedUIState(isLoading = true))
+
+            val result = apolloClient.getVideoFeed(first = 10)
+
+            if (result.isFailure) {
+                Timber.e(result.exceptionOrNull())
+                errorAction.invoke(null)
+                _videoFeedUIState.emit(VideoFeedUIState(isLoading = false))
+            }
+
+            if (result.isSuccess) {
+                val envelope = result.getOrNull()
+                _videoFeedUIState.emit(
+                    VideoFeedUIState(
+                        items = envelope?.items ?: emptyList(),
+                        isLoading = false
+                    )
+                )
+            }
         }
     }
 

@@ -25,11 +25,15 @@ class VideoFeedActivity : ComponentActivity() {
             videoFeedFactory = VideoFeedViewModel.Factory(env)
         }
 
+        viewModel.provideErrorAction { message ->
+            // TODO: surface error to the user (snackbar / error state)
+        }
+
         setContent {
             KSTheme {
-                val videoFeedUIState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
+                val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(
-                    projectsList = videoFeedUIState.projects,
+                    items = uiState.items,
                     onClose = { onBackPressedDispatcher.onBackPressed() }
                 )
             }

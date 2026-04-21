@@ -31,11 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.kickstarter.R
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
+import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
@@ -49,18 +49,10 @@ enum class VideoFeedScreenTestTag {
 
 @Composable
 fun VideoFeedScreen(
-    projectsList: List<Project>,
+    items: List<VideoFeedItem>,
     onClose: () -> Unit = {}
 ) {
-    // TODO: In future tickets this hardcoded list will be substituted by the result of a query
-    val badges = listOf(
-        KSVideoBadgeType.ProjectWeLove,
-        KSVideoBadgeType.DaysLeft("3 days left"),
-        KSVideoBadgeType.JustLaunched,
-        KSVideoBadgeType.Trending
-    )
-
-    val pagerState = rememberPagerState(pageCount = { projectsList.size })
+    val pagerState = rememberPagerState(pageCount = { items.size })
 
     Box(modifier = Modifier.fillMaxSize()) {
         VerticalPager(
@@ -69,14 +61,14 @@ fun VideoFeedScreen(
                 .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
             state = pagerState,
             beyondViewportPageCount = 1,
-            key = { index -> projectsList[index].id() }
+            key = { index -> items[index].project.id() }
         ) { page ->
 
-            val project = projectsList[page]
-            val videoUrl = project.video()?.hls() ?: ""
-            val profileImage = project.creator().avatar().medium()
+            val item = items[page]
+            val project = item.project
+            val videoUrl = item.hlsUrl ?: ""
+            val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
-            // Derive progress per-page: only recomposes this page when its own settled state flips
             val percentageFounded by remember(page) {
                 derivedStateOf {
                     if (pagerState.settledPage == page) project.percentageFunded() else 0f
@@ -109,7 +101,7 @@ fun VideoFeedScreen(
                             Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
                             KSVideoBadgesRow(
-                                badges = badges,
+                                badges = item.badges,
                                 hazeState = hazeState
                             )
 
@@ -161,10 +153,22 @@ fun VideoFeedScreen(
 fun VideoFeedScreenPreview() {
     KSTheme {
         VideoFeedScreen(
-            projectsList = listOf(
-                ProjectFactory.project(),
-                ProjectFactory.caProject(),
-                ProjectFactory.ukProject()
+            items = listOf(
+                VideoFeedItem(
+                    badges = listOf(KSVideoBadgeType.ProjectWeLove, KSVideoBadgeType.DaysLeft("3 days left")),
+                    project = ProjectFactory.project(),
+                    hlsUrl = null
+                ),
+                VideoFeedItem(
+                    badges = listOf(KSVideoBadgeType.JustLaunched),
+                    project = ProjectFactory.caProject(),
+                    hlsUrl = null
+                ),
+                VideoFeedItem(
+                    badges = listOf(KSVideoBadgeType.Trending),
+                    project = ProjectFactory.ukProject(),
+                    hlsUrl = null
+                )
             )
         )
     }

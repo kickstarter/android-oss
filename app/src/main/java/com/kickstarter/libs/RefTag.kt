@@ -130,6 +130,10 @@ class RefTag private constructor(
             return builder().tag("similar_projects").build()
         }
 
+        fun videoFeed(): RefTag {
+            return builder().tag("video_feed").build()
+        }
+
         fun social(): RefTag {
             return builder().tag("social").build()
         }

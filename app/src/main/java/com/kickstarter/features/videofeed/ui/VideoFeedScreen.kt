@@ -35,8 +35,11 @@ import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
@@ -51,7 +54,9 @@ enum class VideoFeedScreenTestTag {
 @Composable
 fun VideoFeedScreen(
     items: List<VideoFeedItem>,
-    onClose: () -> Unit = {}
+    onClose: () -> Unit = {},
+    preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
+    projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
 
@@ -115,7 +120,14 @@ fun VideoFeedScreen(
                                 title = projectTitle,
                                 subtitle = subtitle,
                                 buttonText = stringResource(R.string.project_back_button),
-                                onButtonClick = { },
+                                onButtonClick = {
+                                    val refTag = RefTag.videoFeed()
+                                    if (project.displayPrelaunch().isTrue()) {
+                                        preLaunchedCallback(project, refTag)
+                                    } else {
+                                        projectCallback(project, refTag)
+                                    }
+                                },
                                 progress = percentageFounded
                             )
                         }

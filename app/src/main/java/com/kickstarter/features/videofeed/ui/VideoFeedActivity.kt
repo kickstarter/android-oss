@@ -8,8 +8,11 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
+import com.kickstarter.ui.extensions.startProjectActivity
 
 class VideoFeedActivity : ComponentActivity() {
 
@@ -34,7 +37,21 @@ class VideoFeedActivity : ComponentActivity() {
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(
                     items = uiState.items,
-                    onClose = { onBackPressedDispatcher.onBackPressed() }
+                    onClose = { onBackPressedDispatcher.onBackPressed() },
+                    preLaunchedCallback = { project, refTag ->
+                        startPreLaunchProjectActivity(
+                            project = project,
+                            previousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value,
+                            refTag = refTag
+                        )
+                    },
+                    projectCallback = { project, refTag ->
+                        startProjectActivity(
+                            project = project,
+                            refTag = refTag,
+                            previousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value
+                        )
+                    }
                 )
             }
         }

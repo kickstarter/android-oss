@@ -13,7 +13,10 @@ import androidx.compose.ui.test.swipeUp
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
+import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCardTestTag
+import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -174,5 +177,103 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_$project2Id", useUnmergedTree = true)
             .assertExists()
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `back button triggers projectCallback for a live project`() {
+        var capturedProject: Project? = null
+        var capturedRefTag: RefTag? = null
+
+        val project = ProjectFactory.project().toBuilder().id(501L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    projectCallback = { p, ref ->
+                        capturedProject = p
+                        capturedRefTag = ref
+                    }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+        assertEquals(RefTag.videoFeed(), capturedRefTag)
+    }
+
+    @Test
+    fun `back button triggers preLaunchedCallback for a pre-launch project`() {
+        var capturedProject: Project? = null
+        var capturedRefTag: RefTag? = null
+
+        val project = ProjectFactory.prelaunchProject("pre-launch-slug").toBuilder().id(601L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    preLaunchedCallback = { p, ref ->
+                        capturedProject = p
+                        capturedRefTag = ref
+                    }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+        assertEquals(RefTag.videoFeed(), capturedRefTag)
+    }
+
+    @Test
+    fun `back button does not trigger preLaunchedCallback for a live project`() {
+        var preLaunchedCalled = false
+
+        val project = ProjectFactory.project().toBuilder().id(701L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    preLaunchedCallback = { _, _ -> preLaunchedCalled = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertFalse(preLaunchedCalled)
+    }
+
+    @Test
+    fun `back button does not trigger projectCallback for a pre-launch project`() {
+        var projectCallbackCalled = false
+
+        val project = ProjectFactory.prelaunchProject("pre-launch-slug").toBuilder().id(801L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    projectCallback = { _, _ -> projectCallbackCalled = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertFalse(projectCallbackCalled)
     }
 }

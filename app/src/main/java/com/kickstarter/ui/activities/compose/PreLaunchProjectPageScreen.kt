@@ -121,9 +121,12 @@ fun PreLaunchProjectPageScreen(
                 leftOnClickAction = { leftOnClickAction() }
             )
         }
-    ) {
+    ) { contentPadding ->
         ConstraintLayout(
-            modifier = Modifier.fillMaxSize().background(colors.kds_support_100)
+            modifier = Modifier
+                .padding(contentPadding)
+                .fillMaxSize()
+                .background(colors.kds_support_100)
         ) {
             val (constraintLayout, buttonCardLayout) = createRefs()
             val screenPadding = dimensionResource(id = R.dimen.activity_horizontal_margin)

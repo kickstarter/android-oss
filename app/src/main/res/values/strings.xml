@@ -48,6 +48,8 @@
   <string name="internal_tools_push_notifications">Push notifications</string>
   <string name="internal_tools_project_story_activity">Project Story Activity</string>
   <string name="internal_tools_video_feed">Video Feed Activity</string>
+  <string name="internal_tools_statsig_feature_gates">Statsig Feature Gates</string>
+  <string name="internal_tools_statsig_debug_view">Statsig Debug View</string>
   <string name="Logged_Out">Logged Out</string>
   <string name="mailto">mailto:</string>
   <string name="Network">Network</string>

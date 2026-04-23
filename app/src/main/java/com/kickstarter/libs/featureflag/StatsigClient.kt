@@ -11,6 +11,7 @@ import com.statsig.androidsdk.FeatureGate
 import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.Statsig
 import com.statsig.androidsdk.StatsigOptions
+import com.statsig.androidsdk.StatsigOverrides
 import com.statsig.androidsdk.StatsigUser
 import com.statsig.androidsdk.Tier
 import kotlinx.coroutines.CoroutineDispatcher
@@ -44,6 +45,9 @@ interface StatsigClientType {
     fun getExperiment(experimentName: String) = Statsig.getExperiment(experimentName) // TODO: for test MOCK statsig DynamicConfig type or expose to the rest of the app just the json values, will explore in the future
     suspend fun updateUser(id: String) = Statsig.updateUser(StatsigUser(id))
     fun getStableId() = Statsig.getStableID()
+    fun overrideGate(gateName: String, value: Boolean) = Statsig.overrideGate(gateName, value)
+    fun removeGateOverride(gateName: String) = Statsig.removeOverride(gateName)
+    fun getAllOverrides(): StatsigOverrides = Statsig.getAllOverrides()
 
     /** Emits true once the SDK has been successfully initialized. */
     val isReady: StateFlow<Boolean>

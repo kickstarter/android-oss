@@ -211,6 +211,22 @@
           android:text="@string/internal_tools_video_feed" />
 
       <Button
+          android:id="@+id/statsig_feature_gates_button"
+          style="@style/SecondaryButton"
+          android:layout_width="match_parent"
+          android:layout_marginTop="@dimen/grid_1"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:text="@string/internal_tools_statsig_feature_gates" />
+
+      <Button
+          android:id="@+id/statsig_debug_view_button"
+          style="@style/SecondaryButton"
+          android:layout_width="match_parent"
+          android:layout_marginTop="@dimen/grid_1"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:text="@string/internal_tools_statsig_debug_view" />
+
+      <Button
         android:id="@+id/push_notifications_button"
         style="@style/SecondaryButton"
         android:layout_width="match_parent"

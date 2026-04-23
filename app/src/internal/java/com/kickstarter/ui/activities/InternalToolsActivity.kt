@@ -20,6 +20,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.kickstarter.KSApplication
+import com.statsig.androidsdk.Statsig
 import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.features.home.ui.HomeActivity
@@ -93,6 +94,14 @@ class InternalToolsActivity : AppCompatActivity() {
             videoFeedActivityButtonClicked()
         }
 
+        binding.statsigFeatureGatesButton.setOnClickListener {
+            statsigFeatureGatesButtonClicked()
+        }
+
+        binding.statsigDebugViewButton.setOnClickListener {
+            Statsig.openDebugView(this) {}
+        }
+
         binding.pushNotificationsButton.setOnClickListener {
             pushNotificationsButtonClick()
         }
@@ -160,6 +169,11 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun videoFeedActivityButtonClicked() {
         val intent = Intent(this, VideoFeedActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun statsigFeatureGatesButtonClicked() {
+        val intent = Intent(this, StatsigFeatureGatesActivity::class.java)
         startActivity(intent)
     }
 

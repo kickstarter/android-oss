@@ -163,4 +163,86 @@ class StatsigClientTest : KSRobolectricTestCase() {
 
         assertFalse(result.getValue())
     }
+
+    // - Override tests
+    @Test
+    fun `overrideGate - checkGate returns true when gate is overridden to true`() {
+        val client = MockStatsigClient(context = application())
+
+        client.overrideGate("test_gate", true)
+
+        assertTrue(client.checkGate("test_gate"))
+    }
+
+    @Test
+    fun `overrideGate - checkGate returns false when gate is overridden to false`() {
+        val client = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf("test_gate" to true)
+        )
+
+        client.overrideGate("test_gate", false)
+
+        assertFalse(client.checkGate("test_gate"))
+    }
+
+    @Test
+    fun `removeGateOverride - checkGate returns original gateMap value after override is removed`() {
+        val client = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf("test_gate" to true)
+        )
+        client.overrideGate("test_gate", false)
+        client.removeGateOverride("test_gate")
+
+        assertTrue(client.checkGate("test_gate"))
+    }
+
+    @Test
+    fun `removeGateOverride - checkGate returns false for unknown gate after override is removed`() {
+        val client = MockStatsigClient(context = application())
+        client.overrideGate("test_gate", true)
+        client.removeGateOverride("test_gate")
+
+        assertFalse(client.checkGate("test_gate"))
+    }
+
+    @Test
+    fun `getAllOverrides - returns empty gates map when no overrides are set`() {
+        val client = MockStatsigClient(context = application())
+
+        assertTrue(client.getAllOverrides().gates.isEmpty())
+    }
+
+    @Test
+    fun `getAllOverrides - reflects all active overrides`() {
+        val client = MockStatsigClient(context = application())
+        client.overrideGate("gate_a", true)
+        client.overrideGate("gate_b", false)
+
+        val gates = client.getAllOverrides().gates
+
+        assertEquals(2, gates.size)
+        assertEquals(true, gates["gate_a"])
+        assertEquals(false, gates["gate_b"])
+    }
+
+    @Test
+    fun `getAllOverrides - does not include gate after override is removed`() {
+        val client = MockStatsigClient(context = application())
+        client.overrideGate("test_gate", true)
+        client.removeGateOverride("test_gate")
+
+        assertFalse(client.getAllOverrides().gates.containsKey("test_gate"))
+    }
+
+    @Test
+    fun `getFeatureGate - returns LocalOverride reason when gate is overridden`() {
+        val client = MockStatsigClient(context = application())
+        client.overrideGate("test_gate", true)
+
+        val result = client.getFeatureGate("test_gate")
+
+        assertTrue(result.getValue())
+    }
 }

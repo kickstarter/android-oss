@@ -59,7 +59,7 @@ interface ReportProjectViewModel {
         private val flaggingKind = PublishSubject.create<String>()
         private val urlTag = PublishSubject.create<String>()
 
-        private fun arguments() = Observable.just(this.arguments).filter { it.isNotNull() }.map { requireNotNull(it) }
+        private fun arguments() = this.arguments?.let { Observable.just(it) } ?: Observable.empty()
         private val disposables = CompositeDisposable()
 
         init {

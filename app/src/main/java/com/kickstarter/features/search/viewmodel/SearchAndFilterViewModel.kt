@@ -81,7 +81,11 @@ class SearchAndFilterViewModel(
     private var isLoadingMore = false
 
     init {
-        _isVideoFeedBannerVisible.value = statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+        scope.launch {
+            statsigClient.isReady.collect { isReady ->
+                _isVideoFeedBannerVisible.value = isReady && statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+            }
+        }
 
         scope.launch {
             val debounced = _searchTerm

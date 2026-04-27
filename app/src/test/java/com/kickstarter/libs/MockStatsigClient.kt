@@ -34,7 +34,8 @@ import io.mockk.mockk
 class MockStatsigClient(
     context: Context,
     currentUser: CurrentUserTypeV2 = MockCurrentUserV2(),
-    private val gateMap: Map<String, Boolean> = emptyMap()
+    private val gateMap: Map<String, Boolean> = emptyMap(),
+    startReady: Boolean = true
 ) : StatsigClient(
     build = mockk<Build> { every { isRelease } returns false },
     context = context,
@@ -42,6 +43,10 @@ class MockStatsigClient(
     sdkInitializer = { null }
 ) {
     init {
+        if (startReady) _isReady.value = true
+    }
+
+    fun triggerReady() {
         _isReady.value = true
     }
 

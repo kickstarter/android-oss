@@ -57,7 +57,7 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         return bundle
     }
 
-    private fun setUpEnvironment(environment: Environment, bundle: Bundle) {
+    private fun setUpEnvironment(environment: Environment, bundle: Bundle?) {
 
         this.vm = ReportProjectViewModel.ReportProjectViewModel(environment, bundle)
 
@@ -126,6 +126,16 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
 
         vm.inputs.openExternalBrowser("")
         openExternal.assertValueCount(0)
+        openExternal.assertNoValues()
+    }
+
+    @Test
+    fun testNullBundle_doesNotCrash() {
+        setUpEnvironment(getEnvironment(), null)
+
+        projectUrl.assertNoValues()
+        email.assertValue("some@email.com")
+        finish.assertNoValues()
         openExternal.assertNoValues()
     }
 

@@ -1,9 +1,11 @@
 package com.kickstarter.features.videofeed.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -12,6 +14,7 @@ import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -26,6 +29,14 @@ class VideoFeedActivity : ComponentActivity() {
     private lateinit var videoFeedFactory: VideoFeedViewModel.Factory
     private val viewModel: VideoFeedViewModel by viewModels { videoFeedFactory }
     private lateinit var env: Environment
+    private var pendingBookmarkProject: Project? = null
+
+    private val loginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            pendingBookmarkProject?.let { viewModel.bookmarkProject(it) }
+        }
+        pendingBookmarkProject = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +63,7 @@ class VideoFeedActivity : ComponentActivity() {
                         if (viewModel.isUserLoggedIn.value) {
                             viewModel.bookmarkProject(project)
                         } else {
+                            pendingBookmarkProject = project
                             startLoginToutActivity()
                         }
                     },
@@ -76,7 +88,7 @@ class VideoFeedActivity : ComponentActivity() {
 
     private fun startLoginToutActivity() {
         val intent = Intent(this, LoginToutActivity::class.java)
-            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
+        loginLauncher.launch(intent)
     }
 }

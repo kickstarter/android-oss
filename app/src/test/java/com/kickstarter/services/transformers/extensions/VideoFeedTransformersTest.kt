@@ -148,6 +148,22 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `toVideoFeedEnvelope maps watchesCount correctly`() {
+        val node = fixtureNode(project = fixtureProject(watchesCount = 250))
+        val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project
+
+        assertEquals(250, project.watchesCount())
+    }
+
+    @Test
+    fun `toVideoFeedEnvelope maps sharesCount correctly`() {
+        val node = fixtureNode(project = fixtureProject(sharesCount = 75))
+        val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project
+
+        assertEquals(75, project.sharesCount())
+    }
+
+    @Test
     fun `toVideoFeedEnvelope maps pledged amount and currency symbol correctly`() {
         val node = fixtureNode(
             project = fixtureProject(
@@ -210,6 +226,8 @@ private fun fixtureProject(
     deadlineAt: DateTime? = null,
     launchedAt: DateTime? = null,
     backersCount: Int = 150,
+    watchesCount: Int? = 10,
+    sharesCount: Int = 5,
     pledged: VideoFeedQuery.Pledged = VideoFeedQuery.Pledged(
         __typename = "Money",
         amount = Amount(amount = "5000.00", currency = CurrencyCode.USD, symbol = "$")
@@ -232,6 +250,8 @@ private fun fixtureProject(
     deadlineAt = deadlineAt,
     launchedAt = launchedAt,
     backersCount = backersCount,
+    watchesCount = watchesCount,
+    sharesCount = sharesCount,
     pledged = pledged,
     creator = creator,
     category = category,

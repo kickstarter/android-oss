@@ -38,6 +38,7 @@ import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.toCompactFormat
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -77,6 +78,8 @@ fun VideoFeedScreen(
             val videoUrl = item.hlsUrl ?: ""
             val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
+            val bookmarkCount = remember(project) { project.watchesCount().toCompactFormat() }
+            val shareCount = remember(project) { project.sharesCount().toCompactFormat() }
             val subtitle = remember(project) {
                 val pledged = "${project.currencySymbol()}${NumberUtils.format(project.pledged().toInt())}"
                 val backers = NumberUtils.format(project.backersCount())
@@ -103,9 +106,9 @@ fun VideoFeedScreen(
                                     .align(Alignment.End)
                                     .padding(end = dimensions.paddingMediumLarge),
                                 profileImageUrl = profileImage,
-                                bookmarkCount = "1k",
+                                bookmarkCount = bookmarkCount,
                                 isBookmarked = project.isStarred(),
-                                shareCount = "50",
+                                shareCount = shareCount,
                                 onProfileClick = { onProfileClick(project) },
                                 onBookmarkClick = { onBookmarkClick(project) },
                                 onShareClick = { },

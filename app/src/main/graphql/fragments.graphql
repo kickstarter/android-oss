@@ -158,6 +158,7 @@ fragment fullProject on Project {
         ... environmentalCommitment
     }
     watchesCount
+    sharesCount
     isInPostCampaignPledgingPhase
     postCampaignPledgingEnabled
     pledgeOverTimeCollectionPlanChargeExplanation

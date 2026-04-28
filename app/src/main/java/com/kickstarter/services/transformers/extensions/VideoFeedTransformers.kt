@@ -43,6 +43,8 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
             .deadline(node.project.deadlineAt)
             .launchedAt(node.project.launchedAt)
             .backersCount(node.project.backersCount)
+            .watchesCount(node.project.watchesCount)
+            .sharesCount(node.project.sharesCount)
             .pledged(node.project.pledged?.amount?.amount?.toDouble() ?: 0.0)
             .currencySymbol(node.project.pledged?.amount?.symbol ?: "")
             .creator(creator)

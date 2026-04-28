@@ -20,7 +20,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.kickstarter.KSApplication
-import com.statsig.androidsdk.Statsig
 import com.kickstarter.R
 import com.kickstarter.databinding.InternalToolsLayoutBinding
 import com.kickstarter.features.home.ui.HomeActivity
@@ -37,6 +36,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.WorkUtils
 import com.kickstarter.services.firebase.ResetDeviceIdWorker
 import com.kickstarter.utils.WindowInsetsUtil
+import com.statsig.androidsdk.Statsig
 import org.joda.time.format.DateTimeFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

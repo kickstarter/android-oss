@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -93,7 +94,10 @@ fun KSVideoActionsColumn(
         )
 
         KSVideoPlayerIconButton(
-            modifier = Modifier.testTag(KSVideoActionsColumnTestTag.MORE_OPTIONS_BUTTON.name),
+            modifier = Modifier
+                .testTag(KSVideoActionsColumnTestTag.MORE_OPTIONS_BUTTON.name)
+                .alpha(0f),
+            enabled = false,
             icon = Ellipsis,
             onClick = onMoreOptionsClick,
             contentDescription = stringResource(id = R.string.fpo_More_options),

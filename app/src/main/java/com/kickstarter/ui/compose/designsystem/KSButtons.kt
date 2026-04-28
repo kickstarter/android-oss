@@ -940,6 +940,7 @@ fun KSVideoPlayerIconButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     iconTint: Color = Color.Unspecified,
     text: String? = null,
     contentDescription: String? = null,
@@ -953,6 +954,7 @@ fun KSVideoPlayerIconButton(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
+                enabled = enabled,
                 onClick = onClick,
                 onClickLabel = onClickLabel,
                 role = Role.Button

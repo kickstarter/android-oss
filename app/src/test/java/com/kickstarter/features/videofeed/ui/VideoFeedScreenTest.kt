@@ -6,6 +6,8 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -229,8 +231,11 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project2.id()}", useUnmergedTree = true)
             .assertIsDisplayed()
 
-        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.PROFILE_BUTTON.name, useUnmergedTree = true)
-            .performClick()
+        composeTestRule.onNode(
+            hasTestTag(KSVideoActionsColumnTestTag.PROFILE_BUTTON.name)
+                .and(hasAnyAncestor(hasTestTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project2.id()}"))),
+            useUnmergedTree = true
+        ).performClick()
 
         assertEquals(project2, capturedProject)
     }
@@ -379,8 +384,11 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             .performTouchInput { swipeUp() }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
-            .performClick()
+        composeTestRule.onNode(
+            hasTestTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name)
+                .and(hasAnyAncestor(hasTestTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project2.id()}"))),
+            useUnmergedTree = true
+        ).performClick()
 
         assertEquals(project2, capturedProject)
     }

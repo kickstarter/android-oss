@@ -3,7 +3,10 @@ package com.kickstarter.features.videofeed.viewmodel
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.features.videofeed.data.VideoFeedItem
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,12 +19,11 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class VideoFeedViewModelTest : KSRobolectricTestCase() {
 
-    private fun createViewModel(
-        apolloClient: MockApolloClientV2 = MockApolloClientV2(),
-        dispatcher: CoroutineDispatcher
-    ): VideoFeedViewModel {
-        val env = environment().toBuilder().apolloClientV2(apolloClient).build()
-        return VideoFeedViewModel.Factory(env, dispatcher).create(VideoFeedViewModel::class.java)
+    private lateinit var viewModel: VideoFeedViewModel
+
+    private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher) {
+        viewModel = VideoFeedViewModel.Factory(environment, dispatcher)
+            .create(VideoFeedViewModel::class.java)
     }
 
     @Test
@@ -30,42 +32,20 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
         val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
-        val vm = createViewModel(
-            apolloClient = object : MockApolloClientV2() {
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
                 override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
                     return Result.success(VideoFeedEnvelope(items = listOf(item)))
                 }
-            },
-            dispatcher = dispatcher
-        )
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
         advanceUntilIdle()
 
-        assertEquals(listOf(item), vm.videoFeedUIState.value.items)
-        assertFalse(vm.videoFeedUIState.value.isLoading)
+        assertEquals(listOf(item), viewModel.videoFeedUIState.value.items)
+        assertFalse(viewModel.videoFeedUIState.value.isLoading)
     }
-
-//    @Test
-//    fun `loadVideoFeed on failure emits empty state and calls error action`() = runTest {
-//        var errorCalled = false
-//        // StandardTestDispatcher queues coroutines without running them eagerly,
-//        // so provideErrorAction is set before loadVideoFeed executes.
-//        val dispatcher = StandardTestDispatcher(testScheduler)
-//
-//        val vm = createViewModel(
-//            apolloClient = object : MockApolloClientV2() {
-//                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
-//                    return Result.failure(Exception("network error"))
-//                }
-//            },
-//            dispatcher = dispatcher
-//        )
-//        vm.provideErrorAction { errorCalled = true }
-//        advanceUntilIdle()
-//
-//        assertTrue(vm.videoFeedUIState.value.items.isEmpty())
-//        assertFalse(vm.videoFeedUIState.value.isLoading)
-//        assertTrue(errorCalled)
-//    }
 
     @Test
     fun `bookmarkProject on unstarred project calls watchProjectSuspend and sets isStarred true`() = runTest {
@@ -74,8 +54,8 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
         var watchCalled = false
-        val vm = createViewModel(
-            apolloClient = object : MockApolloClientV2() {
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
                 override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
                     Result.success(VideoFeedEnvelope(items = listOf(item)))
 
@@ -83,16 +63,17 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
                     watchCalled = true
                     return Result.success(project.toBuilder().isStarred(true).build())
                 }
-            },
-            dispatcher = dispatcher
-        )
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
         advanceUntilIdle()
 
-        vm.bookmarkProject(project)
+        viewModel.bookmarkProject(project)
         advanceUntilIdle()
 
         assertTrue(watchCalled)
-        val updated = vm.videoFeedUIState.value.items.first { it.project.id() == project.id() }
+        val updated = viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }
         assertTrue(updated.project.isStarred())
     }
 
@@ -103,8 +84,8 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
         var unWatchCalled = false
-        val vm = createViewModel(
-            apolloClient = object : MockApolloClientV2() {
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
                 override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
                     Result.success(VideoFeedEnvelope(items = listOf(item)))
 
@@ -112,16 +93,17 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
                     unWatchCalled = true
                     return Result.success(project.toBuilder().isStarred(false).build())
                 }
-            },
-            dispatcher = dispatcher
-        )
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
         advanceUntilIdle()
 
-        vm.bookmarkProject(project)
+        viewModel.bookmarkProject(project)
         advanceUntilIdle()
 
         assertTrue(unWatchCalled)
-        val updated = vm.videoFeedUIState.value.items.first { it.project.id() == project.id() }
+        val updated = viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }
         assertFalse(updated.project.isStarred())
     }
 
@@ -131,25 +113,27 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
         val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
-        var errorCalled = false
-        val vm = createViewModel(
-            apolloClient = object : MockApolloClientV2() {
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
                 override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
                     Result.success(VideoFeedEnvelope(items = listOf(item)))
 
                 override suspend fun watchProjectSuspend(project: Project): Result<Project> =
                     Result.failure(Exception("network error"))
-            },
-            dispatcher = dispatcher
-        )
-        vm.provideErrorAction { errorCalled = true }
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorCalled = false
+        viewModel.provideErrorAction { errorCalled = true }
         advanceUntilIdle()
 
-        vm.bookmarkProject(project)
+        viewModel.bookmarkProject(project)
         advanceUntilIdle()
 
         assertTrue(errorCalled)
-        val unchanged = vm.videoFeedUIState.value.items.first { it.project.id() == project.id() }
+        val unchanged = viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }
         assertFalse(unchanged.project.isStarred())
     }
 
@@ -163,20 +147,66 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
         )
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
-        val vm = createViewModel(
-            apolloClient = object : MockApolloClientV2() {
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
                 override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
                     Result.success(VideoFeedEnvelope(items = items))
-            },
-            dispatcher = dispatcher
-        )
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
         advanceUntilIdle()
 
-        vm.bookmarkProject(project1)
+        viewModel.bookmarkProject(project1)
         advanceUntilIdle()
 
-        val updatedItems = vm.videoFeedUIState.value.items
+        val updatedItems = viewModel.videoFeedUIState.value.items
         assertTrue(updatedItems.first { it.project.id() == project1.id() }.project.isStarred())
         assertFalse(updatedItems.first { it.project.id() == project2.id() }.project.isStarred())
+    }
+
+    @Test
+    fun `isUserLoggedIn is true when a user is logged in`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment().toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        advanceUntilIdle()
+
+        assertTrue(viewModel.isUserLoggedIn.value)
+    }
+
+    @Test
+    fun `isUserLoggedIn is false when no user is logged in`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment().toBuilder()
+            .currentUserV2(MockCurrentUserV2())
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.isUserLoggedIn.value)
+    }
+
+    @Test
+    fun `isUserLoggedIn updates when user logs in`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val currentUser = MockCurrentUserV2()
+        val environment = environment().toBuilder()
+            .currentUserV2(currentUser)
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.isUserLoggedIn.value)
+
+        currentUser.login(UserFactory.user())
+        advanceUntilIdle()
+
+        assertTrue(viewModel.isUserLoggedIn.value)
     }
 }

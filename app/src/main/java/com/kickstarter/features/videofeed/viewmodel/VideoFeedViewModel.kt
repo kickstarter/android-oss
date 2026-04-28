@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.rx2.asFlow
 import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -27,13 +28,20 @@ class VideoFeedViewModel(
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val currentUserV2 = requireNotNull(environment.currentUserV2())
 
     private val _videoFeedUIState = MutableStateFlow(VideoFeedUIState())
     val videoFeedUIState: StateFlow<VideoFeedUIState> = _videoFeedUIState.asStateFlow()
 
+    private val _isUserLoggedIn = MutableStateFlow(false)
+    val isUserLoggedIn: StateFlow<Boolean> = _isUserLoggedIn.asStateFlow()
+
     private var errorAction: (message: String?) -> Unit = {}
 
     init {
+        scope.launch {
+            currentUserV2.isLoggedIn.asFlow().collect { _isUserLoggedIn.value = it }
+        }
         loadVideoFeed()
     }
 

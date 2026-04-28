@@ -15,12 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
-import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSProfileButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoPlayerIconButton
+import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share

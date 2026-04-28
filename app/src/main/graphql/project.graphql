@@ -287,6 +287,8 @@ query VideoFeed($first: Int!, $after: String, $categoryId: String) {
         deadlineAt
         launchedAt
         backersCount
+        watchesCount
+        sharesCount
         pledged {
           ...amount
         }

@@ -38,18 +38,52 @@ class VideoFeedViewModel(
 
     private var errorAction: (message: String?) -> Unit = {}
 
+    private var nextPage: String? = null
+    private var hasMore: Boolean = true
+
     init {
         scope.launch {
             currentUserV2.isLoggedIn.asFlow().collect { _isUserLoggedIn.value = it }
         }
-        loadVideoFeed()
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
     }
 
-    fun bookmarkProject(project: Project) {
+    fun loadVideoFeed() {
+        if (!hasMore) return
+        scope.launch {
+            if (_videoFeedUIState.value.isLoading) return@launch
+            try {
+                _videoFeedUIState.emit(_videoFeedUIState.value.copy(isLoading = true))
+
+                val result = apolloClient.getVideoFeed(first = 10, cursor = nextPage)
+
+                if (result.isFailure) {
+                    Timber.e(result.exceptionOrNull())
+                    errorAction.invoke(null)
+                    return@launch
+                }
+
+                val envelope = result.getOrNull()
+                nextPage = envelope?.pageInfo?.endCursor
+                hasMore = envelope?.pageInfo?.hasNextPage ?: false
+                _videoFeedUIState.emit(
+                    VideoFeedUIState(
+                        items = _videoFeedUIState.value.items + (envelope?.items ?: emptyList()),
+                        isLoading = false
+                    )
+                )
+            } finally {
+                if (_videoFeedUIState.value.isLoading) {
+                    _videoFeedUIState.emit(_videoFeedUIState.value.copy(isLoading = false))
+                }
+            }
+        }
+    }
+
+    fun bookmarkProject(project: Project, index: Int) {
         scope.launch {
             val isStarred = project.isStarred()
             val result = if (isStarred) {
@@ -61,41 +95,23 @@ class VideoFeedViewModel(
             if (result.isFailure) {
                 Timber.e(result.exceptionOrNull())
                 errorAction.invoke(null)
+                return@launch
             }
 
-            if (result.isSuccess) {
-                val updatedStarred = !isStarred
-                val updatedItems = _videoFeedUIState.value.items.map { item ->
-                    if (item.project.id() == project.id()) {
-                        item.copy(project = item.project.toBuilder().isStarred(updatedStarred).build())
-                    } else item
-                }
-                _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = updatedItems))
-            }
-        }
-    }
+            val items = _videoFeedUIState.value.items
+            if (index !in items.indices) return@launch
 
-    private fun loadVideoFeed() {
-        scope.launch {
-            _videoFeedUIState.emit(VideoFeedUIState(isLoading = true))
-
-            val result = apolloClient.getVideoFeed(first = 10)
-
-            if (result.isFailure) {
-                Timber.e(result.exceptionOrNull())
-                errorAction.invoke(null)
-                _videoFeedUIState.emit(VideoFeedUIState(isLoading = false))
-            }
-
-            if (result.isSuccess) {
-                val envelope = result.getOrNull()
-                _videoFeedUIState.emit(
-                    VideoFeedUIState(
-                        items = envelope?.items ?: emptyList(),
-                        isLoading = false
-                    )
+            val updatedItems = items.toMutableList()
+            updatedItems[index] = items[index].let {
+                val newWatchesCount = if (isStarred) it.project.watchesCount() - 1 else it.project.watchesCount() + 1
+                it.copy(
+                    project = it.project.toBuilder()
+                        .isStarred(!isStarred)
+                        .watchesCount(newWatchesCount)
+                        .build()
                 )
             }
+            _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = updatedItems))
         }
     }
 

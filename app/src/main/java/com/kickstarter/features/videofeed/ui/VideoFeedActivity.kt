@@ -9,7 +9,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kickstarter.R
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -19,7 +18,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.extensions.startActivityWithTransition
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startProjectActivity
@@ -29,13 +27,13 @@ class VideoFeedActivity : ComponentActivity() {
     private lateinit var videoFeedFactory: VideoFeedViewModel.Factory
     private val viewModel: VideoFeedViewModel by viewModels { videoFeedFactory }
     private lateinit var env: Environment
-    private var pendingBookmarkProject: Project? = null
+    private var pendingBookmark: Pair<Project, Int>? = null
 
     private val loginLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            pendingBookmarkProject?.let { viewModel.bookmarkProject(it) }
+            pendingBookmark?.let { (project, index) -> viewModel.bookmarkProject(project, index) }
         }
-        pendingBookmarkProject = null
+        pendingBookmark = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,18 +50,22 @@ class VideoFeedActivity : ComponentActivity() {
 
         setContent {
             KSTheme {
+                viewModel.loadVideoFeed()
+
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(
                     items = uiState.items,
+                    onLoadMore = { viewModel.loadVideoFeed() },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
                     onProfileClick = { project ->
                         startCreatorBioWebViewActivity(project)
                     },
-                    onBookmarkClick = { project ->
+                    onBookmarkClick = { project, index ->
                         if (viewModel.isUserLoggedIn.value) {
-                            viewModel.bookmarkProject(project)
+                            viewModel.bookmarkProject(project, index)
                         } else {
-                            pendingBookmarkProject = project
+                            // - Execute bookmark after returning back from login successful
+                            pendingBookmark = Pair(project, index)
                             startLoginToutActivity()
                         }
                     },

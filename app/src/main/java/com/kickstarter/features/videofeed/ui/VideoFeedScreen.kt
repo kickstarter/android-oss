@@ -15,6 +15,7 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -55,13 +56,22 @@ enum class VideoFeedScreenTestTag {
 @Composable
 fun VideoFeedScreen(
     items: List<VideoFeedItem>,
+    onLoadMore: () -> Unit = {},
     onClose: () -> Unit = {},
     onProfileClick: (project: Project) -> Unit = { _ -> },
-    onBookmarkClick: (project: Project) -> Unit = { _ -> },
+    onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
+
+    // - Threshold: items.size - (beyondViewportPageCount + 2)
+    //Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
+    LaunchedEffect(pagerState.currentPage, items.size) {
+        if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
+            onLoadMore()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         VerticalPager(
@@ -78,7 +88,9 @@ fun VideoFeedScreen(
             val videoUrl = item.hlsUrl ?: ""
             val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
+            // TODO: upgrade counter after bookmark successful, or update just the specific item??
             val bookmarkCount = remember(project) { project.watchesCount().toCompactFormat() }
+            // TODO: upgrade number after shared successful, or update just the specific item??
             val shareCount = remember(project) { project.sharesCount().toCompactFormat() }
             val subtitle = remember(project) {
                 val pledged = "${project.currencySymbol()}${NumberUtils.format(project.pledged().toInt())}"
@@ -110,9 +122,9 @@ fun VideoFeedScreen(
                                 isBookmarked = project.isStarred(),
                                 shareCount = shareCount,
                                 onProfileClick = { onProfileClick(project) },
-                                onBookmarkClick = { onBookmarkClick(project) },
+                                onBookmarkClick = { onBookmarkClick(project, page) },
                                 onShareClick = { },
-                                onMoreOptionsClick = { }
+                                onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )
 
                             Spacer(modifier = Modifier.height(dimensions.paddingLarge))

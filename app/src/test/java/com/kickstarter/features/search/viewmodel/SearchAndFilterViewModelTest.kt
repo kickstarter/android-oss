@@ -498,4 +498,27 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle()
         assertFalse(viewModel.isVideoFeedBannerVisible.value)
     }
+
+    @Test
+    fun `test isVideoFeedBannerVisible stays false until statsig is ready then reflects gate value`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true),
+            startReady = false
+        )
+        val environment = environment()
+            .toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        advanceUntilIdle()
+        assertFalse(viewModel.isVideoFeedBannerVisible.value)
+
+        statsigClient.triggerReady()
+        advanceUntilIdle()
+        assertTrue(viewModel.isVideoFeedBannerVisible.value)
+    }
 }

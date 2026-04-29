@@ -118,7 +118,7 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
         val expectedUrl = "https://example.com/video.m3u8"
         val node = fixtureNode(
             project = fixtureProject(
-                lastUploadedVerticalVideo = VideoFeedProject.LastUploadedVerticalVideo(
+                verticalVideo = VideoFeedProject.VerticalVideo(
                     id = "VmlkZW8t",
                     previewImageUrl = "https://example.com/thumb.jpg",
                     videoSources = VideoFeedProject.VideoSources(
@@ -134,7 +134,7 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
 
     @Test
     fun `toVideoFeedEnvelope maps null lastUploadedVerticalVideo to null hlsUrl`() {
-        val node = fixtureNode(project = fixtureProject(lastUploadedVerticalVideo = null))
+        val node = fixtureNode(project = fixtureProject(verticalVideo = null))
         val item = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first()
 
         assertNull(item.hlsUrl)
@@ -252,7 +252,7 @@ private fun fixtureProject(
     ),
     creator: VideoFeedProject.Creator? = VideoFeedProject.Creator(name = "Creator", imageUrl = "https://example.com/avatar.jpg"),
     category: VideoFeedProject.Category? = VideoFeedProject.Category(name = "Art"),
-    lastUploadedVerticalVideo: VideoFeedProject.LastUploadedVerticalVideo? = VideoFeedProject.LastUploadedVerticalVideo(
+    verticalVideo: VideoFeedProject.VerticalVideo? = VideoFeedProject.VerticalVideo(
         id = "VmlkZW8t",
         previewImageUrl = "https://example.com/thumb.jpg",
         videoSources = VideoFeedProject.VideoSources(
@@ -276,7 +276,7 @@ private fun fixtureProject(
         pledged = pledged,
         creator = creator,
         category = category,
-        lastUploadedVerticalVideo = lastUploadedVerticalVideo
+        verticalVideo = verticalVideo
     )
 )
 

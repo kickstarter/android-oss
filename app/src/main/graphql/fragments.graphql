@@ -21,7 +21,7 @@ fragment videoFeedProject on Project {
     category {
         name
     }
-    lastUploadedVerticalVideo {
+    verticalVideo {
         id
         previewImageUrl
         videoSources {

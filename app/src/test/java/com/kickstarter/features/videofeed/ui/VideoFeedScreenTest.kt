@@ -1,5 +1,7 @@
 package com.kickstarter.features.videofeed.ui
 
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -9,6 +11,7 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
@@ -20,6 +23,7 @@ import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCardTestT
 import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -354,10 +358,52 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             }
         }
 
-        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
-            .performClick()
+        composeTestRule.onNode(
+            hasTestTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name)
+                .and(hasAnyAncestor(hasTestTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project.id()}"))),
+            useUnmergedTree = true
+        ).performClick()
 
         assertEquals(project, capturedProject)
+    }
+
+    @Test
+    fun `bookmark button passes the correct page index`() {
+        var capturedIndex: Int? = null
+
+        val project1 = ProjectFactory.project().toBuilder().id(1101L).build()
+        val project2 = ProjectFactory.caProject().toBuilder().id(1102L).build()
+        val items = listOf(
+            VideoFeedItem(badges = emptyList(), project = project1, hlsUrl = hlsUrl),
+            VideoFeedItem(badges = emptyList(), project = project2, hlsUrl = hlsUrl)
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onBookmarkClick = { _, index -> capturedIndex = index }
+                )
+            }
+        }
+
+        composeTestRule.onNode(
+            hasTestTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name)
+                .and(hasAnyAncestor(hasTestTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project1.id()}"))),
+            useUnmergedTree = true
+        ).performClick()
+        assertEquals(0, capturedIndex)
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNode(
+            hasTestTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name)
+                .and(hasAnyAncestor(hasTestTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project2.id()}"))),
+            useUnmergedTree = true
+        ).performClick()
+        assertEquals(1, capturedIndex)
     }
 
     @Test
@@ -391,5 +437,101 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         ).performClick()
 
         assertEquals(project2, capturedProject)
+    }
+
+    @Test
+    fun `onLoadMore is triggered when current page reaches the load threshold`() {
+        var loadMoreCallCount = 0
+
+        // With 4 items, threshold = items.size - 3 = 1, so page 0 does NOT trigger, page 1 does
+        val items = List(4) { i ->
+            VideoFeedItem(
+                badges = emptyList(),
+                project = ProjectFactory.project().toBuilder().id((2000L + i)).build(),
+                hlsUrl = hlsUrl
+            )
+        }
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onLoadMore = { loadMoreCallCount++ }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        assertEquals(0, loadMoreCallCount)
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        assertTrue(loadMoreCallCount > 0)
+    }
+
+    @Test
+    fun `onLoadMore is triggered immediately when items count is within threshold`() {
+        var loadMoreCalled = false
+
+        // With 3 items, threshold = items.size - 3 = 0, so page 0 triggers immediately
+        val items = List(3) { i ->
+            VideoFeedItem(
+                badges = emptyList(),
+                project = ProjectFactory.project().toBuilder().id((3000L + i)).build(),
+                hlsUrl = hlsUrl
+            )
+        }
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onLoadMore = { loadMoreCalled = true }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        assertTrue(loadMoreCalled)
+    }
+
+    @Test
+    fun `error snackbar is displayed when errorSnackBarHostState receives a message`() {
+        val snackbarHostState = SnackbarHostState()
+        val errorMessage = "Something went wrong, please try again"
+        val project = ProjectFactory.project().toBuilder().id(4001L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    errorSnackBarHostState = snackbarHostState
+                )
+                LaunchedEffect(Unit) {
+                    snackbarHostState.showSnackbar(
+                        message = errorMessage,
+                        actionLabel = KSSnackbarTypes.KS_ERROR.name
+                    )
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
+    }
+
+    @Test
+    fun `VideoFeedScreen renders without crash when items list is empty`() {
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(items = emptyList())
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name).assertExists()
     }
 }

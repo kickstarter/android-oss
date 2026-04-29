@@ -9,8 +9,10 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -41,6 +43,7 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
         advanceUntilIdle()
 
         assertEquals(listOf(item), viewModel.videoFeedUIState.value.items)
@@ -67,9 +70,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
         advanceUntilIdle()
 
-        viewModel.bookmarkProject(project)
+        viewModel.bookmarkProject(project, 0)
         advanceUntilIdle()
 
         assertTrue(watchCalled)
@@ -97,9 +101,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
         advanceUntilIdle()
 
-        viewModel.bookmarkProject(project)
+        viewModel.bookmarkProject(project, 0)
         advanceUntilIdle()
 
         assertTrue(unWatchCalled)
@@ -108,8 +113,83 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `bookmarkProject on failure does not update items and calls error action`() = runTest {
+    fun `bookmarkProject applies optimistic state before API response`() = runTest {
         val project = ProjectFactory.project().toBuilder().id(3L).isStarred(false).build()
+        val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val apiSignal = CompletableDeferred<Result<Project>>()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
+                    Result.success(VideoFeedEnvelope(items = listOf(item)))
+
+                override suspend fun watchProjectSuspend(project: Project): Result<Project> =
+                    apiSignal.await()
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
+        advanceUntilIdle()
+
+        viewModel.bookmarkProject(project, 0)
+        // Run the coroutine only up to the suspended API call, not beyond
+        testScheduler.runCurrent()
+
+        // Optimistic update should be visible before the API responds
+        val optimisticItem = viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }
+        assertTrue(optimisticItem.project.isStarred())
+
+        // API succeeds — final state stays starred
+        apiSignal.complete(Result.success(project.toBuilder().isStarred(true).build()))
+        advanceUntilIdle()
+
+        val finalItem = viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }
+        assertTrue(finalItem.project.isStarred())
+    }
+
+    @Test
+    fun `bookmarkProject reverts optimistic state when API fails`() = runTest {
+        val project = ProjectFactory.project().toBuilder().id(4L).isStarred(false).build()
+        val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val apiSignal = CompletableDeferred<Result<Project>>()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
+                    Result.success(VideoFeedEnvelope(items = listOf(item)))
+
+                override suspend fun watchProjectSuspend(project: Project): Result<Project> =
+                    apiSignal.await()
+            })
+            .build()
+
+        var errorCalled = false
+        setUpEnvironment(environment, dispatcher)
+        viewModel.provideErrorAction { errorCalled = true }
+        viewModel.loadVideoFeed()
+        advanceUntilIdle()
+
+        viewModel.bookmarkProject(project, 0)
+        testScheduler.runCurrent()
+
+        // Optimistic state is applied
+        assertTrue(viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }.project.isStarred())
+
+        // API fails — state is reverted
+        apiSignal.complete(Result.failure(Exception("network error")))
+        advanceUntilIdle()
+
+        assertTrue(errorCalled)
+        val reverted = viewModel.videoFeedUIState.value.items.first { it.project.id() == project.id() }
+        assertFalse(reverted.project.isStarred())
+    }
+
+    @Test
+    fun `bookmarkProject on failure reverts to original state`() = runTest {
+        val project = ProjectFactory.project().toBuilder().id(5L).isStarred(false).build()
         val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
@@ -127,9 +207,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
 
         var errorCalled = false
         viewModel.provideErrorAction { errorCalled = true }
+        viewModel.loadVideoFeed()
         advanceUntilIdle()
 
-        viewModel.bookmarkProject(project)
+        viewModel.bookmarkProject(project, 0)
         advanceUntilIdle()
 
         assertTrue(errorCalled)
@@ -155,9 +236,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
             .build()
 
         setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
         advanceUntilIdle()
 
-        viewModel.bookmarkProject(project1)
+        viewModel.bookmarkProject(project1, 0)
         advanceUntilIdle()
 
         val updatedItems = viewModel.videoFeedUIState.value.items

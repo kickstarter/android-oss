@@ -86,6 +86,20 @@ class VideoFeedViewModel(
     fun bookmarkProject(project: Project, index: Int) {
         scope.launch {
             val isStarred = project.isStarred()
+            val items = _videoFeedUIState.value.items
+            if (index !in items.indices) return@launch
+
+            // Optimistic update so the animation starts immediately on tap
+            val newWatchesCount = if (isStarred) items[index].project.watchesCount() - 1 else items[index].project.watchesCount() + 1
+            val optimisticItems = items.toMutableList()
+            optimisticItems[index] = items[index].copy(
+                project = items[index].project.toBuilder()
+                    .isStarred(!isStarred)
+                    .watchesCount(newWatchesCount)
+                    .build()
+            )
+            _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = optimisticItems))
+
             val result = if (isStarred) {
                 apolloClient.unWatchProjectSuspend(project)
             } else {
@@ -95,23 +109,9 @@ class VideoFeedViewModel(
             if (result.isFailure) {
                 Timber.e(result.exceptionOrNull())
                 errorAction.invoke(null)
-                return@launch
+                // Revert optimistic update on failure
+                _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = items))
             }
-
-            val items = _videoFeedUIState.value.items
-            if (index !in items.indices) return@launch
-
-            val updatedItems = items.toMutableList()
-            updatedItems[index] = items[index].let {
-                val newWatchesCount = if (isStarred) it.project.watchesCount() - 1 else it.project.watchesCount() + 1
-                it.copy(
-                    project = it.project.toBuilder()
-                        .isStarred(!isStarred)
-                        .watchesCount(newWatchesCount)
-                        .build()
-                )
-            }
-            _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = updatedItems))
         }
     }
 

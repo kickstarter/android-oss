@@ -24,36 +24,38 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
                 else -> null
             }
         }
+        val frag = node.project.videoFeedProject
         val creator = User.builder()
-            .name(node.project.creator?.name)
+            .name(frag.creator?.name)
             .avatar(
                 Avatar.builder()
-                    .medium(node.project.creator?.imageUrl)
+                    .medium(frag.creator?.imageUrl)
                     .build()
             )
             .build()
         val category = Category.builder()
-            .name(node.project.category?.name)
+            .name(frag.category?.name)
             .build()
         val project = Project.builder()
-            .id(decodeRelayId(node.project.id) ?: -1)
-            .name(node.project.name)
-            .slug(node.project.slug)
-            .percentFunded(node.project.percentFunded)
-            .deadline(node.project.deadlineAt)
-            .launchedAt(node.project.launchedAt)
-            .backersCount(node.project.backersCount)
-            .watchesCount(node.project.watchesCount)
-            .sharesCount(node.project.sharesCount)
-            .pledged(node.project.pledged?.amount?.amount?.toDouble() ?: 0.0)
-            .currencySymbol(node.project.pledged?.amount?.symbol ?: "")
+            .id(decodeRelayId(frag.id) ?: -1)
+            .name(frag.name)
+            .slug(frag.slug)
+            .percentFunded(frag.percentFunded)
+            .deadline(frag.deadlineAt)
+            .launchedAt(frag.launchedAt)
+            .backersCount(frag.backersCount)
+            .watchesCount(frag.watchesCount)
+            .sharesCount(frag.sharesCount)
+            .isStarred(frag.isWatched ?: false)
+            .pledged(frag.pledged?.amount?.amount?.toDouble() ?: 0.0)
+            .currencySymbol(frag.pledged?.amount?.symbol ?: "")
             .creator(creator)
             .category(category)
             .build()
         VideoFeedItem(
             badges = badges,
             project = project,
-            hlsUrl = node.project.lastUploadedVerticalVideo?.videoSources?.hls?.src
+            hlsUrl = frag.lastUploadedVerticalVideo?.videoSources?.hls?.src
         )
     } ?: emptyList()
 

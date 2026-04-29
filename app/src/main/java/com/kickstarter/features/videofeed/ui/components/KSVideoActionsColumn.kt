@@ -1,12 +1,11 @@
 package com.kickstarter.features.videofeed.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -21,8 +20,8 @@ import com.kickstarter.ui.compose.designsystem.KSProfileButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoPlayerIconButton
-import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.BookmarkFilled
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share
 
@@ -46,11 +45,6 @@ fun KSVideoActionsColumn(
     onShareClick: () -> Unit = {},
     onMoreOptionsClick: () -> Unit = {}
 ) {
-    val bookmarkTint by animateColorAsState(
-        targetValue = if (isBookmarked) kds_create_500 else Color.Unspecified,
-        label = "bookmarkTint"
-    )
-
     Column(
         modifier = modifier.testTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,19 +60,23 @@ fun KSVideoActionsColumn(
             )
         }
 
-        KSVideoPlayerIconButton(
-            modifier = Modifier
-                .semantics {
-                    stateDescription = bookmarkCount ?: ""
-                }
-                .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
-            icon = Bookmark,
-            iconTint = bookmarkTint,
-            text = bookmarkCount,
-            onClick = onBookmarkClick,
-            contentDescription = stringResource(id = R.string.fpo_Bookmark),
-            onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
-        )
+        Crossfade(
+            targetState = isBookmarked,
+            label = "bookmarkIcon"
+        ) { bookmarked ->
+            KSVideoPlayerIconButton(
+                modifier = Modifier
+                    .semantics {
+                        stateDescription = bookmarkCount ?: ""
+                    }
+                    .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
+                icon = if (bookmarked) BookmarkFilled else Bookmark,
+                text = bookmarkCount,
+                onClick = onBookmarkClick,
+                contentDescription = stringResource(id = R.string.fpo_Bookmark),
+                onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
+            )
+        }
 
         KSVideoPlayerIconButton(
             modifier = Modifier

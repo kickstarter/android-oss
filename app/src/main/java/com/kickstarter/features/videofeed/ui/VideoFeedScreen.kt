@@ -66,7 +66,7 @@ fun VideoFeedScreen(
     val pagerState = rememberPagerState(pageCount = { items.size })
 
     // - Threshold: items.size - (beyondViewportPageCount + 2)
-    //Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
+    // Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
     LaunchedEffect(pagerState.currentPage, items.size) {
         if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
             onLoadMore()
@@ -88,9 +88,7 @@ fun VideoFeedScreen(
             val videoUrl = item.hlsUrl ?: ""
             val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
-            // TODO: upgrade counter after bookmark successful, or update just the specific item??
             val bookmarkCount = remember(project) { project.watchesCount().toCompactFormat() }
-            // TODO: upgrade number after shared successful, or update just the specific item??
             val shareCount = remember(project) { project.sharesCount().toCompactFormat() }
             val subtitle = remember(project) {
                 val pledged = "${project.currencySymbol()}${NumberUtils.format(project.pledged().toInt())}"

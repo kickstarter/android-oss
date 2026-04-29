@@ -160,7 +160,7 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `bookmark button content description is present regardless of bookmarked state`() {
+    fun `bookmark button content description is present when not bookmarked`() {
         val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
 
         composeTestRule.setContent {
@@ -168,13 +168,20 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
                 KSVideoActionsColumn(isBookmarked = false)
             }
         }
+
         composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+    }
+
+    @Test
+    fun `bookmark button content description is present when bookmarked`() {
+        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
 
         composeTestRule.setContent {
             KSTheme {
                 KSVideoActionsColumn(isBookmarked = true)
             }
         }
+
         composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
     }
 

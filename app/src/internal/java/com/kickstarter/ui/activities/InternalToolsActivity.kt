@@ -94,10 +94,6 @@ class InternalToolsActivity : AppCompatActivity() {
             videoFeedActivityButtonClicked()
         }
 
-        binding.statsigFeatureGatesButton.setOnClickListener {
-            statsigFeatureGatesButtonClicked()
-        }
-
         binding.statsigDebugViewButton.setOnClickListener {
             Statsig.openDebugView(this) {}
         }
@@ -169,11 +165,6 @@ class InternalToolsActivity : AppCompatActivity() {
 
     private fun videoFeedActivityButtonClicked() {
         val intent = Intent(this, VideoFeedActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun statsigFeatureGatesButtonClicked() {
-        val intent = Intent(this, StatsigFeatureGatesActivity::class.java)
         startActivity(intent)
     }
 

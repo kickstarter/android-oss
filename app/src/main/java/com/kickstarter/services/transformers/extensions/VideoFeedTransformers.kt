@@ -46,7 +46,7 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
             .backersCount(frag.backersCount)
             .watchesCount(frag.watchesCount)
             .sharesCount(frag.sharesCount)
-            .isStarred(frag.isWatched ?: false)
+            .isStarred(frag.isWatched)
             .pledged(frag.pledged?.amount?.amount?.toDouble() ?: 0.0)
             .currencySymbol(frag.pledged?.amount?.symbol ?: "")
             .creator(creator)

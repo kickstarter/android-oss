@@ -6,6 +6,7 @@ import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.fragment.Amount
 import com.kickstarter.fragment.PageInfo
+import com.kickstarter.fragment.VideoFeedProject
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.type.BadgeTypeEnum
 import com.kickstarter.type.CurrencyCode
@@ -60,8 +61,8 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
                 percentFunded = 82,
                 deadlineAt = deadline,
                 launchedAt = launched,
-                creator = VideoFeedQuery.Creator(name = "Jane Doe", imageUrl = "https://example.com/jane.jpg"),
-                category = VideoFeedQuery.Category(name = "Technology")
+                creator = VideoFeedProject.Creator(name = "Jane Doe", imageUrl = "https://example.com/jane.jpg"),
+                category = VideoFeedProject.Category(name = "Technology")
             )
         )
         val envelope = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope()
@@ -117,11 +118,11 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
         val expectedUrl = "https://example.com/video.m3u8"
         val node = fixtureNode(
             project = fixtureProject(
-                lastUploadedVerticalVideo = VideoFeedQuery.LastUploadedVerticalVideo(
+                lastUploadedVerticalVideo = VideoFeedProject.LastUploadedVerticalVideo(
                     id = "VmlkZW8t",
                     previewImageUrl = "https://example.com/thumb.jpg",
-                    videoSources = VideoFeedQuery.VideoSources(
-                        hls = VideoFeedQuery.Hls(src = expectedUrl)
+                    videoSources = VideoFeedProject.VideoSources(
+                        hls = VideoFeedProject.Hls(src = expectedUrl)
                     )
                 )
             )
@@ -164,10 +165,26 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `toVideoFeedEnvelope maps isWatched true to isStarred true`() {
+        val node = fixtureNode(project = fixtureProject(isWatched = true))
+        val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project
+
+        assertTrue(project.isStarred())
+    }
+
+    @Test
+    fun `toVideoFeedEnvelope maps isWatched false to isStarred false`() {
+        val node = fixtureNode(project = fixtureProject(isWatched = false))
+        val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project
+
+        assertFalse(project.isStarred())
+    }
+
+    @Test
     fun `toVideoFeedEnvelope maps pledged amount and currency symbol correctly`() {
         val node = fixtureNode(
             project = fixtureProject(
-                pledged = VideoFeedQuery.Pledged(
+                pledged = VideoFeedProject.Pledged(
                     __typename = "Money",
                     amount = Amount(amount = "50134.00", currency = CurrencyCode.USD, symbol = "$")
                 )
@@ -183,7 +200,7 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
     fun `toVideoFeedEnvelope falls back to 0 and empty string when pledged amount is null`() {
         val node = fixtureNode(
             project = fixtureProject(
-                pledged = VideoFeedQuery.Pledged(
+                pledged = VideoFeedProject.Pledged(
                     __typename = "Money",
                     amount = Amount(amount = null, currency = null, symbol = null)
                 )
@@ -228,34 +245,39 @@ private fun fixtureProject(
     backersCount: Int = 150,
     watchesCount: Int? = 10,
     sharesCount: Int = 5,
-    pledged: VideoFeedQuery.Pledged = VideoFeedQuery.Pledged(
+    isWatched: Boolean = false,
+    pledged: VideoFeedProject.Pledged = VideoFeedProject.Pledged(
         __typename = "Money",
         amount = Amount(amount = "5000.00", currency = CurrencyCode.USD, symbol = "$")
     ),
-    creator: VideoFeedQuery.Creator? = VideoFeedQuery.Creator(name = "Creator", imageUrl = "https://example.com/avatar.jpg"),
-    category: VideoFeedQuery.Category? = VideoFeedQuery.Category(name = "Art"),
-    lastUploadedVerticalVideo: VideoFeedQuery.LastUploadedVerticalVideo? = VideoFeedQuery.LastUploadedVerticalVideo(
+    creator: VideoFeedProject.Creator? = VideoFeedProject.Creator(name = "Creator", imageUrl = "https://example.com/avatar.jpg"),
+    category: VideoFeedProject.Category? = VideoFeedProject.Category(name = "Art"),
+    lastUploadedVerticalVideo: VideoFeedProject.LastUploadedVerticalVideo? = VideoFeedProject.LastUploadedVerticalVideo(
         id = "VmlkZW8t",
         previewImageUrl = "https://example.com/thumb.jpg",
-        videoSources = VideoFeedQuery.VideoSources(
-            hls = VideoFeedQuery.Hls(src = "https://example.com/video.m3u8")
+        videoSources = VideoFeedProject.VideoSources(
+            hls = VideoFeedProject.Hls(src = "https://example.com/video.m3u8")
         )
     )
 ) = VideoFeedQuery.Project(
-    id = id,
-    pid = 1,
-    name = name,
-    slug = slug,
-    percentFunded = percentFunded,
-    deadlineAt = deadlineAt,
-    launchedAt = launchedAt,
-    backersCount = backersCount,
-    watchesCount = watchesCount,
-    sharesCount = sharesCount,
-    pledged = pledged,
-    creator = creator,
-    category = category,
-    lastUploadedVerticalVideo = lastUploadedVerticalVideo
+    __typename = "Project",
+    videoFeedProject = VideoFeedProject(
+        id = id,
+        pid = 1,
+        name = name,
+        slug = slug,
+        percentFunded = percentFunded,
+        deadlineAt = deadlineAt,
+        launchedAt = launchedAt,
+        backersCount = backersCount,
+        watchesCount = watchesCount,
+        sharesCount = sharesCount,
+        isWatched = isWatched,
+        pledged = pledged,
+        creator = creator,
+        category = category,
+        lastUploadedVerticalVideo = lastUploadedVerticalVideo
+    )
 )
 
 private fun fixtureBadge(type: BadgeTypeEnum, text: String, icon: String? = null) =

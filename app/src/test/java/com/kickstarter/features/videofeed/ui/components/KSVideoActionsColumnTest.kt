@@ -160,6 +160,25 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `bookmark button content description is present regardless of bookmarked state`() {
+        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(isBookmarked = false)
+            }
+        }
+        composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(isBookmarked = true)
+            }
+        }
+        composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+    }
+
+    @Test
     fun `bookmark button fires callback when isBookmarked is false`() {
         val onBookmarkClick: () -> Unit = mock()
 

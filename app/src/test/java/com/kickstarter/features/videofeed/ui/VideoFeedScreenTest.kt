@@ -349,7 +349,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 VideoFeedScreen(
                     items = items,
-                    onBookmarkClick = { capturedProject = it }
+                    onBookmarkClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -375,7 +375,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 VideoFeedScreen(
                     items = items,
-                    onBookmarkClick = { capturedProject = it }
+                    onBookmarkClick = { p, _ -> capturedProject = p }
                 )
             }
         }

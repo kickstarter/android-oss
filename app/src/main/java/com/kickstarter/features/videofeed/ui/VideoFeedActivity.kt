@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
@@ -44,17 +46,18 @@ class VideoFeedActivity : ComponentActivity() {
             videoFeedFactory = VideoFeedViewModel.Factory(env)
         }
 
-        viewModel.provideErrorAction { message ->
-            // TODO: surface error to the user (snackbar / error state)
-        }
-
         setContent {
             KSTheme {
+                val snackbarHostState = remember { SnackbarHostState() }
+                val errorAction = setUpVideoFeedErrorActions(snackbarHostState)
+                viewModel.provideErrorAction { message -> errorAction.invoke(message) }
+
                 viewModel.loadVideoFeed()
 
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(
                     items = uiState.items,
+                    errorSnackBarHostState = snackbarHostState,
                     onLoadMore = { viewModel.loadVideoFeed() },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
                     onProfileClick = { project ->

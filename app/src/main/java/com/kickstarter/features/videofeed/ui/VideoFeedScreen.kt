@@ -14,15 +14,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -42,10 +47,14 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toCompactFormat
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
+import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
+import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Close
+import kotlinx.coroutines.launch
 
 enum class VideoFeedScreenTestTag {
     VIDEO_FEED_PAGER,
@@ -56,6 +65,7 @@ enum class VideoFeedScreenTestTag {
 @Composable
 fun VideoFeedScreen(
     items: List<VideoFeedItem>,
+    errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     onLoadMore: () -> Unit = {},
     onClose: () -> Unit = {},
     onProfileClick: (project: Project) -> Unit = { _ -> },
@@ -178,6 +188,34 @@ fun VideoFeedScreen(
                         .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
                 )
             }
+        }
+
+        SnackbarHost(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            hostState = errorSnackBarHostState,
+            snackbar = { data ->
+                if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                    KSErrorSnackbar(text = data.visuals.message)
+                } else {
+                    KSHeadsupSnackbar(text = data.visuals.message)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun setUpVideoFeedErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Unit {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val defaultErrorMessage = context.getString(R.string.Something_went_wrong_please_try_again)
+    return { message: String? ->
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message ?: defaultErrorMessage,
+                actionLabel = KSSnackbarTypes.KS_ERROR.name,
+                duration = SnackbarDuration.Long
+            )
         }
     }
 }

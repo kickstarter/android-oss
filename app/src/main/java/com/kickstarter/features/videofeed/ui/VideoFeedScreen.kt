@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -207,8 +206,7 @@ fun VideoFeedScreen(
 @Composable
 fun setUpVideoFeedErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Unit {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val defaultErrorMessage = context.getString(R.string.Something_went_wrong_please_try_again)
+    val defaultErrorMessage = stringResource(R.string.Something_went_wrong_please_try_again)
     return { message: String? ->
         scope.launch {
             snackbarHostState.showSnackbar(

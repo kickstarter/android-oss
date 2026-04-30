@@ -163,5 +163,4 @@ class StatsigClientTest : KSRobolectricTestCase() {
 
         assertFalse(result.getValue())
     }
-
 }

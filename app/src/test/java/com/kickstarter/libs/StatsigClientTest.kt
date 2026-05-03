@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.featureflag.StatsigClient
+import com.statsig.androidsdk.EvalSource
 import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.InitializeFailReason
 import com.statsig.androidsdk.InitializeResponse
@@ -44,7 +45,7 @@ class StatsigClientTest : KSRobolectricTestCase() {
     // - Initialize tests
     @Test
     fun `initialize - Sets scope and completes without error on success`() = runTest(testDispatcher) {
-        val initDetails = InitializationDetails(200L, true)
+        val initDetails = InitializationDetails(200L, true, source = EvalSource.Network)
         val client = buildInitializableClient(initResult = initDetails)
 
         var errorCount = 0
@@ -63,7 +64,7 @@ class StatsigClientTest : KSRobolectricTestCase() {
             reason = InitializeFailReason.NetworkError,
             exception = Exception("Network unavailable")
         )
-        val initDetails = InitializationDetails(100L, false, failureDetails)
+        val initDetails = InitializationDetails(100L, false, failureDetails, source = EvalSource.Network)
         val client = buildInitializableClient(initResult = initDetails)
 
         var capturedError: Throwable? = null

@@ -1,5 +1,6 @@
 package com.kickstarter.features.videofeed.ui
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,8 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
@@ -35,6 +38,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.kickstarter.R
+import com.kickstarter.features.socialshare.data.SocialShareData
+import com.kickstarter.features.socialshare.ui.SocialShareSheet
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
@@ -69,10 +74,12 @@ fun VideoFeedScreen(
     onClose: () -> Unit = {},
     onProfileClick: (project: Project) -> Unit = { _ -> },
     onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
+    onShareIntentReady: (Intent) -> Unit = {},
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
+    var shareData: SocialShareData? by remember { mutableStateOf(null) }
 
     // - Threshold: items.size - (beyondViewportPageCount + 2)
     // Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
@@ -130,7 +137,14 @@ fun VideoFeedScreen(
                                 shareCount = shareCount,
                                 onProfileClick = { onProfileClick(project) },
                                 onBookmarkClick = { onBookmarkClick(project, page) },
-                                onShareClick = { },
+                                onShareClick = {
+                                    shareData = SocialShareData(
+                                        projectName = project.name() ?: "",
+                                        projectUrl = project.urls()?.web()?.project() ?: "",
+                                        imageUrl = project.photo()?.full() ?: "",
+                                        creatorName = project.creator()?.name() ?: ""
+                                    )
+                                },
                                 onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )
 
@@ -187,6 +201,16 @@ fun VideoFeedScreen(
                         .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
                 )
             }
+        }
+
+        shareData?.let { data ->
+            SocialShareSheet(
+                shareData = data,
+                isVisible = true,
+                onDismiss = { shareData = null },
+                onIntentReady = onShareIntentReady,
+                snackbarHostState = errorSnackBarHostState
+            )
         }
 
         SnackbarHost(

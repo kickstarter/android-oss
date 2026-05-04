@@ -78,6 +78,7 @@ class Project private constructor(
     private val story: String?,
     private val isFlagged: Boolean?,
     private val watchesCount: Int,
+    private val sharesCount: Int,
     private val isInPostCampaignPledgingPhase: Boolean? = null,
     private val postCampaignPledgingEnabled: Boolean? = null
 ) : Parcelable, Relay {
@@ -142,6 +143,7 @@ class Project private constructor(
     fun story() = this.story
     fun isFlagged() = this.isFlagged
     fun watchesCount() = this.watchesCount
+    fun sharesCount() = this.sharesCount
     fun isInPostCampaignPledgingPhase() = this.isInPostCampaignPledgingPhase
     fun postCampaignPledgingEnabled() = this.postCampaignPledgingEnabled
     fun pledgeOverTimeCollectionPlanChargeExplanation() =
@@ -217,6 +219,7 @@ class Project private constructor(
         private var story: String? = "",
         private var isFlagged: Boolean? = null,
         private var watchesCount: Int = 0,
+        private var sharesCount: Int = 0,
         private var isInPostCampaignPledgingPhase: Boolean? = null,
         private var postCampaignPledgingEnabled: Boolean? = null,
     ) : Parcelable {
@@ -225,6 +228,7 @@ class Project private constructor(
 
         fun backersCount(backersCount: Int?) = apply { this.backersCount = backersCount ?: 0 }
         fun watchesCount(watchesCount: Int?) = apply { this.watchesCount = watchesCount ?: 0 }
+        fun sharesCount(sharesCount: Int?) = apply { this.sharesCount = sharesCount ?: 0 }
         fun blurb(blurb: String?) = apply { this.blurb = blurb ?: "" }
         fun backing(backing: Backing?) = apply { this.backing = backing }
         fun category(category: Category?) = apply { this.category = category }
@@ -403,6 +407,7 @@ class Project private constructor(
             story = story,
             isFlagged = isFlagged,
             watchesCount = watchesCount,
+            sharesCount = sharesCount,
             isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase,
             postCampaignPledgingEnabled = postCampaignPledgingEnabled,
             pledgeOverTimeCollectionPlanShortPitch = pledgeOverTimeCollectionPlanShortPitch,
@@ -473,6 +478,7 @@ class Project private constructor(
         story = story,
         isFlagged = isFlagged,
         watchesCount = watchesCount,
+        sharesCount = sharesCount,
         isInPostCampaignPledgingPhase = isInPostCampaignPledgingPhase,
         postCampaignPledgingEnabled = postCampaignPledgingEnabled,
         pledgeOverTimeCollectionPlanShortPitch = pledgeOverTimeCollectionPlanShortPitch,
@@ -655,6 +661,7 @@ class Project private constructor(
                 risks() == other.risks() &&
                 story() == other.story() &&
                 isFlagged() == other.isFlagged() &&
+                sharesCount() == other.sharesCount() &&
                 pledgeOverTimeCollectionPlanShortPitch() == other.pledgeOverTimeCollectionPlanShortPitch() &&
                 pledgeOverTimeCollectionPlanChargedAsNPayments() == other.pledgeOverTimeCollectionPlanChargedAsNPayments() &&
                 pledgeOverTimeCollectionPlanChargeExplanation() == other.pledgeOverTimeCollectionPlanChargeExplanation()

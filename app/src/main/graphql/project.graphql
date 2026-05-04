@@ -267,6 +267,24 @@ query FetchSimilarProjects($first: Int = 4, $similarToPid: String!, $excludePid:
   }
 }
 
+query VideoFeed($first: Int!, $after: String, $categoryId: String) {
+  videoFeed(first: $first, after: $after, categoryId: $categoryId) {
+    pageInfo {
+      ...pageInfo
+    }
+    nodes {
+      badges {
+        type
+        text
+        icon
+      }
+      project {
+        ...videoFeedProject
+      }
+    }
+  }
+}
+
 mutation AddUserToSecretRewardGroup($projectId: ID!, $secretRewardToken: String!) {
   addUserToSecretRewardGroup(input: {
     projectId: $projectId,

@@ -36,6 +36,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.WorkUtils
 import com.kickstarter.services.firebase.ResetDeviceIdWorker
 import com.kickstarter.utils.WindowInsetsUtil
+import com.statsig.androidsdk.Statsig
 import org.joda.time.format.DateTimeFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -91,6 +92,10 @@ class InternalToolsActivity : AppCompatActivity() {
 
         binding.videoFeedButton.setOnClickListener {
             videoFeedActivityButtonClicked()
+        }
+
+        binding.statsigDebugViewButton.setOnClickListener {
+            Statsig.openDebugView(this) {}
         }
 
         binding.pushNotificationsButton.setOnClickListener {

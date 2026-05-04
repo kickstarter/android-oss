@@ -1,3 +1,37 @@
+# Fragment used to load the minimal project data required for the Video Feed
+fragment videoFeedProject on Project {
+    id
+    pid
+    name
+    slug
+    percentFunded
+    deadlineAt
+    launchedAt
+    backersCount
+    watchesCount
+    sharesCount
+    isWatched
+    pledged {
+        ...amount
+    }
+    creator {
+        name
+        imageUrl(blur: false, width: 200)
+    }
+    category {
+        name
+    }
+    verticalVideo {
+        id
+        previewImageUrl
+        videoSources {
+            hls {
+                src
+            }
+        }
+    }
+}
+
 # Fragment used to load the Project Card information on Discovery
 fragment projectCard on Project {
     backersCount
@@ -158,6 +192,7 @@ fragment fullProject on Project {
         ... environmentalCommitment
     }
     watchesCount
+    sharesCount
     isInPostCampaignPledgingPhase
     postCampaignPledgingEnabled
     pledgeOverTimeCollectionPlanChargeExplanation

@@ -1,12 +1,14 @@
 package com.kickstarter.features.videofeed.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -19,6 +21,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoPlayerIconButton
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Bookmark
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.BookmarkFilled
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Ellipsis
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Share
 
@@ -35,6 +38,7 @@ fun KSVideoActionsColumn(
     modifier: Modifier = Modifier,
     profileImageUrl: String? = null,
     bookmarkCount: String? = null,
+    isBookmarked: Boolean = false,
     shareCount: String? = null,
     onProfileClick: () -> Unit = {},
     onBookmarkClick: () -> Unit = {},
@@ -56,18 +60,23 @@ fun KSVideoActionsColumn(
             )
         }
 
-        KSVideoPlayerIconButton(
-            modifier = Modifier
-                .semantics {
-                    stateDescription = bookmarkCount ?: ""
-                }
-                .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
-            icon = Bookmark,
-            text = bookmarkCount,
-            onClick = onBookmarkClick,
-            contentDescription = stringResource(id = R.string.fpo_Bookmark),
-            onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
-        )
+        Crossfade(
+            targetState = isBookmarked,
+            label = "bookmarkIcon"
+        ) { bookmarked ->
+            KSVideoPlayerIconButton(
+                modifier = Modifier
+                    .semantics {
+                        stateDescription = bookmarkCount ?: ""
+                    }
+                    .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
+                icon = if (bookmarked) BookmarkFilled else Bookmark,
+                text = bookmarkCount,
+                onClick = onBookmarkClick,
+                contentDescription = stringResource(id = R.string.fpo_Bookmark),
+                onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
+            )
+        }
 
         KSVideoPlayerIconButton(
             modifier = Modifier
@@ -83,7 +92,10 @@ fun KSVideoActionsColumn(
         )
 
         KSVideoPlayerIconButton(
-            modifier = Modifier.testTag(KSVideoActionsColumnTestTag.MORE_OPTIONS_BUTTON.name),
+            modifier = Modifier
+                .testTag(KSVideoActionsColumnTestTag.MORE_OPTIONS_BUTTON.name)
+                .alpha(0f),
+            enabled = false,
             icon = Ellipsis,
             onClick = onMoreOptionsClick,
             contentDescription = stringResource(id = R.string.fpo_More_options),

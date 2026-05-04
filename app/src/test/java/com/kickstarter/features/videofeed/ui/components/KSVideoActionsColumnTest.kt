@@ -47,9 +47,9 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name, useUnmergedTree = true)
             .assertExists()
 
-        // Verify more options button
+        // More options button exists in the tree (reserves space) but is invisible
         val moreDesc = context().getString(R.string.fpo_More_options)
-        composeTestRule.onNodeWithContentDescription(moreDesc).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(moreDesc).assertExists()
     }
 
     @Test
@@ -138,8 +138,88 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithContentDescription(context().getString(R.string.fpo_Share)).performClick()
         verify(onShareClick).invoke()
+    }
 
-        composeTestRule.onNodeWithContentDescription(context().getString(R.string.fpo_More_options)).performClick()
-        verify(onMoreClick).invoke()
+    @Test
+    fun `more options button is not interactable in phase 1 of videoFeed but occupies space`() {
+        val onMoreClick: () -> Unit = mock()
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    onMoreOptionsClick = onMoreClick
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.MORE_OPTIONS_BUTTON.name, useUnmergedTree = true)
+            .assertExists()
+            .performClick()
+
+        verify(onMoreClick, org.mockito.Mockito.never()).invoke()
+    }
+
+    @Test
+    fun `bookmark button content description is present when not bookmarked`() {
+        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(isBookmarked = false)
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+    }
+
+    @Test
+    fun `bookmark button content description is present when bookmarked`() {
+        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(isBookmarked = true)
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+    }
+
+    @Test
+    fun `bookmark button fires callback when isBookmarked is false`() {
+        val onBookmarkClick: () -> Unit = mock()
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    isBookmarked = false,
+                    onBookmarkClick = onBookmarkClick
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        verify(onBookmarkClick).invoke()
+    }
+
+    @Test
+    fun `bookmark button fires callback when isBookmarked is true`() {
+        val onBookmarkClick: () -> Unit = mock()
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    isBookmarked = true,
+                    onBookmarkClick = onBookmarkClick
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        verify(onBookmarkClick).invoke()
     }
 }

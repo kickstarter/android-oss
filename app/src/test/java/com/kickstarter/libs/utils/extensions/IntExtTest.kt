@@ -33,4 +33,17 @@ class IntExtTest : TestCase() {
         assertTrue(0.isNullOrZero())
         assertTrue(null.isNullOrZero())
     }
+
+    @Test
+    fun testToCompactFormat() {
+        assertEquals("0", 0.toCompactFormat())
+        assertEquals("999", 999.toCompactFormat())
+        assertEquals("1K", 1_000.toCompactFormat())
+        assertEquals("1.2K", 1_200.toCompactFormat())
+        assertEquals("10K", 10_000.toCompactFormat())
+        assertEquals("999K", 999_000.toCompactFormat())
+        assertEquals("1M", 1_000_000.toCompactFormat())
+        assertEquals("1.5M", 1_500_000.toCompactFormat())
+        assertEquals("10M", 10_000_000.toCompactFormat())
+    }
 }

@@ -2,17 +2,22 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.featureflag.StatsigClient
+import com.statsig.androidsdk.EvalReason
 import com.statsig.androidsdk.EvalSource
 import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.InitializeFailReason
 import com.statsig.androidsdk.InitializeResponse
+import com.statsig.androidsdk.Statsig
+import com.statsig.androidsdk.StatsigOptions
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -40,6 +45,33 @@ class StatsigClientTest : KSRobolectricTestCase() {
                 initResult
             }
         )
+    }
+
+    private fun buildOfflineClientForOverrides(): StatsigClient {
+        return StatsigClient(
+            build = mockk<Build> { every { isRelease } returns false },
+            context = application(),
+            currentUser = requireNotNull(environment().currentUserV2()),
+            sdkInitializer = {
+                if (initializationDetails == null) {
+                    initializationDetails = Statsig.initialize(
+                        application(),
+                        sdkKey = "test-sdk-key",
+                        user = null,
+                        StatsigOptions(
+                            initializeOffline = true,
+                            loggingEnabled = false
+                        )
+                    )
+                }
+                initializationDetails
+            }
+        )
+    }
+
+    @After
+    fun after() {
+        Statsig.removeAllOverrides()
     }
 
     // - Initialize tests
@@ -163,5 +195,108 @@ class StatsigClientTest : KSRobolectricTestCase() {
         val result = client.getFeatureGate("test_gate")
 
         assertFalse(result.getValue())
+    }
+
+    @Test
+    fun `getExperiment - unrecognized`() = runTest {
+        val standardTestDispatcher = StandardTestDispatcher(testScheduler)
+
+        val client = buildOfflineClientForOverrides()
+
+        var errorCount = 0
+        client.initialize(this, standardTestDispatcher) { errorCount++ }
+
+        advanceUntilIdle()
+
+        val experimentName = "does_not_exist"
+        val experiment = client.getExperiment(experimentName)
+        val evalDetails = experiment.getEvalDetails()
+
+        assertEquals(0, errorCount)
+        assertEquals(evalDetails.reason, EvalReason.Unrecognized)
+    }
+
+    @Test
+    fun `getExperiment - recognized override`() = runTest {
+        val standardTestDispatcher = StandardTestDispatcher(testScheduler)
+
+        val client = buildOfflineClientForOverrides()
+
+        var errorCount = 0
+        client.initialize(this, standardTestDispatcher) { errorCount++ }
+
+        advanceUntilIdle()
+
+        val experimentName = "experiment_that_exists"
+
+        Statsig.overrideConfig(
+            experimentName,
+            mapOf()
+        )
+
+        val experiment = client.getExperiment(experimentName)
+        val evalDetails = experiment.getEvalDetails()
+        println(evalDetails)
+
+        assertEquals(0, errorCount)
+        assertEquals(EvalReason.LocalOverride, evalDetails.reason)
+    }
+
+    @Test
+    fun `getExperiment - parameter exists with correct type`() = runTest {
+        val standardTestDispatcher = StandardTestDispatcher(testScheduler)
+
+        val client = buildOfflineClientForOverrides()
+
+        var errorCount = 0
+        client.initialize(this, standardTestDispatcher) { errorCount++ }
+
+        advanceUntilIdle()
+
+        val experimentName = "experiment_that_exists"
+
+        Statsig.overrideConfig(
+            experimentName,
+            mapOf("number" to 1)
+        )
+
+        val experiment = client.getExperiment(experimentName)
+        val evalDetails = experiment.getEvalDetails()
+        val intValue = experiment.getIntIfPresent("number")
+
+        assertEquals(0, errorCount)
+        assertEquals(EvalReason.LocalOverride, evalDetails.reason)
+        assertEquals(1, intValue)
+    }
+
+    @Test
+    fun `getExperiment - parameter does not exist`() = runTest {
+        val standardTestDispatcher = StandardTestDispatcher(testScheduler)
+
+        val client = buildOfflineClientForOverrides()
+
+        var errorCount = 0
+        client.initialize(this, standardTestDispatcher) { errorCount++ }
+
+        advanceUntilIdle()
+
+        val experimentName = "experiment_that_exists"
+
+        Statsig.overrideConfig(
+            experimentName,
+            mapOf("number" to 1)
+        )
+
+        val experiment = client.getExperiment(experimentName)
+        val evalDetails = experiment.getEvalDetails()
+        val stringValue = experiment.getStringIfPresent("string")
+
+        assertEquals(0, errorCount)
+        assertEquals(EvalReason.LocalOverride, evalDetails.reason)
+        assertNull(stringValue)
+    }
+
+    companion object {
+        var initializationDetails: InitializationDetails? = null
     }
 }

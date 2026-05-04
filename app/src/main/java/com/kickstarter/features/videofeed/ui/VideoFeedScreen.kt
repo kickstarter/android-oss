@@ -14,10 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
@@ -31,15 +36,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.kickstarter.R
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
+import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.toCompactFormat
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
+import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
+import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
+import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Close
+import kotlinx.coroutines.launch
 
 enum class VideoFeedScreenTestTag {
     VIDEO_FEED_PAGER,
@@ -49,18 +63,24 @@ enum class VideoFeedScreenTestTag {
 
 @Composable
 fun VideoFeedScreen(
-    projectsList: List<Project>,
-    onClose: () -> Unit = {}
+    items: List<VideoFeedItem>,
+    errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
+    onLoadMore: () -> Unit = {},
+    onClose: () -> Unit = {},
+    onProfileClick: (project: Project) -> Unit = { _ -> },
+    onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
+    preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
+    projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
 ) {
-    // TODO: In future tickets this hardcoded list will be substituted by the result of a query
-    val badges = listOf(
-        KSVideoBadgeType.ProjectWeLove,
-        KSVideoBadgeType.DaysLeft("3 days left"),
-        KSVideoBadgeType.JustLaunched,
-        KSVideoBadgeType.Trending
-    )
+    val pagerState = rememberPagerState(pageCount = { items.size })
 
-    val pagerState = rememberPagerState(pageCount = { projectsList.size })
+    // - Threshold: items.size - (beyondViewportPageCount + 2)
+    // Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
+    LaunchedEffect(pagerState.currentPage, items.size) {
+        if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
+            onLoadMore()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         VerticalPager(
@@ -69,14 +89,21 @@ fun VideoFeedScreen(
                 .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
             state = pagerState,
             beyondViewportPageCount = 1,
-            key = { index -> projectsList[index].id() }
+            key = { index -> items[index].project.id() }
         ) { page ->
 
-            val project = projectsList[page]
-            val videoUrl = project.video()?.hls() ?: ""
-            val profileImage = project.creator().avatar().medium()
+            val item = items[page]
+            val project = item.project
+            val videoUrl = item.hlsUrl ?: ""
+            val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
-            // Derive progress per-page: only recomposes this page when its own settled state flips
+            val bookmarkCount = remember(project) { project.watchesCount().toCompactFormat() }
+            val shareCount = remember(project) { project.sharesCount().toCompactFormat() }
+            val subtitle = remember(project) {
+                val pledged = "${project.currencySymbol()}${NumberUtils.format(project.pledged().toInt())}"
+                val backers = NumberUtils.format(project.backersCount())
+                "$pledged pledged • Join $backers backers"
+            }
             val percentageFounded by remember(page) {
                 derivedStateOf {
                     if (pagerState.settledPage == page) project.percentageFunded() else 0f
@@ -98,26 +125,34 @@ fun VideoFeedScreen(
                                     .align(Alignment.End)
                                     .padding(end = dimensions.paddingMediumLarge),
                                 profileImageUrl = profileImage,
-                                bookmarkCount = "1k",
-                                shareCount = "50",
-                                onProfileClick = { },
-                                onBookmarkClick = { },
+                                bookmarkCount = bookmarkCount,
+                                isBookmarked = project.isStarred(),
+                                shareCount = shareCount,
+                                onProfileClick = { onProfileClick(project) },
+                                onBookmarkClick = { onBookmarkClick(project, page) },
                                 onShareClick = { },
-                                onMoreOptionsClick = { }
+                                onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )
 
                             Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
                             KSVideoBadgesRow(
-                                badges = badges,
+                                badges = item.badges,
                                 hazeState = hazeState
                             )
 
                             KSVideoCampaignCard(
                                 title = projectTitle,
-                                subtitle = "$50,134 pledged • Join 431 backers",
-                                buttonText = "Back this project",
-                                onButtonClick = { },
+                                subtitle = subtitle,
+                                buttonText = stringResource(R.string.project_back_button),
+                                onButtonClick = {
+                                    val refTag = RefTag.videoFeed()
+                                    if (project.displayPrelaunch().isTrue()) {
+                                        preLaunchedCallback(project, refTag)
+                                    } else {
+                                        projectCallback(project, refTag)
+                                    }
+                                },
                                 progress = percentageFounded
                             )
                         }
@@ -153,6 +188,33 @@ fun VideoFeedScreen(
                 )
             }
         }
+
+        SnackbarHost(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            hostState = errorSnackBarHostState,
+            snackbar = { data ->
+                if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
+                    KSErrorSnackbar(text = data.visuals.message)
+                } else {
+                    KSHeadsupSnackbar(text = data.visuals.message)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun setUpVideoFeedErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Unit {
+    val scope = rememberCoroutineScope()
+    val defaultErrorMessage = stringResource(R.string.Something_went_wrong_please_try_again)
+    return { message: String? ->
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message ?: defaultErrorMessage,
+                actionLabel = KSSnackbarTypes.KS_ERROR.name,
+                duration = SnackbarDuration.Long
+            )
+        }
     }
 }
 
@@ -161,10 +223,22 @@ fun VideoFeedScreen(
 fun VideoFeedScreenPreview() {
     KSTheme {
         VideoFeedScreen(
-            projectsList = listOf(
-                ProjectFactory.project(),
-                ProjectFactory.caProject(),
-                ProjectFactory.ukProject()
+            items = listOf(
+                VideoFeedItem(
+                    badges = listOf(KSVideoBadgeType.ProjectWeLove, KSVideoBadgeType.DaysLeft("3 days left")),
+                    project = ProjectFactory.project(),
+                    hlsUrl = null
+                ),
+                VideoFeedItem(
+                    badges = listOf(KSVideoBadgeType.JustLaunched),
+                    project = ProjectFactory.caProject(),
+                    hlsUrl = null
+                ),
+                VideoFeedItem(
+                    badges = listOf(KSVideoBadgeType.Trending),
+                    project = ProjectFactory.ukProject(),
+                    hlsUrl = null
+                )
             )
         )
     }

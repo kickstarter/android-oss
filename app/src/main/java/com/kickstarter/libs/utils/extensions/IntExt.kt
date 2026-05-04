@@ -43,3 +43,20 @@ fun Int?.isZeroOrHigher(): Boolean {
 fun Int?.toBoolean(): Boolean {
     return this != null && this >= 1
 }
+
+/**
+ * Formats an integer as a compact string: 999 → "999", 1200 → "1.2K", 1000000 → "1M".
+ */
+fun Int.toCompactFormat(): String {
+    return when {
+        this >= 1_000_000 -> {
+            val value = this / 1_000_000.0
+            if (value % 1.0 == 0.0) "${value.toInt()}M" else String.format("%.1fM", value)
+        }
+        this >= 1_000 -> {
+            val value = this / 1_000.0
+            if (value % 1.0 == 0.0) "${value.toInt()}K" else String.format("%.1fK", value)
+        }
+        else -> this.toString()
+    }
+}

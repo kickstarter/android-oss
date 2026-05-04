@@ -58,11 +58,13 @@ import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.UserPaymentsQuery
 import com.kickstarter.UserPrivacyQuery
 import com.kickstarter.ValidateCheckoutQuery
+import com.kickstarter.VideoFeedQuery
 import com.kickstarter.WatchProjectMutation
 import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
 import com.kickstarter.features.search.data.SearchEnvelope
+import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
@@ -112,6 +114,7 @@ import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.extensions.toVideoFeedEnvelope
 import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
@@ -255,6 +258,11 @@ interface ApolloClientTypeV2 {
     suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float? = null, long: Float? = null, radius: Float? = null, filterByCoordinates: Boolean? = null): Result<List<Location>>
 
     suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?>
+
+    suspend fun getVideoFeed(first: Int, cursor: String? = null, categoryId: String? = null): Result<VideoFeedEnvelope>
+
+    suspend fun watchProjectSuspend(project: Project): Result<Project>
+    suspend fun unWatchProjectSuspend(project: Project): Result<Project>
 
     fun cleanDisposables()
 }
@@ -1975,6 +1983,44 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             throw buildClientException(response.errors)
 
         response.data?.project
+    }
+
+    override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> = executeForResult {
+        val query = VideoFeedQuery(
+            first = first,
+            after = Optional.presentIfNotNull(cursor),
+            categoryId = Optional.presentIfNotNull(categoryId)
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.videoFeed.toVideoFeedEnvelope()
+    }
+
+    override suspend fun watchProjectSuspend(project: Project): Result<Project> = executeForResult {
+        val mutation = WatchProjectMutation(id = encodeRelayId(project))
+        val response = this.service.mutation(mutation).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        // TODO: review, might not require this part, "update" the project on the UI side,
+        // risking here overriding VideoFeed information
+        projectTransformer(response.data?.watchProject?.project?.fullProject)
+    }
+
+    // TODO: review if we can join watchProjectSuspend with unWatchProjectSuspend and namming
+    override suspend fun unWatchProjectSuspend(project: Project): Result<Project> = executeForResult {
+        val mutation = UnwatchProjectMutation(id = encodeRelayId(project))
+        val response = this.service.mutation(mutation).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        projectTransformer(response.data?.watchProject?.project?.fullProject)
     }
 
     override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> = executeForResult {

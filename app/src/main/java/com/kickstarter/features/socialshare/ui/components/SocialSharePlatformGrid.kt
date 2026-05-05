@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +42,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 private fun SocialSharePlatformGridPreview() {
     KSTheme {
         SocialSharePlatformGrid(
-            platforms = SocialSharePlatform.values().toList(),
+            platforms = SocialSharePlatform.entries,
             onPlatformSelected = {},
             onCopyLinkSelected = {}
         )
@@ -84,16 +85,17 @@ private fun PlatformButton(
     val label = platform.label()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier
+            .clickable(onClick = onClick)
     ) {
         Icon(
             imageVector = platform.icon(),
             contentDescription = label,
-            tint = colors.icon,
+            tint = Color.Unspecified,
             modifier = Modifier
                 .size(dimensions.socialSharePlatformIconSize)
                 .clip(CircleShape)
-                .background(colors.backgroundSurfaceSecondary)
+                .background(colors.socialShare.iconBackground)
                 .padding(dimensions.socialSharePlatformIconPadding)
         )
         Text(

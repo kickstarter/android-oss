@@ -160,6 +160,7 @@ data class KSSocialShareColors(
     // Text sits on the green background — always black regardless of theme.
     val text: Color = Color.Unspecified,
     val platformLabel: Color = Color.Unspecified,
+    val iconBackground: Color = Color.Unspecified
 )
 
 // Extracted into its own data class to work around a JVM limitation:
@@ -442,6 +443,7 @@ val KSLightCustomColors = KSCustomColors(
         dragHandle = black.copy(alpha = 0.3f),
         text = black,
         platformLabel = black,
+        iconBackground = kds_white
     ),
 
     // OLD COLORS
@@ -609,6 +611,7 @@ val KSDarkCustomColors = KSCustomColors(
         dragHandle = black.copy(alpha = 0.3f),
         text = black,
         platformLabel = black,
+        iconBackground = kds_white
     ),
 
     // OLD COLORS

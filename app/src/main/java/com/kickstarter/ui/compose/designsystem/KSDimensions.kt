@@ -106,7 +106,19 @@ data class KSDimensions(
 
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
-    val discoveryBannerImageHeight: Dp = Dp.Unspecified
+    val discoveryBannerImageHeight: Dp = Dp.Unspecified,
+
+    // Social Share dimensions
+    val socialShareCardWidth: Dp = Dp.Unspecified,
+    val socialShareCardHeight: Dp = Dp.Unspecified,
+    val socialShareCardRadius: Dp = Dp.Unspecified,
+    val socialShareCardContentPadding: Dp = Dp.Unspecified,
+    val socialShareCardGap: Dp = Dp.Unspecified,
+    val socialSharePlatformIconSize: Dp = Dp.Unspecified,
+    val socialSharePlatformIconPadding: Dp = Dp.Unspecified,
+    val socialShareDragHandleWidth: Dp = Dp.Unspecified,
+    val socialShareDragHandleHeight: Dp = Dp.Unspecified,
+    val socialShareDragHandleRadius: Dp = Dp.Unspecified
 )
 
 val LocalKSCustomDimensions = staticCompositionLocalOf {
@@ -212,5 +224,17 @@ val KSStandardDimensions = KSDimensions(
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 86.dp,
-    discoveryBannerImageHeight = 116.dp
+    discoveryBannerImageHeight = 116.dp,
+
+    // Social Share dimensions
+    socialShareCardWidth = 276.dp,
+    socialShareCardHeight = 304.dp,
+    socialShareCardRadius = 16.dp,
+    socialShareCardContentPadding = 12.dp,
+    socialShareCardGap = 32.dp,
+    socialSharePlatformIconSize = 52.dp,
+    socialSharePlatformIconPadding = 14.dp,
+    socialShareDragHandleWidth = 40.dp,
+    socialShareDragHandleHeight = 4.dp,
+    socialShareDragHandleRadius = 2.dp
 )

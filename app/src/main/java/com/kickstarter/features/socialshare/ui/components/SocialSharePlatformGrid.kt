@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
 import com.kickstarter.features.socialshare.ui.icons.SocialShareCopyLink
 import com.kickstarter.features.socialshare.ui.icons.SocialShareEmail
@@ -92,15 +91,15 @@ private fun PlatformButton(
             contentDescription = label,
             tint = colors.icon,
             modifier = Modifier
-                .size(52.dp)
+                .size(dimensions.socialSharePlatformIconSize)
                 .clip(CircleShape)
                 .background(colors.backgroundSurfaceSecondary)
-                .padding(14.dp)
+                .padding(dimensions.socialSharePlatformIconPadding)
         )
         Text(
             text = label,
             style = KSTheme.typographyV2.bodyXXS,
-            color = colors.textPrimary,
+            color = colors.socialShare.platformLabel,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = dimensions.paddingXSmall)
         )

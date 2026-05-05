@@ -25,13 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -128,9 +126,9 @@ fun SocialShareSheet(
             sheetState = sheetState,
             onDismissRequest = onDismiss,
             shape = RoundedCornerShape(topStart = dimensions.radiusMediumLarge, topEnd = dimensions.radiusMediumLarge),
-            containerColor = Color(0xFF05CE78),
+            containerColor = colors.socialShare.background,
             contentWindowInsets = { WindowInsets(0) },
-            dragHandle = { SocialShareDragHandle() }
+            dragHandle = null
         ) {
             SocialShareSheetContent(
                 shareData = shareData,
@@ -154,7 +152,7 @@ private fun SocialShareSheetContent(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF05CE78))
+            .background(colors.socialShare.background)
     ) {
         Image(
             imageVector = Vector91,
@@ -166,9 +164,11 @@ private fun SocialShareSheetContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            SocialShareDragHandle()
             SocialShareHeader()
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
             SocialShareProjectCard(shareData = shareData)
+            Spacer(modifier = Modifier.height(dimensions.paddingXLarge))
             SocialSharePlatformGrid(
                 platforms = availablePlatforms,
                 onPlatformSelected = onPlatformSelected,
@@ -190,7 +190,7 @@ private fun SocialShareHeader() {
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center
         ),
-        color = colors.textPrimary,
+        color = colors.socialShare.text,
         modifier = Modifier.padding(top = dimensions.paddingMedium)
     )
 }
@@ -205,11 +205,11 @@ private fun SocialShareDragHandle() {
     ) {
         Box(
             modifier = Modifier
-                .width(32.dp)
-                .height(4.dp)
+                .width(dimensions.socialShareDragHandleWidth)
+                .height(dimensions.socialShareDragHandleHeight)
                 .background(
-                    color = Color.Black.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(2.dp)
+                    color = colors.socialShare.dragHandle,
+                    shape = RoundedCornerShape(dimensions.socialShareDragHandleRadius)
                 )
         )
     }

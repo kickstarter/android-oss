@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -44,12 +43,12 @@ fun SocialShareProjectCard(shareData: SocialShareData) {
     // Width fixed at 276dp per design spec, centered by the parent Column.
     Column(
         modifier = Modifier
-            .width(276.dp)
-            .height(304.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .width(dimensions.socialShareCardWidth)
+            .height(dimensions.socialShareCardHeight)
+            .clip(RoundedCornerShape(dimensions.socialShareCardRadius))
             .background(colors.backgroundSurfaceRaised),
-        // 32dp gap between the image child and the content block child.
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        // Gap between the image child and the content block child.
+        verticalArrangement = Arrangement.spacedBy(dimensions.socialShareCardGap)
     ) {
         // Image spans the full card width edge-to-edge (no padding).
         AsyncImage(
@@ -62,7 +61,11 @@ fun SocialShareProjectCard(shareData: SocialShareData) {
         // Text content with 12dp padding on all sides (bottom padding included
         // via the parent Arrangement gap + the Spacer at the end of the Column).
         Column(
-            modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+            modifier = Modifier.padding(
+                start = dimensions.socialShareCardContentPadding,
+                end = dimensions.socialShareCardContentPadding,
+                bottom = dimensions.socialShareCardContentPadding
+            ),
             verticalArrangement = Arrangement.spacedBy(dimensions.paddingXSmall)
         ) {
             Text(

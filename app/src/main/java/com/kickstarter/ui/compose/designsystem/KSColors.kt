@@ -153,6 +153,15 @@ data class KSDiscoveryBannerColors(
     val buttonText: Color = Color.Unspecified,
 )
 
+@Immutable
+data class KSSocialShareColors(
+    val background: Color = Color.Unspecified,
+    val dragHandle: Color = Color.Unspecified,
+    // Text sits on the green background — always black regardless of theme.
+    val text: Color = Color.Unspecified,
+    val platformLabel: Color = Color.Unspecified,
+)
+
 // Extracted into its own data class to work around a JVM limitation:
 // Kotlin data classes with many defaulted parameters generate synthetic constructors
 // that can exceed the 255-parameter JVM limit (ClassFormatError: Too many arguments).
@@ -264,6 +273,7 @@ data class KSCustomColors(
     // Component semantic colors
     val discoveryBanner: KSDiscoveryBannerColors = KSDiscoveryBannerColors(),
     val videoPlayer: KSVideoPlayerColors = KSVideoPlayerColors(),
+    val socialShare: KSSocialShareColors = KSSocialShareColors(),
 
     // OLD COLORS
     // Greens
@@ -426,6 +436,14 @@ val KSLightCustomColors = KSCustomColors(
         progressTrack = grey_055,
     ),
 
+    // Social Share semantic color naming
+    socialShare = KSSocialShareColors(
+        background = kds_create_500,
+        dragHandle = black.copy(alpha = 0.3f),
+        text = black,
+        platformLabel = black,
+    ),
+
     // OLD COLORS
     // Greens
     kds_create_100 = kds_create_100,
@@ -583,6 +601,14 @@ val KSDarkCustomColors = KSCustomColors(
         progressBase = white,
         progressComplete = green_300,
         progressTrack = grey_055,
+    ),
+
+    // Social Share semantic color naming
+    socialShare = KSSocialShareColors(
+        background = kds_create_500,
+        dragHandle = black.copy(alpha = 0.3f),
+        text = black,
+        platformLabel = black,
     ),
 
     // OLD COLORS

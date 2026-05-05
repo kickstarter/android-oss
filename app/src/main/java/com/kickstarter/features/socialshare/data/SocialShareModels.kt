@@ -19,7 +19,15 @@ enum class SocialSharePlatform(val targetPackage: String?) {
     WHATSAPP("com.whatsapp"),
     MESSAGES(null),
     EMAIL(null),
-    MORE(null)
+    MORE(null);
+
+    fun requiresImage(): Boolean = when (this) {
+        INSTAGRAM_FEED,
+        INSTAGRAM_STORIES,
+        FACEBOOK_FEED,
+        FACEBOOK_STORIES -> true
+        else -> false
+    }
 }
 
 data class SocialShareUIState(

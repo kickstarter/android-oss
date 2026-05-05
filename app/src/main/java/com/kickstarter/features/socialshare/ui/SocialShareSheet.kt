@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -128,7 +130,7 @@ fun SocialShareSheet(
             shape = RoundedCornerShape(topStart = dimensions.radiusMediumLarge, topEnd = dimensions.radiusMediumLarge),
             containerColor = Color(0xFF05CE78),
             contentWindowInsets = { WindowInsets(0) },
-            dragHandle = null
+            dragHandle = { SocialShareDragHandle() }
         ) {
             SocialShareSheetContent(
                 shareData = shareData,
@@ -154,9 +156,6 @@ private fun SocialShareSheetContent(
             .fillMaxWidth()
             .background(Color(0xFF05CE78))
     ) {
-        // Decorative swirl drawn behind all content. matchParentSize() means this
-        // Image does not participate in layout measurement — the Column below drives
-        // the Box height, and the Image scales to fill that area.
         Image(
             imageVector = Vector91,
             contentDescription = null,
@@ -194,6 +193,26 @@ private fun SocialShareHeader() {
         color = colors.textPrimary,
         modifier = Modifier.padding(top = dimensions.paddingMedium)
     )
+}
+
+@Composable
+private fun SocialShareDragHandle() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = dimensions.paddingSmall, bottom = dimensions.paddingXSmall),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .width(32.dp)
+                .height(4.dp)
+                .background(
+                    color = Color.Black.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(2.dp)
+                )
+        )
+    }
 }
 
 enum class SocialShareSheetTestTag {

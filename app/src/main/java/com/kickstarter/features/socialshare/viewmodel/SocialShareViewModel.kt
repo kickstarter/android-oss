@@ -51,12 +51,23 @@ class SocialShareViewModel(
     }
 
     fun onPlatformSelected(platform: SocialSharePlatform) {
+        if (_uiState.value.isGeneratingImage && platform.requiresImage()) {
+            errorAction.invoke("Please wait, preparing image...")
+            return
+        }
+
         val intent = SocialShareIntentBuilder.buildIntent(
             context = context,
             platform = platform,
             shareData = shareData,
             imageUri = _uiState.value.shareImageUri
-        ) ?: return
+        )
+
+        if (intent == null) {
+            errorAction.invoke("Could not open ${platform.name}")
+            return
+        }
+
         intentLaunchAction.invoke(intent)
     }
 
@@ -77,7 +88,7 @@ class SocialShareViewModel(
     private fun detectInstalledPlatforms() {
         scope.launch {
             val pm = context.packageManager
-            val available = SocialSharePlatform.values().filter { platform ->
+            val available = SocialSharePlatform.entries.filter { platform ->
                 platform.targetPackage == null || isPackageInstalled(platform.targetPackage, pm)
             }
             _uiState.emit(_uiState.value.copy(availablePlatforms = available))
@@ -94,9 +105,14 @@ class SocialShareViewModel(
     }
 
     private fun cacheShareImage() {
+        if (shareData.imageUrl.isEmpty()) return
+
         scope.launch {
             _uiState.emit(_uiState.value.copy(isGeneratingImage = true))
             val uri = ShareImageCache.cache(context, shareData.imageUrl)
+            if (uri == null) {
+                errorAction.invoke("Failed to cache share image")
+            }
             _uiState.emit(_uiState.value.copy(shareImageUri = uri, isGeneratingImage = false))
         }
     }

@@ -23,16 +23,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
 import com.kickstarter.features.socialshare.ui.components.SocialSharePlatformGrid
@@ -43,6 +45,10 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import kotlinx.coroutines.launch
+
+val LocalSocialShareViewModel = staticCompositionLocalOf<SocialShareViewModel> {
+    error("No SocialShareViewModel provided — wrap the call site in CompositionLocalProvider(LocalSocialShareViewModel provides vm)")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -74,29 +80,19 @@ fun SocialShareSheet(
     onIntentReady: (android.content.Intent) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
-    val context = LocalContext.current
-
-    val factory = remember(shareData) {
-        SocialShareViewModel.Factory(
-            context = context.applicationContext,
-            shareData = shareData
-        )
-    }
-    // key = projectUrl ensures a fresh ViewModel (and fresh image cache job) each
-    // time the sheet is opened for a different project, even within the same Activity.
-    val viewModel: SocialShareViewModel = viewModel(key = shareData.projectUrl, factory = factory)
+    val viewModel = LocalSocialShareViewModel.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
 
     val sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(Unit) {
-        viewModel.provideIntentLaunchAction { intent -> onIntentReady(intent) }
         viewModel.provideErrorAction { message ->
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(message ?: "Something went wrong")
             }
         }
+        viewModel.provideIntentLaunchAction { intent -> onIntentReady(intent) }
     }
 
     LaunchedEffect(uiState.copiedToClipboard) {
@@ -165,13 +161,21 @@ private fun SocialShareSheetContent(
             SocialShareDragHandle()
             SocialShareHeader()
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-            SocialShareProjectCard(shareData = shareData)
+            Box(modifier = Modifier.testTag(SocialShareSheetTestTag.PROJECT_CARD.name)) {
+                SocialShareProjectCard(shareData = shareData)
+            }
             Spacer(modifier = Modifier.height(dimensions.paddingXLarge))
-            SocialSharePlatformGrid(
-                platforms = availablePlatforms,
-                onPlatformSelected = onPlatformSelected,
-                onCopyLinkSelected = onCopyLinkSelected
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(SocialShareSheetTestTag.PLATFORM_GRID.name)
+            ) {
+                SocialSharePlatformGrid(
+                    platforms = availablePlatforms,
+                    onPlatformSelected = onPlatformSelected,
+                    onCopyLinkSelected = onCopyLinkSelected
+                )
+            }
             Spacer(modifier = Modifier.height(dimensions.paddingLarge))
         }
     }
@@ -189,7 +193,9 @@ private fun SocialShareHeader() {
             textAlign = TextAlign.Center
         ),
         color = colors.socialShare.text,
-        modifier = Modifier.padding(top = dimensions.paddingMedium)
+        modifier = Modifier
+            .padding(top = dimensions.paddingMedium)
+            .semantics { heading() }
     )
 }
 
@@ -214,7 +220,6 @@ private fun SocialShareDragHandle() {
 }
 
 enum class SocialShareSheetTestTag {
-    CLOSE_BUTTON,
     PLATFORM_GRID,
     PROJECT_CARD
 }

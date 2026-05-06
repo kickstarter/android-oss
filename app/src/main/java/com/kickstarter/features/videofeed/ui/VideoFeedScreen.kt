@@ -19,6 +19,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -38,8 +40,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.kickstarter.R
+import com.kickstarter.features.socialshare.AndroidSocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
+import com.kickstarter.features.socialshare.ui.LocalSocialShareViewModel
 import com.kickstarter.features.socialshare.ui.SocialShareSheet
+import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
@@ -204,13 +209,22 @@ fun VideoFeedScreen(
         }
 
         shareData?.let { data ->
-            SocialShareSheet(
-                shareData = data,
-                isVisible = true,
-                onDismiss = { shareData = null },
-                onIntentReady = onShareIntentReady,
-                snackbarHostState = errorSnackBarHostState
-            )
+            val context = LocalContext.current
+            val shareViewModel = remember(data) {
+                SocialShareViewModel(
+                    shareService = AndroidSocialShareService(context.applicationContext),
+                    shareData = data
+                )
+            }
+            CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
+                SocialShareSheet(
+                    shareData = data,
+                    isVisible = true,
+                    onDismiss = { shareData = null },
+                    onIntentReady = onShareIntentReady,
+                    snackbarHostState = errorSnackBarHostState
+                )
+            }
         }
 
         SnackbarHost(

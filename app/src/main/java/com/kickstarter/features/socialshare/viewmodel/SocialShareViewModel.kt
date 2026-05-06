@@ -1,11 +1,9 @@
 package com.kickstarter.features.socialshare.viewmodel
 
-import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.kickstarter.features.socialshare.AndroidSocialShareService
 import com.kickstarter.features.socialshare.SocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
@@ -21,14 +19,24 @@ import kotlin.coroutines.EmptyCoroutineContext
 /**
  * ViewModel for the Social Share bottom sheet.
  *
- * All Android framework access (PackageManager, ClipboardManager, FileProvider, Intent
- * construction) is delegated to [SocialShareService]. The ViewModel itself holds no
- * [Context] reference, which prevents memory leaks and allows pure JUnit testing via a
- * fake [SocialShareService].
+ * @param shareService Abstraction over Android framework operations (clipboard, package
+ *   detection, image caching, intent construction). In production this is
+ *   [com.kickstarter.features.socialshare.AndroidSocialShareService]; in tests a fake
+ *   implementation is injected directly.
+ *
+ * @param shareData Snapshot of the project information used across every sharing action:
+ *   - [SocialShareData.projectName] — included as text in platform captions and SMS/email subjects.
+ *   - [SocialShareData.projectUrl]  — the canonical link appended to every share payload.
+ *   - [SocialShareData.imageUrl]    — remote URL of the project hero image; downloaded and
+ *     cached as a `content://` URI during [init] so it can be attached to image-bearing
+ *     intents (Instagram, Facebook, WhatsApp, etc.). An empty value skips caching.
+ *   - [SocialShareData.creatorName] — displayed in email body copy.
+ *   This object is immutable for the lifetime of the ViewModel; one ViewModel instance
+ *   corresponds to one sharing session for a specific project.
  */
 class SocialShareViewModel(
     private val shareService: SocialShareService,
-    val shareData: SocialShareData,
+    private val shareData: SocialShareData,
     private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
@@ -55,7 +63,9 @@ class SocialShareViewModel(
 
     fun onPlatformSelected(platform: SocialSharePlatform) {
         if (_uiState.value.isGeneratingImage && platform.requiresImage()) {
-            errorAction.invoke("Please wait, preparing image...") // TODO: review in place just in case image generation takes time
+            // TODO: review in place just in case for now
+            // more work related to the image to share on next ticket DISC-208
+            errorAction.invoke("Please wait, preparing image...")
             return
         }
 
@@ -106,19 +116,12 @@ class SocialShareViewModel(
         }
     }
 
-    /**
-     * Creates a [SocialShareViewModel] pre-wired with [AndroidSocialShareService].
-     *
-     * The factory accepts a [Context] so callers (Compose/Activity) can provide
-     * [Context.getApplicationContext], which the service stores safely.
-     */
     class Factory(
-        private val context: Context,
+        private val service: SocialShareService,
         private val shareData: SocialShareData,
         private val testDispatcher: CoroutineDispatcher? = null
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            val service = AndroidSocialShareService(context.applicationContext)
             return SocialShareViewModel(service, shareData, testDispatcher) as T
         }
     }

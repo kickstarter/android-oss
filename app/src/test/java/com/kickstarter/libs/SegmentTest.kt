@@ -104,6 +104,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         override fun initialize() {
             this.isInitialized = true
+            this._initialized.value = true
         }
         override fun isEnabled() = this.isInitialized
     }

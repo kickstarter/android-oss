@@ -140,6 +140,7 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent, Image
                 FirebaseCrashlytics.getInstance().recordException(StatsigException(exception))
             }
         )
+        statsigClient.observeUserAndFetchConfigs(applicationScope)
 
         return true
     }

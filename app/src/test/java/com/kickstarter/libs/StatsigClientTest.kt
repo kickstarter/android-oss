@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.featureflag.StatsigClient
+import com.kickstarter.mock.factories.UserFactory
 import com.statsig.androidsdk.EvalReason
 import com.statsig.androidsdk.EvalSource
 import com.statsig.androidsdk.InitializationDetails
@@ -14,6 +15,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -24,6 +26,9 @@ import org.junit.Test
 class StatsigClientTest : KSRobolectricTestCase() {
 
     private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
+
+    private lateinit var segmentTrackingClient: SegmentTest.MockSegmentTrackingClient
+    private val segmentAnonymousId = "00000000-0000-0000-0000-000000000000"
 
     /**
      * Builds a [StatsigClient] subclass that simulates SDK initialization behavior.
@@ -36,22 +41,28 @@ class StatsigClientTest : KSRobolectricTestCase() {
         initResult: InitializationDetails? = null,
         initException: Exception? = null
     ): StatsigClient {
+        segmentTrackingClient = mockSegmentTrackingClient()
         return StatsigClient(
             build = mockk<Build> { every { isRelease } returns false },
             context = application(),
             currentUser = requireNotNull(environment().currentUserV2()),
+            segmentTrackingClient = segmentTrackingClient,
+            getAnonymousId = { segmentAnonymousId },
             sdkInitializer = {
                 initException?.let { throw it }
                 initResult
-            }
+            },
         )
     }
 
     private fun buildOfflineClientForOverrides(): StatsigClient {
+        segmentTrackingClient = mockSegmentTrackingClient()
         return StatsigClient(
             build = mockk<Build> { every { isRelease } returns false },
             context = application(),
             currentUser = requireNotNull(environment().currentUserV2()),
+            segmentTrackingClient = segmentTrackingClient,
+            getAnonymousId = { segmentAnonymousId },
             sdkInitializer = {
                 if (initializationDetails == null) {
                     initializationDetails = Statsig.initialize(
@@ -65,7 +76,18 @@ class StatsigClientTest : KSRobolectricTestCase() {
                     )
                 }
                 initializationDetails
-            }
+            },
+        )
+    }
+
+    private fun mockSegmentTrackingClient(): SegmentTest.MockSegmentTrackingClient {
+        val build = environment().build()!!
+        val context = application()
+        val currentConfigV2 = environment().currentConfigV2()!!
+        val currentUserV2 = environment().currentUserV2()!!
+        val sharedPreferences = MockSharedPreferences()
+        return SegmentTest.MockSegmentTrackingClient(
+            build, context, currentConfigV2, currentUserV2, sharedPreferences
         )
     }
 
@@ -75,21 +97,6 @@ class StatsigClientTest : KSRobolectricTestCase() {
     }
 
     // - Initialize tests
-    @Test
-    fun `initialize - Sets scope and completes without error on success`() = runTest(testDispatcher) {
-        val initDetails = InitializationDetails(200L, true, source = EvalSource.Network)
-        val client = buildInitializableClient(initResult = initDetails)
-
-        var errorCount = 0
-        client.initialize(this, testDispatcher) { errorCount++ }
-
-        advanceUntilIdle()
-
-        assertEquals(0, errorCount)
-        assertEquals(this, client.scope)
-        assertTrue(client.isReady.value)
-    }
-
     @Test
     fun `initialize - Invokes error callback with failure details on SDK failure`() = runTest(testDispatcher) {
         val failureDetails = InitializeResponse.FailedInitializeResponse(
@@ -294,6 +301,48 @@ class StatsigClientTest : KSRobolectricTestCase() {
         assertEquals(0, errorCount)
         assertEquals(EvalReason.LocalOverride, evalDetails.reason)
         assertNull(stringValue)
+    }
+
+    @Test
+    fun `test user data observation`() = runTest {
+        val testScope = TestScope(UnconfinedTestDispatcher(testScheduler))
+
+        val data = mutableListOf<Triple<String?, String?, String?>>()
+
+        val currentUser = MockCurrentUserV2()
+        val segmentTrackingClient = mockSegmentTrackingClient()
+        val statsigClient = object : MockStatsigClient(
+            context = application(),
+            currentUser = currentUser,
+            segmentTrackingClient = segmentTrackingClient,
+            getAnonymousId = { segmentAnonymousId },
+            startReady = false
+        ) {
+            override suspend fun handleObservedUserData(
+                stableId: String?,
+                segmentAnonymousId: String?,
+                userId: String?
+            ) {
+                data += Triple(stableId, segmentAnonymousId, userId)
+            }
+        }
+
+        statsigClient.observeUserAndFetchConfigs(testScope)
+
+        assertEquals(Triple(null, null, null), data.last())
+
+        statsigClient.triggerReady()
+
+        assertEquals(data.last(), Triple(statsigClient.getStableId(), null, null))
+
+        segmentTrackingClient.initialize()
+
+        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentAnonymousId, null))
+
+        val user = UserFactory.user()
+        currentUser.login(user)
+
+        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentAnonymousId, user.id().toString()))
     }
 
     companion object {

@@ -416,9 +416,10 @@ public class ApplicationModule {
   StatsigClient provideStatsigClient(
           final @ApplicationContext @NonNull Context context,
           final @NonNull CurrentUserTypeV2 currentUser,
+          final @NonNull SegmentTrackingClient segmentTrackingClient,
           final @NonNull Build build
   ) {
-    return new StatsigClient(build, context, currentUser);
+    return new StatsigClient(build, context, currentUser, segmentTrackingClient);
   }
 
   @Provides

@@ -98,6 +98,20 @@ class StatsigClientTest : KSRobolectricTestCase() {
 
     // - Initialize tests
     @Test
+    fun `initialize - Sets scope and completes without error on success`() = runTest(testDispatcher) {
+        val initDetails = InitializationDetails(200L, true, source = EvalSource.Network)
+        val client = buildInitializableClient(initResult = initDetails)
+
+        var errorCount = 0
+        client.initialize(this, testDispatcher) { errorCount++ }
+
+        advanceUntilIdle()
+
+        assertEquals(0, errorCount)
+        assertTrue(client.isReady.value)
+    }
+
+    @Test
     fun `initialize - Invokes error callback with failure details on SDK failure`() = runTest(testDispatcher) {
         val failureDetails = InitializeResponse.FailedInitializeResponse(
             reason = InitializeFailReason.NetworkError,

@@ -63,7 +63,8 @@ fun SocialSharePlatformGrid(
         ),
         horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
         items(platforms) { platform ->
             PlatformButton(
@@ -95,7 +96,7 @@ private fun PlatformButton(
             modifier = Modifier
                 .size(dimensions.socialSharePlatformIconSize)
                 .clip(CircleShape)
-                .background(colors.socialShare.iconBackground)
+                .background(colors.backgroundSurfaceRaised)
                 .padding(dimensions.socialSharePlatformIconPadding)
         )
         Text(

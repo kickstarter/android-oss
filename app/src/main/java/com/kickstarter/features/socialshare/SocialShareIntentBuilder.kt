@@ -10,19 +10,22 @@ import com.kickstarter.features.socialshare.data.SocialSharePlatform
 
 /**
  * Helper object responsible for constructing specific [Intent]s for various social media platforms.
- * It handles the nuances of each app's deep linking or sharing requirements.
+ *
+ * General rules applied across all platforms:
+ * - Every intent includes the project URL as text wherever the platform accepts it.
+ * - Every intent includes the cached image wherever the platform accepts it.
+ * - [Intent.FLAG_GRANT_READ_URI_PERMISSION] + [ClipData] are set on every image intent
+ *   (required on Android 12+ for URI permission grants to work reliably).
+ *
+ * Platform-specific limitations:
+ * - Instagram Stories / Facebook Stories: the custom ADD_TO_STORY action only accepts an
+ *   image; there is no text/URL slot in that API.
+ * - Messages (SMS): [Intent.ACTION_SENDTO] + `smsto:` cannot carry attachments; MMS would
+ *   require [Intent.ACTION_SEND] and losing the ability to pre-fill the SMS body reliably.
+ *   Text-only is intentional here.
  */
 object SocialShareIntentBuilder {
 
-    /**
-     * Entry point to create an intent based on the selected platform.
-     *
-     * @param context Calling context.
-     * @param platform The target social media platform.
-     * @param shareData Metadata about the project being shared.
-     * @param imageUri Optional URI to a local cached image for image-based sharing.
-     * @return A configured [Intent], or null if the platform doesn't use standard Intents (e.g. COPY_LINK).
-     */
     fun buildIntent(
         context: Context,
         platform: SocialSharePlatform,
@@ -30,27 +33,29 @@ object SocialShareIntentBuilder {
         imageUri: Uri?
     ): Intent? = when (platform) {
         SocialSharePlatform.COPY_LINK -> null
-        SocialSharePlatform.INSTAGRAM_FEED -> instagramFeedIntent(imageUri)
+        SocialSharePlatform.INSTAGRAM_FEED -> instagramFeedIntent(shareData, imageUri)
         SocialSharePlatform.INSTAGRAM_STORIES -> instagramStoriesIntent(context, imageUri)
-        SocialSharePlatform.X -> xIntent(shareData)
-        SocialSharePlatform.FACEBOOK_FEED -> facebookFeedIntent(imageUri)
+        SocialSharePlatform.X -> xIntent(shareData, imageUri)
+        SocialSharePlatform.FACEBOOK_FEED -> facebookFeedIntent(shareData, imageUri)
         SocialSharePlatform.FACEBOOK_STORIES -> facebookStoriesIntent(imageUri)
-        SocialSharePlatform.WHATSAPP -> whatsAppIntent(shareData)
+        SocialSharePlatform.WHATSAPP -> whatsAppIntent(shareData, imageUri)
         SocialSharePlatform.MESSAGES -> messagesIntent(shareData)
-        SocialSharePlatform.EMAIL -> emailIntent(shareData)
+        SocialSharePlatform.EMAIL -> emailIntent(shareData, imageUri)
         SocialSharePlatform.MORE -> nativeChooserIntent(shareData, imageUri)
     }
 
     /**
-     * Builds an intent to share an image directly to the Instagram Feed.
-     * Requires the Instagram app package.
+     * Instagram Feed — image required, URL added via EXTRA_TEXT.
+     * Note: Instagram's compose screen does not pre-fill captions from EXTRA_TEXT,
+     * but including it is harmless and may be respected in future app versions.
      */
-    private fun instagramFeedIntent(imageUri: Uri?): Intent? {
+    private fun instagramFeedIntent(shareData: SocialShareData, imageUri: Uri?): Intent? {
         imageUri ?: return null
+        val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         return Intent(Intent.ACTION_SEND).apply {
             type = "image/jpeg"
             putExtra(Intent.EXTRA_STREAM, imageUri)
-            // ClipData is required for URI permission granting on API 29+
+            putExtra(Intent.EXTRA_TEXT, text)
             clipData = ClipData.newRawUri(null, imageUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             setPackage("com.instagram.android")
@@ -58,8 +63,7 @@ object SocialShareIntentBuilder {
     }
 
     /**
-     * Builds an intent for Instagram Stories. Uses Instagram's specific custom action
-     * which allows placing an image as a "sticker" or background.
+     * Instagram Stories — image-only; the ADD_TO_STORY action has no text/URL slot.
      */
     private fun instagramStoriesIntent(context: Context, imageUri: Uri?): Intent? {
         imageUri ?: return null
@@ -72,26 +76,41 @@ object SocialShareIntentBuilder {
     }
 
     /**
-     * Builds a text-based share intent for X (formerly Twitter).
-     * Includes a predefined mention and project URL.
+     * X (Twitter) — text always included; image attached when available.
+     * X's app accepts ACTION_SEND with image/jpeg + EXTRA_TEXT simultaneously.
      */
-    private fun xIntent(shareData: SocialShareData): Intent {
+    private fun xIntent(shareData: SocialShareData, imageUri: Uri?): Intent {
         val text = "I just backed ${shareData.projectName} on @Kickstarter! Check it out: ${shareData.projectUrl}"
-        return Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, text)
-            setPackage("com.twitter.android")
+        return if (imageUri != null) {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_TEXT, text)
+                putExtra(Intent.EXTRA_STREAM, imageUri)
+                clipData = ClipData.newRawUri(null, imageUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                setPackage("com.twitter.android")
+            }
+        } else {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, text)
+                setPackage("com.twitter.android")
+            }
         }
     }
 
     /**
-     * Builds an intent to share an image to the Facebook Feed.
+     * Facebook Feed — image required, URL added via EXTRA_TEXT.
+     * Note: Facebook's app typically ignores EXTRA_TEXT when an image is present,
+     * but including it is harmless and consistent.
      */
-    private fun facebookFeedIntent(imageUri: Uri?): Intent? {
+    private fun facebookFeedIntent(shareData: SocialShareData, imageUri: Uri?): Intent? {
         imageUri ?: return null
+        val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         return Intent(Intent.ACTION_SEND).apply {
             type = "image/jpeg"
             putExtra(Intent.EXTRA_STREAM, imageUri)
+            putExtra(Intent.EXTRA_TEXT, text)
             clipData = ClipData.newRawUri(null, imageUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             setPackage("com.facebook.katana")
@@ -99,7 +118,7 @@ object SocialShareIntentBuilder {
     }
 
     /**
-     * Builds an intent for Facebook Stories using their specific "ADD_TO_STORY" action.
+     * Facebook Stories — image-only; the ADD_TO_STORY action has no text/URL slot.
      */
     private fun facebookStoriesIntent(imageUri: Uri?): Intent? {
         imageUri ?: return null
@@ -113,19 +132,34 @@ object SocialShareIntentBuilder {
     }
 
     /**
-     * Builds a text share intent specifically for WhatsApp.
+     * WhatsApp — text always included; image attached when available.
+     * WhatsApp renders EXTRA_TEXT as a caption beneath the image.
      */
-    private fun whatsAppIntent(shareData: SocialShareData): Intent {
+    private fun whatsAppIntent(shareData: SocialShareData, imageUri: Uri?): Intent {
         val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
-        return Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, text)
-            setPackage("com.whatsapp")
+        return if (imageUri != null) {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_TEXT, text)
+                putExtra(Intent.EXTRA_STREAM, imageUri)
+                clipData = ClipData.newRawUri(null, imageUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                setPackage("com.whatsapp")
+            }
+        } else {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, text)
+                setPackage("com.whatsapp")
+            }
         }
     }
 
     /**
-     * Builds an intent to send a text via SMS/MMS apps.
+     * Messages (SMS) — text-only.
+     * ACTION_SENDTO + smsto: is the reliable way to pre-fill an SMS body and open the
+     * default SMS app directly. Adding an image would require switching to ACTION_SEND,
+     * which loses the smsto: addressing and turns it into MMS unpredictably across OEMs.
      */
     private fun messagesIntent(shareData: SocialShareData): Intent {
         val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
@@ -135,37 +169,48 @@ object SocialShareIntentBuilder {
     }
 
     /**
-     * Builds an intent to share via Email apps.
+     * Email — text always included; image attached as an inline attachment when available.
+     * ACTION_SEND with image/jpeg opens email clients in compose mode with the image
+     * attached and the body/subject pre-filled. Falls back to ACTION_SENDTO + mailto:
+     * (no attachment support) when no image is cached yet.
      */
-    private fun emailIntent(shareData: SocialShareData): Intent {
-        return Intent(Intent.ACTION_SENDTO, "mailto:".toUri()).apply {
-            putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Check out this Kickstarter project: ${shareData.projectName}"
-            )
-            putExtra(
-                Intent.EXTRA_TEXT,
-                "I thought you'd love this — ${shareData.projectName} by ${shareData.creatorName}:\n\n${shareData.projectUrl}"
-            )
+    private fun emailIntent(shareData: SocialShareData, imageUri: Uri?): Intent {
+        val subject = "Check out this Kickstarter project: ${shareData.projectName}"
+        val body = "I thought you'd love this — ${shareData.projectName} by ${shareData.creatorName}:\n\n${shareData.projectUrl}"
+        return if (imageUri != null) {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, body)
+                putExtra(Intent.EXTRA_STREAM, imageUri)
+                clipData = ClipData.newRawUri(null, imageUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        } else {
+            Intent(Intent.ACTION_SENDTO, "mailto:".toUri()).apply {
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, body)
+            }
         }
     }
 
     /**
-     * Creates a generic system share sheet chooser. This is the fallback for the "More" option.
-     * It will include the image if it's already cached, otherwise it shares only the text URL.
+     * More (native Android chooser) — image + text when image is available,
+     * text-only otherwise. Serves as the universal fallback for any app not
+     * listed explicitly.
      */
     private fun nativeChooserIntent(shareData: SocialShareData, imageUri: Uri?): Intent {
+        val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         val sendIntent = Intent(Intent.ACTION_SEND).apply {
             if (imageUri != null) {
                 type = "image/jpeg"
                 putExtra(Intent.EXTRA_STREAM, imageUri)
                 clipData = ClipData.newRawUri(null, imageUri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                // - Include text for apps that can handle both (e.g. Slack, Discord, some email clients)
-                putExtra(Intent.EXTRA_TEXT, shareData.projectUrl)
+                putExtra(Intent.EXTRA_TEXT, text)
             } else {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, shareData.projectUrl)
+                putExtra(Intent.EXTRA_TEXT, text)
             }
             putExtra(Intent.EXTRA_TITLE, shareData.projectName)
         }

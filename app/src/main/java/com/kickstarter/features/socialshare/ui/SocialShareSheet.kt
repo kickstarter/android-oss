@@ -39,7 +39,6 @@ import com.kickstarter.features.socialshare.ui.components.SocialSharePlatformGri
 import com.kickstarter.features.socialshare.ui.components.SocialShareProjectCard
 import com.kickstarter.features.socialshare.ui.icons.Vector91
 import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
-import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -76,11 +75,9 @@ fun SocialShareSheet(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     val context = LocalContext.current
-    val environment = remember { context.getEnvironment() } ?: return
 
     val factory = remember(shareData) {
         SocialShareViewModel.Factory(
-            environment = environment,
             context = context.applicationContext,
             shareData = shareData
         )
@@ -158,7 +155,8 @@ private fun SocialShareSheetContent(
             imageVector = Vector91,
             contentDescription = null,
             modifier = Modifier.matchParentSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.TopCenter
         )
         Column(
             modifier = Modifier.fillMaxWidth(),

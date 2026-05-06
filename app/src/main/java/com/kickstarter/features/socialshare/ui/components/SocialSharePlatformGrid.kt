@@ -21,6 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
@@ -49,6 +54,10 @@ private fun SocialSharePlatformGridPreview() {
     }
 }
 
+enum class SocialSharePlatformGridTestTag {
+    GRID
+}
+
 @Composable
 fun SocialSharePlatformGrid(
     platforms: List<SocialSharePlatform>,
@@ -65,6 +74,7 @@ fun SocialSharePlatformGrid(
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingMedium),
         modifier = Modifier
             .fillMaxWidth()
+            .testTag(SocialSharePlatformGridTestTag.GRID.name)
     ) {
         items(platforms) { platform ->
             PlatformButton(
@@ -87,11 +97,16 @@ private fun PlatformButton(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .testTag(platform.name)
+            .semantics(mergeDescendants = true) {
+                contentDescription = platform.accessibilityLabel()
+                role = Role.Button
+            }
             .clickable(onClick = onClick)
     ) {
         Icon(
             imageVector = platform.icon(),
-            contentDescription = label,
+            contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier
                 .size(dimensions.socialSharePlatformIconSize)
@@ -133,4 +148,25 @@ private fun SocialSharePlatform.label(): String = when (this) {
     SocialSharePlatform.MESSAGES -> "Messages"
     SocialSharePlatform.EMAIL -> "Email"
     SocialSharePlatform.MORE -> "More"
+}
+
+/**
+ * Full accessibility description announced by TalkBack.
+ * Unlike [label], these are unambiguous across all platforms — "Feed" alone
+ * cannot distinguish Instagram Feed from Facebook Feed, but
+ * "Share to Instagram Feed" can.
+ *
+ * // TODO: Explore if these require translations
+ */
+internal fun SocialSharePlatform.accessibilityLabel(): String = when (this) {
+    SocialSharePlatform.COPY_LINK -> "Copy project link"
+    SocialSharePlatform.INSTAGRAM_FEED -> "Share to Instagram Feed"
+    SocialSharePlatform.INSTAGRAM_STORIES -> "Share to Instagram Stories"
+    SocialSharePlatform.X -> "Share to X"
+    SocialSharePlatform.FACEBOOK_FEED -> "Share to Facebook Feed"
+    SocialSharePlatform.FACEBOOK_STORIES -> "Share to Facebook Stories"
+    SocialSharePlatform.WHATSAPP -> "Share via WhatsApp"
+    SocialSharePlatform.MESSAGES -> "Share via Messages"
+    SocialSharePlatform.EMAIL -> "Share via Email"
+    SocialSharePlatform.MORE -> "More sharing options"
 }

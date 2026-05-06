@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -45,6 +46,12 @@ private fun SocialShareProjectCardPreview() {
     }
 }
 
+enum class SocialShareProjectCardTestTag {
+    PROJECT_NAME,
+    CREATOR_NAME,
+    KS_LOGO
+}
+
 @Composable
 fun SocialShareProjectCard(shareData: SocialShareData) {
     Column(
@@ -56,7 +63,7 @@ fun SocialShareProjectCard(shareData: SocialShareData) {
             .padding(dimensions.socialShareCardContentPadding),
     ) {
         KSAsyncImage(
-            image = Photo.builder().full(shareData.imageUrl).altText("Project Description").build(),
+            image = Photo.builder().full(shareData.imageUrl).altText(shareData.projectName).build(),
             modifier = Modifier.weight(1f).clip(RoundedCornerShape(dimensions.socialShareImageRadius))
         )
         Spacer(modifier = Modifier.height(dimensions.paddingSmall))
@@ -69,7 +76,8 @@ fun SocialShareProjectCard(shareData: SocialShareData) {
                 fontWeight = FontWeight.SemiBold
             ),
             color = colors.textPrimary,
-            maxLines = 2
+            maxLines = 2,
+            modifier = Modifier.testTag(SocialShareProjectCardTestTag.PROJECT_NAME.name)
         )
         Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
         Text(
@@ -80,7 +88,8 @@ fun SocialShareProjectCard(shareData: SocialShareData) {
                 letterSpacing = (-0.08).sp,
                 fontWeight = FontWeight.SemiBold
             ),
-            color = colors.textSecondary
+            color = colors.textSecondary,
+            modifier = Modifier.testTag(SocialShareProjectCardTestTag.CREATOR_NAME.name)
         )
         Spacer(modifier = Modifier.height(dimensions.paddingXLarge))
         Box(
@@ -88,10 +97,11 @@ fun SocialShareProjectCard(shareData: SocialShareData) {
         ) {
             Icon(
                 imageVector = KSLogo,
-                contentDescription = "KSLogo",
+                contentDescription = "Kickstarter",
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(SocialShareProjectCardTestTag.KS_LOGO.name)
             )
         }
     }

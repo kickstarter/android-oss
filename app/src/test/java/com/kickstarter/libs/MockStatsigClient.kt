@@ -2,8 +2,9 @@ package com.kickstarter.libs
 
 import android.content.Context
 import com.kickstarter.libs.featureflag.StatsigClient
-import com.statsig.androidsdk.EvaluationDetails
-import com.statsig.androidsdk.EvaluationReason
+import com.statsig.androidsdk.EvalDetails
+import com.statsig.androidsdk.EvalReason
+import com.statsig.androidsdk.EvalSource
 import com.statsig.androidsdk.FeatureGate
 import io.mockk.every
 import io.mockk.mockk
@@ -58,7 +59,7 @@ class MockStatsigClient(
     override fun getFeatureGate(gateName: String): FeatureGate =
         FeatureGate(
             gateName,
-            EvaluationDetails(EvaluationReason.Unrecognized, lcut = 0),
+            EvalDetails(EvalSource.NoValues, EvalReason.Unrecognized),
             gateMap[gateName] ?: false
         )
 

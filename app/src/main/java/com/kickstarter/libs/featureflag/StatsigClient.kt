@@ -62,7 +62,7 @@ open class StatsigClient @JvmOverloads constructor(
     internal val build: Build,
     private val context: Context,
     private val currentUser: CurrentUserTypeV2,
-    private val sdkInitializer: suspend () -> InitializationDetails? = {
+    private val sdkInitializer: suspend StatsigClient.() -> InitializationDetails? = {
         val isProduction = build.isRelease && Build.isExternal()
         val options = StatsigOptions().apply {
             setTier(if (isProduction) Tier.PRODUCTION else Tier.STAGING)

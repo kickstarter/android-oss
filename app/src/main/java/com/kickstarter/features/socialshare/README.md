@@ -26,7 +26,7 @@ The feature is structured as a self-contained package under `features/socialshar
 - **`SocialShareService` / `AndroidSocialShareService`** — interface that abstracts all Android framework calls (PackageManager, ClipboardManager, FileProvider, intent construction) so the ViewModel never holds a `Context`.
 - **`SocialShareViewModel`** — on creation it detects which platform apps are installed and begins caching the project image in the background. Exposes `onPlatformSelected`, `onCopyLinkClicked`, and `onCopiedToastShown`.
 - **`SocialShareSheet`** — a `ModalBottomSheet` composable. It reads the ViewModel through `LocalSocialShareViewModel` (a `CompositionLocalProvider`) so the ViewModel is always created by the caller with the correct `shareData` rather than inside the composable itself.
-- **`ShareImageCache`** — downloads the project hero image and writes it to the app cache as a `content://` URI via `FileProvider`, which is required to grant read permission to third-party apps.
+- **`ShareImageCache`** — downloads the project image and writes it to the app cache as a `content://` URI via `FileProvider`, which is required to grant read permission to third-party apps.
 - **`SocialShareIntentBuilder`** — constructs the correct `Intent` per platform.
 
 ### How to integrate

@@ -12,9 +12,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SocialShareViewModelTest : KSRobolectricTestCase() {
@@ -143,6 +140,7 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
     fun `onPlatformSelected calls intentLaunchAction when intent is available`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val fakeIntent = Intent(Intent.ACTION_SEND)
+        var capturedIntent: Intent? = null
 
         val service = object : FakeSocialShareService() {
             override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
@@ -153,14 +151,13 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
             ): Intent = fakeIntent
         }
 
-        val intentLaunchAction: (Intent) -> Unit = mock()
         val viewModel = buildViewModel(service, dispatcher = dispatcher)
-        viewModel.provideIntentLaunchAction(intentLaunchAction)
+        viewModel.provideIntentLaunchAction { capturedIntent = it }
         advanceUntilIdle()
 
         viewModel.onPlatformSelected(SocialSharePlatform.X)
 
-        verify(intentLaunchAction).invoke(fakeIntent)
+        assertEquals(fakeIntent, capturedIntent)
     }
 
     @Test
@@ -177,16 +174,16 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         }
 
         var errorMessage: String? = null
-        val intentLaunchAction: (Intent) -> Unit = mock()
+        var launchedIntent: Intent? = null
         val viewModel = buildViewModel(service, dispatcher = dispatcher)
         viewModel.provideErrorAction { errorMessage = it }
-        viewModel.provideIntentLaunchAction(intentLaunchAction)
+        viewModel.provideIntentLaunchAction { launchedIntent = it }
         advanceUntilIdle()
 
         viewModel.onPlatformSelected(SocialSharePlatform.X)
 
         assertNotNull(errorMessage)
-        verify(intentLaunchAction, never()).invoke(org.mockito.ArgumentMatchers.any())
+        assertNull(launchedIntent)
     }
 
     @Test
@@ -201,17 +198,17 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         }
 
         var errorMessage: String? = null
-        val intentLaunchAction: (Intent) -> Unit = mock()
+        var launchedIntent: Intent? = null
         val viewModel = buildViewModel(service, dispatcher = dispatcher)
         viewModel.provideErrorAction { errorMessage = it }
-        viewModel.provideIntentLaunchAction(intentLaunchAction)
+        viewModel.provideIntentLaunchAction { launchedIntent = it }
 
         // With UnconfinedTestDispatcher the init coroutine runs until it suspends at
         // awaitCancellation, so isGeneratingImage is already true at this point.
         viewModel.onPlatformSelected(SocialSharePlatform.INSTAGRAM_FEED)
 
         assertNotNull(errorMessage)
-        verify(intentLaunchAction, never()).invoke(org.mockito.ArgumentMatchers.any())
+        assertNull(launchedIntent)
     }
 
     @Test
@@ -232,14 +229,14 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
             ): Intent = fakeIntent
         }
 
-        val intentLaunchAction: (Intent) -> Unit = mock()
+        var capturedIntent: Intent? = null
         val viewModel = buildViewModel(service, dispatcher = dispatcher)
-        viewModel.provideIntentLaunchAction(intentLaunchAction)
+        viewModel.provideIntentLaunchAction { capturedIntent = it }
 
         // X does not requiresImage() so the guard should not fire
         viewModel.onPlatformSelected(SocialSharePlatform.X)
 
-        verify(intentLaunchAction).invoke(fakeIntent)
+        assertEquals(fakeIntent, capturedIntent)
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -364,15 +364,13 @@ object AnalyticEventsUtils {
         toPosition: Int,
         fromProject: Project? = null,
         watchTimeMs: Long? = null,
-        videoDurationMs: Long? = null,
-        recommendationSource: String? = null
+        videoDurationMs: Long? = null
     ): Map<String, Any> {
         val props = HashMap<String, Any>()
         props.putAll(videoFeedItemProperties(toProject, toPosition))
         fromProject?.let { props["from_video_id"] = it.id().toString() }
         watchTimeMs?.let { props["total_watch_time"] = it }
         videoDurationMs?.let { props["total_video_duration"] = it }
-        recommendationSource?.let { props["recommendation_source"] = it }
         return props
     }
 }

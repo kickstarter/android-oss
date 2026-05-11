@@ -930,14 +930,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param project: The project now in the primary position.
      * @param position: 0-based index of the video in this session.
-     * @param recommendationSource: Optional signal explaining why this video was surfaced.
      */
-    fun trackVideoFeedImpression(project: Project, position: Int, recommendationSource: String? = null) {
+    fun trackVideoFeedImpression(project: Project, position: Int) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
         props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
-        recommendationSource?.let { props["recommendation_source"] = it }
         client.track(PAGE_VIEWED.eventName, props)
     }
 
@@ -951,22 +949,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param fromProject: The project the user swiped away from.
      * @param watchTimeMs: Milliseconds the previous video was in the primary position.
      * @param videoDurationMs: Total duration of the previous video in milliseconds.
-     * @param recommendationSource: Optional signal explaining why the new video was surfaced.
      */
     fun trackVideoFeedPageViewed(
         toProject: Project,
         toPosition: Int,
         fromProject: Project,
         watchTimeMs: Long?,
-        videoDurationMs: Long?,
-        recommendationSource: String? = null
+        videoDurationMs: Long?
     ) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
         props.putAll(
             AnalyticEventsUtils.videoFeedPageViewedProperties(
-                toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, recommendationSource
+                toProject, toPosition, fromProject, watchTimeMs, videoDurationMs
             )
         )
         client.track(PAGE_VIEWED.eventName, props)

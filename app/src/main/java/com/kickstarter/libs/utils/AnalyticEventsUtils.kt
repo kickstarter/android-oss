@@ -353,9 +353,9 @@ object AnalyticEventsUtils {
 
     fun videoFeedItemProperties(project: Project, position: Int): Map<String, Any> {
         return hashMapOf(
-            "video_id" to project.id().toString(),
-            "project_id" to project.id().toString(),
-            "position_in_session" to position
+            "video_feed_video_id" to project.id().toString(),
+            "video_feed_project_id" to project.id().toString(),
+            "video_feed_position_in_session" to position
         )
     }
 
@@ -369,10 +369,10 @@ object AnalyticEventsUtils {
     ): Map<String, Any> {
         val props = HashMap<String, Any>()
         props.putAll(videoFeedItemProperties(toProject, toPosition))
-        fromProject?.let { props["from_video_id"] = it.id().toString() }
-        watchTimeMs?.let { props["total_watch_time"] = it }
-        videoDurationMs?.let { props["total_video_duration"] = it }
-        if (entrySurface.isNotEmpty()) props["entry_surface"] = entrySurface
+        fromProject?.let { props["video_feed_from_video_id"] = it.id().toString() }
+        watchTimeMs?.let { props["video_feed_total_watch_time"] = it }
+        videoDurationMs?.let { props["video_feed_total_video_duration"] = it }
+        if (entrySurface.isNotEmpty()) props["video_feed_entry_surface"] = entrySurface
         return props
     }
 }

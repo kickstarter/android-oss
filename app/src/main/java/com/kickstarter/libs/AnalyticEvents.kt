@@ -936,7 +936,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
         props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
-        props["entry_surface"] = entrySurface
+        props["video_feed_entry_surface"] = entrySurface
         client.track(PAGE_VIEWED.eventName, props)
     }
 
@@ -982,8 +982,8 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_CTA.contextName] = VIDEO_PROGRESS_BAR.contextName
         props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, 0))
-        props["percentage_watched"] = percentageWatched
-        watchTimeAtClick?.let { props["watch_time_at_click"] = it }
+        props["video_feed_percentage_watched"] = percentageWatched
+        watchTimeAtClick?.let { props["video_feed_watch_time_at_click"] = it }
         client.track(CTA_CLICKED.eventName, props)
     }
 
@@ -1003,9 +1003,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_CTA.contextName] = ctaType.contextName
-        props["video_id"] = project.id().toString()
-        props["project_id"] = project.id().toString()
-        watchTimeAtClick?.let { props["watch_time_at_click"] = it }
+        props["video_feed_video_id"] = project.id().toString()
+        props["video_feed_project_id"] = project.id().toString()
+        watchTimeAtClick?.let { props["video_feed_watch_time_at_click"] = it }
         client.track(CTA_CLICKED.eventName, props)
     }
 
@@ -1019,8 +1019,8 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
-        props["feed_cursor"] = cursor ?: "initial"
-        props["feed_batch_item_count"] = itemCount
+        props["video_feed_feed_cursor"] = cursor ?: "initial"
+        props["video_feed_feed_batch_item_count"] = itemCount
         client.track(PAGE_VIEWED.eventName, props)
     }
 

@@ -925,36 +925,33 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     // VIDEO FEED
 
     /**
-     * Fires when a video becomes the primary visible item and autoplay begins.
-     * Maps to PAGE_VIEWED at the individual video level.
+     * Fires when the user swipes to a new video (page settles). Combines impression, swipe
+     * navigation, and watch-progress data into a single PAGE_VIEWED event. Never fires on
+     * the initial feed load — only on explicit user navigation.
      *
-     * @param project: The project whose video is now primary.
-     * @param position: The 0-based index of the video in the current session.
-     * @param recommendationSource: Optional signal explaining why this video was surfaced.
+     * @param toProject: The project now in the primary position.
+     * @param toPosition: 0-based index of the destination video in this session.
+     * @param fromProject: The project the user swiped away from.
+     * @param watchTimeMs: Milliseconds the previous video was in the primary position.
+     * @param videoDurationMs: Total duration of the previous video in milliseconds.
+     * @param recommendationSource: Optional signal explaining why the new video was surfaced.
      */
-    fun trackVideoFeedImpression(project: Project, position: Int, recommendationSource: String? = null) {
+    fun trackVideoFeedPageViewed(
+        toProject: Project,
+        toPosition: Int,
+        fromProject: Project,
+        watchTimeMs: Long?,
+        videoDurationMs: Long?,
+        recommendationSource: String? = null
+    ) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
-        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
-        recommendationSource?.let { props["recommendation_source"] = it }
-        client.track(PAGE_VIEWED.eventName, props)
-    }
-
-    /**
-     * Fires when the user scrolls past a video (it leaves the primary position).
-     * Captures how much of the video was watched before the swipe.
-     *
-     * @param project: The project that was just scrolled past.
-     * @param position: The 0-based index of the video in the current session.
-     * @param totalWatchTime: Milliseconds the video was in the primary position.
-     * @param totalVideoDuration: Total duration of the video in milliseconds.
-     */
-    fun trackVideoFeedWatchProgress(project: Project, position: Int, totalWatchTime: Long, totalVideoDuration: Long) {
-        val props = HashMap<String, Any>()
-        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
-        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
-        props.putAll(AnalyticEventsUtils.videoWatchProgressProperties(totalWatchTime, totalVideoDuration))
+        props.putAll(
+            AnalyticEventsUtils.videoFeedPageViewedProperties(
+                toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, recommendationSource
+            )
+        )
         client.track(PAGE_VIEWED.eventName, props)
     }
 
@@ -973,20 +970,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props["percentage_watched"] = percentageWatched
         watchTimeAtClick?.let { props["watch_time_at_click"] = it }
         client.track(CTA_CLICKED.eventName, props)
-    }
-
-    /**
-     * Fires when the user swipes from one video to the next.
-     *
-     * @param fromProject: The project the user swiped away from.
-     * @param toProject: The project the user swiped to.
-     * @param toPosition: The 0-based index of the destination video.
-     */
-    fun trackVideoFeedSwipe(fromProject: Project, toProject: Project, toPosition: Int) {
-        val props = HashMap<String, Any>()
-        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
-        props.putAll(AnalyticEventsUtils.videoSwipeProperties(fromProject, toProject, toPosition))
-        client.track(PAGE_VIEWED.eventName, props)
     }
 
     /**

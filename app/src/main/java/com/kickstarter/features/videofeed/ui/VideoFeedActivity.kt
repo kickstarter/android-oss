@@ -89,14 +89,8 @@ class VideoFeedActivity : ComponentActivity() {
                             previousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value
                         )
                     },
-                    onVideoImpression = { project, position ->
-                        viewModel.onVideoImpression(project, position)
-                    },
-                    onVideoScrolledAway = { project, position, watchTimeMs, videoDurationMs ->
-                        viewModel.onVideoScrolledAway(project, position, watchTimeMs, videoDurationMs)
-                    },
-                    onVideoSwiped = { fromProject, toProject, toPosition ->
-                        viewModel.onVideoSwiped(fromProject, toProject, toPosition)
+                    onVideoPageSettled = { toProject, toPosition, fromProject, watchTimeMs, videoDurationMs ->
+                        viewModel.onVideoPageSettled(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs)
                     },
                     onPlayPauseTap = { project, isPlaying ->
                         val cta = if (isPlaying) CtaContextName.VIDEO_PLAY else CtaContextName.VIDEO_PAUSE

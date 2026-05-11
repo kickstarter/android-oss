@@ -119,6 +119,10 @@ class VideoFeedViewModel(
         }
     }
 
+    fun onVideoImpression(project: Project, position: Int, recommendationSource: String? = null) {
+        analyticEvents.trackVideoFeedImpression(project, position, recommendationSource)
+    }
+
     fun onVideoPageSettled(
         toProject: Project,
         toPosition: Int,

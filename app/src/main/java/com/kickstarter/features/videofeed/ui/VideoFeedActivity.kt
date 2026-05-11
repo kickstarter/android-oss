@@ -89,6 +89,9 @@ class VideoFeedActivity : ComponentActivity() {
                             previousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value
                         )
                     },
+                    onVideoImpression = { project, position ->
+                        viewModel.onVideoImpression(project, position)
+                    },
                     onVideoPageSettled = { toProject, toPosition, fromProject, watchTimeMs, videoDurationMs ->
                         viewModel.onVideoPageSettled(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs)
                     },

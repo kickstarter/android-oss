@@ -73,6 +73,7 @@ fun VideoFeedScreen(
     onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
+    onVideoImpression: (project: Project, position: Int) -> Unit = { _, _ -> },
     onVideoPageSettled: (toProject: Project, toPosition: Int, fromProject: Project, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
     onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
     onProgressBarTap: (project: Project, progress: Float) -> Unit = { _, _ -> },
@@ -93,22 +94,25 @@ fun VideoFeedScreen(
         }
     }
 
-    // - Fires a single consolidated PAGE_VIEWED only on explicit user navigation (not on first load).
+    // - Impression fires on every settled page, including first load.
+    // - Page-viewed (swipe + watch data) fires only when navigating from a previous video.
     LaunchedEffect(pagerState.settledPage, items.size) {
         val currentPage = pagerState.settledPage
         if (items.isEmpty() || currentPage >= items.size) return@LaunchedEffect
-        if (previousSettledPage !in items.indices || previousSettledPage == currentPage) {
-            previousSettledPage = currentPage
-            return@LaunchedEffect
+
+        onVideoImpression(items[currentPage].project, currentPage)
+
+        if (previousSettledPage in items.indices && previousSettledPage != currentPage) {
+            val watchData = watchTimeByPage.remove(previousSettledPage)
+            onVideoPageSettled(
+                items[currentPage].project,
+                currentPage,
+                items[previousSettledPage].project,
+                watchData?.first,
+                watchData?.second
+            )
         }
-        val watchData = watchTimeByPage.remove(previousSettledPage)
-        onVideoPageSettled(
-            items[currentPage].project,
-            currentPage,
-            items[previousSettledPage].project,
-            watchData?.first,
-            watchData?.second
-        )
+
         previousSettledPage = currentPage
     }
 

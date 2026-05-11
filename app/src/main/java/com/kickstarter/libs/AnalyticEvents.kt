@@ -29,6 +29,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENABLE_NOTIFICATIONS_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
@@ -66,6 +67,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGNUP_LOGIN
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -75,14 +77,11 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.CURATED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.SEARCH_RESULTS
-import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
@@ -99,6 +98,7 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData
 import java.util.Locale
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
@@ -925,8 +925,25 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     // VIDEO FEED
 
     /**
-     * Fires when the user swipes to a new video (page settles). Combines impression, swipe
-     * navigation, and watch-progress data into a single PAGE_VIEWED event. Never fires on
+     * Fires every time a video settles as the primary visible item, including the first load.
+     * Covers impression measurement independently of navigation.
+     *
+     * @param project: The project now in the primary position.
+     * @param position: 0-based index of the video in this session.
+     * @param recommendationSource: Optional signal explaining why this video was surfaced.
+     */
+    fun trackVideoFeedImpression(project: Project, position: Int, recommendationSource: String? = null) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
+        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
+        recommendationSource?.let { props["recommendation_source"] = it }
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Fires when the user swipes to a new video (page settles). Combines swipe
+     * navigation and watch-progress data into a single PAGE_VIEWED event. Never fires on
      * the initial feed load — only on explicit user navigation.
      *
      * @param toProject: The project now in the primary position.

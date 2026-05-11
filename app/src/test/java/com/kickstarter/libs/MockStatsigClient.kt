@@ -32,15 +32,19 @@ import io.mockk.mockk
  *   the boolean directly) and [getFeatureGate] (wraps the value in a [FeatureGate] with
  *   [EvaluationReason.Unrecognized]). Gates absent from the map default to `false`.
  */
-class MockStatsigClient(
+open class MockStatsigClient(
     context: Context,
     currentUser: CurrentUserTypeV2 = MockCurrentUserV2(),
+    segmentTrackingClient: SegmentTrackingClient = mockk<SegmentTrackingClient>(),
+    getAnonymousId: () -> String? = { null },
     private val gateMap: Map<String, Boolean> = emptyMap(),
     startReady: Boolean = true
 ) : StatsigClient(
     build = mockk<Build> { every { isRelease } returns false },
     context = context,
     currentUser = currentUser,
+    segmentTrackingClient = segmentTrackingClient,
+    getAnonymousId = getAnonymousId,
     sdkInitializer = { null }
 ) {
     init {
@@ -64,4 +68,6 @@ class MockStatsigClient(
         )
 
     override fun getSDKKey(): String = "test-sdk-key"
+
+    override fun getStableId(): String? = "11111111-1111-1111-1111-111111111111"
 }

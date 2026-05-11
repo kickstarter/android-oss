@@ -59,6 +59,13 @@ class EventContextValues {
         ALLOW_TRACKING("allow_tracking"),
         ALLOW("allow"),
         DENY("deny"),
+        VIDEO_PLAY("video_play"),
+        VIDEO_PAUSE("video_pause"),
+        VIDEO_FORWARD("video_forward"),
+        VIDEO_PROGRESS_BAR("video_progress_bar"),
+        VIDEO_SAVE("video_save"),
+        VIDEO_FOLLOW("video_follow"),
+        VIDEO_SHARE("video_share"),
     }
 
     /**
@@ -100,6 +107,7 @@ class EventContextValues {
         PROJECT_ALERTS("project_alerts"),
         TWO_FACTOR_AUTH("two_factor_auth"),
         ONBOARDING("onboarding"),
+        VIDEO_FEED("video_feed"),
     }
 
     /**
@@ -142,7 +150,8 @@ class EventContextValues {
         SEARCH_RESULTS("search_results"),
         GLOBAL_NAV("global_nav"),
         CURATED("curated"),
-        COMMENTS("comments")
+        COMMENTS("comments"),
+        VIDEO_FEED("video_feed"),
     }
 
     /**

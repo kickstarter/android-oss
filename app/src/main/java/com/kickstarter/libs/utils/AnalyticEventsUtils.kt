@@ -350,4 +350,27 @@ object AnalyticEventsUtils {
         val properties = MapUtils.prefixKeys(props, prefix)
         return properties
     }
+
+    fun videoFeedItemProperties(project: Project, position: Int): Map<String, Any> {
+        return hashMapOf(
+            "video_id" to project.id().toString(),
+            "project_id" to project.id().toString(),
+            "position_in_session" to position
+        )
+    }
+
+    fun videoWatchProgressProperties(totalWatchTime: Long, totalVideoDuration: Long): Map<String, Any> {
+        return hashMapOf(
+            "total_watch_time" to totalWatchTime,
+            "total_video_duration" to totalVideoDuration
+        )
+    }
+
+    fun videoSwipeProperties(fromProject: Project, toProject: Project, toPosition: Int): Map<String, Any> {
+        return hashMapOf(
+            "from_video_id" to fromProject.id().toString(),
+            "to_video_id" to toProject.id().toString(),
+            "position_in_session" to toPosition
+        )
+    }
 }

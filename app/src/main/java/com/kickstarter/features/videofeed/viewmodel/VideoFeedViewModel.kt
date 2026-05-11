@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName
 import com.kickstarter.models.Project
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,7 @@ class VideoFeedViewModel(
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val currentUserV2 = requireNotNull(environment.currentUserV2())
+    private val analyticEvents = requireNotNull(environment.analytics())
 
     private val _videoFeedUIState = MutableStateFlow(VideoFeedUIState())
     val videoFeedUIState: StateFlow<VideoFeedUIState> = _videoFeedUIState.asStateFlow()
@@ -69,9 +71,11 @@ class VideoFeedViewModel(
                 val envelope = result.getOrNull()
                 nextPage = envelope?.pageInfo?.endCursor
                 hasMore = envelope?.pageInfo?.hasNextPage ?: false
+                val newItems = envelope?.items ?: emptyList()
+                analyticEvents.trackVideoFeedBatchLoaded(cursor = nextPage, itemCount = newItems.size)
                 _videoFeedUIState.emit(
                     VideoFeedUIState(
-                        items = _videoFeedUIState.value.items + (envelope?.items ?: emptyList()),
+                        items = _videoFeedUIState.value.items + newItems,
                         isLoading = false
                     )
                 )
@@ -113,6 +117,26 @@ class VideoFeedViewModel(
                 _videoFeedUIState.emit(_videoFeedUIState.value.copy(items = items))
             }
         }
+    }
+
+    fun onVideoImpression(project: Project, position: Int, recommendationSource: String? = null) {
+        analyticEvents.trackVideoFeedImpression(project, position, recommendationSource)
+    }
+
+    fun onVideoScrolledAway(project: Project, position: Int, totalWatchTime: Long, totalVideoDuration: Long) {
+        analyticEvents.trackVideoFeedWatchProgress(project, position, totalWatchTime, totalVideoDuration)
+    }
+
+    fun onProgressBarTapped(project: Project, percentageWatched: Float, watchTimeAtClick: Long? = null) {
+        analyticEvents.trackVideoFeedProgressBarTap(project, percentageWatched, watchTimeAtClick)
+    }
+
+    fun onVideoSwiped(fromProject: Project, toProject: Project, toPosition: Int) {
+        analyticEvents.trackVideoFeedSwipe(fromProject, toProject, toPosition)
+    }
+
+    fun onCTAClicked(project: Project, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {
+        analyticEvents.trackVideoFeedCTAClicked(project, ctaType, watchTimeAtClick)
     }
 
     class Factory(

@@ -75,11 +75,14 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RESULT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.CURATED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.SEARCH_RESULTS
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
@@ -917,6 +920,110 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_SECTION.contextName] = OnboardingPage.SIGNUP_LOGIN
         props[CONTEXT_CTA.contextName] = SIGNUP_LOGIN.contextName
         client.track(CTA_CLICKED.eventName, props)
+    }
+
+    // VIDEO FEED
+
+    /**
+     * Fires when a video becomes the primary visible item and autoplay begins.
+     * Maps to PAGE_VIEWED at the individual video level.
+     *
+     * @param project: The project whose video is now primary.
+     * @param position: The 0-based index of the video in the current session.
+     * @param recommendationSource: Optional signal explaining why this video was surfaced.
+     */
+    fun trackVideoFeedImpression(project: Project, position: Int, recommendationSource: String? = null) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
+        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
+        recommendationSource?.let { props["recommendation_source"] = it }
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Fires when the user scrolls past a video (it leaves the primary position).
+     * Captures how much of the video was watched before the swipe.
+     *
+     * @param project: The project that was just scrolled past.
+     * @param position: The 0-based index of the video in the current session.
+     * @param totalWatchTime: Milliseconds the video was in the primary position.
+     * @param totalVideoDuration: Total duration of the video in milliseconds.
+     */
+    fun trackVideoFeedWatchProgress(project: Project, position: Int, totalWatchTime: Long, totalVideoDuration: Long) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
+        props.putAll(AnalyticEventsUtils.videoWatchProgressProperties(totalWatchTime, totalVideoDuration))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Fires when the user taps the video progress bar while watching.
+     *
+     * @param project: The project whose progress bar was tapped.
+     * @param percentageWatched: Value from 0.0 to 1.0 representing watch completion at tap time.
+     * @param watchTimeAtClick: Optional milliseconds watched at the moment of the tap.
+     */
+    fun trackVideoFeedProgressBarTap(project: Project, percentageWatched: Float, watchTimeAtClick: Long? = null) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_CTA.contextName] = VIDEO_PROGRESS_BAR.contextName
+        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, 0))
+        props["percentage_watched"] = percentageWatched
+        watchTimeAtClick?.let { props["watch_time_at_click"] = it }
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Fires when the user swipes from one video to the next.
+     *
+     * @param fromProject: The project the user swiped away from.
+     * @param toProject: The project the user swiped to.
+     * @param toPosition: The 0-based index of the destination video.
+     */
+    fun trackVideoFeedSwipe(fromProject: Project, toProject: Project, toPosition: Int) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props.putAll(AnalyticEventsUtils.videoSwipeProperties(fromProject, toProject, toPosition))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Fires for every tappable action in the video feed: save, follow, share, and all
+     * video player controls (play, pause, forward, progress bar tap).
+     *
+     * @param project: The project the action was taken on.
+     * @param ctaType: The specific action that was tapped.
+     * @param watchTimeAtClick: Optional milliseconds watched at the moment of the tap.
+     */
+    fun trackVideoFeedCTAClicked(
+        project: Project,
+        ctaType: EventContextValues.CtaContextName,
+        watchTimeAtClick: Long? = null
+    ) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_CTA.contextName] = ctaType.contextName
+        props["video_id"] = project.id().toString()
+        props["project_id"] = project.id().toString()
+        watchTimeAtClick?.let { props["watch_time_at_click"] = it }
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Fires when a pagination request completes. For infra monitoring and performance only.
+     *
+     * @param cursor: The pagination cursor used for this batch; null on the initial load.
+     * @param itemCount: Number of items returned in this batch.
+     */
+    fun trackVideoFeedBatchLoaded(cursor: String?, itemCount: Int) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
+        props["feed_cursor"] = cursor ?: "initial"
+        props["feed_batch_item_count"] = itemCount
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     fun reset() {

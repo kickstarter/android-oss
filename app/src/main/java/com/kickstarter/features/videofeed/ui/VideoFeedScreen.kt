@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
@@ -70,9 +72,16 @@ fun VideoFeedScreen(
     onProfileClick: (project: Project) -> Unit = { _ -> },
     onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
-    projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
+    projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
+    onVideoImpression: (project: Project, position: Int) -> Unit = { _, _ -> },
+    onVideoScrolledAway: (project: Project, position: Int, watchTimeMs: Long, videoDurationMs: Long) -> Unit = { _, _, _, _ -> },
+    onVideoSwiped: (fromProject: Project, toProject: Project, toPosition: Int) -> Unit = { _, _, _ -> },
+    onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
+    onProgressBarTap: (project: Project, progress: Float) -> Unit = { _, _ -> },
+    onShareCTAClick: (project: Project) -> Unit = { _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
+    var previousSettledPage by remember { mutableStateOf(-1) }
 
     // - Threshold: items.size - (beyondViewportPageCount + 2)
     // Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
@@ -80,6 +89,18 @@ fun VideoFeedScreen(
         if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
             onLoadMore()
         }
+    }
+
+    // - Fire impression on every settled page; fire swipe when the user navigates between pages.
+    LaunchedEffect(pagerState.settledPage, items.size) {
+        val currentPage = pagerState.settledPage
+        if (items.isEmpty() || currentPage >= items.size) return@LaunchedEffect
+        val currentProject = items[currentPage].project
+        onVideoImpression(currentProject, currentPage)
+        if (previousSettledPage in items.indices && previousSettledPage != currentPage) {
+            onVideoSwiped(items[previousSettledPage].project, currentProject, currentPage)
+        }
+        previousSettledPage = currentPage
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -114,6 +135,11 @@ fun VideoFeedScreen(
                 KSVideoPlayer(
                     videoUrl = videoUrl,
                     isActive = pagerState.currentPage == page,
+                    onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
+                    onProgressBarInteraction = { currentProgress -> onProgressBarTap(project, currentProgress) },
+                    onBecameInactive = { watchTimeMs, videoDurationMs ->
+                        onVideoScrolledAway(project, page, watchTimeMs, videoDurationMs)
+                    },
                     overlayContent = { hazeState ->
                         Column(
                             modifier = Modifier
@@ -130,7 +156,7 @@ fun VideoFeedScreen(
                                 shareCount = shareCount,
                                 onProfileClick = { onProfileClick(project) },
                                 onBookmarkClick = { onBookmarkClick(project, page) },
-                                onShareClick = { },
+                                onShareClick = { onShareCTAClick(project) },
                                 onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )
 

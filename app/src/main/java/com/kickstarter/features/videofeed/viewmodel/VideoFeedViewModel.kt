@@ -73,7 +73,7 @@ class VideoFeedViewModel(
                 nextPage = envelope?.pageInfo?.endCursor
                 hasMore = envelope?.pageInfo?.hasNextPage ?: false
                 val newItems = envelope?.items ?: emptyList()
-                analyticEvents.trackVideoFeedBatchLoaded(cursor = nextPage, itemCount = newItems.size)
+
                 _videoFeedUIState.emit(
                     VideoFeedUIState(
                         items = _videoFeedUIState.value.items + newItems,

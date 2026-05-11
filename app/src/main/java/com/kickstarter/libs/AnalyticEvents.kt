@@ -1009,21 +1009,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
-    /**
-     * Fires when a pagination request completes. For infra monitoring and performance only.
-     *
-     * @param cursor: The pagination cursor used for this batch; null on the initial load.
-     * @param itemCount: Number of items returned in this batch.
-     */
-    fun trackVideoFeedBatchLoaded(cursor: String?, itemCount: Int) {
-        val props = HashMap<String, Any>()
-        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
-        props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
-        props["video_feed_feed_cursor"] = cursor ?: "initial"
-        props["video_feed_feed_batch_item_count"] = itemCount
-        client.track(PAGE_VIEWED.eventName, props)
-    }
-
     fun reset() {
         client.reset()
     }

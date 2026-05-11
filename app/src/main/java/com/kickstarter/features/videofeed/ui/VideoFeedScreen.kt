@@ -96,7 +96,8 @@ fun VideoFeedScreen(
 
     // - Impression fires on every settled page, including first load.
     // - Page-viewed (swipe + watch data) fires only when navigating from a previous video.
-    LaunchedEffect(pagerState.settledPage, items.size) {
+    // - Key on items.isEmpty() (not items.size) so pagination batches don't re-fire the impression.
+    LaunchedEffect(pagerState.settledPage, items.isEmpty()) {
         val currentPage = pagerState.settledPage
         if (items.isEmpty() || currentPage >= items.size) return@LaunchedEffect
 

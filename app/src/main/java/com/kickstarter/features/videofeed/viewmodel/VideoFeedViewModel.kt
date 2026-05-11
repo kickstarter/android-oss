@@ -24,6 +24,7 @@ data class VideoFeedUIState(
 
 class VideoFeedViewModel(
     private val environment: Environment,
+    private val entrySurface: String,
     private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
@@ -120,7 +121,7 @@ class VideoFeedViewModel(
     }
 
     fun onVideoImpression(project: Project, position: Int) {
-        analyticEvents.trackVideoFeedImpression(project, position)
+        analyticEvents.trackVideoFeedImpression(project, position, entrySurface)
     }
 
     fun onVideoPageSettled(
@@ -130,7 +131,7 @@ class VideoFeedViewModel(
         watchTimeMs: Long?,
         videoDurationMs: Long?
     ) {
-        analyticEvents.trackVideoFeedPageViewed(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs)
+        analyticEvents.trackVideoFeedPageViewed(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface)
     }
 
     fun onProgressBarTapped(project: Project, percentageWatched: Float, watchTimeAtClick: Long? = null) {
@@ -143,10 +144,11 @@ class VideoFeedViewModel(
 
     class Factory(
         private val environment: Environment,
+        private val entrySurface: String,
         private val testDispatcher: CoroutineDispatcher? = null
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return VideoFeedViewModel(environment, testDispatcher) as T
+            return VideoFeedViewModel(environment, entrySurface, testDispatcher) as T
         }
     }
 }

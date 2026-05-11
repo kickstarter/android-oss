@@ -44,7 +44,8 @@ class VideoFeedActivity : ComponentActivity() {
 
         this.getEnvironment()?.let {
             env = it
-            videoFeedFactory = VideoFeedViewModel.Factory(env)
+            val entrySurface = intent.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: ""
+            videoFeedFactory = VideoFeedViewModel.Factory(env, entrySurface)
         }
 
         setContent {

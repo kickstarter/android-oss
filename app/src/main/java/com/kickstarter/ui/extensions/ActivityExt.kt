@@ -172,9 +172,9 @@ fun Activity.startPledgeRedemption(project: Project) {
     }
 }
 
-fun Activity.startVideoFeed() {
+fun Activity.startVideoFeed(entrySurface: String) {
     startActivity(
-        Intent().getVideoFeedIntent(this)
+        Intent().getVideoFeedIntent(this, entrySurface)
     )
 
     this.let {

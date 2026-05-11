@@ -58,9 +58,11 @@ fun Intent.getPledgeRedemptionIntent(
 }
 
 fun Intent.getVideoFeedIntent(
-    context: Context
+    context: Context,
+    entrySurface: String
 ): Intent {
     this.setClass(context, VideoFeedActivity::class.java)
+    this.putExtra(IntentKey.PREVIOUS_SCREEN, entrySurface)
     return this
 }
 

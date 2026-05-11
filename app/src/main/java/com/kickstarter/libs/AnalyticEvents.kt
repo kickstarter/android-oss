@@ -931,11 +931,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param project: The project now in the primary position.
      * @param position: 0-based index of the video in this session.
      */
-    fun trackVideoFeedImpression(project: Project, position: Int) {
+    fun trackVideoFeedImpression(project: Project, position: Int, entrySurface: String) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
         props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
+        props["entry_surface"] = entrySurface
         client.track(PAGE_VIEWED.eventName, props)
     }
 
@@ -955,14 +956,15 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         toPosition: Int,
         fromProject: Project,
         watchTimeMs: Long?,
-        videoDurationMs: Long?
+        videoDurationMs: Long?,
+        entrySurface: String
     ) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
         props.putAll(
             AnalyticEventsUtils.videoFeedPageViewedProperties(
-                toProject, toPosition, fromProject, watchTimeMs, videoDurationMs
+                toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface
             )
         )
         client.track(PAGE_VIEWED.eventName, props)

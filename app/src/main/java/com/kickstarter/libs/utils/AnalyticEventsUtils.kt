@@ -364,13 +364,15 @@ object AnalyticEventsUtils {
         toPosition: Int,
         fromProject: Project? = null,
         watchTimeMs: Long? = null,
-        videoDurationMs: Long? = null
+        videoDurationMs: Long? = null,
+        entrySurface: String = ""
     ): Map<String, Any> {
         val props = HashMap<String, Any>()
         props.putAll(videoFeedItemProperties(toProject, toPosition))
         fromProject?.let { props["from_video_id"] = it.id().toString() }
         watchTimeMs?.let { props["total_watch_time"] = it }
         videoDurationMs?.let { props["total_video_duration"] = it }
+        if (entrySurface.isNotEmpty()) props["entry_surface"] = entrySurface
         return props
     }
 }

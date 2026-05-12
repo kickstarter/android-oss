@@ -86,7 +86,8 @@ fun VideoFeedScreen(
     // settledPage fires after the animation completes, so the data is always ready.
     val watchTimeByPage = remember { mutableMapOf<Int, Pair<Long, Long>>() }
 
-    // - Threshold: items.size - (beyondViewportPageCount + 2)
+    // - Pagination:
+    // Threshold: items.size - (beyondViewportPageCount + 2)
     // Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
     LaunchedEffect(pagerState.currentPage, items.size) {
         if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
@@ -94,9 +95,9 @@ fun VideoFeedScreen(
         }
     }
 
+    // - Analytics:
     // - Impression fires on every settled page, including first load.
     // - Page-viewed (swipe + watch data) fires only when navigating from a previous video.
-    // - Key on items.isEmpty() (not items.size) so pagination batches don't re-fire the impression.
     LaunchedEffect(pagerState.settledPage, items.isEmpty()) {
         val currentPage = pagerState.settledPage
         if (items.isEmpty() || currentPage >= items.size) return@LaunchedEffect

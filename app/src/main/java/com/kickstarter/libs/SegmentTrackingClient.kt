@@ -19,6 +19,9 @@ import com.segment.analytics.integrations.BasePayload
 import com.segment.analytics.integrations.IdentifyPayload
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 open class SegmentTrackingClient(
@@ -32,6 +35,9 @@ open class SegmentTrackingClient(
     override var isInitialized = false
     override var loggedInUser: User? = null
     override var config: Config? = null
+
+    protected val _initialized = MutableStateFlow(false)
+    val initialized: StateFlow<Boolean> = _initialized.asStateFlow()
 
     private var calledFromOnCreate = false
     private var prefStorage = preference
@@ -123,6 +129,7 @@ open class SegmentTrackingClient(
             )
 
             this.isInitialized = true
+            this._initialized.value = true
 
             if (build.isDebug) {
                 Timber.d("${type().tag} client:$segmentClient isInitialized:$isInitialized")

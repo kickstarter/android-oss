@@ -4,12 +4,15 @@ import android.content.Context
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserTypeV2
+import com.kickstarter.libs.SegmentTrackingClient
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.segment.analytics.Analytics
 import com.statsig.androidsdk.FeatureGate
 import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.Statsig
+import com.statsig.androidsdk.Statsig.getInitializeResponseJson
 import com.statsig.androidsdk.StatsigOptions
 import com.statsig.androidsdk.StatsigUser
 import com.statsig.androidsdk.Tier
@@ -19,7 +22,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.rx2.asFlow
+import timber.log.Timber
 
 enum class StatsigGateKey(val key: String) {
     ANDROID_VIDEO_FEED("android_video_feed")
@@ -33,7 +41,7 @@ interface StatsigClientType {
 
     /**
      * Returns the full [FeatureGate] object for [gateName], including the evaluated boolean value,
-     * the matched [com.statsig.androidsdk.FeatureGate.getRuleID] (which rule in the Statsig
+     * the matched [FeatureGate.getRuleID] (which rule in the Statsig
      * console was responsible for the result), and [com.statsig.androidsdk.EvaluationDetails]
      * describing how the value was resolved (network, cache, etc.).
      *
@@ -42,11 +50,13 @@ interface StatsigClientType {
      */
     fun getFeatureGate(gateName: String): FeatureGate = Statsig.getFeatureGate(gateName)
     fun getExperiment(experimentName: String) = Statsig.getExperiment(experimentName) // TODO: for test MOCK statsig DynamicConfig type or expose to the rest of the app just the json values, will explore in the future
-    suspend fun updateUser(id: String) = Statsig.updateUser(StatsigUser(id))
-    fun getStableId() = Statsig.getStableID()
+    suspend fun updateUser(user: StatsigUser) = Statsig.updateUser(user)
+    fun getStableId() = Statsig.getStatsigMetadata().stableID
 
     /** Emits true once the SDK has been successfully initialized. */
     val isReady: StateFlow<Boolean>
+
+    suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?)
 }
 
 /**
@@ -62,17 +72,30 @@ open class StatsigClient @JvmOverloads constructor(
     internal val build: Build,
     private val context: Context,
     private val currentUser: CurrentUserTypeV2,
+    private val segmentTrackingClient: SegmentTrackingClient,
+    private val getAnonymousId: () -> String? = {
+        Analytics.with(context).analyticsContext.traits().anonymousId()
+    },
     private val sdkInitializer: suspend StatsigClient.() -> InitializationDetails? = {
         val isProduction = build.isRelease && Build.isExternal()
         val options = StatsigOptions().apply {
             setTier(if (isProduction) Tier.PRODUCTION else Tier.STAGING)
         }
-        Statsig.initialize(
+        val user = StatsigUser()
+        val details = Statsig.initialize(
             application = context as KSApplication,
             if (isProduction) Secrets.Statsig.PRODUCTION else Secrets.Statsig.STAGING,
-            StatsigUser(),
+            user,
             options = options
         )
+        Timber.d("Statsig.initialize():")
+        Timber.d("- Stable ID: ${getStableId()}")
+        val initializeResponseJson = Statsig.runCatching { getInitializeResponseJson() }.getOrNull()
+        initializeResponseJson?.let {
+            Timber.d("- EvaluationDetails: ${it.getEvalDetails()}")
+            Timber.d("- JSON: ${it.getInitializeResponseJSON()}")
+        }
+        details
     }
 ) : StatsigClientType {
 
@@ -98,8 +121,8 @@ open class StatsigClient @JvmOverloads constructor(
      * @param errorCallback invoked with the error when initialization fails or throws
      */
     fun initialize(scope: CoroutineScope, dispatcher: CoroutineDispatcher = Dispatchers.IO, errorCallback: (Throwable) -> Unit) {
-        this.scope = scope
-        scope.launch(context = dispatcher) {
+        this.scope = (scope + dispatcher)
+        scope.launch {
             try {
                 val details = sdkInitializer()
 
@@ -112,5 +135,58 @@ open class StatsigClient @JvmOverloads constructor(
                 errorCallback.invoke(e)
             }
         }
+    }
+
+    fun observeUserAndFetchConfigs(scope: CoroutineScope) {
+        scope.launch {
+            val statsigInitialization = isReady
+            val segmentInitializationFlow = segmentTrackingClient.initialized
+            val currentUserFlow = currentUser.observable().asFlow()
+            combine(statsigInitialization, segmentInitializationFlow, currentUserFlow) { statsigIsReady, segmentIsReady, optionalUser ->
+                Triple(statsigIsReady, segmentIsReady, optionalUser)
+            }
+                .map { (statsigIsReady, segmentIsReady, optionalUser) ->
+                    val stableId = if (statsigIsReady) getStableId() else null
+                    val segmentAnonymousId = if (segmentIsReady) getAnonymousId() else null
+                    val userId = if (optionalUser.isPresent()) optionalUser.getValue()?.id().toString() else null
+                    Triple(stableId, segmentAnonymousId, userId)
+                }
+                // TODO: consider debounce
+                .collect {
+                    val (stableId, segmentAnonymousId, userId) = it
+                    handleObservedUserData(stableId, segmentAnonymousId, userId)
+                }
+        }
+    }
+
+    override suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?) {
+        // `stableId` is automatically attached to `StatsigUser` internally, but included here for clarity, testing, and debugging
+        Timber.d("handleObservedUserData(stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId)")
+
+        if (stableId == null && segmentAnonymousId == null && userId == null) return
+
+        val statsigUser = StatsigUser()
+        segmentAnonymousId?.let {
+            statsigUser.customIDs = mapOf("segmentAnonymousId" to it)
+        }
+        userId?.let {
+            statsigUser.userID = userId
+        }
+
+        try {
+            Timber.d("Statsig.updateUser($statsigUser):")
+            updateUser(statsigUser)
+            val initializeResponseJson = Statsig.runCatching { getInitializeResponseJson() }.getOrNull()
+            initializeResponseJson?.let {
+                Timber.d("- EvaluationDetails: ${it.getEvalDetails()}")
+                Timber.d("- JSON: ${it.getInitializeResponseJSON()}")
+            }
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
+    }
+
+    override suspend fun updateUser(user: StatsigUser) {
+        super.updateUser(user)
     }
 }

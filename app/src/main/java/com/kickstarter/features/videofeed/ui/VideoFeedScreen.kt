@@ -1,5 +1,6 @@
 package com.kickstarter.features.videofeed.ui
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,6 +19,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -37,6 +40,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import com.kickstarter.R
+import com.kickstarter.features.socialshare.AndroidSocialShareService
+import com.kickstarter.features.socialshare.data.SocialShareData
+import com.kickstarter.features.socialshare.ui.LocalSocialShareViewModel
+import com.kickstarter.features.socialshare.ui.SocialShareSheet
+import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
@@ -71,6 +79,7 @@ fun VideoFeedScreen(
     onClose: () -> Unit = {},
     onProfileClick: (project: Project) -> Unit = { _ -> },
     onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
+    onShareIntentReady: (Intent) -> Unit = {},
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     onVideoImpression: (project: Project, position: Int) -> Unit = { _, _ -> },
@@ -80,11 +89,13 @@ fun VideoFeedScreen(
     onShareCTAClick: (project: Project) -> Unit = { _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
+
     var previousSettledPage by remember { mutableStateOf(-1) }
     // Stores (watchTimeMs, videoDurationMs) per page index as each player deactivates.
     // Written by KSVideoPlayer.onBecameInactive during the swipe animation; read when
     // settledPage fires after the animation completes, so the data is always ready.
     val watchTimeByPage = remember { mutableMapOf<Int, Pair<Long, Long>>() }
+    var shareData: SocialShareData? by remember { mutableStateOf(null) }
 
     // - Pagination:
     // Threshold: items.size - (beyondViewportPageCount + 2)
@@ -171,7 +182,15 @@ fun VideoFeedScreen(
                                 shareCount = shareCount,
                                 onProfileClick = { onProfileClick(project) },
                                 onBookmarkClick = { onBookmarkClick(project, page) },
-                                onShareClick = { onShareCTAClick(project) },
+                                onShareClick = {
+                                    shareData = SocialShareData(
+                                        projectName = project.name() ?: "",
+                                        projectUrl = project.urls()?.web()?.project() ?: "",
+                                        imageUrl = project.photo()?.full() ?: "",
+                                        creatorName = project.creator()?.name() ?: ""
+                                    )
+                                    onShareCTAClick(project) 
+                                },
                                 onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )
 
@@ -226,6 +245,25 @@ fun VideoFeedScreen(
                             role = Role.Button
                         }
                         .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
+                )
+            }
+        }
+
+        shareData?.let { data ->
+            val context = LocalContext.current
+            val shareViewModel = remember(data) {
+                SocialShareViewModel(
+                    shareService = AndroidSocialShareService(context.applicationContext),
+                    shareData = data
+                )
+            }
+            CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
+                SocialShareSheet(
+                    shareData = data,
+                    isVisible = true,
+                    onDismiss = { shareData = null },
+                    onIntentReady = onShareIntentReady,
+                    snackbarHostState = errorSnackBarHostState
                 )
             }
         }

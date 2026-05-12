@@ -189,7 +189,8 @@ fun VideoFeedScreen(
                                         imageUrl = project.photo()?.full() ?: "",
                                         creatorName = project.creator()?.name() ?: ""
                                     )
-                                    onShareCTAClick(project) },
+                                    onShareCTAClick(project)
+                                },
                                 onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )
 

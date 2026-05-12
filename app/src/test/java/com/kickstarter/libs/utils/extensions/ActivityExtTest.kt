@@ -98,7 +98,7 @@ class ActivityExtTest : KSRobolectricTestCase() {
     fun testStartVideoFeed_StartsVideoFeedActivity() {
         val activity = Robolectric.buildActivity(ProjectPageActivity::class.java).setup().get()
 
-        activity.startVideoFeed()
+        activity.startVideoFeed("")
 
         val shadowActivity = shadowOf(activity)
         val intent = shadowActivity.nextStartedActivity

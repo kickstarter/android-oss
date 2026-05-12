@@ -72,6 +72,7 @@ class VideoFeedActivity : ComponentActivity() {
                             startLoginToutActivity()
                         }
                     },
+                    onShareIntentReady = { intent -> startActivity(intent) },
                     preLaunchedCallback = { project, refTag ->
                         startPreLaunchProjectActivity(
                             project = project,

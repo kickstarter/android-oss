@@ -16,6 +16,13 @@
             <action android:name="android.intent.action.SEND"/>
             <data android:host="com.kickstarter"/>
         </intent>
+        <!-- Required on API 30+ so PackageManager.getPackageInfo() can see these apps
+             and SocialShareViewModel.detectInstalledPlatforms() returns the correct list
+             on the very first open, without needing a prior user interaction. -->
+        <package android:name="com.instagram.android" />
+        <package android:name="com.twitter.android" />
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.whatsapp" />
     </queries>
 
     <application
@@ -315,6 +322,16 @@
             android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/share_file_paths" />
+        </provider>
         <!-- META-DATA -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

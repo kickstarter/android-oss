@@ -63,7 +63,7 @@ class VideoFeedActivity : ComponentActivity() {
                     onLoadMore = { viewModel.loadVideoFeed() },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
                     onProfileClick = { project ->
-                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_FOLLOW)
+                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_CREATOR)
                         startCreatorBioWebViewActivity(project)
                     },
                     onBookmarkClick = { project, index ->

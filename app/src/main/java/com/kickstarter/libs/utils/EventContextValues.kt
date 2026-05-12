@@ -64,7 +64,7 @@ class EventContextValues {
         VIDEO_FORWARD("video_forward"),
         VIDEO_PROGRESS_BAR("video_progress_bar"),
         VIDEO_SAVE("video_save"),
-        VIDEO_FOLLOW("video_follow"),
+        VIDEO_CREATOR("video_creator"),
         VIDEO_SHARE("video_share"),
     }
 

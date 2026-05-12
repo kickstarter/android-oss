@@ -158,17 +158,9 @@ fun KSVideoPlayer(
     val onPlayPauseToggleState = rememberUpdatedState(onPlayPauseToggle)
     val onProgressBarInteractionState = rememberUpdatedState(onProgressBarInteraction)
     val onBecameInactiveState = rememberUpdatedState(onBecameInactive)
-    var wasActive by remember { mutableStateOf(false) }
 
     // - Updated progress bar only when active and not scrubbing
     LaunchedEffect(isActive) {
-        if (wasActive && !isActive) {
-            onBecameInactiveState.value(
-                exoPlayer.currentPosition,
-                exoPlayer.duration.coerceAtLeast(0L)
-            )
-        }
-        wasActive = isActive
         exoPlayer.playWhenReady = isActive
         if (isActive) {
             while (true) {
@@ -306,6 +298,17 @@ fun KSVideoPlayer(
     // External (pool) players are never released here — the pool owns their lifecycle.
     DisposableEffect(exoPlayer) {
         onDispose { if (player == null) exoPlayer.release() }
+    }
+
+    DisposableEffect(isActive) {
+        onDispose {
+            if (isActive) {
+                onBecameInactiveState.value(
+                    exoPlayer.currentPosition,
+                    exoPlayer.duration.coerceAtLeast(0L)
+                )
+            }
+        }
     }
 }
 

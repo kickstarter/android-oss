@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT_ALE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CLOSE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
@@ -39,6 +40,8 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREA
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_SAVE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
@@ -47,11 +50,7 @@ import com.kickstarter.libs.utils.EventContextValues.LocationContextName.CURATED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_SAVE
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.SEARCH_RESULTS
-import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
@@ -82,6 +81,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
 import org.junit.Test
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 
 class SegmentTest : KSRobolectricTestCase() {
 

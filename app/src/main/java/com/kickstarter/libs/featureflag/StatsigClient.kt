@@ -42,14 +42,14 @@ object StatsigExperiments {
     }
 
     object NoopAuthenticatedUsers : Experiment<NoopAuthenticatedUsers.Parameters> {
-        override val name = "2026-05-12_checkout_aa"
+        override val name = "logged_in_aa_experiment"
         override val parameters = Parameters
         object Parameters {
             const val TEST = "test_parameter"
         }
     }
     object NoopAnonymousUsers : Experiment<NoopAnonymousUsers.Parameters> {
-        override val name = "2026-05-12_checkout_aa_logged_out"
+        override val name = "logged_out_aa_experiment"
         override val parameters = Parameters
         object Parameters {
             const val TEST = "test_parameter"

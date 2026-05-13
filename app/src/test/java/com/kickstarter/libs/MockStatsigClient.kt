@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import android.content.Context
 import com.kickstarter.libs.featureflag.StatsigClient
+import com.statsig.androidsdk.DynamicConfig
 import com.statsig.androidsdk.EvalDetails
 import com.statsig.androidsdk.EvalReason
 import com.statsig.androidsdk.EvalSource
@@ -36,15 +37,14 @@ open class MockStatsigClient(
     context: Context,
     currentUser: CurrentUserTypeV2 = MockCurrentUserV2(),
     segmentTrackingClient: SegmentTrackingClient = mockk<SegmentTrackingClient>(),
-    getAnonymousId: () -> String? = { null },
     private val gateMap: Map<String, Boolean> = emptyMap(),
+    private val experimentMap: Map<String, Map<String, Any>> = emptyMap(),
     startReady: Boolean = true
 ) : StatsigClient(
     build = mockk<Build> { every { isRelease } returns false },
     context = context,
     currentUser = currentUser,
     segmentTrackingClient = segmentTrackingClient,
-    getAnonymousId = getAnonymousId,
     sdkInitializer = { null }
 ) {
     init {
@@ -65,6 +65,13 @@ open class MockStatsigClient(
             gateName,
             EvalDetails(EvalSource.NoValues, EvalReason.Unrecognized),
             gateMap[gateName] ?: false
+        )
+
+    override fun getExperiment(experimentName: String): DynamicConfig =
+        DynamicConfig(
+            name = experimentName,
+            EvalDetails(EvalSource.NoValues, EvalReason.Unrecognized),
+            experimentMap[experimentName] ?: emptyMap()
         )
 
     override fun getSDKKey(): String = "test-sdk-key"

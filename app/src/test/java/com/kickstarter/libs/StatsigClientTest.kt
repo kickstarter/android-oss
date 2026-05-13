@@ -10,6 +10,7 @@ import com.statsig.androidsdk.InitializeFailReason
 import com.statsig.androidsdk.InitializeResponse
 import com.statsig.androidsdk.Statsig
 import com.statsig.androidsdk.StatsigOptions
+import com.statsig.androidsdk.StatsigUser
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +29,6 @@ class StatsigClientTest : KSRobolectricTestCase() {
     private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var segmentTrackingClient: SegmentTest.MockSegmentTrackingClient
-    private val segmentAnonymousId = "00000000-0000-0000-0000-000000000000"
 
     /**
      * Builds a [StatsigClient] subclass that simulates SDK initialization behavior.
@@ -47,7 +47,6 @@ class StatsigClientTest : KSRobolectricTestCase() {
             context = application(),
             currentUser = requireNotNull(environment().currentUserV2()),
             segmentTrackingClient = segmentTrackingClient,
-            getAnonymousId = { segmentAnonymousId },
             sdkInitializer = {
                 initException?.let { throw it }
                 initResult
@@ -62,7 +61,6 @@ class StatsigClientTest : KSRobolectricTestCase() {
             context = application(),
             currentUser = requireNotNull(environment().currentUserV2()),
             segmentTrackingClient = segmentTrackingClient,
-            getAnonymousId = { segmentAnonymousId },
             sdkInitializer = {
                 if (initializationDetails == null) {
                     initializationDetails = Statsig.initialize(
@@ -329,7 +327,6 @@ class StatsigClientTest : KSRobolectricTestCase() {
             context = application(),
             currentUser = currentUser,
             segmentTrackingClient = segmentTrackingClient,
-            getAnonymousId = { segmentAnonymousId },
             startReady = false
         ) {
             override suspend fun handleObservedUserData(
@@ -351,12 +348,72 @@ class StatsigClientTest : KSRobolectricTestCase() {
 
         segmentTrackingClient.initialize()
 
-        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentAnonymousId, null))
+        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull(), null))
 
         val user = UserFactory.user()
         currentUser.login(user)
 
-        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentAnonymousId, user.id().toString()))
+        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull()!!, user.id().toString()))
+    }
+
+    @Test
+    fun `updateUser - StatsigUser is mutated when successful`() = runTest {
+        val testScope = TestScope(UnconfinedTestDispatcher(testScheduler))
+
+        val currentUser = MockCurrentUserV2()
+        val segmentTrackingClient = mockSegmentTrackingClient()
+        val statsigClient = object : MockStatsigClient(
+            context = application(),
+            currentUser = currentUser,
+            segmentTrackingClient = segmentTrackingClient,
+            startReady = false
+        ) {
+            override suspend fun updateUser(user: StatsigUser) {}
+        }
+
+        var expectedStatsigUser = StatsigUser()
+        assertEquals(expectedStatsigUser, statsigClient.statsigUser.value)
+
+        statsigClient.observeUserAndFetchConfigs(testScope)
+        statsigClient.triggerReady()
+        segmentTrackingClient.initialize()
+
+        expectedStatsigUser = StatsigUser().apply {
+            customIDs = mapOf(StatsigClient.KEY_SEGMENT_ANONYMOUS_ID to segmentTrackingClient.getAnonymousIdOrNull()!!)
+        }
+        assertEquals(expectedStatsigUser, statsigClient.statsigUser.value)
+
+        val user = UserFactory.user()
+        currentUser.login(user)
+
+        expectedStatsigUser = StatsigUser().apply {
+            userID = user.id().toString()
+            customIDs = mapOf(StatsigClient.KEY_SEGMENT_ANONYMOUS_ID to segmentTrackingClient.getAnonymousIdOrNull()!!)
+        }
+        assertEquals(expectedStatsigUser, statsigClient.statsigUser.value)
+    }
+
+    @Test
+    fun `updateUser - StatsigUser is unchanged when failed`() = runTest {
+        val testScope = TestScope(UnconfinedTestDispatcher(testScheduler))
+
+        val currentUser = MockCurrentUserV2()
+        val segmentTrackingClient = mockSegmentTrackingClient()
+        val statsigClient = object : MockStatsigClient(
+            context = application(),
+            currentUser = currentUser,
+            segmentTrackingClient = segmentTrackingClient,
+            startReady = false
+        ) {
+            override suspend fun updateUser(user: StatsigUser) { throw Exception() }
+        }
+
+        statsigClient.observeUserAndFetchConfigs(testScope)
+        statsigClient.triggerReady()
+        segmentTrackingClient.initialize()
+        currentUser.login(UserFactory.user())
+
+        assertEquals(StatsigUser(), statsigClient.statsigUser.value)
     }
 
     companion object {

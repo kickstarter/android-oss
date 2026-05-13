@@ -226,6 +226,6 @@ open class StatsigClient @JvmOverloads constructor(
     }
 
     companion object {
-        const val KEY_SEGMENT_ANONYMOUS_ID = "segmentAnonymousId"
+        const val KEY_SEGMENT_ANONYMOUS_ID = "segmentAnonymousID"
     }
 }

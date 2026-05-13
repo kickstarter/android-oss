@@ -47,12 +47,12 @@ class ExperimentsViewModelTest : KSRobolectricTestCase() {
         val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
         setUpEnvironment(environment, unconfinedDispatcher)
 
-        assertEquals(1, countMap[StatsigExperiments.NoopAuthenticatedUsers.name])
-        assertEquals(1, countMap[StatsigExperiments.NoopAnonymousUsers.name])
+        assertEquals(1, countMap[StatsigExperiments.NoOpAuthenticatedUsers.name])
+        assertEquals(1, countMap[StatsigExperiments.NoOpAnonymousUsers.name])
 
         statsigClient.setStatsigUser(StatsigUser(UserFactory.user().id().toString()))
 
-        assertEquals(2, countMap[StatsigExperiments.NoopAuthenticatedUsers.name])
-        assertEquals(2, countMap[StatsigExperiments.NoopAnonymousUsers.name])
+        assertEquals(2, countMap[StatsigExperiments.NoOpAuthenticatedUsers.name])
+        assertEquals(2, countMap[StatsigExperiments.NoOpAnonymousUsers.name])
     }
 }

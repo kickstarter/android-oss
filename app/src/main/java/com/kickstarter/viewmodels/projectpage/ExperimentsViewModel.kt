@@ -43,8 +43,8 @@ class ExperimentsViewModel(
                     )
                 }
                 .collect {
-                    val authenticatedExperiment = statsigClient.getExperiment(StatsigExperiments.NoopAuthenticatedUsers.name)
-                    val anonymousExperiment = statsigClient.getExperiment(StatsigExperiments.NoopAnonymousUsers.name)
+                    val authenticatedExperiment = statsigClient.getExperiment(StatsigExperiments.NoOpAuthenticatedUsers.name)
+                    val anonymousExperiment = statsigClient.getExperiment(StatsigExperiments.NoOpAnonymousUsers.name)
                     Timber.d(
                         """
                         authenticatedExperiment: ${authenticatedExperiment.getName()}
@@ -52,7 +52,7 @@ class ExperimentsViewModel(
                         - getIsExperimentActive(): ${authenticatedExperiment.getIsExperimentActive()}
                         - getIsUserInExperiment(): ${authenticatedExperiment.getIsUserInExperiment()}
                         - getValue(): ${authenticatedExperiment.getValue()}
-                        - getBooleanIfPresent(${StatsigExperiments.NoopAuthenticatedUsers.parameters.TEST}): ${authenticatedExperiment.getBooleanIfPresent(StatsigExperiments.NoopAuthenticatedUsers.parameters.TEST)}
+                        - getBooleanIfPresent(${StatsigExperiments.NoOpAuthenticatedUsers.parameters.TEST}): ${authenticatedExperiment.getBooleanIfPresent(StatsigExperiments.NoOpAuthenticatedUsers.parameters.TEST)}
                         - getRuleID(): ${authenticatedExperiment.getRuleID()}
                         - getRulePassed(): ${authenticatedExperiment.getRulePassed()}
                         - getGroupName(): ${authenticatedExperiment.getGroupName()}
@@ -65,7 +65,7 @@ class ExperimentsViewModel(
                         - getIsExperimentActive(): ${anonymousExperiment.getIsExperimentActive()}
                         - getIsUserInExperiment(): ${anonymousExperiment.getIsUserInExperiment()}
                         - getValue(): ${anonymousExperiment.getValue()}
-                        - getBooleanIfPresent(${StatsigExperiments.NoopAnonymousUsers.parameters.TEST}): ${anonymousExperiment.getBooleanIfPresent(StatsigExperiments.NoopAnonymousUsers.parameters.TEST)}
+                        - getBooleanIfPresent(${StatsigExperiments.NoOpAnonymousUsers.parameters.TEST}): ${anonymousExperiment.getBooleanIfPresent(StatsigExperiments.NoOpAnonymousUsers.parameters.TEST)}
                         - getRuleID(): ${anonymousExperiment.getRuleID()}
                         - getRulePassed(): ${anonymousExperiment.getRulePassed()}
                         - getGroupName(): ${anonymousExperiment.getGroupName()}

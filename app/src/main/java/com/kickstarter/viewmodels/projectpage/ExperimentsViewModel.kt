@@ -34,18 +34,18 @@ class ExperimentsViewModel(
                     .onEach {
                         Timber.d(
                             """
-                        statsigUser[stableID: ${statsigClient.getStableId()}]
-                        - userID: ${it.userID}
-                        - email: ${it.email}
-                        - ip: ${it.ip}
-                        - userAgent: ${it.userAgent}
-                        - country: ${it.country}
-                        - locale: ${it.locale}
-                        - appVersion: ${it.appVersion}
-                        - custom: ${it.custom}
-                        - privateAttributes: ${it.privateAttributes}
-                        - customIDs: ${it.customIDs}
-                        """.trimIndent()
+                            statsigUser[stableID: ${statsigClient.getStableId()}]
+                            - userID: ${it.userID}
+                            - email: ${it.email}
+                            - ip: ${it.ip}
+                            - userAgent: ${it.userAgent}
+                            - country: ${it.country}
+                            - locale: ${it.locale}
+                            - appVersion: ${it.appVersion}
+                            - custom: ${it.custom}
+                            - privateAttributes: ${it.privateAttributes}
+                            - customIDs: ${it.customIDs}
+                            """.trimIndent()
                         )
                     }
                     .collect {
@@ -53,29 +53,29 @@ class ExperimentsViewModel(
                         val anonymousExperiment = statsigClient.getExperiment(StatsigExperiments.NoOpAnonymousUsers.name)
                         Timber.d(
                             """
-                        authenticatedExperiment: ${authenticatedExperiment.getName()}
-                        - getEvalDetails(): ${authenticatedExperiment.getEvalDetails()}
-                        - getIsExperimentActive(): ${authenticatedExperiment.getIsExperimentActive()}
-                        - getIsUserInExperiment(): ${authenticatedExperiment.getIsUserInExperiment()}
-                        - getValue(): ${authenticatedExperiment.getValue()}
-                        - getBooleanIfPresent(${StatsigExperiments.NoOpAuthenticatedUsers.parameters.TEST}): ${authenticatedExperiment.getBooleanIfPresent(StatsigExperiments.NoOpAuthenticatedUsers.parameters.TEST)}
-                        - getRuleID(): ${authenticatedExperiment.getRuleID()}
-                        - getRulePassed(): ${authenticatedExperiment.getRulePassed()}
-                        - getGroupName(): ${authenticatedExperiment.getGroupName()}
-                        """.trimIndent()
+                            authenticatedExperiment: ${authenticatedExperiment.getName()}
+                            - getEvalDetails(): ${authenticatedExperiment.getEvalDetails()}
+                            - getIsExperimentActive(): ${authenticatedExperiment.getIsExperimentActive()}
+                            - getIsUserInExperiment(): ${authenticatedExperiment.getIsUserInExperiment()}
+                            - getValue(): ${authenticatedExperiment.getValue()}
+                            - getBooleanIfPresent(${StatsigExperiments.NoOpAuthenticatedUsers.parameters.TEST}): ${authenticatedExperiment.getBooleanIfPresent(StatsigExperiments.NoOpAuthenticatedUsers.parameters.TEST)}
+                            - getRuleID(): ${authenticatedExperiment.getRuleID()}
+                            - getRulePassed(): ${authenticatedExperiment.getRulePassed()}
+                            - getGroupName(): ${authenticatedExperiment.getGroupName()}
+                            """.trimIndent()
                         )
                         Timber.d(
                             """
-                        anonymousExperiment: ${anonymousExperiment.getName()}
-                        - getEvalDetails(): ${anonymousExperiment.getEvalDetails()}
-                        - getIsExperimentActive(): ${anonymousExperiment.getIsExperimentActive()}
-                        - getIsUserInExperiment(): ${anonymousExperiment.getIsUserInExperiment()}
-                        - getValue(): ${anonymousExperiment.getValue()}
-                        - getBooleanIfPresent(${StatsigExperiments.NoOpAnonymousUsers.parameters.TEST}): ${anonymousExperiment.getBooleanIfPresent(StatsigExperiments.NoOpAnonymousUsers.parameters.TEST)}
-                        - getRuleID(): ${anonymousExperiment.getRuleID()}
-                        - getRulePassed(): ${anonymousExperiment.getRulePassed()}
-                        - getGroupName(): ${anonymousExperiment.getGroupName()}
-                        """.trimIndent()
+                            anonymousExperiment: ${anonymousExperiment.getName()}
+                            - getEvalDetails(): ${anonymousExperiment.getEvalDetails()}
+                            - getIsExperimentActive(): ${anonymousExperiment.getIsExperimentActive()}
+                            - getIsUserInExperiment(): ${anonymousExperiment.getIsUserInExperiment()}
+                            - getValue(): ${anonymousExperiment.getValue()}
+                            - getBooleanIfPresent(${StatsigExperiments.NoOpAnonymousUsers.parameters.TEST}): ${anonymousExperiment.getBooleanIfPresent(StatsigExperiments.NoOpAnonymousUsers.parameters.TEST)}
+                            - getRuleID(): ${anonymousExperiment.getRuleID()}
+                            - getRulePassed(): ${anonymousExperiment.getRulePassed()}
+                            - getGroupName(): ${anonymousExperiment.getGroupName()}
+                            """.trimIndent()
                         )
                     }
             } catch (exception: Exception) {

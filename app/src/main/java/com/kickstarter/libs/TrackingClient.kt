@@ -75,7 +75,7 @@ abstract class TrackingClient(
      */
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>)
 
-    // TODO: re-consider `abstract` here vs `open` in `SegmentTrackingClient`
+    // Alternatively `open` in `SegmentTrackingClient` pending any other tracking clients
     abstract fun getAnonymousIdOrNull(): String?
 
     // Default property values

@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kickstarter.features.videofeed.viewmodel.VideoFeedViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.models.Project
@@ -43,7 +44,8 @@ class VideoFeedActivity : ComponentActivity() {
 
         this.getEnvironment()?.let {
             env = it
-            videoFeedFactory = VideoFeedViewModel.Factory(env)
+            val entrySurface = intent.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: ""
+            videoFeedFactory = VideoFeedViewModel.Factory(env, entrySurface)
         }
 
         setContent {
@@ -61,9 +63,11 @@ class VideoFeedActivity : ComponentActivity() {
                     onLoadMore = { viewModel.loadVideoFeed() },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
                     onProfileClick = { project ->
+                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_CREATOR)
                         startCreatorBioWebViewActivity(project)
                     },
                     onBookmarkClick = { project, index ->
+                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_SAVE)
                         if (viewModel.isUserLoggedIn.value) {
                             viewModel.bookmarkProject(project, index)
                         } else {
@@ -86,6 +90,22 @@ class VideoFeedActivity : ComponentActivity() {
                             refTag = refTag,
                             previousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value
                         )
+                    },
+                    onVideoImpression = { project, position ->
+                        viewModel.onVideoImpression(project, position)
+                    },
+                    onVideoPageSettled = { toProject, toPosition, fromProject, watchTimeMs, videoDurationMs ->
+                        viewModel.onVideoPageSettled(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs)
+                    },
+                    onPlayPauseTap = { project, isPlaying ->
+                        val cta = if (isPlaying) CtaContextName.VIDEO_PLAY else CtaContextName.VIDEO_PAUSE
+                        viewModel.onCTAClicked(project, cta)
+                    },
+                    onProgressBarTap = { project, progress ->
+                        viewModel.onProgressBarTapped(project, progress)
+                    },
+                    onShareCTAClick = { project ->
+                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_SHARE)
                     }
                 )
             }

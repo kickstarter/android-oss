@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName
 import com.kickstarter.models.Project
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,12 +24,14 @@ data class VideoFeedUIState(
 
 class VideoFeedViewModel(
     private val environment: Environment,
+    private val entrySurface: String,
     private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val currentUserV2 = requireNotNull(environment.currentUserV2())
+    private val analyticEvents = requireNotNull(environment.analytics())
 
     private val _videoFeedUIState = MutableStateFlow(VideoFeedUIState())
     val videoFeedUIState: StateFlow<VideoFeedUIState> = _videoFeedUIState.asStateFlow()
@@ -69,9 +72,11 @@ class VideoFeedViewModel(
                 val envelope = result.getOrNull()
                 nextPage = envelope?.pageInfo?.endCursor
                 hasMore = envelope?.pageInfo?.hasNextPage ?: false
+                val newItems = envelope?.items ?: emptyList()
+
                 _videoFeedUIState.emit(
                     VideoFeedUIState(
-                        items = _videoFeedUIState.value.items + (envelope?.items ?: emptyList()),
+                        items = _videoFeedUIState.value.items + newItems,
                         isLoading = false
                     )
                 )
@@ -115,12 +120,35 @@ class VideoFeedViewModel(
         }
     }
 
+    fun onVideoImpression(project: Project, position: Int) {
+        analyticEvents.trackVideoFeedImpression(project, position, entrySurface)
+    }
+
+    fun onVideoPageSettled(
+        toProject: Project,
+        toPosition: Int,
+        fromProject: Project,
+        watchTimeMs: Long?,
+        videoDurationMs: Long?
+    ) {
+        analyticEvents.trackVideoFeedPageViewed(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface)
+    }
+
+    fun onProgressBarTapped(project: Project, percentageWatched: Float, watchTimeAtClick: Long? = null) {
+        analyticEvents.trackVideoFeedProgressBarTap(project, percentageWatched, watchTimeAtClick)
+    }
+
+    fun onCTAClicked(project: Project, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {
+        analyticEvents.trackVideoFeedCTAClicked(project, ctaType, watchTimeAtClick)
+    }
+
     class Factory(
         private val environment: Environment,
+        private val entrySurface: String,
         private val testDispatcher: CoroutineDispatcher? = null
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return VideoFeedViewModel(environment, testDispatcher) as T
+            return VideoFeedViewModel(environment, entrySurface, testDispatcher) as T
         }
     }
 }

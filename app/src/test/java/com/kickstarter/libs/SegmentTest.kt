@@ -25,6 +25,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT_ALE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CLOSE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CONFIRM_INITIATE
@@ -39,6 +40,8 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREA
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_SAVE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
@@ -78,6 +81,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.DateTime
 import org.junit.Test
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 
 class SegmentTest : KSRobolectricTestCase() {
 
@@ -1867,6 +1871,96 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("hello world", properties["discover_search_term"])
         assertEquals("ending_soon", properties["discover_sort"])
         assertEquals(123, properties["discover_tag"])
+    }
+
+    @Test
+    fun testVideoFeedImpression_Properties() {
+        val project = ProjectFactory.project()
+        val client = client(null)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackVideoFeedImpression(project, position = 2, entrySurface = "discovery")
+
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
+        val props = this.propertiesTest.value ?: mapOf()
+        assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
+        assertEquals(VIDEO_FEED_LOCATION.contextName, props[CONTEXT_LOCATION.contextName])
+        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(project.id().toString(), props["video_feed_project_id"])
+        assertEquals(2, props["video_feed_position_in_session"])
+        assertEquals("discovery", props["video_feed_entry_surface"])
+    }
+
+    @Test
+    fun testVideoFeedPageViewed_Properties() {
+        val toProject = ProjectFactory.project()
+        val fromProject = ProjectFactory.caProject()
+        val client = client(null)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackVideoFeedPageViewed(
+            toProject = toProject,
+            toPosition = 1,
+            fromProject = fromProject,
+            watchTimeMs = 5000L,
+            videoDurationMs = 20000L,
+            entrySurface = "search"
+        )
+
+        this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
+        val props = this.propertiesTest.value ?: mapOf()
+        assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
+        assertEquals(VIDEO_FEED_LOCATION.contextName, props[CONTEXT_LOCATION.contextName])
+        assertEquals(toProject.id().toString(), props["video_feed_video_id"])
+        assertEquals(toProject.id().toString(), props["video_feed_project_id"])
+        assertEquals(1, props["video_feed_position_in_session"])
+        assertEquals(fromProject.id().toString(), props["video_feed_from_video_id"])
+        assertEquals(5000L, props["video_feed_total_watch_time"])
+        assertEquals(20000L, props["video_feed_total_video_duration"])
+        assertEquals("search", props["video_feed_entry_surface"])
+    }
+
+    @Test
+    fun testVideoFeedCTAClicked_Properties() {
+        val project = ProjectFactory.project()
+        val client = client(null)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackVideoFeedCTAClicked(project, ctaType = VIDEO_SAVE, watchTimeAtClick = 3000L)
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+        val props = this.propertiesTest.value ?: mapOf()
+        assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
+        assertEquals(VIDEO_SAVE.contextName, props[CONTEXT_CTA.contextName])
+        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(project.id().toString(), props["video_feed_project_id"])
+        assertEquals(3000L, props["video_feed_watch_time_at_click"])
+    }
+
+    @Test
+    fun testVideoFeedProgressBarTap_Properties() {
+        val project = ProjectFactory.project()
+        val client = client(null)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackVideoFeedProgressBarTap(project, percentageWatched = 0.75f, watchTimeAtClick = 8000L)
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+        val props = this.propertiesTest.value ?: mapOf()
+        assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
+        assertEquals(VIDEO_PROGRESS_BAR.contextName, props[CONTEXT_CTA.contextName])
+        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(project.id().toString(), props["video_feed_project_id"])
+        assertEquals(0.75f, props["video_feed_percentage_watched"])
+        assertEquals(8000L, props["video_feed_watch_time_at_click"])
     }
 
     private fun client(user: User?) = MockTrackingClient(

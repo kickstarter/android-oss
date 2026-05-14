@@ -1,6 +1,7 @@
 package com.kickstarter.libs.featureflag
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserTypeV2
@@ -8,7 +9,6 @@ import com.kickstarter.libs.SegmentTrackingClient
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
-import com.segment.analytics.Analytics
 import com.statsig.androidsdk.FeatureGate
 import com.statsig.androidsdk.InitializationDetails
 import com.statsig.androidsdk.Statsig
@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.rx2.asFlow
@@ -31,6 +33,28 @@ import timber.log.Timber
 
 enum class StatsigGateKey(val key: String) {
     ANDROID_VIDEO_FEED("android_video_feed")
+}
+
+object StatsigExperiments {
+    sealed interface Experiment<T> {
+        val name: String
+        val parameters: T
+    }
+
+    object NoOpAuthenticatedUsers : Experiment<NoOpAuthenticatedUsers.Parameters> {
+        override val name = "logged_in_aa_experiment"
+        override val parameters = Parameters
+        object Parameters {
+            const val TEST = "test_parameter"
+        }
+    }
+    object NoOpAnonymousUsers : Experiment<NoOpAnonymousUsers.Parameters> {
+        override val name = "logged_out_aa_experiment_android"
+        override val parameters = Parameters
+        object Parameters {
+            const val TEST = "test_parameter"
+        }
+    }
 }
 
 class StatsigException(cause: Throwable) : Exception(cause)
@@ -51,10 +75,12 @@ interface StatsigClientType {
     fun getFeatureGate(gateName: String): FeatureGate = Statsig.getFeatureGate(gateName)
     fun getExperiment(experimentName: String) = Statsig.getExperiment(experimentName) // TODO: for test MOCK statsig DynamicConfig type or expose to the rest of the app just the json values, will explore in the future
     suspend fun updateUser(user: StatsigUser) = Statsig.updateUser(user)
-    fun getStableId() = Statsig.getStatsigMetadata().stableID
+    fun getStableId() = if (Statsig.isInitialized()) Statsig.getStatsigMetadata().stableID else null
 
     /** Emits true once the SDK has been successfully initialized. */
     val isReady: StateFlow<Boolean>
+
+    val statsigUser: StateFlow<StatsigUser>
 
     suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?)
 }
@@ -73,15 +99,12 @@ open class StatsigClient @JvmOverloads constructor(
     private val context: Context,
     private val currentUser: CurrentUserTypeV2,
     private val segmentTrackingClient: SegmentTrackingClient,
-    private val getAnonymousId: () -> String? = {
-        Analytics.with(context).analyticsContext.traits().anonymousId()
-    },
     private val sdkInitializer: suspend StatsigClient.() -> InitializationDetails? = {
         val isProduction = build.isRelease && Build.isExternal()
         val options = StatsigOptions().apply {
             setTier(if (isProduction) Tier.PRODUCTION else Tier.STAGING)
         }
-        val user = StatsigUser()
+        val user = statsigUser.value
         val details = Statsig.initialize(
             application = context as KSApplication,
             if (isProduction) Secrets.Statsig.PRODUCTION else Secrets.Statsig.STAGING,
@@ -103,6 +126,9 @@ open class StatsigClient @JvmOverloads constructor(
 
     protected val _isReady = MutableStateFlow(false)
     override val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
+
+    private val _statsigUser = MutableStateFlow(StatsigUser())
+    override val statsigUser = _statsigUser.asStateFlow()
 
     override fun getSDKKey() =
         if (build.isRelease && Build.isExternal()) Secrets.Statsig.PRODUCTION
@@ -147,11 +173,15 @@ open class StatsigClient @JvmOverloads constructor(
             }
                 .map { (statsigIsReady, segmentIsReady, optionalUser) ->
                     val stableId = if (statsigIsReady) getStableId() else null
-                    val segmentAnonymousId = if (segmentIsReady) getAnonymousId() else null
+                    val segmentAnonymousId = if (segmentIsReady) segmentTrackingClient.getAnonymousIdOrNull() else null
                     val userId = if (optionalUser.isPresent()) optionalUser.getValue()?.id().toString() else null
                     Triple(stableId, segmentAnonymousId, userId)
                 }
-                // TODO: consider debounce
+                .onEach {
+                    val (stableId, segmentAnonymousId, userId) = it
+                    Timber.d("onEach set of user IDs: (stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId)")
+                }
+                .distinctUntilChanged()
                 .collect {
                     val (stableId, segmentAnonymousId, userId) = it
                     handleObservedUserData(stableId, segmentAnonymousId, userId)
@@ -160,14 +190,13 @@ open class StatsigClient @JvmOverloads constructor(
     }
 
     override suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?) {
-        // `stableId` is automatically attached to `StatsigUser` internally, but included here for clarity, testing, and debugging
         Timber.d("handleObservedUserData(stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId)")
 
-        if (stableId == null && segmentAnonymousId == null && userId == null) return
+        if (stableId == null) return
 
-        val statsigUser = StatsigUser()
+        val statsigUser = StatsigUser() // `stableId` is automatically attached to `StatsigUser` internally
         segmentAnonymousId?.let {
-            statsigUser.customIDs = mapOf("segmentAnonymousId" to it)
+            statsigUser.customIDs = mapOf(KEY_SEGMENT_ANONYMOUS_ID to it)
         }
         userId?.let {
             statsigUser.userID = userId
@@ -176,6 +205,7 @@ open class StatsigClient @JvmOverloads constructor(
         try {
             Timber.d("Statsig.updateUser($statsigUser):")
             updateUser(statsigUser)
+            _statsigUser.value = statsigUser
             val initializeResponseJson = Statsig.runCatching { getInitializeResponseJson() }.getOrNull()
             initializeResponseJson?.let {
                 Timber.d("- EvaluationDetails: ${it.getEvalDetails()}")
@@ -188,5 +218,14 @@ open class StatsigClient @JvmOverloads constructor(
 
     override suspend fun updateUser(user: StatsigUser) {
         super.updateUser(user)
+    }
+
+    @VisibleForTesting
+    fun setStatsigUser(user: StatsigUser) {
+        _statsigUser.value = user
+    }
+
+    companion object {
+        const val KEY_SEGMENT_ANONYMOUS_ID = "segmentAnonymousID"
     }
 }

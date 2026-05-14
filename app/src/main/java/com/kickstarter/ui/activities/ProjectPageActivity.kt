@@ -95,6 +95,7 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.projectpage.AddOnsViewModel
 import com.kickstarter.viewmodels.projectpage.CheckoutFlowViewModel
+import com.kickstarter.viewmodels.projectpage.ExperimentsViewModel
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.PagerTabConfig
 import com.kickstarter.viewmodels.projectpage.ProjectPageViewModel
@@ -145,6 +146,9 @@ class ProjectPageActivity :
 
     private lateinit var similarProjectsViewModelFactory: SimilarProjectsViewModel.Factory
     private val similarProjectsViewModel: SimilarProjectsViewModel by viewModels { similarProjectsViewModelFactory }
+
+    private lateinit var experimentsViewModelFactory: ExperimentsViewModel.Factory
+    private val experimentsViewModel: ExperimentsViewModel by viewModels { experimentsViewModelFactory }
 
     private lateinit var stripe: Stripe
     private lateinit var flowController: PaymentSheet.FlowController
@@ -202,6 +206,7 @@ class ProjectPageActivity :
             addOnsViewModelFactory = AddOnsViewModel.Factory(env)
             latePledgeCheckoutViewModelFactory = LatePledgeCheckoutViewModel.Factory(env)
             similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
+            experimentsViewModelFactory = ExperimentsViewModel.Factory(env)
             stripe = requireNotNull(env.stripe())
         }
 
@@ -215,6 +220,7 @@ class ProjectPageActivity :
         this.ksString = requireNotNull(environment.ksString())
 
         viewModel.configureWith(intent)
+        experimentsViewModel
 
         // Do not configure the pager at other lifecycle events apart from OnCreate
         if (savedInstanceState == null) {

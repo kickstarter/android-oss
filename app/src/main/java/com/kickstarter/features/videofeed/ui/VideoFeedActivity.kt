@@ -91,18 +91,18 @@ class VideoFeedActivity : ComponentActivity() {
                             previousScreen = ThirdPartyEventValues.ScreenName.DISCOVERY.value
                         )
                     },
-                    onVideoImpression = { project, position ->
-                        viewModel.onVideoImpression(project, position)
+                    onVideoImpression = { videoFeedItem, position ->
+                        viewModel.onVideoImpression(videoFeedItem, position)
                     },
-                    onVideoPageSettled = { toProject, toPosition, fromProject, watchTimeMs, videoDurationMs ->
-                        viewModel.onVideoPageSettled(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs)
+                    onVideoPageSettled = { videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs ->
+                        viewModel.onVideoPageSettled(videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs)
                     },
                     onPlayPauseTap = { project, isPlaying ->
                         val cta = if (isPlaying) CtaContextName.VIDEO_PLAY else CtaContextName.VIDEO_PAUSE
                         viewModel.onCTAClicked(project, cta)
                     },
-                    onProgressBarTap = { project, progress ->
-                        viewModel.onProgressBarTapped(project, progress)
+                    onProgressBarTap = { videoFeedItem, progress ->
+                        viewModel.onProgressBarTapped(videoFeedItem, progress)
                     },
                     onShareCTAClick = { project ->
                         viewModel.onCTAClicked(project, CtaContextName.VIDEO_SHARE)

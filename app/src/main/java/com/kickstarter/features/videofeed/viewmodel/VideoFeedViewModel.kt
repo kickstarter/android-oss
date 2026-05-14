@@ -120,22 +120,22 @@ class VideoFeedViewModel(
         }
     }
 
-    fun onVideoImpression(project: Project, position: Int) {
-        analyticEvents.trackVideoFeedImpression(project, position, entrySurface)
+    fun onVideoImpression(item: VideoFeedItem, position: Int) {
+        analyticEvents.trackVideoFeedImpression(item, position, entrySurface)
     }
 
     fun onVideoPageSettled(
-        toProject: Project,
+        videoFeedItem: VideoFeedItem,
         toPosition: Int,
         fromProject: Project,
         watchTimeMs: Long?,
         videoDurationMs: Long?
     ) {
-        analyticEvents.trackVideoFeedPageViewed(toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface)
+        analyticEvents.trackVideoFeedPageViewed(videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface)
     }
 
-    fun onProgressBarTapped(project: Project, percentageWatched: Float, watchTimeAtClick: Long? = null) {
-        analyticEvents.trackVideoFeedProgressBarTap(project, percentageWatched, watchTimeAtClick)
+    fun onProgressBarTapped(item: VideoFeedItem, percentageWatched: Float, watchTimeAtClick: Long? = null) {
+        analyticEvents.trackVideoFeedProgressBarTap(item, percentageWatched, watchTimeAtClick)
     }
 
     fun onCTAClicked(project: Project, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {

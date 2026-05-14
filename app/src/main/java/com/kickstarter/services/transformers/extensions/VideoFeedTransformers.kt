@@ -60,7 +60,8 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
         VideoFeedItem(
             badges = badges,
             project = project,
-            hlsUrl = frag.verticalVideo?.videoSources?.hls?.src
+            hlsUrl = frag.verticalVideo?.videoSources?.hls?.src,
+            videoId = decodeRelayId(frag.verticalVideo?.id) ?: -1
         )
     } ?: emptyList()
 

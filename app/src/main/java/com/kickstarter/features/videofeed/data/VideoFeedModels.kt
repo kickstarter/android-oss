@@ -20,7 +20,8 @@ sealed class KSVideoBadgeType {
 data class VideoFeedItem(
     val badges: List<KSVideoBadgeType>,
     val project: Project,
-    val hlsUrl: String?
+    val hlsUrl: String?,
+    val videoId: Long = 0
 )
 
 data class VideoFeedEnvelope(

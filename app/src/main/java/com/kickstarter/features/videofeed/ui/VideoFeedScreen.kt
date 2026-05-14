@@ -82,10 +82,10 @@ fun VideoFeedScreen(
     onShareIntentReady: (Intent) -> Unit = {},
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
-    onVideoImpression: (project: Project, position: Int) -> Unit = { _, _ -> },
-    onVideoPageSettled: (toProject: Project, toPosition: Int, fromProject: Project, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
+    onVideoImpression: (item: VideoFeedItem, position: Int) -> Unit = { _, _ -> },
+    onVideoPageSettled: (videoFeedItem: VideoFeedItem, toPosition: Int, fromProject: Project, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
     onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
-    onProgressBarTap: (project: Project, progress: Float) -> Unit = { _, _ -> },
+    onProgressBarTap: (item: VideoFeedItem, progress: Float) -> Unit = { _, _ -> },
     onShareCTAClick: (project: Project) -> Unit = { _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
@@ -113,12 +113,12 @@ fun VideoFeedScreen(
         val currentPage = pagerState.settledPage
         if (items.isEmpty() || currentPage >= items.size) return@LaunchedEffect
 
-        onVideoImpression(items[currentPage].project, currentPage)
+        onVideoImpression(items[currentPage], currentPage)
 
         if (previousSettledPage in items.indices && previousSettledPage != currentPage) {
             val watchData = watchTimeByPage.remove(previousSettledPage)
             onVideoPageSettled(
-                items[currentPage].project,
+                items[currentPage],
                 currentPage,
                 items[previousSettledPage].project,
                 watchData?.first,
@@ -162,7 +162,7 @@ fun VideoFeedScreen(
                     videoUrl = videoUrl,
                     isActive = pagerState.currentPage == page,
                     onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
-                    onProgressBarInteraction = { currentProgress -> onProgressBarTap(project, currentProgress) },
+                    onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
                     onBecameInactive = { watchTimeMs, videoDurationMs ->
                         watchTimeByPage[page] = Pair(watchTimeMs, videoDurationMs)
                     },

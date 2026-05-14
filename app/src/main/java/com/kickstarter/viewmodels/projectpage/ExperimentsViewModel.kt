@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.StatsigExperiments
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -24,6 +25,7 @@ class ExperimentsViewModel(
 
     init {
         scope.launch {
+            statsigClient.isReady.first { it }
             statsigClient.statsigUser
                 .onEach {
                     Timber.d(

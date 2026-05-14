@@ -416,6 +416,30 @@ class StatsigClientTest : KSRobolectricTestCase() {
         assertEquals(StatsigUser(), statsigClient.statsigUser.value)
     }
 
+    @Test
+    fun `updateUser - method is not called when StatsigClient is not ready`() = runTest {
+        val testScope = TestScope(UnconfinedTestDispatcher(testScheduler))
+
+        var count = 0
+
+        val currentUser = MockCurrentUserV2()
+        val segmentTrackingClient = mockSegmentTrackingClient()
+        val statsigClient = object : MockStatsigClient(
+            context = application(),
+            currentUser = currentUser,
+            segmentTrackingClient = segmentTrackingClient,
+            startReady = false
+        ) {
+            override suspend fun updateUser(user: StatsigUser) { count++ }
+        }
+
+        statsigClient.observeUserAndFetchConfigs(testScope)
+        segmentTrackingClient.initialize()
+        currentUser.login(UserFactory.user())
+
+        assertEquals(0, count)
+    }
+
     companion object {
         var initializationDetails: InitializationDetails? = null
     }

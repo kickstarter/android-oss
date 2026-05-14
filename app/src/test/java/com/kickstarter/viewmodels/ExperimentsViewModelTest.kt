@@ -21,7 +21,7 @@ class ExperimentsViewModelTest : KSRobolectricTestCase() {
 
     private fun mockStatsigClient(
         getExperiment: (String) -> Unit
-    ) = object : MockStatsigClient(context = application()) {
+    ) = object : MockStatsigClient(context = application(), startReady = false) {
         override fun getExperiment(experimentName: String): DynamicConfig {
             getExperiment(experimentName)
             return super.getExperiment(experimentName)
@@ -31,6 +31,27 @@ class ExperimentsViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher) {
         viewModel = ExperimentsViewModel.Factory(environment, dispatcher)
             .create(ExperimentsViewModel::class.java)
+    }
+
+    @Test
+    fun `test getExperiment is only called when StatsigClient is ready`() = runTest {
+        var count = 0
+        val statsigClient = mockStatsigClient { experimentName ->
+            count++
+        }
+
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        setUpEnvironment(environment, unconfinedDispatcher)
+
+        assertEquals(0, count)
+
+        statsigClient.triggerReady()
+
+        assertEquals(2, count)
     }
 
     @Test
@@ -46,6 +67,8 @@ class ExperimentsViewModelTest : KSRobolectricTestCase() {
 
         val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
         setUpEnvironment(environment, unconfinedDispatcher)
+
+        statsigClient.triggerReady()
 
         assertEquals(1, countMap[StatsigExperiments.NoOpAuthenticatedUsers.name])
         assertEquals(1, countMap[StatsigExperiments.NoOpAnonymousUsers.name])

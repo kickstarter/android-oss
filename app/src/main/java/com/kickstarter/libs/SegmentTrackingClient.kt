@@ -78,7 +78,9 @@ open class SegmentTrackingClient(
     }
 
     override fun getAnonymousIdOrNull() = try {
-        Analytics.with(context).analyticsContext.traits().anonymousId()
+        if (isEnabled())
+            Analytics.with(context).analyticsContext.traits().anonymousId()
+        else null
     } catch (_: Exception) {
         null
     }

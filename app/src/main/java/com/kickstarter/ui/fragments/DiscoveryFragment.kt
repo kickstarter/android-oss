@@ -281,7 +281,7 @@ class DiscoveryFragment : Fragment() {
     }
 
     private fun startVideoFeedActivity() {
-        activity?.startVideoFeed()
+        activity?.startVideoFeed(ThirdPartyEventValues.ScreenName.DISCOVERY.value)
     }
 
     private fun startSetPasswordActivity(email: String) {

@@ -5,6 +5,8 @@ import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
@@ -23,8 +25,8 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: VideoFeedViewModel
 
-    private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher) {
-        viewModel = VideoFeedViewModel.Factory(environment, dispatcher)
+    private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher, entrySurface: String = "") {
+        viewModel = VideoFeedViewModel.Factory(environment, entrySurface, dispatcher)
             .create(VideoFeedViewModel::class.java)
     }
 
@@ -291,4 +293,53 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
 
         assertTrue(viewModel.isUserLoggedIn.value)
     }
+
+    // region Analytics
+
+    @Test
+    fun `onVideoImpression sends PAGE_VIEWED`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), dispatcher)
+
+        viewModel.onVideoImpression(project, position = 0)
+
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun `onVideoPageSettled sends PAGE_VIEWED`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val toProject = ProjectFactory.project()
+        val fromProject = ProjectFactory.caProject()
+        setUpEnvironment(environment(), dispatcher)
+
+        viewModel.onVideoPageSettled(toProject, 1, fromProject, 4000L, 30000L)
+
+        segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun `onCTAClicked sends CTA_CLICKED`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), dispatcher)
+
+        viewModel.onCTAClicked(project, CtaContextName.VIDEO_SAVE)
+
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun `onProgressBarTapped sends CTA_CLICKED`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), dispatcher)
+
+        viewModel.onProgressBarTapped(project, percentageWatched = 0.5f)
+
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    // endregion
 }

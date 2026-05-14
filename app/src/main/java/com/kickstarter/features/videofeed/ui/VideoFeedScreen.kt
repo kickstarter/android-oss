@@ -81,17 +81,52 @@ fun VideoFeedScreen(
     onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
     onShareIntentReady: (Intent) -> Unit = {},
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
-    projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> }
+    projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
+    onVideoImpression: (project: Project, position: Int) -> Unit = { _, _ -> },
+    onVideoPageSettled: (toProject: Project, toPosition: Int, fromProject: Project, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
+    onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
+    onProgressBarTap: (project: Project, progress: Float) -> Unit = { _, _ -> },
+    onShareCTAClick: (project: Project) -> Unit = { _ -> }
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
+
+    var previousSettledPage by remember { mutableStateOf(-1) }
+    // Stores (watchTimeMs, videoDurationMs) per page index as each player deactivates.
+    // Written by KSVideoPlayer.onBecameInactive during the swipe animation; read when
+    // settledPage fires after the animation completes, so the data is always ready.
+    val watchTimeByPage = remember { mutableMapOf<Int, Pair<Long, Long>>() }
     var shareData: SocialShareData? by remember { mutableStateOf(null) }
 
-    // - Threshold: items.size - (beyondViewportPageCount + 2)
+    // - Pagination:
+    // Threshold: items.size - (beyondViewportPageCount + 2)
     // Triggers before the pager pre-renders the last page, keeping at least one rendered while the next page loads.
     LaunchedEffect(pagerState.currentPage, items.size) {
         if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
             onLoadMore()
         }
+    }
+
+    // - Analytics:
+    // - Impression fires on every settled page, including first load.
+    // - Page-viewed (swipe + watch data) fires only when navigating from a previous video.
+    LaunchedEffect(pagerState.settledPage, items.isEmpty()) {
+        val currentPage = pagerState.settledPage
+        if (items.isEmpty() || currentPage >= items.size) return@LaunchedEffect
+
+        onVideoImpression(items[currentPage].project, currentPage)
+
+        if (previousSettledPage in items.indices && previousSettledPage != currentPage) {
+            val watchData = watchTimeByPage.remove(previousSettledPage)
+            onVideoPageSettled(
+                items[currentPage].project,
+                currentPage,
+                items[previousSettledPage].project,
+                watchData?.first,
+                watchData?.second
+            )
+        }
+
+        previousSettledPage = currentPage
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -126,6 +161,11 @@ fun VideoFeedScreen(
                 KSVideoPlayer(
                     videoUrl = videoUrl,
                     isActive = pagerState.currentPage == page,
+                    onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
+                    onProgressBarInteraction = { currentProgress -> onProgressBarTap(project, currentProgress) },
+                    onBecameInactive = { watchTimeMs, videoDurationMs ->
+                        watchTimeByPage[page] = Pair(watchTimeMs, videoDurationMs)
+                    },
                     overlayContent = { hazeState ->
                         Column(
                             modifier = Modifier
@@ -149,6 +189,7 @@ fun VideoFeedScreen(
                                         imageUrl = project.photo()?.full() ?: "",
                                         creatorName = project.creator()?.name() ?: ""
                                     )
+                                    onShareCTAClick(project)
                                 },
                                 onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                             )

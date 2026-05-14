@@ -29,6 +29,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.VIDEO_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ACTIVITY_TRACKING_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.ENABLE_NOTIFICATIONS_PROMPT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.ADDRESS
@@ -66,6 +67,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGNUP_LOGIN
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -96,6 +98,7 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ProjectData
 import java.util.Locale
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.VIDEO_FEED as VIDEO_FEED_LOCATION
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
@@ -916,6 +919,93 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ONBOARDING.contextName)
         props[CONTEXT_SECTION.contextName] = OnboardingPage.SIGNUP_LOGIN
         props[CONTEXT_CTA.contextName] = SIGNUP_LOGIN.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    // VIDEO FEED
+
+    /**
+     * Fires every time a video settles as the primary visible item, including the first load.
+     * Covers impression measurement independently of navigation.
+     *
+     * @param project: The project now in the primary position.
+     * @param position: 0-based index of the video in this session.
+     */
+    fun trackVideoFeedImpression(project: Project, position: Int, entrySurface: String) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
+        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, position))
+        props["video_feed_entry_surface"] = entrySurface
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Fires when the user swipes to a new video (page settles). Combines swipe
+     * navigation and watch-progress data into a single PAGE_VIEWED event. Never fires on
+     * the initial feed load — only on explicit user navigation.
+     *
+     * @param toProject: The project now in the primary position.
+     * @param toPosition: 0-based index of the destination video in this session.
+     * @param fromProject: The project the user swiped away from.
+     * @param watchTimeMs: Milliseconds the previous video was in the primary position.
+     * @param videoDurationMs: Total duration of the previous video in milliseconds.
+     */
+    fun trackVideoFeedPageViewed(
+        toProject: Project,
+        toPosition: Int,
+        fromProject: Project,
+        watchTimeMs: Long?,
+        videoDurationMs: Long?,
+        entrySurface: String
+    ) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
+        props.putAll(
+            AnalyticEventsUtils.videoFeedPageViewedProperties(
+                toProject, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface
+            )
+        )
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Fires when the user taps the video progress bar while watching.
+     *
+     * @param project: The project whose progress bar was tapped.
+     * @param percentageWatched: Value from 0.0 to 1.0 representing watch completion at tap time.
+     * @param watchTimeAtClick: Optional milliseconds watched at the moment of the tap.
+     */
+    fun trackVideoFeedProgressBarTap(project: Project, percentageWatched: Float, watchTimeAtClick: Long? = null) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_CTA.contextName] = VIDEO_PROGRESS_BAR.contextName
+        props.putAll(AnalyticEventsUtils.videoFeedItemProperties(project, 0))
+        props["video_feed_percentage_watched"] = percentageWatched
+        watchTimeAtClick?.let { props["video_feed_watch_time_at_click"] = it }
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Fires for every tappable action in the video feed: save, follow, share, and all
+     * video player controls (play, pause, forward, progress bar tap).
+     *
+     * @param project: The project the action was taken on.
+     * @param ctaType: The specific action that was tapped.
+     * @param watchTimeAtClick: Optional milliseconds watched at the moment of the tap.
+     */
+    fun trackVideoFeedCTAClicked(
+        project: Project,
+        ctaType: EventContextValues.CtaContextName,
+        watchTimeAtClick: Long? = null
+    ) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
+        props[CONTEXT_CTA.contextName] = ctaType.contextName
+        props["video_feed_video_id"] = project.id().toString()
+        props["video_feed_project_id"] = project.id().toString()
+        watchTimeAtClick?.let { props["video_feed_watch_time_at_click"] = it }
         client.track(CTA_CLICKED.eventName, props)
     }
 

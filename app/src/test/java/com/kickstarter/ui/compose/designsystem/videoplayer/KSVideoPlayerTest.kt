@@ -3,6 +3,9 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 import android.graphics.Matrix
 import android.view.TextureView
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
@@ -385,6 +388,112 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `onBecameInactive fires when active player transitions to inactive`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.currentPosition).thenReturn(3000L)
+        `when`(mockPlayer.duration).thenReturn(10000L)
+
+        var isActive by mutableStateOf(true)
+        var capturedWatchTime: Long? = null
+        var capturedDuration: Long? = null
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = isActive,
+                    player = mockPlayer,
+                    onBecameInactive = { watchTimeMs, videoDurationMs ->
+                        capturedWatchTime = watchTimeMs
+                        capturedDuration = videoDurationMs
+                    }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        isActive = false
+        composeTestRule.waitForIdle()
+
+        assertEquals(3000L, capturedWatchTime)
+        assertEquals(10000L, capturedDuration)
+    }
+
+    @Test
+    fun `onBecameInactive is not called when player starts inactive`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        var callCount = 0
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = false,
+                    player = mockPlayer,
+                    onBecameInactive = { _, _ -> callCount++ }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        assertEquals(0, callCount)
+    }
+
+    @Test
+    fun `onBecameInactive is not called when inactive player leaves composition`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        var callCount = 0
+        var showPlayer by mutableStateOf(true)
+
+        composeTestRule.setContent {
+            KSTheme {
+                if (showPlayer) {
+                    KSVideoPlayer(
+                        videoUrl = "https://example.com/video.mp4",
+                        isActive = false,
+                        player = mockPlayer,
+                        onBecameInactive = { _, _ -> callCount++ }
+                    )
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        showPlayer = false
+        composeTestRule.waitForIdle()
+
+        assertEquals(0, callCount)
+    }
+
+    @Test
+    fun `onBecameInactive reports zero duration when ExoPlayer returns TIME_UNSET`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.currentPosition).thenReturn(1000L)
+        `when`(mockPlayer.duration).thenReturn(Long.MIN_VALUE) // C.TIME_UNSET
+
+        var isActive by mutableStateOf(true)
+        var capturedDuration: Long? = null
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = isActive,
+                    player = mockPlayer,
+                    onBecameInactive = { _, videoDurationMs -> capturedDuration = videoDurationMs }
+                )
+            }
+        }
+
+        isActive = false
+        composeTestRule.waitForIdle()
+
+        assertEquals(0L, capturedDuration)
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

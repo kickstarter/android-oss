@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -130,7 +131,10 @@ fun KSVideoPlayer(
     isActive: Boolean,
     modifier: Modifier = Modifier,
     player: ExoPlayer? = null,
-    overlayContent: @Composable BoxScope.(HazeState) -> Unit = {}
+    overlayContent: @Composable BoxScope.(HazeState) -> Unit = {},
+    onPlayPauseToggle: (isPlaying: Boolean) -> Unit = {},
+    onProgressBarInteraction: (currentProgress: Float) -> Unit = {},
+    onBecameInactive: (watchTimeMs: Long, videoDurationMs: Long) -> Unit = { _, _ -> }
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
@@ -148,6 +152,12 @@ fun KSVideoPlayer(
 
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
+
+    // Keep references to the latest callback lambdas so lambdas inside remember(exoPlayer)
+    // blocks always invoke the current version even if the parent recomposes.
+    val onPlayPauseToggleState = rememberUpdatedState(onPlayPauseToggle)
+    val onProgressBarInteractionState = rememberUpdatedState(onProgressBarInteraction)
+    val onBecameInactiveState = rememberUpdatedState(onBecameInactive)
 
     // - Updated progress bar only when active and not scrubbing
     LaunchedEffect(isActive) {
@@ -173,6 +183,8 @@ fun KSVideoPlayer(
             showControls = !showControls
             if (showControls) exoPlayer.pause()
             else exoPlayer.play()
+            // showControls=true means paused; !showControls = isPlaying
+            onPlayPauseToggleState.value(!showControls)
         }
     }
 
@@ -190,6 +202,10 @@ fun KSVideoPlayer(
         {
             isScrubbing = true
             exoPlayer.pause()
+            val progressAtInteraction = if (exoPlayer.duration > 0L) {
+                exoPlayer.currentPosition.toFloat() / exoPlayer.duration
+            } else 0f
+            onProgressBarInteractionState.value(progressAtInteraction)
         }
     }
 
@@ -282,6 +298,17 @@ fun KSVideoPlayer(
     // External (pool) players are never released here — the pool owns their lifecycle.
     DisposableEffect(exoPlayer) {
         onDispose { if (player == null) exoPlayer.release() }
+    }
+
+    DisposableEffect(isActive) {
+        onDispose {
+            if (isActive) {
+                onBecameInactiveState.value(
+                    exoPlayer.currentPosition,
+                    exoPlayer.duration.coerceAtLeast(0L)
+                )
+            }
+        }
     }
 }
 

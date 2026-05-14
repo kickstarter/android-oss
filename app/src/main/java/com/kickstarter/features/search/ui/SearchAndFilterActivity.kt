@@ -58,7 +58,7 @@ class SearchAndFilterActivity : ComponentActivity() {
                                 previousScreen = ThirdPartyEventValues.ScreenName.SEARCH.value
                             )
                         },
-                        onVideoFeedBannerClicked = { startVideoFeed() }
+                        onVideoFeedBannerClicked = { startVideoFeed(ThirdPartyEventValues.ScreenName.SEARCH.value) }
                     )
                 }
             }

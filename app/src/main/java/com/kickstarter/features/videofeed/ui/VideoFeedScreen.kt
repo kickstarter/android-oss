@@ -153,7 +153,7 @@ fun VideoFeedScreen(
             }
             val percentageFounded by remember(page) {
                 derivedStateOf {
-                    if (pagerState.settledPage == page) project.percentageFunded() else 0f
+                    if (pagerState.settledPage == page) project.percentFunded()?.toFloat() ?: 0f else 0f
                 }
             }
 

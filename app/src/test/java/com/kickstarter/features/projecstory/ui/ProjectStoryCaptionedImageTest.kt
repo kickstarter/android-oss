@@ -143,12 +143,19 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
     fun `test image error with caption`() {
         val caption = "Aye aye, Caption"
 
+        var onSuccessCount = 0
+
         composeTestRule.setContent {
             ProjectStoryCaptionedImage(
                 image = "https://www.example.com/red.jpg",
                 caption = caption,
+                onSuccess = {
+                    onSuccessCount++
+                }
             )
         }
+
+        assertEquals(0, onSuccessCount)
 
         composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.IMAGE.name))
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Image))

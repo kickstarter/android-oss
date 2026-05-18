@@ -75,6 +75,9 @@ abstract class TrackingClient(
      */
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>)
 
+    // Alternatively `open` in `SegmentTrackingClient` pending any other tracking clients
+    abstract fun getAnonymousIdOrNull(): String?
+
     // Default property values
     override fun brand(): String = android.os.Build.BRAND
 

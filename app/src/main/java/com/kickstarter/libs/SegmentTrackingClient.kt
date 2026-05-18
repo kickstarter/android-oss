@@ -77,6 +77,14 @@ open class SegmentTrackingClient(
         }
     }
 
+    override fun getAnonymousIdOrNull() = try {
+        if (isEnabled())
+            Analytics.with(context).analyticsContext.traits().anonymousId()
+        else null
+    } catch (_: Exception) {
+        null
+    }
+
     private fun privateInitializer() {
         if (build.isDebug) {
             Timber.d("${type().tag} isEnabled: ${this.isEnabled()}")

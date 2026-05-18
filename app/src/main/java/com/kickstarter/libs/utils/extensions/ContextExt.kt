@@ -13,9 +13,11 @@ import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
@@ -91,8 +93,24 @@ fun Context.initializeExoplayer(): ExoPlayer {
         renderersFactory.forceDisableMediaCodecAsynchronousQueueing()
     }
 
+    // Cap buffer to prevent OOM when multiple players are alive simultaneously (e.g. pager with
+    // beyondViewportPageCount=1 keeps up to 3 instances). ExoPlayer's defaults (50s / unlimited
+    // bytes) let each instance consume 30-50 MB, exhausting the heap on constrained devices.
+    val loadControl = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(
+            /* minBufferMs */ 10_000,
+            /* maxBufferMs */ 20_000,
+            /* bufferForPlaybackMs */ 1_000,
+            /* bufferForPlaybackAfterRebufferMs */ 1_500
+        )
+        .setTargetBufferBytes(12 * 1024 * 1024)
+        .setPrioritizeTimeOverSizeThresholds(true)
+        .build()
+
     val player = ExoPlayer.Builder(this, renderersFactory)
         .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+        .setLoadControl(loadControl)
+        .setBandwidthMeter(DefaultBandwidthMeter.getSingletonInstance(this))
         .build()
 
     return player

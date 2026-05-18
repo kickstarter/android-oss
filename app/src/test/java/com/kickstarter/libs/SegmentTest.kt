@@ -112,6 +112,9 @@ class SegmentTest : KSRobolectricTestCase() {
             this._initialized.value = true
         }
         override fun isEnabled() = this.isInitialized
+
+        override fun getAnonymousIdOrNull(): String? =
+            if (isEnabled()) "00000000-0000-0000-0000-000000000000" else null
     }
 
     @Test

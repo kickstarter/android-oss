@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCardFactory
+import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_CHARACTER_COUNT
@@ -1879,18 +1880,20 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testVideoFeedImpression_Properties() {
         val project = ProjectFactory.project()
+        val videoId = 9876L
+        val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null, videoId = videoId)
         val client = client(null)
         client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackVideoFeedImpression(project, position = 2, entrySurface = "discovery")
+        segment.trackVideoFeedImpression(item, position = 2, entrySurface = "discovery")
 
         this.segmentTrack.assertValue(PAGE_VIEWED.eventName)
         val props = this.propertiesTest.value ?: mapOf()
         assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
         assertEquals(VIDEO_FEED_LOCATION.contextName, props[CONTEXT_LOCATION.contextName])
-        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(videoId.toString(), props["video_feed_video_id"])
         assertEquals(project.id().toString(), props["video_feed_project_id"])
         assertEquals(2, props["video_feed_position_in_session"])
         assertEquals("discovery", props["video_feed_entry_surface"])
@@ -1899,6 +1902,8 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testVideoFeedPageViewed_Properties() {
         val toProject = ProjectFactory.project()
+        val toVideoId = 9876L
+        val toItem = VideoFeedItem(badges = emptyList(), project = toProject, hlsUrl = null, videoId = toVideoId)
         val fromProject = ProjectFactory.caProject()
         val client = client(null)
         client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
@@ -1906,7 +1911,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         segment.trackVideoFeedPageViewed(
-            toProject = toProject,
+            videoFeedItem = toItem,
             toPosition = 1,
             fromProject = fromProject,
             watchTimeMs = 5000L,
@@ -1918,7 +1923,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val props = this.propertiesTest.value ?: mapOf()
         assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
         assertEquals(VIDEO_FEED_LOCATION.contextName, props[CONTEXT_LOCATION.contextName])
-        assertEquals(toProject.id().toString(), props["video_feed_video_id"])
+        assertEquals(toVideoId.toString(), props["video_feed_video_id"])
         assertEquals(toProject.id().toString(), props["video_feed_project_id"])
         assertEquals(1, props["video_feed_position_in_session"])
         assertEquals(fromProject.id().toString(), props["video_feed_from_video_id"])
@@ -1949,18 +1954,20 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testVideoFeedProgressBarTap_Properties() {
         val project = ProjectFactory.project()
+        val videoId = 9876L
+        val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null, videoId = videoId)
         val client = client(null)
         client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackVideoFeedProgressBarTap(project, percentageWatched = 0.75f, watchTimeAtClick = 8000L)
+        segment.trackVideoFeedProgressBarTap(item, percentageWatched = 0.75f, watchTimeAtClick = 8000L)
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
         val props = this.propertiesTest.value ?: mapOf()
         assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
         assertEquals(VIDEO_PROGRESS_BAR.contextName, props[CONTEXT_CTA.contextName])
-        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(videoId.toString(), props["video_feed_video_id"])
         assertEquals(project.id().toString(), props["video_feed_project_id"])
         assertEquals(0.75f, props["video_feed_percentage_watched"])
         assertEquals(8000L, props["video_feed_watch_time_at_click"])

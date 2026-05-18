@@ -299,10 +299,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `onVideoImpression sends PAGE_VIEWED`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
-        val project = ProjectFactory.project()
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
         setUpEnvironment(environment(), dispatcher)
 
-        viewModel.onVideoImpression(project, position = 0)
+        viewModel.onVideoImpression(item, position = 0)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -310,11 +310,11 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `onVideoPageSettled sends PAGE_VIEWED`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
-        val toProject = ProjectFactory.project()
+        val toItem = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
         val fromProject = ProjectFactory.caProject()
         setUpEnvironment(environment(), dispatcher)
 
-        viewModel.onVideoPageSettled(toProject, 1, fromProject, 4000L, 30000L)
+        viewModel.onVideoPageSettled(toItem, 1, fromProject, 4000L, 30000L)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
@@ -333,10 +333,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     @Test
     fun `onProgressBarTapped sends CTA_CLICKED`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
-        val project = ProjectFactory.project()
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
         setUpEnvironment(environment(), dispatcher)
 
-        viewModel.onProgressBarTapped(project, percentageWatched = 0.5f)
+        viewModel.onProgressBarTapped(item, percentageWatched = 0.5f)
 
         segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }

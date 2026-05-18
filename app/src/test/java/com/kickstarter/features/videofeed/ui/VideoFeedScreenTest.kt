@@ -22,6 +22,7 @@ import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumnTest
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCardTestTag
 import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -533,5 +534,54 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name).assertExists()
+    }
+
+    @Test
+    fun `share button triggers onShareCTAClick with the current project`() {
+        var capturedProject: Project? = null
+
+        val project = ProjectFactory.project().toBuilder().id(5001L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onShareCTAClick = { capturedProject = it }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+    }
+
+    @Test
+    fun `share button passes project photo url as share image`() {
+        val photoUrl = "https://example.com/cover.jpg"
+        val photo = Photo.builder().full(photoUrl).build()
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .id(5002L)
+            .photo(photo)
+            .build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        var shareImageUrl: String? = null
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    items = items,
+                    onShareCTAClick = { shareImageUrl = it.photo()?.full() }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(photoUrl, shareImageUrl)
     }
 }

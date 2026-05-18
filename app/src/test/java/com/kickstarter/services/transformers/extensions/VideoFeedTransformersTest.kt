@@ -114,7 +114,7 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `toVideoFeedEnvelope maps hlsUrl from lastUploadedVerticalVideo`() {
+    fun `toVideoFeedEnvelope maps hlsUrl from verticalVideo`() {
         val expectedUrl = "https://example.com/video.m3u8"
         val node = fixtureNode(
             project = fixtureProject(
@@ -197,6 +197,23 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `toVideoFeedEnvelope maps imageUrl to project photo full`() {
+        val url = "https://example.com/project-cover.jpg"
+        val node = fixtureNode(project = fixtureProject(imageUrl = url))
+        val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project
+
+        assertEquals(url, project.photo()?.full())
+    }
+
+    @Test
+    fun `toVideoFeedEnvelope maps empty imageUrl to empty photo full`() {
+        val node = fixtureNode(project = fixtureProject(imageUrl = ""))
+        val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project
+
+        assertEquals("", project.photo()?.full())
+    }
+
+    @Test
     fun `toVideoFeedEnvelope falls back to 0 and empty string when pledged amount is null`() {
         val node = fixtureNode(
             project = fixtureProject(
@@ -246,6 +263,7 @@ private fun fixtureProject(
     watchesCount: Int? = 10,
     sharesCount: Int = 5,
     isWatched: Boolean = false,
+    imageUrl: String = "https://example.com/project.jpg",
     pledged: VideoFeedProject.Pledged = VideoFeedProject.Pledged(
         __typename = "Money",
         amount = Amount(amount = "5000.00", currency = CurrencyCode.USD, symbol = "$")
@@ -273,6 +291,7 @@ private fun fixtureProject(
         watchesCount = watchesCount,
         sharesCount = sharesCount,
         isWatched = isWatched,
+        imageUrl = imageUrl,
         pledged = pledged,
         creator = creator,
         category = category,

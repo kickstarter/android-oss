@@ -2,6 +2,7 @@ package com.kickstarter.libs.utils
 
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
 import com.kickstarter.features.pledgedprojectsoverview.ui.PPOCardViewType
+import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventContextValues.VideoContextName.LENGTH
 import com.kickstarter.libs.utils.EventContextValues.VideoContextName.POSITION
@@ -351,16 +352,16 @@ object AnalyticEventsUtils {
         return properties
     }
 
-    fun videoFeedItemProperties(project: Project, position: Int): Map<String, Any> {
+    fun videoFeedItemProperties(item: VideoFeedItem, position: Int): Map<String, Any> {
         return hashMapOf(
-            "video_feed_video_id" to project.id().toString(),
-            "video_feed_project_id" to project.id().toString(),
+            "video_feed_video_id" to item.videoId.toString(),
+            "video_feed_project_id" to item.project.id().toString(),
             "video_feed_position_in_session" to position
         )
     }
 
     fun videoFeedPageViewedProperties(
-        toProject: Project,
+        item: VideoFeedItem,
         toPosition: Int,
         fromProject: Project? = null,
         watchTimeMs: Long? = null,
@@ -368,7 +369,7 @@ object AnalyticEventsUtils {
         entrySurface: String = ""
     ): Map<String, Any> {
         val props = HashMap<String, Any>()
-        props.putAll(videoFeedItemProperties(toProject, toPosition))
+        props.putAll(videoFeedItemProperties(item, toPosition))
         fromProject?.let { props["video_feed_from_video_id"] = it.id().toString() }
         watchTimeMs?.let { props["video_feed_total_watch_time"] = it }
         videoDurationMs?.let { props["video_feed_total_video_duration"] = it }

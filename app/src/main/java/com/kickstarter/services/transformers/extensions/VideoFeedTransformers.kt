@@ -6,6 +6,7 @@ import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.models.Avatar
 import com.kickstarter.models.Category
+import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
@@ -36,6 +37,9 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
         val category = Category.builder()
             .name(frag.category?.name)
             .build()
+        val photo = Photo.builder()
+            .full(frag.imageUrl)
+            .build()
         val project = Project.builder()
             .id(decodeRelayId(frag.id) ?: -1)
             .name(frag.name)
@@ -49,13 +53,15 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
             .isStarred(frag.isWatched)
             .pledged(frag.pledged?.amount?.amount?.toDouble() ?: 0.0)
             .currencySymbol(frag.pledged?.amount?.symbol ?: "")
+            .photo(photo)
             .creator(creator)
             .category(category)
             .build()
         VideoFeedItem(
             badges = badges,
             project = project,
-            hlsUrl = frag.verticalVideo?.videoSources?.hls?.src
+            hlsUrl = frag.verticalVideo?.videoSources?.hls?.src,
+            videoId = decodeRelayId(frag.verticalVideo?.id) ?: -1
         )
     } ?: emptyList()
 

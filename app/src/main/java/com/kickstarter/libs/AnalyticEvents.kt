@@ -948,14 +948,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param videoFeedItem: The item now in the primary position.
      * @param toPosition: 0-based index of the destination video in this session.
-     * @param fromProject: The project the user swiped away from.
+     * @param fromVideoFeedItem: The item the user swiped away from.
      * @param watchTimeMs: Milliseconds the previous video was in the primary position.
      * @param videoDurationMs: Total duration of the previous video in milliseconds.
      */
     fun trackVideoFeedPageViewed(
         videoFeedItem: VideoFeedItem,
         toPosition: Int,
-        fromProject: Project,
+        fromVideoFeedItem: VideoFeedItem,
         watchTimeMs: Long?,
         videoDurationMs: Long?,
         entrySurface: String
@@ -965,7 +965,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_LOCATION.contextName] = VIDEO_FEED_LOCATION.contextName
         props.putAll(
             AnalyticEventsUtils.videoFeedPageViewedProperties(
-                videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface
+                videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs, entrySurface
             )
         )
         client.track(PAGE_VIEWED.eventName, props)

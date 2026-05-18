@@ -127,11 +127,11 @@ class VideoFeedViewModel(
     fun onVideoPageSettled(
         videoFeedItem: VideoFeedItem,
         toPosition: Int,
-        fromProject: Project,
+        fromVideoFeedItem: VideoFeedItem,
         watchTimeMs: Long?,
         videoDurationMs: Long?
     ) {
-        analyticEvents.trackVideoFeedPageViewed(videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs, entrySurface)
+        analyticEvents.trackVideoFeedPageViewed(videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs, entrySurface)
     }
 
     fun onProgressBarTapped(item: VideoFeedItem, percentageWatched: Float, watchTimeAtClick: Long? = null) {

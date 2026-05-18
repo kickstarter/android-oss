@@ -1903,8 +1903,9 @@ class SegmentTest : KSRobolectricTestCase() {
     fun testVideoFeedPageViewed_Properties() {
         val toProject = ProjectFactory.project()
         val toVideoId = 9876L
+        val fromVideoId = 1234L
         val toItem = VideoFeedItem(badges = emptyList(), project = toProject, hlsUrl = null, videoId = toVideoId)
-        val fromProject = ProjectFactory.caProject()
+        val fromItem = VideoFeedItem(badges = emptyList(), project = ProjectFactory.caProject(), hlsUrl = null, videoId = fromVideoId)
         val client = client(null)
         client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
@@ -1913,7 +1914,7 @@ class SegmentTest : KSRobolectricTestCase() {
         segment.trackVideoFeedPageViewed(
             videoFeedItem = toItem,
             toPosition = 1,
-            fromProject = fromProject,
+            fromVideoFeedItem = fromItem,
             watchTimeMs = 5000L,
             videoDurationMs = 20000L,
             entrySurface = "search"
@@ -1926,7 +1927,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(toVideoId.toString(), props["video_feed_video_id"])
         assertEquals(toProject.id().toString(), props["video_feed_project_id"])
         assertEquals(1, props["video_feed_position_in_session"])
-        assertEquals(fromProject.id().toString(), props["video_feed_from_video_id"])
+        assertEquals(fromVideoId.toString(), props["video_feed_from_video_id"])
         assertEquals(5000L, props["video_feed_total_watch_time"])
         assertEquals(20000L, props["video_feed_total_video_duration"])
         assertEquals("search", props["video_feed_entry_surface"])

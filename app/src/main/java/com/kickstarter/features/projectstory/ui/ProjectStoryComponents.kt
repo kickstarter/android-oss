@@ -8,6 +8,7 @@ import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.text.AnnotatedString
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImagePainter
 import com.kickstarter.features.projectstory.data.RichTextItem
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -180,10 +182,20 @@ fun RichTextItemPhotoComponent(item: RichTextItem.Photo, link: String? = null) {
     val imageUrl = item.asset?.url ?: item.url
     // `item.caption` can be empty
     val caption = item.caption.ifBlank { null }
+    val pinnableContainer = LocalPinnableContainer.current
+    val onSuccess: (AsyncImagePainter.State.Success) -> Unit = remember(pinnableContainer) {
+        {
+            // TODO: We should be able to use the dimensions of the `Drawable` contained in the `Success`
+            //  state to further optimize for only pinning tall images as determined by aspect ratio or
+            //  compared to the screen size/resolution.
+            pinnableContainer?.pin()
+        }
+    }
     ProjectStoryCaptionedImage(
         image = imageUrl,
         caption = caption,
-        link = link
+        link = link,
+        onSuccess = onSuccess
     )
 }
 

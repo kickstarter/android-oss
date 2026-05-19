@@ -228,8 +228,9 @@
             android:theme="@style/VideoPlayerActivity" />
         <activity
             android:name=".features.videofeed.ui.VideoFeedActivity"
-            android:configChanges="keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|screenSize|orientation"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/KSTheme" />
         <activity
             android:name=".ui.activities.BackingActivity"

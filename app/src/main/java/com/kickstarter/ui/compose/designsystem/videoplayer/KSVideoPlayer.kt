@@ -40,6 +40,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
@@ -152,12 +155,33 @@ fun KSVideoPlayer(
 
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     // Keep references to the latest callback lambdas so lambdas inside remember(exoPlayer)
     // blocks always invoke the current version even if the parent recomposes.
     val onPlayPauseToggleState = rememberUpdatedState(onPlayPauseToggle)
     val onProgressBarInteractionState = rememberUpdatedState(onProgressBarInteraction)
     val onBecameInactiveState = rememberUpdatedState(onBecameInactive)
+
+    DisposableEffect(lifecycleOwner, isActive) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    if (isActive) {
+                        exoPlayer.play()
+                    }
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    exoPlayer.pause()
+                }
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     // - Updated progress bar only when active and not scrubbing
     LaunchedEffect(isActive) {

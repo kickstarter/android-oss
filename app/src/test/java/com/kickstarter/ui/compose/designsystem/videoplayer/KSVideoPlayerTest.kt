@@ -3,6 +3,7 @@ package com.kickstarter.ui.compose.designsystem.videoplayer
 import android.graphics.Matrix
 import android.view.TextureView
 import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,12 +17,17 @@ import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
@@ -494,6 +500,85 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         composeTestRule.waitForIdle()
 
         assertEquals(0L, capturedDuration)
+    }
+
+    @Test
+    fun `test player pauses on lifecycle ON_PAUSE and resumes on ON_RESUME when active`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        val lifecycleOwner = object : LifecycleOwner {
+            private val registry = LifecycleRegistry(this)
+            override val lifecycle: Lifecycle = registry
+            fun handleEvent(event: Lifecycle.Event) = registry.handleLifecycleEvent(event)
+        }
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
+                    KSVideoPlayer(
+                        videoUrl = "https://example.com/video.mp4",
+                        isActive = true,
+                        player = mockPlayer
+                    )
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        // - Move to ON_PAUSE (simulates backgrounding)
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_PAUSE)
+        composeTestRule.waitForIdle()
+
+        // - Player should be paused (playWhenReady = false)
+        verify(mockPlayer).playWhenReady = false
+
+        // - Move back to ON_RESUME
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+        composeTestRule.waitForIdle()
+
+        // - Player should resume (playWhenReady = true)
+        verify(mockPlayer, atLeastOnce()).playWhenReady = true
+    }
+
+    @Test
+    fun `test player does not resume on lifecycle ON_RESUME when inactive`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        val lifecycleOwner = object : LifecycleOwner {
+            private val registry = LifecycleRegistry(this)
+            override val lifecycle: Lifecycle = registry
+            fun handleEvent(event: Lifecycle.Event) = registry.handleLifecycleEvent(event)
+        }
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
+                    KSVideoPlayer(
+                        videoUrl = "https://example.com/video.mp4",
+                        isActive = false,
+                        player = mockPlayer
+                    )
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        // - Move to ON_PAUSE
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_PAUSE)
+        composeTestRule.waitForIdle()
+
+        verify(mockPlayer, atLeastOnce()).playWhenReady = false
+
+        // - Move back to ON_RESUME
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+        composeTestRule.waitForIdle()
+
+        // - Player should NOT resume (playWhenReady should stay false or be set to false again)
+        // Since isActive is false, it should have been set to false initially and stay false.
+        verify(mockPlayer, atLeastOnce()).playWhenReady = false
+        verify(mockPlayer, never()).play()
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

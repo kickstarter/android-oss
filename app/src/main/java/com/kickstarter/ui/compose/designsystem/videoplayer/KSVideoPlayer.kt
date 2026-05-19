@@ -156,6 +156,7 @@ fun KSVideoPlayer(
     var showControls by remember { mutableStateOf(false) }
     val hazeState = rememberHazeState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    var isAppInForeground by remember { mutableStateOf(true) }
 
     // Keep references to the latest callback lambdas so lambdas inside remember(exoPlayer)
     // blocks always invoke the current version even if the parent recomposes.
@@ -163,17 +164,11 @@ fun KSVideoPlayer(
     val onProgressBarInteractionState = rememberUpdatedState(onProgressBarInteraction)
     val onBecameInactiveState = rememberUpdatedState(onBecameInactive)
 
-    DisposableEffect(lifecycleOwner, isActive) {
+    DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    if (isActive) {
-                        exoPlayer.play()
-                    }
-                }
-                Lifecycle.Event.ON_PAUSE -> {
-                    exoPlayer.pause()
-                }
+                Lifecycle.Event.ON_RESUME -> isAppInForeground = true
+                Lifecycle.Event.ON_PAUSE -> isAppInForeground = false
                 else -> {}
             }
         }
@@ -184,9 +179,10 @@ fun KSVideoPlayer(
     }
 
     // - Updated progress bar only when active and not scrubbing
-    LaunchedEffect(isActive) {
-        exoPlayer.playWhenReady = isActive
-        if (isActive) {
+    LaunchedEffect(isActive, isAppInForeground) {
+        val shouldPlay = isActive && isAppInForeground
+        exoPlayer.playWhenReady = shouldPlay
+        if (shouldPlay) {
             while (true) {
                 if (!isScrubbing) {
                     val duration = exoPlayer.duration

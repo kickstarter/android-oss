@@ -24,6 +24,10 @@ data class ShippingRulesState(
     val filteredRw: List<Reward> = emptyList()
 )
 
+enum class NoRewardPlacement {
+    START, END
+}
+
 /**
  * Will provide ShippingRulesState where:
  * `shippingRules` is the list of available shipping rules for a given project
@@ -41,7 +45,8 @@ class GetShippingRulesUseCase(
     private val config: Config?,
     private val projectRewards: List<Reward> = emptyList(),
     private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val noRewardPlacement: NoRewardPlacement = NoRewardPlacement.START
 ) {
 
     private val filteredRewards = mutableListOf<Reward>()
@@ -109,7 +114,7 @@ class GetShippingRulesUseCase(
                     project
                 )
 
-                setRewardsList(RewardUtils.filterHasStarted(projectRewards))
+                setRewardsList(RewardUtils.filterHasStarted(projectRewards), noRewardPlacement)
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
@@ -153,7 +158,7 @@ class GetShippingRulesUseCase(
      * Sets [filteredRewards] to the full list in backend order (no reward first when present).
      * No location-based filtering: reward cards show "unavailable" UI when shipping is not available.
      */
-    private fun setRewardsList(rewards: List<Reward>) {
+    private fun setRewardsList(rewards: List<Reward>, noRewardPlacement: NoRewardPlacement) {
         filteredRewards.clear()
         var noReward: Reward? = null
         rewards.forEach { rw ->
@@ -163,7 +168,12 @@ class GetShippingRulesUseCase(
                 filteredRewards.add(rw)
             }
         }
-        noReward?.let { filteredRewards.add(0, it) }
+        noReward?.let {
+            when (noRewardPlacement) {
+                NoRewardPlacement.END -> filteredRewards.add(it)
+                else -> filteredRewards.add(0, it)
+            }
+        }
     }
 
     /**

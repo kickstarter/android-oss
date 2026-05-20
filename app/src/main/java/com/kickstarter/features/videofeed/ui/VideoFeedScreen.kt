@@ -83,7 +83,7 @@ fun VideoFeedScreen(
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     onVideoImpression: (item: VideoFeedItem, position: Int) -> Unit = { _, _ -> },
-    onVideoPageSettled: (videoFeedItem: VideoFeedItem, toPosition: Int, fromProject: Project, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
+    onVideoPageSettled: (videoFeedItem: VideoFeedItem, toPosition: Int, fromVideoFeedItem: VideoFeedItem, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
     onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
     onProgressBarTap: (item: VideoFeedItem, progress: Float) -> Unit = { _, _ -> },
     onShareCTAClick: (project: Project) -> Unit = { _ -> }
@@ -120,7 +120,7 @@ fun VideoFeedScreen(
             onVideoPageSettled(
                 items[currentPage],
                 currentPage,
-                items[previousSettledPage].project,
+                items[previousSettledPage],
                 watchData?.first,
                 watchData?.second
             )

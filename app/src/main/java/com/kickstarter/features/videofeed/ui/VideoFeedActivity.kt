@@ -94,8 +94,8 @@ class VideoFeedActivity : ComponentActivity() {
                     onVideoImpression = { videoFeedItem, position ->
                         viewModel.onVideoImpression(videoFeedItem, position)
                     },
-                    onVideoPageSettled = { videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs ->
-                        viewModel.onVideoPageSettled(videoFeedItem, toPosition, fromProject, watchTimeMs, videoDurationMs)
+                    onVideoPageSettled = { videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs ->
+                        viewModel.onVideoPageSettled(videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs)
                     },
                     onPlayPauseTap = { project, isPlaying ->
                         val cta = if (isPlaying) CtaContextName.VIDEO_PLAY else CtaContextName.VIDEO_PAUSE

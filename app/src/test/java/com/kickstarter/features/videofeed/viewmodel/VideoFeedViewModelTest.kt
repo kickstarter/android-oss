@@ -311,10 +311,10 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     fun `onVideoPageSettled sends PAGE_VIEWED`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val toItem = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
-        val fromProject = ProjectFactory.caProject()
+        val fromItem = VideoFeedItem(badges = emptyList(), project = ProjectFactory.caProject(), hlsUrl = null)
         setUpEnvironment(environment(), dispatcher)
 
-        viewModel.onVideoPageSettled(toItem, 1, fromProject, 4000L, 30000L)
+        viewModel.onVideoPageSettled(toItem, 1, fromItem, 4000L, 30000L)
 
         segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }

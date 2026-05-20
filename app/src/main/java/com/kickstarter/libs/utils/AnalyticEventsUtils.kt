@@ -363,14 +363,14 @@ object AnalyticEventsUtils {
     fun videoFeedPageViewedProperties(
         item: VideoFeedItem,
         toPosition: Int,
-        fromProject: Project? = null,
+        fromVideoFeedItem: VideoFeedItem? = null,
         watchTimeMs: Long? = null,
         videoDurationMs: Long? = null,
         entrySurface: String = ""
     ): Map<String, Any> {
         val props = HashMap<String, Any>()
         props.putAll(videoFeedItemProperties(item, toPosition))
-        fromProject?.let { props["video_feed_from_video_id"] = it.id().toString() }
+        fromVideoFeedItem?.let { props["video_feed_from_video_id"] = it.videoId.toString() }
         watchTimeMs?.let { props["video_feed_total_watch_time"] = it }
         videoDurationMs?.let { props["video_feed_total_video_duration"] = it }
         if (entrySurface.isNotEmpty()) props["video_feed_entry_surface"] = entrySurface

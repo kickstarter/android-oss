@@ -8,7 +8,9 @@ import com.kickstarter.models.Avatar
 import com.kickstarter.models.Category
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
+import com.kickstarter.models.Urls
 import com.kickstarter.models.User
+import com.kickstarter.models.Web
 import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.type.BadgeTypeEnum
@@ -40,6 +42,9 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
         val photo = Photo.builder()
             .full(frag.imageUrl)
             .build()
+        val urls = Urls.builder()
+            .web(Web.builder().project(frag.url).build())
+            .build()
         val project = Project.builder()
             .id(decodeRelayId(frag.id) ?: -1)
             .name(frag.name)
@@ -56,6 +61,7 @@ fun VideoFeedQuery.VideoFeed?.toVideoFeedEnvelope(): VideoFeedEnvelope {
             .photo(photo)
             .creator(creator)
             .category(category)
+            .urls(urls)
             .build()
         VideoFeedItem(
             badges = badges,

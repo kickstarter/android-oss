@@ -91,6 +91,17 @@ class RefTag private constructor(
             return builder().tag("android_project_share").build()
         }
 
+        fun projectShareCopyLink(): RefTag = builder().tag("android_project_share_copy_link").build()
+        fun projectShareInstagramFeed(): RefTag = builder().tag("android_project_share_instagram_feed").build()
+        fun projectShareInstagramStories(): RefTag = builder().tag("android_project_share_instagram_stories").build()
+        fun projectShareX(): RefTag = builder().tag("android_project_share_x").build()
+        fun projectShareFacebookFeed(): RefTag = builder().tag("android_project_share_facebook_feed").build()
+        fun projectShareFacebookStories(): RefTag = builder().tag("android_project_share_facebook_stories").build()
+        fun projectShareWhatsApp(): RefTag = builder().tag("android_project_share_whatsapp").build()
+        fun projectShareMessages(): RefTag = builder().tag("android_project_share_messages").build()
+        fun projectShareEmail(): RefTag = builder().tag("android_project_share_email").build()
+        fun projectShareMore(): RefTag = builder().tag("android_project_share_more").build()
+
         @JvmStatic
         fun push(): RefTag {
             return builder().tag("push").build()

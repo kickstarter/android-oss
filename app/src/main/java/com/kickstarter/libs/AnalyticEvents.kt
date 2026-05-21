@@ -2,6 +2,8 @@ package com.kickstarter.libs
 
 import OnboardingPage
 import com.kickstarter.features.pledgedprojectsoverview.data.PPOCard
+import com.kickstarter.features.socialshare.data.SocialSharePlatform
+import com.kickstarter.features.socialshare.data.analyticsContextType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.ContextPropertyKeyName.COMMENT_BODY
@@ -64,6 +66,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITI
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SHARE_PLATFORM_CLICKED
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGNUP_LOGIN
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
@@ -996,6 +999,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param ctaType: The specific action that was tapped.
      * @param watchTimeAtClick: Optional milliseconds watched at the moment of the tap.
      */
+    fun trackSharePlatformCTAClicked(
+        platform: SocialSharePlatform,
+        contextPage: EventContextValues.ContextPageName
+    ) {
+        val props = HashMap<String, Any>()
+        props[CONTEXT_CTA.contextName] = SHARE_PLATFORM_CLICKED.contextName
+        props[CONTEXT_PAGE.contextName] = contextPage.contextName
+        props[CONTEXT_TYPE.contextName] = platform.analyticsContextType()
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
     fun trackVideoFeedCTAClicked(
         project: Project,
         ctaType: EventContextValues.CtaContextName,

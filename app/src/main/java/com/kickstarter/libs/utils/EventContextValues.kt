@@ -66,6 +66,7 @@ class EventContextValues {
         VIDEO_SAVE("video_save"),
         VIDEO_CREATOR("video_creator"),
         VIDEO_SHARE("video_share"),
+        SHARE_PLATFORM_CLICKED("share_platform_clicked"),
     }
 
     /**
@@ -212,5 +213,18 @@ class EventContextValues {
     enum class VideoContextName(val contextName: String) {
         LENGTH("length"),
         POSITION("position")
+    }
+
+    enum class SharePlatformContextType(val contextName: String) {
+        COPY_LINK("copy_link"),
+        INSTAGRAM_FEED("instagram_feed"),
+        INSTAGRAM_STORIES("instagram_stories"),
+        X("x"),
+        FACEBOOK_FEED("facebook_feed"),
+        FACEBOOK_STORIES("facebook_stories"),
+        WHATSAPP("whatsapp"),
+        MESSAGES("messages"),
+        EMAIL("email"),
+        MORE("more"),
     }
 }

@@ -12,6 +12,7 @@ fragment videoFeedProject on Project {
     sharesCount
     isWatched
     imageUrl(blur: false, width: 1024)
+    url
     pledged {
         ...amount
     }

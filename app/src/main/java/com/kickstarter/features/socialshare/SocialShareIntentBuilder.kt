@@ -179,7 +179,7 @@ object SocialShareIntentBuilder {
         val body = "I thought you'd love this — ${shareData.projectName} by ${shareData.creatorName}:\n\n${shareData.projectUrl}"
         return if (imageUri != null) {
             Intent(Intent.ACTION_SEND).apply {
-                type = "image/jpeg"
+                type = "message/rfc822"
                 putExtra(Intent.EXTRA_SUBJECT, subject)
                 putExtra(Intent.EXTRA_TEXT, body)
                 putExtra(Intent.EXTRA_STREAM, imageUri)

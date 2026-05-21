@@ -259,4 +259,54 @@ class RefTagTest : TestCase() {
         assertTrue(updateShareRefTag is RefTag)
         assertEquals(updateShareRefTag.tag(), "android_update_share")
     }
+
+    @Test
+    fun testProjectShareCopyLink_returnsCorrectTag() {
+        assertEquals("android_project_share_copy_link", RefTag.projectShareCopyLink().tag())
+    }
+
+    @Test
+    fun testProjectShareInstagramFeed_returnsCorrectTag() {
+        assertEquals("android_project_share_instagram_feed", RefTag.projectShareInstagramFeed().tag())
+    }
+
+    @Test
+    fun testProjectShareInstagramStories_returnsCorrectTag() {
+        assertEquals("android_project_share_instagram_stories", RefTag.projectShareInstagramStories().tag())
+    }
+
+    @Test
+    fun testProjectShareX_returnsCorrectTag() {
+        assertEquals("android_project_share_x", RefTag.projectShareX().tag())
+    }
+
+    @Test
+    fun testProjectShareFacebookFeed_returnsCorrectTag() {
+        assertEquals("android_project_share_facebook_feed", RefTag.projectShareFacebookFeed().tag())
+    }
+
+    @Test
+    fun testProjectShareFacebookStories_returnsCorrectTag() {
+        assertEquals("android_project_share_facebook_stories", RefTag.projectShareFacebookStories().tag())
+    }
+
+    @Test
+    fun testProjectShareWhatsApp_returnsCorrectTag() {
+        assertEquals("android_project_share_whatsapp", RefTag.projectShareWhatsApp().tag())
+    }
+
+    @Test
+    fun testProjectShareMessages_returnsCorrectTag() {
+        assertEquals("android_project_share_messages", RefTag.projectShareMessages().tag())
+    }
+
+    @Test
+    fun testProjectShareEmail_returnsCorrectTag() {
+        assertEquals("android_project_share_email", RefTag.projectShareEmail().tag())
+    }
+
+    @Test
+    fun testProjectShareMore_returnsCorrectTag() {
+        assertEquals("android_project_share_more", RefTag.projectShareMore().tag())
+    }
 }

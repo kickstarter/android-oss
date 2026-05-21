@@ -28,7 +28,15 @@ import kotlin.coroutines.EmptyCoroutineContext
  *   detection, image caching, intent construction). In production this is
  *   [com.kickstarter.features.socialshare.AndroidSocialShareService]; in tests a fake
  *   implementation is injected directly.
- * @param shareData Snapshot of the project information used across every sharing action.
+ * @param shareData Snapshot of the project information used across every sharing action:
+ *   - [SocialShareData.projectName] — included as text in platform captions and SMS/email subjects.
+ *   - [SocialShareData.projectUrl]  — the canonical link appended to every share payload.
+ *   - [SocialShareData.imageUrl]    — remote URL of the project hero image; downloaded and
+ *     cached as a `content://` URI during [init] so it can be attached to image-bearing
+ *     intents (Instagram, Facebook, WhatsApp, etc.). An empty value skips caching.
+ *   - [SocialShareData.creatorName] — displayed in email body copy.
+ *   This object is immutable for the lifetime of the ViewModel; one ViewModel instance
+ *   corresponds to one sharing session for a specific project.
  * @param contextPage The screen from which the share sheet was opened, used as the
  *   analytics context_page property.
  */

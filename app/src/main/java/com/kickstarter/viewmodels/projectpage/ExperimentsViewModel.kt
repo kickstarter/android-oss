@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import timber.log.Timber
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 
 /** For Crashlytics logging only **/
 private class ExperimentsException(cause: Exception) : Exception(cause)
@@ -78,6 +79,8 @@ class ExperimentsViewModel(
                             """.trimIndent()
                         )
                     }
+            } catch (cancellationException: CancellationException) {
+                throw cancellationException
             } catch (exception: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(ExperimentsException(exception))
             }

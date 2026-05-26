@@ -55,6 +55,14 @@ object StatsigExperiments {
             const val TEST = "test_parameter"
         }
     }
+
+    object MoveNoRewardOption : Experiment<MoveNoRewardOption.Parameters> {
+        override val name = "move_no-reward_option_android"
+        override val parameters = Parameters
+        object Parameters {
+            const val PLACE_AT_END = "place_at_end"
+        }
+    }
 }
 
 class StatsigException(cause: Throwable) : Exception(cause)

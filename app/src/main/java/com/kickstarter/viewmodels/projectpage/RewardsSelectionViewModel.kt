@@ -4,7 +4,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.StatsigException
+import com.kickstarter.libs.featureflag.StatsigExperiments
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -17,6 +20,7 @@ import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
+import com.kickstarter.viewmodels.usecases.NoRewardPlacement
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,9 +34,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.coroutines.cancellation.CancellationException
 
 data class RewardSelectionUIState(
     val selectedReward: Reward = Reward.builder().build(),
@@ -45,6 +52,11 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private val analytics = requireNotNull(environment.analytics())
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val currentConfig = requireNotNull(environment.currentConfigV2()?.observable())
+
+    private val currentUserV2 = requireNotNull(environment.currentUserV2())
+    private val statsigClient = requireNotNull(environment.statsigClient())
+
+    private var statsigTimeout = 500L
 
     private lateinit var currentProjectData: ProjectData
     private var pReason: PledgeReason? = null
@@ -96,6 +108,30 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         val project = projectData.project()
         viewModelScope.launch {
             emitCurrentState()
+
+            var noRewardPlacement = NoRewardPlacement.START
+            val currentUserIsLoggedIn = currentUserV2.isLoggedIn.asFlow().first()
+            if (currentUserIsLoggedIn) {
+                try {
+                    /* The timeout reflects how long we are willing to wait for `Statsig.initialize()`
+                     * and `Statsig.updateUser()` when an authenticated user is deep-linked to Project Page; or
+                     * just `Statsig.updateUser()` after the user completes the auth flow upon clicking 'Back this project'.
+                     * We could also _not_ wait, and access the StateFlow values directly, but this will result in an
+                     * even less consistent and deterministic experience for users. */
+                    noRewardPlacement = withTimeoutOrNull(statsigTimeout) {
+                        statsigClient.isReady.first { it }
+                        statsigClient.statsigUser.first { it.userID != null }
+                        val experiment = statsigClient.getExperiment(StatsigExperiments.MoveNoRewardOption.name)
+                        val placeAtEnd = experiment.getBooleanIfPresent(StatsigExperiments.MoveNoRewardOption.parameters.PLACE_AT_END)
+                        if (placeAtEnd == true) NoRewardPlacement.END else NoRewardPlacement.START
+                    } ?: noRewardPlacement
+                } catch (cancellationException: CancellationException) {
+                    throw cancellationException
+                } catch (exception: Exception) {
+                    FirebaseCrashlytics.getInstance().recordException(StatsigException(exception))
+                }
+            }
+
             apolloClient.getRewardsFromProject(project.slug() ?: "")
                 .asFlow()
                 .combine(currentConfig.asFlow()) { rewardsList, config ->
@@ -105,7 +141,8 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                             config = config,
                             projectRewards = rewardsList,
                             viewModelScope,
-                            Dispatchers.IO
+                            Dispatchers.IO,
+                            noRewardPlacement,
                         )
                     }
                     shippingRulesUseCase?.invoke()
@@ -238,6 +275,11 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         viewModelScope.launch {
             emitShippingUIState()
         }
+    }
+
+    @VisibleForTesting
+    fun setStatsigTimeout(timeMillis: Long) {
+        statsigTimeout = timeMillis
     }
 
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :

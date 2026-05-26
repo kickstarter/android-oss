@@ -454,6 +454,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
             createViewModel(env)
+            viewModel.setStatsigTimeout(0L)
             viewModel.provideProjectData(projectData)
 
             val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
@@ -498,6 +499,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         val shippingUiState = mutableListOf<ShippingRulesState>()
         backgroundScope.launch(dispatcher) {
             createViewModel(env)
+            viewModel.setStatsigTimeout(0L)
             viewModel.provideProjectData(projectData)
             val useCase = GetShippingRulesUseCase(project, config, rwList, this, dispatcher)
             viewModel.overrideShippingRulesUseCase(useCase)

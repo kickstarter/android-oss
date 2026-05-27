@@ -11,12 +11,14 @@ import com.kickstarter.models.Reward
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.joda.time.DateTime
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -329,5 +331,81 @@ class GetShippingRulesUseCaseTest : KSRobolectricTestCase() {
         val filtered = state.last().filteredRw
         assertEquals(2, filtered.size)
         assertEquals(listOf(validReward, expiredReward), filtered)
+    }
+
+    @Test
+    fun `test no-reward option is placed first for NoRewardPlacement_START`() = runTest {
+        val noReward = RewardFactory.noReward()
+        val rewards: List<Reward> = (0..2).map {
+            when (it) {
+                0 -> noReward
+                else -> Reward.builder().title("$it").id(it.toLong()).isAvailable(true).build()
+            }
+        }
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .rewards(rewards)
+            .build()
+
+        val config = ConfigFactory.configForUSUser()
+
+        val standardDispatcher = StandardTestDispatcher(testScheduler)
+        val useCase = GetShippingRulesUseCase(
+            project, config, project.rewards()!!, this, standardDispatcher, NoRewardPlacement.START
+        )
+
+        val states = mutableListOf<ShippingRulesState>()
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(unconfinedDispatcher) {
+            useCase.shippingRulesState.toList(states)
+        }
+
+        useCase.invoke()
+
+        advanceUntilIdle()
+
+        val filteredRw = states.last().filteredRw
+
+        assertEquals(rewards.size, filteredRw.size)
+        assertEquals(noReward, filteredRw.first())
+    }
+
+    @Test
+    fun `test no-reward option is placed last for NoRewardPlacement_END`() = runTest {
+        val noReward = RewardFactory.noReward()
+        val rewards: List<Reward> = (0..2).map {
+            when (it) {
+                0 -> noReward
+                else -> Reward.builder().title("$it").id(it.toLong()).isAvailable(true).build()
+            }
+        }
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .rewards(rewards)
+            .build()
+
+        val config = ConfigFactory.configForUSUser()
+
+        val standardDispatcher = StandardTestDispatcher(testScheduler)
+        val useCase = GetShippingRulesUseCase(
+            project, config, project.rewards()!!, this, standardDispatcher, NoRewardPlacement.END
+        )
+
+        val states = mutableListOf<ShippingRulesState>()
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(unconfinedDispatcher) {
+            useCase.shippingRulesState.toList(states)
+        }
+
+        useCase.invoke()
+
+        advanceUntilIdle()
+
+        val filteredRw = states.last().filteredRw
+
+        assertEquals(rewards.size, filteredRw.size)
+        assertEquals(noReward, filteredRw.last())
     }
 }

@@ -873,7 +873,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `A-B Experiment - experiment is fetched for authenticated user + no-reward option is first given Test parameters`() = runTest(mainDispatcher) {
+    fun `A-B Experiment - experiment is fetched for authenticated user + no-reward option is last given Test parameters`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
         val noReward = RewardFactory.noReward()

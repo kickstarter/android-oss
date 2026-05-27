@@ -291,6 +291,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     companion object {
-        const val STATSIG_TIMEOUT = 500L
+        private const val STATSIG_TIMEOUT = 500L
     }
 }

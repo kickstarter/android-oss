@@ -131,8 +131,6 @@ class HTMLParserTest {
             "</figure>" +
             "\n\n</div>\n"
 
-        println("onlyImageHtml: $onlyImageHtml")
-
         val listOfElements = HTMLParser().parse(onlyImageHtml)
         val imageView: ImageViewElement = listOfElements.first() as ImageViewElement
         assert(listOfElements.size == 1)

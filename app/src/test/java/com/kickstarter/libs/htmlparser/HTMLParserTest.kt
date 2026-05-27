@@ -122,6 +122,24 @@ class HTMLParserTest {
     }
 
     @Test
+    fun parseGifWithMissingDataSrc() {
+        val src = "https://i.kickstarter.com/assets/035/272/962/ad1848184f8254f017730e6978565521_original.gif?anim=false&fit=contain&origin=ugc-qa&q=92&width=700&sig=rvKKMk41FS3KoXYlBctOWRpnysKR58LIBwkmNXHmL5I%3D"
+        val onlyImageHtml = "<div class=\"template asset\" contenteditable=\"false\" data-alt-text=\"\" data-caption=\"\" data-id=\"35272962\">\n" +
+            "<figure>" +
+            "\n<img alt=\"\" class=\"fit js-lazy-image\" data-src=\"\" src=\"$src\">\n" +
+            "<figcaption class=\"px2\">This is Ted having the time of his life with a caption and a link</figcaption>" +
+            "</figure>" +
+            "\n\n</div>\n"
+
+        println("onlyImageHtml: $onlyImageHtml")
+
+        val listOfElements = HTMLParser().parse(onlyImageHtml)
+        val imageView: ImageViewElement = listOfElements.first() as ImageViewElement
+        assert(listOfElements.size == 1)
+        assert(imageView.src == src)
+    }
+
+    @Test
     fun parseTextElementListWithNestedLinks() {
 
         val url = "https://www.meneame.net/"

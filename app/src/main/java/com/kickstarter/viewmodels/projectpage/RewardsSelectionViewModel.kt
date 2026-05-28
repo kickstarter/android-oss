@@ -22,6 +22,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
 import com.kickstarter.viewmodels.usecases.NoRewardPlacement
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,8 +57,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private val currentUserV2 = requireNotNull(environment.currentUserV2())
     private val statsigClient = requireNotNull(environment.statsigClient())
 
-    private var statsigTimeout = 500L
-
     private lateinit var currentProjectData: ProjectData
     private var pReason: PledgeReason? = null
     private var previousUserBacking: Backing? = null
@@ -65,6 +64,8 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private var indexOfBackedReward = 0
     private var newUserReward: Reward = Reward.builder().build()
     private var selectedShippingRule: ShippingRule = ShippingRuleFactory.emptyShippingRule()
+
+    private var shippingRuleUseCaseDispatcher = Dispatchers.IO
 
     private val mutableRewardSelectionUIState = MutableStateFlow(RewardSelectionUIState())
     val rewardSelectionUIState: StateFlow<RewardSelectionUIState>
@@ -118,7 +119,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                      * just `Statsig.updateUser()` after the user completes the auth flow upon clicking 'Back this project'.
                      * We could also _not_ wait, and access the StateFlow values directly, but this will result in an
                      * even less consistent and deterministic experience for users. */
-                    noRewardPlacement = withTimeoutOrNull(statsigTimeout) {
+                    noRewardPlacement = withTimeoutOrNull(STATSIG_TIMEOUT) {
                         statsigClient.isReady.first { it }
                         statsigClient.statsigUser.first { it.userID != null }
                         val experiment = statsigClient.getExperiment(StatsigExperiments.MoveNoRewardOption.name)
@@ -141,7 +142,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                             config = config,
                             projectRewards = rewardsList,
                             viewModelScope,
-                            Dispatchers.IO,
+                            shippingRuleUseCaseDispatcher,
                             noRewardPlacement,
                         )
                     }
@@ -278,8 +279,8 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     }
 
     @VisibleForTesting
-    fun setStatsigTimeout(timeMillis: Long) {
-        statsigTimeout = timeMillis
+    fun setShippingRuleUseCaseDispatcher(dispatcher: CoroutineDispatcher) {
+        shippingRuleUseCaseDispatcher = dispatcher
     }
 
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :
@@ -287,5 +288,9 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return RewardsSelectionViewModel(environment = environment, shippingRulesUseCase) as T
         }
+    }
+
+    companion object {
+        private const val STATSIG_TIMEOUT = 500L
     }
 }

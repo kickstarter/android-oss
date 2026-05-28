@@ -10,6 +10,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
@@ -61,6 +62,7 @@ abstract class KSRobolectricTestCase : TestCase() {
         val mockCurrentConfigV2 = MockCurrentConfigV2()
         val mockFeatureFlagClient = MockFeatureFlagClient()
         val segmentTestClient = segmentTrackingClient(mockCurrentConfigV2, mockFeatureFlagClient)
+        val mockStatsigClient = MockStatsigClient(application())
 
         val component = DaggerApplicationComponent.builder()
             .applicationModule(TestApplicationModule(application()))
@@ -78,6 +80,7 @@ abstract class KSRobolectricTestCase : TestCase() {
             .analytics(AnalyticEvents(listOf(segmentTestClient)))
             .attributionEvents(AttributionEvents(mockApolloClientV2))
             .featureFlagClient(mockFeatureFlagClient)
+            .statsigClient(mockStatsigClient)
             .build()
     }
 

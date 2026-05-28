@@ -118,14 +118,12 @@ class GetShippingRulesUseCase(
             }
             // - all rewards digital
             if (rewardsByShippingType.isEmpty() && project.isAllowedToPledge()) {
-                filteredRewards.clear()
-                filteredRewards.addAll(RewardUtils.filterHasStarted(projectRewards))
+                setRewardsList(RewardUtils.filterHasStarted(projectRewards), noRewardPlacement)
             }
 
             // - Just displaying all rewards available or not, project no collecting any longer
             if (!project.isAllowedToPledge()) {
-                filteredRewards.clear()
-                filteredRewards.addAll(RewardUtils.filterHasStarted(projectRewards))
+                setRewardsList(RewardUtils.filterHasStarted(projectRewards), noRewardPlacement)
             }
 
             emitCurrentState(isLoading = false)

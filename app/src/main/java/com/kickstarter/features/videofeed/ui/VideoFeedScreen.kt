@@ -50,7 +50,9 @@ import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
+import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toCompactFormat
@@ -74,6 +76,7 @@ enum class VideoFeedScreenTestTag {
 @Composable
 fun VideoFeedScreen(
     items: List<VideoFeedItem>,
+    environment: Environment,
     errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     onLoadMore: () -> Unit = {},
     onClose: () -> Unit = {},
@@ -253,8 +256,10 @@ fun VideoFeedScreen(
             val context = LocalContext.current
             val shareViewModel = remember(data) {
                 SocialShareViewModel(
+                    environment = environment,
                     shareService = AndroidSocialShareService(context.applicationContext),
-                    shareData = data
+                    shareData = data,
+                    contextPage = ContextPageName.VIDEO_FEED
                 )
             }
             CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
@@ -300,8 +305,10 @@ fun setUpVideoFeedErrorActions(snackbarHostState: SnackbarHostState): (String?) 
 @Preview
 @Composable
 fun VideoFeedScreenPreview() {
+    val previewEnv = Environment.builder().build()
     KSTheme {
         VideoFeedScreen(
+            environment = previewEnv,
             items = listOf(
                 VideoFeedItem(
                     badges = listOf(KSVideoBadgeType.ProjectWeLove, KSVideoBadgeType.DaysLeft("3 days left")),

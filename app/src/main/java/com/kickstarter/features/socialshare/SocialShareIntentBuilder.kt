@@ -170,8 +170,9 @@ object SocialShareIntentBuilder {
 
     /**
      * Email — text always included; image attached as an inline attachment when available.
-     * ACTION_SEND with image/jpeg opens email clients in compose mode with the image
-     * attached and the body/subject pre-filled. Falls back to ACTION_SENDTO + mailto:
+     * ACTION_SEND with message/rfc822 restricts the chooser to email clients only (prevents
+     * social apps like Instagram from appearing) and opens them in compose mode with the
+     * image attached and the body/subject pre-filled. Falls back to ACTION_SENDTO + mailto:
      * (no attachment support) when no image is cached yet.
      */
     private fun emailIntent(shareData: SocialShareData, imageUri: Uri?): Intent {
@@ -179,7 +180,7 @@ object SocialShareIntentBuilder {
         val body = "I thought you'd love this — ${shareData.projectName} by ${shareData.creatorName}:\n\n${shareData.projectUrl}"
         return if (imageUri != null) {
             Intent(Intent.ACTION_SEND).apply {
-                type = "image/jpeg"
+                type = "message/rfc822"
                 putExtra(Intent.EXTRA_SUBJECT, subject)
                 putExtra(Intent.EXTRA_TEXT, body)
                 putExtra(Intent.EXTRA_STREAM, imageUri)

@@ -18,6 +18,7 @@ import com.kickstarter.features.socialshare.SocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
 import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -38,7 +39,7 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `sheet content is displayed when isVisible is true`() {
-        val viewModel = SocialShareViewModel(FakeSocialShareService(), shareData, UnconfinedTestDispatcher())
+        val viewModel = SocialShareViewModel(environment(), FakeSocialShareService(), shareData, ContextPageName.VIDEO_FEED, UnconfinedTestDispatcher())
 
         composeTestRule.setContent {
             KSTheme {
@@ -60,7 +61,7 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `sheet content is not shown when isVisible is false`() {
-        val viewModel = SocialShareViewModel(FakeSocialShareService(), shareData, UnconfinedTestDispatcher())
+        val viewModel = SocialShareViewModel(environment(), FakeSocialShareService(), shareData, ContextPageName.VIDEO_FEED, UnconfinedTestDispatcher())
 
         composeTestRule.setContent {
             KSTheme {
@@ -84,10 +85,12 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
     fun `sheet shows only platforms returned by the service`() {
         val platforms = listOf(SocialSharePlatform.X, SocialSharePlatform.EMAIL, SocialSharePlatform.MORE)
         val viewModel = SocialShareViewModel(
+            environment(),
             object : FakeSocialShareService() {
                 override fun getInstalledPlatforms() = platforms
             },
             shareData,
+            ContextPageName.VIDEO_FEED,
             UnconfinedTestDispatcher()
         )
 
@@ -122,11 +125,13 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
         var capturedIntent: Intent? = null
 
         val viewModel = SocialShareViewModel(
+            environment(),
             object : FakeSocialShareService() {
                 override fun getInstalledPlatforms() = listOf(SocialSharePlatform.X)
                 override fun buildIntent(platform: SocialSharePlatform, shareData: SocialShareData, imageUri: Uri?) = fakeIntent
             },
             shareData,
+            ContextPageName.VIDEO_FEED,
             UnconfinedTestDispatcher()
         )
 
@@ -154,11 +159,13 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
     fun `clicking a platform when buildIntent returns null shows error snackbar`() {
         val snackbarHostState = SnackbarHostState()
         val viewModel = SocialShareViewModel(
+            environment(),
             object : FakeSocialShareService() {
                 override fun getInstalledPlatforms() = listOf(SocialSharePlatform.X)
                 override fun buildIntent(platform: SocialSharePlatform, shareData: SocialShareData, imageUri: Uri?): Intent? = null
             },
             shareData,
+            ContextPageName.VIDEO_FEED,
             UnconfinedTestDispatcher()
         )
 
@@ -189,10 +196,12 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
     fun `clicking Copy Link shows Link copied snackbar`() {
         val snackbarHostState = SnackbarHostState()
         val viewModel = SocialShareViewModel(
+            environment(),
             object : FakeSocialShareService() {
                 override fun getInstalledPlatforms() = listOf(SocialSharePlatform.COPY_LINK)
             },
             shareData,
+            ContextPageName.VIDEO_FEED,
             UnconfinedTestDispatcher()
         )
 
@@ -221,7 +230,7 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `Share project header has heading semantics`() {
-        val viewModel = SocialShareViewModel(FakeSocialShareService(), shareData, UnconfinedTestDispatcher())
+        val viewModel = SocialShareViewModel(environment(), FakeSocialShareService(), shareData, ContextPageName.VIDEO_FEED, UnconfinedTestDispatcher())
 
         composeTestRule.setContent {
             KSTheme {
@@ -245,7 +254,7 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `project card container is accessible via sheet-level test tag`() {
-        val viewModel = SocialShareViewModel(FakeSocialShareService(), shareData, UnconfinedTestDispatcher())
+        val viewModel = SocialShareViewModel(environment(), FakeSocialShareService(), shareData, ContextPageName.VIDEO_FEED, UnconfinedTestDispatcher())
 
         composeTestRule.setContent {
             KSTheme {
@@ -267,7 +276,7 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
 
     @Test
     fun `platform grid container is accessible via sheet-level test tag`() {
-        val viewModel = SocialShareViewModel(FakeSocialShareService(), shareData, UnconfinedTestDispatcher())
+        val viewModel = SocialShareViewModel(environment(), FakeSocialShareService(), shareData, ContextPageName.VIDEO_FEED, UnconfinedTestDispatcher())
 
         composeTestRule.setContent {
             KSTheme {

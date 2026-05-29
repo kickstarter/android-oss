@@ -107,11 +107,11 @@ private fun PlatformButton(
         Icon(
             imageVector = platform.icon(),
             contentDescription = null,
-            tint = Color.Unspecified,
+            tint = if (platform.isBrandIcon()) Color.Unspecified else colors.socialShare.monochromeIconTint,
             modifier = Modifier
                 .size(dimensions.socialSharePlatformIconSize)
                 .clip(CircleShape)
-                .background(colors.backgroundSurfaceRaised)
+                .background(colors.socialShare.iconBackground)
                 .padding(dimensions.socialSharePlatformIconPadding)
         )
         Text(
@@ -122,6 +122,15 @@ private fun PlatformButton(
             modifier = Modifier.padding(top = dimensions.paddingXSmall)
         )
     }
+}
+
+private fun SocialSharePlatform.isBrandIcon(): Boolean = when (this) {
+    SocialSharePlatform.INSTAGRAM_FEED,
+    SocialSharePlatform.INSTAGRAM_STORIES,
+    SocialSharePlatform.FACEBOOK_FEED,
+    SocialSharePlatform.FACEBOOK_STORIES,
+    SocialSharePlatform.WHATSAPP -> true
+    else -> false
 }
 
 private fun SocialSharePlatform.icon(): ImageVector = when (this) {

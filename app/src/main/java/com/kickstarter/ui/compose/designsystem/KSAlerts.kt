@@ -3,6 +3,7 @@ package com.kickstarter.ui.compose.designsystem
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Snackbar
@@ -20,16 +22,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import com.kickstarter.libs.utils.safeLet
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeTint
+import dev.chrisbanes.haze.hazeEffect
 
 // Snackbars
 @Composable
@@ -90,6 +98,53 @@ fun KSSuccessSnackbar(
             KSSuccessRoundedText(text = text, padding = padding)
         }
     )
+}
+
+@Composable
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun KSVideoFeedSnackbarPreview() {
+    KSTheme {
+        KSVideoFeedSnackbar(text = "Couldn't load video")
+    }
+}
+
+@Composable
+fun KSVideoFeedSnackbar(
+    text: String,
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
+) {
+    val baseColor = Color(0xFF2B2B2D).copy(alpha = 0.45f)
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(dimensions.radiusMedium))
+            .then(
+                if (hazeState != null) {
+                    Modifier.hazeEffect(state = hazeState) {
+                        blurRadius = 28.dp
+                        noiseFactor = 0.05f
+                        backgroundColor = baseColor
+                        tints = listOf(HazeTint(baseColor))
+                    }
+                } else {
+                    Modifier.background(baseColor)
+                }
+            )
+            .padding(
+                horizontal = dimensions.paddingMedium,
+                vertical = dimensions.paddingMediumSmall
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            style = typographyV2.bodyMD,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable

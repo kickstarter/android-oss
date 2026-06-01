@@ -56,13 +56,14 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toCompactFormat
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
-import com.kickstarter.ui.compose.designsystem.KSErrorSnackbar
-import com.kickstarter.ui.compose.designsystem.KSHeadsupSnackbar
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
+import com.kickstarter.ui.compose.designsystem.KSVideoFeedSnackbar
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Close
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 enum class VideoFeedScreenTestTag {
@@ -129,10 +130,13 @@ fun VideoFeedScreen(
         previousSettledPage = currentPage
     }
 
+    val screenHazeState = rememberHazeState()
+
     Box(modifier = Modifier.fillMaxSize()) {
         VerticalPager(
             modifier = Modifier
                 .fillMaxSize()
+                .hazeSource(state = screenHazeState)
                 .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
             state = pagerState,
             beyondViewportPageCount = 1,
@@ -269,14 +273,16 @@ fun VideoFeedScreen(
         }
 
         SnackbarHost(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(
+                    top = dimensions.videoFeedCloseButtonTopPadding,
+                    start = dimensions.paddingMediumSmall,
+                    end = dimensions.paddingMediumSmall
+                ),
             hostState = errorSnackBarHostState,
             snackbar = { data ->
-                if (data.visuals.actionLabel == KSSnackbarTypes.KS_ERROR.name) {
-                    KSErrorSnackbar(text = data.visuals.message)
-                } else {
-                    KSHeadsupSnackbar(text = data.visuals.message)
-                }
+                KSVideoFeedSnackbar(text = data.visuals.message, hazeState = screenHazeState)
             }
         )
     }
@@ -288,6 +294,7 @@ fun setUpVideoFeedErrorActions(snackbarHostState: SnackbarHostState): (String?) 
     val defaultErrorMessage = stringResource(R.string.Something_went_wrong_please_try_again)
     return { message: String? ->
         scope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
                 message = message ?: defaultErrorMessage,
                 actionLabel = KSSnackbarTypes.KS_ERROR.name,

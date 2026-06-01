@@ -263,6 +263,7 @@ private fun fixtureProject(
     watchesCount: Int? = 10,
     sharesCount: Int = 5,
     isWatched: Boolean = false,
+    url: String = "https://www.kickstarter.com/projects/creator/test-project",
     imageUrl: String = "https://example.com/project.jpg",
     pledged: VideoFeedProject.Pledged = VideoFeedProject.Pledged(
         __typename = "Money",
@@ -291,6 +292,7 @@ private fun fixtureProject(
         watchesCount = watchesCount,
         sharesCount = sharesCount,
         isWatched = isWatched,
+        url = url,
         imageUrl = imageUrl,
         pledged = pledged,
         creator = creator,

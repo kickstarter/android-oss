@@ -57,7 +57,9 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(items = items)
+                VideoFeedScreen(
+                    environment = environment(), items = items
+                )
             }
         }
 
@@ -107,7 +109,9 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(items = items)
+                VideoFeedScreen(
+                    environment = environment(), items = items
+                )
             }
         }
 
@@ -129,6 +133,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onClose = { closeCalled = true }
                 )
@@ -161,7 +166,9 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
 
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(items = items)
+                VideoFeedScreen(
+                    environment = environment(), items = items
+                )
             }
         }
 
@@ -196,6 +203,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onProfileClick = { capturedProject = it }
                 )
@@ -222,6 +230,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onProfileClick = { capturedProject = it }
                 )
@@ -255,6 +264,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     projectCallback = { p, ref ->
                         capturedProject = p
@@ -282,6 +292,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     preLaunchedCallback = { p, ref ->
                         capturedProject = p
@@ -308,6 +319,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     preLaunchedCallback = { _, _ -> preLaunchedCalled = true }
                 )
@@ -330,6 +342,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     projectCallback = { _, _ -> projectCallbackCalled = true }
                 )
@@ -352,6 +365,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onBookmarkClick = { p, _ -> capturedProject = p }
                 )
@@ -381,6 +395,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onBookmarkClick = { _, index -> capturedIndex = index }
                 )
@@ -420,6 +435,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onBookmarkClick = { p, _ -> capturedProject = p }
                 )
@@ -455,6 +471,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onLoadMore = { loadMoreCallCount++ }
                 )
@@ -487,6 +504,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onLoadMore = { loadMoreCalled = true }
                 )
@@ -507,6 +525,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     errorSnackBarHostState = snackbarHostState
                 )
@@ -555,7 +574,9 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     fun `VideoFeedScreen renders without crash when items list is empty`() {
         composeTestRule.setContent {
             KSTheme {
-                VideoFeedScreen(items = emptyList())
+                VideoFeedScreen(
+                    environment = environment(), items = emptyList()
+                )
             }
         }
 
@@ -573,6 +594,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onShareCTAClick = { capturedProject = it }
                 )
@@ -600,6 +622,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     onShareCTAClick = { shareImageUrl = it.photo()?.full() }
                 )

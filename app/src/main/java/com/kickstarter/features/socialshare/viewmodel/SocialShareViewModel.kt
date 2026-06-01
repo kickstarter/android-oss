@@ -8,6 +8,10 @@ import com.kickstarter.features.socialshare.SocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
 import com.kickstarter.features.socialshare.data.SocialShareUIState
+import com.kickstarter.features.socialshare.data.refTag
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName
+import com.kickstarter.libs.utils.UrlUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,11 +23,11 @@ import kotlin.coroutines.EmptyCoroutineContext
 /**
  * ViewModel for the Social Share bottom sheet.
  *
+ * @param environment Provides analytics and other app-level dependencies.
  * @param shareService Abstraction over Android framework operations (clipboard, package
  *   detection, image caching, intent construction). In production this is
  *   [com.kickstarter.features.socialshare.AndroidSocialShareService]; in tests a fake
  *   implementation is injected directly.
- *
  * @param shareData Snapshot of the project information used across every sharing action:
  *   - [SocialShareData.projectName] — included as text in platform captions and SMS/email subjects.
  *   - [SocialShareData.projectUrl]  — the canonical link appended to every share payload.
@@ -33,14 +37,19 @@ import kotlin.coroutines.EmptyCoroutineContext
  *   - [SocialShareData.creatorName] — displayed in email body copy.
  *   This object is immutable for the lifetime of the ViewModel; one ViewModel instance
  *   corresponds to one sharing session for a specific project.
+ * @param contextPage The screen from which the share sheet was opened, used as the
+ *   analytics context_page property.
  */
 class SocialShareViewModel(
+    private val environment: Environment,
     private val shareService: SocialShareService,
     private val shareData: SocialShareData,
+    private val contextPage: ContextPageName,
     private val testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
+    private val analyticEvents = requireNotNull(environment.analytics())
 
     private val _uiState = MutableStateFlow(SocialShareUIState())
     val uiState: StateFlow<SocialShareUIState> = _uiState.asStateFlow()
@@ -69,9 +78,10 @@ class SocialShareViewModel(
             return
         }
 
+        val urlWithRefTag = UrlUtils.appendRefTag(shareData.projectUrl, platform.refTag().tag())
         val intent = shareService.buildIntent(
             platform = platform,
-            shareData = shareData,
+            shareData = shareData.copy(projectUrl = urlWithRefTag),
             imageUri = _uiState.value.shareImageUri
         )
 
@@ -80,11 +90,14 @@ class SocialShareViewModel(
             return
         }
 
+        analyticEvents.trackSharePlatformCTAClicked(platform, contextPage)
         intentLaunchAction.invoke(intent)
     }
 
     fun onCopyLinkClicked() {
-        shareService.copyToClipboard("Kickstarter project link", shareData.projectUrl)
+        val urlWithRefTag = UrlUtils.appendRefTag(shareData.projectUrl, SocialSharePlatform.COPY_LINK.refTag().tag())
+        shareService.copyToClipboard("Kickstarter project link", urlWithRefTag)
+        analyticEvents.trackSharePlatformCTAClicked(SocialSharePlatform.COPY_LINK, contextPage)
         scope.launch {
             _uiState.emit(_uiState.value.copy(copiedToClipboard = true))
         }
@@ -117,12 +130,14 @@ class SocialShareViewModel(
     }
 
     class Factory(
+        private val environment: Environment,
         private val service: SocialShareService,
         private val shareData: SocialShareData,
+        private val contextPage: ContextPageName,
         private val testDispatcher: CoroutineDispatcher? = null
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SocialShareViewModel(service, shareData, testDispatcher) as T
+            return SocialShareViewModel(environment, service, shareData, contextPage, testDispatcher) as T
         }
     }
 }

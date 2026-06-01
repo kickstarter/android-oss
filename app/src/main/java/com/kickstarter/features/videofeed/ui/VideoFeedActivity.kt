@@ -59,6 +59,7 @@ class VideoFeedActivity : ComponentActivity() {
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(
                     items = uiState.items,
+                    environment = env,
                     errorSnackBarHostState = snackbarHostState,
                     onLoadMore = { viewModel.loadVideoFeed() },
                     onClose = { onBackPressedDispatcher.onBackPressed() },

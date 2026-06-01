@@ -6,6 +6,10 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.socialshare.SocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.UrlUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -36,8 +40,9 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
     private fun buildViewModel(
         service: SocialShareService,
         data: SocialShareData = shareData,
+        contextPage: ContextPageName = ContextPageName.VIDEO_FEED,
         dispatcher: kotlinx.coroutines.CoroutineDispatcher
-    ) = SocialShareViewModel(service, data, dispatcher)
+    ) = SocialShareViewModel(environment(), service, data, contextPage, dispatcher)
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // init: detectInstalledPlatforms
@@ -239,12 +244,75 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         assertEquals(fakeIntent, capturedIntent)
     }
 
+    @Test
+    fun `onPlatformSelected appends platform reftag to URL before building intent`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        var capturedShareData: SocialShareData? = null
+
+        val service = object : FakeSocialShareService() {
+            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
+            override fun buildIntent(
+                platform: SocialSharePlatform,
+                shareData: SocialShareData,
+                imageUri: Uri?
+            ): Intent {
+                capturedShareData = shareData
+                return Intent(Intent.ACTION_SEND)
+            }
+        }
+
+        val viewModel = buildViewModel(service, dispatcher = dispatcher)
+        advanceUntilIdle()
+
+        viewModel.onPlatformSelected(SocialSharePlatform.X)
+
+        val expectedUrl = UrlUtils.appendRefTag(shareData.projectUrl, RefTag.projectShareX().tag())
+        assertEquals(expectedUrl, capturedShareData?.projectUrl)
+    }
+
+    @Test
+    fun `onPlatformSelected fires CTA_CLICKED analytics event`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val service = object : FakeSocialShareService() {
+            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
+        }
+
+        val viewModel = buildViewModel(service, dispatcher = dispatcher)
+        advanceUntilIdle()
+
+        viewModel.onPlatformSelected(SocialSharePlatform.WHATSAPP)
+
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun `onPlatformSelected does not fire analytics when intent is null`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val service = object : FakeSocialShareService() {
+            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
+            override fun buildIntent(
+                platform: SocialSharePlatform,
+                shareData: SocialShareData,
+                imageUri: Uri?
+            ): Intent? = null
+        }
+
+        val viewModel = buildViewModel(service, dispatcher = dispatcher)
+        advanceUntilIdle()
+
+        viewModel.onPlatformSelected(SocialSharePlatform.WHATSAPP)
+
+        segmentTrack.assertNoValues()
+    }
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // onCopyLinkClicked / onCopiedToastShown
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     @Test
-    fun `onCopyLinkClicked delegates to service and sets copiedToClipboard true`() = runTest {
+    fun `onCopyLinkClicked copies URL with copy link reftag appended`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         var copiedLabel: String? = null
         var copiedUrl: String? = null
@@ -262,9 +330,23 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         viewModel.onCopyLinkClicked()
         advanceUntilIdle()
 
+        val expectedUrl = UrlUtils.appendRefTag(shareData.projectUrl, RefTag.projectShareCopyLink().tag())
         assertNotNull(copiedLabel)
-        assertEquals(shareData.projectUrl, copiedUrl)
+        assertEquals(expectedUrl, copiedUrl)
         assertTrue(viewModel.uiState.value.copiedToClipboard)
+    }
+
+    @Test
+    fun `onCopyLinkClicked fires CTA_CLICKED analytics event`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val viewModel = buildViewModel(FakeSocialShareService(), dispatcher = dispatcher)
+        advanceUntilIdle()
+
+        viewModel.onCopyLinkClicked()
+        advanceUntilIdle()
+
+        segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

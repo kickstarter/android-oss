@@ -162,7 +162,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
         val intent = SocialShareIntentBuilder.buildIntent(context(), SocialSharePlatform.EMAIL, shareData, imageUri)!!
 
         assertEquals(Intent.ACTION_SEND, intent.action)
-        assertEquals("image/jpeg", intent.type)
+        assertEquals("message/rfc822", intent.type)
         assertTrue(intent.getStringExtra(Intent.EXTRA_SUBJECT)!!.contains(shareData.projectName))
         val body = intent.getStringExtra(Intent.EXTRA_TEXT)!!
         assertTrue(body.contains(shareData.projectUrl))

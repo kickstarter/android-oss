@@ -549,6 +549,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
+                    environment = environment(),
                     items = items,
                     errorSnackBarHostState = snackbarHostState
                 )

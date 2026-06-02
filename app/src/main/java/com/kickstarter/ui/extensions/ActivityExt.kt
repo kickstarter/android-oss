@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity
@@ -136,11 +135,11 @@ fun Activity.showRatingDialogWidget() {
     val manager = ReviewManagerFactory.create(this)
     val requestReviewTask = manager.requestReviewFlow()
 
-    requestReviewTask.addOnCompleteListener { request ->
+    requestReviewTask.addOnCompleteListener(this) { request ->
         if (request.isSuccessful) {
             Timber.v("${this.localClassName} : showRatingDialogWidget request: ${request.isSuccessful} ")
             // Request succeeded and a ReviewInfo instance was received
-            val reviewInfo: ReviewInfo = request.result
+            val reviewInfo = request.result ?: return@addOnCompleteListener
 
             // Start the review flow UI
             val flow = manager.launchReviewFlow(this, reviewInfo)

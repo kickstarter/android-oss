@@ -79,7 +79,9 @@ fun VideoFeedScreen(
     items: List<VideoFeedItem>,
     environment: Environment,
     errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
+    hasMore: Boolean = true,
     onLoadMore: () -> Unit = {},
+    onReachedLastVideo: () -> Unit = {},
     onClose: () -> Unit = {},
     onProfileClick: (project: Project) -> Unit = { _ -> },
     onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
@@ -95,6 +97,7 @@ fun VideoFeedScreen(
     val pagerState = rememberPagerState(pageCount = { items.size })
 
     var previousSettledPage by remember { mutableStateOf(-1) }
+    var hasTriggeredReview by remember { mutableStateOf(false) }
     // Stores (watchTimeMs, videoDurationMs) per page index as each player deactivates.
     // Written by KSVideoPlayer.onBecameInactive during the swipe animation; read when
     // settledPage fires after the animation completes, so the data is always ready.
@@ -107,6 +110,14 @@ fun VideoFeedScreen(
     LaunchedEffect(pagerState.currentPage, items.size) {
         if (items.isNotEmpty() && pagerState.currentPage >= items.size - 3) {
             onLoadMore()
+        }
+    }
+
+    // - In-app review: fire once when the user settles on the last video and there are no more pages.
+    LaunchedEffect(pagerState.settledPage, items.size, hasMore) {
+        if (!hasTriggeredReview && items.isNotEmpty() && !hasMore && pagerState.settledPage == items.size - 1) {
+            hasTriggeredReview = true
+            onReachedLastVideo()
         }
     }
 

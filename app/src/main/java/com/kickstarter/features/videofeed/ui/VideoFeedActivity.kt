@@ -21,6 +21,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.showRatingDialogWidget
 import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startProjectActivity
@@ -61,7 +62,9 @@ class VideoFeedActivity : ComponentActivity() {
                     items = uiState.items,
                     environment = env,
                     errorSnackBarHostState = snackbarHostState,
+                    hasMore = uiState.hasMore,
                     onLoadMore = { viewModel.loadVideoFeed() },
+                    onReachedLastVideo = { showRatingDialogWidget() },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
                     onProfileClick = { project ->
                         viewModel.onCTAClicked(project, CtaContextName.VIDEO_CREATOR)

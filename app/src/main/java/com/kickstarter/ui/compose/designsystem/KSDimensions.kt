@@ -103,6 +103,8 @@ data class KSDimensions(
     val videoFeedCampaignTitleSubtitleSpacing: Dp = Dp.Unspecified,
     val videoFeedScrubBarTrackHeight: Dp = Dp.Unspecified,
     val videoFeedScrubBarThumbSize: Dp = Dp.Unspecified,
+    val videoFeedSnackbarTopPadding: Dp = Dp.Unspecified,
+    val videoFeedSnackbarHorizontalMargin: Dp = Dp.Unspecified,
 
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
@@ -222,6 +224,8 @@ val KSStandardDimensions = KSDimensions(
     videoFeedCampaignTitleSubtitleSpacing = 5.dp,
     videoFeedScrubBarTrackHeight = 4.dp,
     videoFeedScrubBarThumbSize = 16.dp,
+    videoFeedSnackbarTopPadding = 122.dp,
+    videoFeedSnackbarHorizontalMargin = 10.dp,
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 86.dp,

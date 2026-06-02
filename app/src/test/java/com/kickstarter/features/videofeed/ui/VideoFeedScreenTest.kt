@@ -24,7 +24,6 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
-import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 
@@ -531,16 +530,45 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                     errorSnackBarHostState = snackbarHostState
                 )
                 LaunchedEffect(Unit) {
-                    snackbarHostState.showSnackbar(
-                        message = errorMessage,
-                        actionLabel = KSSnackbarTypes.KS_ERROR.name
-                    )
+                    snackbarHostState.showSnackbar(message = errorMessage)
                 }
             }
         }
 
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
+    }
+
+    @Test
+    fun `snackbar is positioned in the top half of the screen`() {
+        val snackbarHostState = SnackbarHostState()
+        val errorMessage = "Couldn't load video"
+        val project = ProjectFactory.project().toBuilder().id(4002L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    errorSnackBarHostState = snackbarHostState
+                )
+                LaunchedEffect(Unit) {
+                    snackbarHostState.showSnackbar(message = errorMessage)
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        val snackbarNode = composeTestRule.onNodeWithText(errorMessage)
+        snackbarNode.assertIsDisplayed()
+
+        val snackbarBounds = snackbarNode.fetchSemanticsNode().boundsInRoot
+        val screenHeight = composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .fetchSemanticsNode().boundsInRoot.height
+
+        assertTrue("Snackbar should be in the top half of the screen", snackbarBounds.top < screenHeight / 2)
     }
 
     @Test

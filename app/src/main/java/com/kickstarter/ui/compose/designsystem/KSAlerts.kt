@@ -2,6 +2,7 @@ package com.kickstarter.ui.compose.designsystem
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -132,10 +133,12 @@ fun KSVideoFeedSnackbar(
                     Modifier.background(baseColor)
                 }
             )
-            .padding(
-                horizontal = dimensions.paddingMedium,
-                vertical = dimensions.paddingMediumSmall
-            ),
+            .border(
+                width = 1.dp,
+                color = Color.White.copy(alpha = 0.14f),
+                shape = RoundedCornerShape(dimensions.radiusMedium)
+            )
+            .padding(all = dimensions.paddingMedium),
         contentAlignment = Alignment.Center
     ) {
         Text(

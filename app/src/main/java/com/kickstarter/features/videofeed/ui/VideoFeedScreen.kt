@@ -281,9 +281,9 @@ fun VideoFeedScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(
-                    top = dimensions.videoFeedCloseButtonTopPadding,
-                    start = dimensions.paddingMediumSmall,
-                    end = dimensions.paddingMediumSmall
+                    top = dimensions.videoFeedSnackbarTopPadding,
+                    start = dimensions.videoFeedSnackbarHorizontalMargin,
+                    end = dimensions.videoFeedSnackbarHorizontalMargin
                 ),
             hostState = errorSnackBarHostState,
             snackbar = { data ->

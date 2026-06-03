@@ -64,7 +64,9 @@ class VideoFeedActivity : ComponentActivity() {
                     errorSnackBarHostState = snackbarHostState,
                     hasMore = uiState.hasMore,
                     onLoadMore = { viewModel.loadVideoFeed() },
-                    onReachedLastVideo = { showRatingDialogWidget() },
+                    onReachedLastVideo = {
+                        showRatingDialogWidget()
+                    },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
                     onProfileClick = { project ->
                         viewModel.onCTAClicked(project, CtaContextName.VIDEO_CREATOR)

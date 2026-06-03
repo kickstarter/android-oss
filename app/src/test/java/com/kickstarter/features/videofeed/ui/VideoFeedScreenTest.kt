@@ -2,6 +2,9 @@ package com.kickstarter.features.videofeed.ui
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -606,6 +609,76 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             .performClick()
 
         assertEquals(project, capturedProject)
+    }
+
+    @Test
+    fun `onReachedLastVideo is triggered when settled on last page and hasMore is false`() {
+        var reachedLastVideoCalled = false
+
+        val items = List(2) { i ->
+            VideoFeedItem(
+                badges = emptyList(),
+                project = ProjectFactory.project().toBuilder().id(6000L + i).build(),
+                hlsUrl = hlsUrl
+            )
+        }
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    hasMore = false,
+                    onReachedLastVideo = { reachedLastVideoCalled = true }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        assertTrue(reachedLastVideoCalled)
+    }
+
+    @Test
+    fun `onReachedLastVideo fires only once even when the LaunchedEffect re-evaluates`() {
+        var callCount = 0
+        var hasMore by mutableStateOf(false)
+
+        val items = List(2) { i ->
+            VideoFeedItem(
+                badges = emptyList(),
+                project = ProjectFactory.project().toBuilder().id(7000L + i).build(),
+                hlsUrl = hlsUrl
+            )
+        }
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    hasMore = hasMore,
+                    onReachedLastVideo = { callCount++ }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        assertEquals(1, callCount)
+
+        // Toggle hasMore to force the LaunchedEffect to re-run with the same end-of-feed condition
+        hasMore = true
+        composeTestRule.waitForIdle()
+        hasMore = false
+        composeTestRule.waitForIdle()
+
+        // Guard (hasTriggeredReview) ensures the callback only fires once per session
+        assertEquals(1, callCount)
     }
 
     @Test

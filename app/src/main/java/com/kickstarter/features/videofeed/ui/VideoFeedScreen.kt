@@ -116,6 +116,7 @@ fun VideoFeedScreen(
     // - In-app review: fire once when the user settles on the last video and there are no more pages.
     LaunchedEffect(pagerState.settledPage, items.size, hasMore) {
         if (!hasTriggeredReview && items.isNotEmpty() && !hasMore && pagerState.settledPage == items.size - 1) {
+//            Timber.d("VideoFeedScreen: ratingDialog triggering — user reached last video (page=${pagerState.settledPage})")
             hasTriggeredReview = true
             onReachedLastVideo()
         }

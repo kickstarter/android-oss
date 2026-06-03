@@ -11,6 +11,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
+import com.kickstarter.services.apiresponses.commentresponse.PageInfoEnvelope
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,6 +29,48 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher, entrySurface: String = "") {
         viewModel = VideoFeedViewModel.Factory(environment, entrySurface, dispatcher)
             .create(VideoFeedViewModel::class.java)
+    }
+
+    @Test
+    fun `loadVideoFeed emits hasMore false when pageInfo hasNextPage is false`() = runTest {
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val pageInfo = PageInfoEnvelope.builder().hasNextPage(false).endCursor("cursor1").build()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
+                    return Result.success(VideoFeedEnvelope(items = listOf(item), pageInfo = pageInfo))
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
+        advanceUntilIdle()
+
+        assertFalse(viewModel.videoFeedUIState.value.hasMore)
+    }
+
+    @Test
+    fun `loadVideoFeed emits hasMore true when pageInfo hasNextPage is true`() = runTest {
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val pageInfo = PageInfoEnvelope.builder().hasNextPage(true).endCursor("cursor1").build()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
+                    return Result.success(VideoFeedEnvelope(items = listOf(item), pageInfo = pageInfo))
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
+        advanceUntilIdle()
+
+        assertTrue(viewModel.videoFeedUIState.value.hasMore)
     }
 
     @Test

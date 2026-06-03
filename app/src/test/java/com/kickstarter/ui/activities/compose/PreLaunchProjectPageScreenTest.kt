@@ -19,6 +19,7 @@ import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.P
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_LOCATION_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_SAVE_BUTTON
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.SIMILAR_PROJECTS_CONTAINER
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
 import org.joda.time.DateTime
@@ -34,6 +35,7 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
     private val projectLocation = composeTestRule.onNodeWithTag(PROJECT_LOCATION_NAME.name)
     private val projectSaveButton = composeTestRule.onNodeWithTag(PROJECT_SAVE_BUTTON.name)
     private val projectFollowers = composeTestRule.onNodeWithTag(PROJECT_FOLLOWERS.name)
+    private val similarProjectsContainer = composeTestRule.onNodeWithTag(SIMILAR_PROJECTS_CONTAINER.name)
 
     @Test
     fun verifyInitState() {
@@ -55,6 +57,7 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
         projectSaveButton.assertExists()
         projectSaveButton.assertTextEquals(context().getString(R.string.Notify_me_on_launch))
         projectFollowers.assertDoesNotExist()
+        similarProjectsContainer.assertExists()
     }
 
     @Test

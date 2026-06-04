@@ -2,6 +2,7 @@ package com.kickstarter.ui.extensions
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,8 +16,8 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.features.pledgedprojectsoverview.ui.BackingDetailsActivity
 import com.kickstarter.libs.Environment
@@ -133,26 +134,29 @@ fun Activity.setUpConnectivityStatusCheck(lifecycle: Lifecycle) {
 }
 
 fun Activity.showRatingDialogWidget() {
+    if (BuildConfig.DEBUG) {
+        AlertDialog.Builder(this)
+            .setTitle("In-App Review [DEBUG]")
+            .setMessage("This is where the Google Play in-app review dialog would appear in production.")
+            .setPositiveButton("OK", null)
+            .show()
+        return
+    }
+
     val manager = ReviewManagerFactory.create(this)
     val requestReviewTask = manager.requestReviewFlow()
 
-    requestReviewTask.addOnCompleteListener { request ->
+    requestReviewTask.addOnCompleteListener(this) { request ->
         if (request.isSuccessful) {
             Timber.v("${this.localClassName} : showRatingDialogWidget request: ${request.isSuccessful} ")
-            // Request succeeded and a ReviewInfo instance was received
-            val reviewInfo: ReviewInfo = request.result
-
-            // Start the review flow UI
+            val reviewInfo = request.result ?: return@addOnCompleteListener
             val flow = manager.launchReviewFlow(this, reviewInfo)
-
             flow.addOnSuccessListener {
                 Timber.v("${this.localClassName} : showRatingDialogWidget launchReviewFlow: Success")
             }
-
             flow.addOnFailureListener {
                 Timber.v("${this.localClassName} : showRatingDialogWidget launchReviewFlow: Failure")
             }
-
             flow.addOnCompleteListener {
                 Timber.v("${this.localClassName} : showRatingDialogWidget launchReviewFlow: Complete")
             }

@@ -19,7 +19,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 data class VideoFeedUIState(
     val items: List<VideoFeedItem> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val hasMore: Boolean = true
 )
 
 class VideoFeedViewModel(
@@ -77,7 +78,8 @@ class VideoFeedViewModel(
                 _videoFeedUIState.emit(
                     VideoFeedUIState(
                         items = _videoFeedUIState.value.items + newItems,
-                        isLoading = false
+                        isLoading = false,
+                        hasMore = hasMore
                     )
                 )
             } finally {

@@ -240,7 +240,7 @@ dependencies {
     implementation "com.apollographql.apollo3:apollo-rx2-support:$apollo_version"
 
     implementation 'com.facebook.android:facebook-android-sdk:16.0.0'
-    implementation("com.google.android.play:review-ktx:2.0.2")
+    implementation('com.google.android.play:review-ktx:2.0.2')
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 

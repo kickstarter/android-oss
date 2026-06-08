@@ -60,9 +60,11 @@ import com.kickstarter.R
 import com.kickstarter.features.search.ui.LocalFilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.features.search.viewmodel.SearchAndFilterViewModel
+import com.kickstarter.libs.CurrentUserTypeV2
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.KsOptional
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.extensions.deadlineCountdownDetail
 import com.kickstarter.libs.utils.extensions.deadlineCountdownValue
@@ -72,10 +74,12 @@ import com.kickstarter.libs.utils.extensions.isTrimmedEmpty
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toDiscoveryParamsList
 import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
+import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
 import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
@@ -89,6 +93,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.KSVideoFeedBanner
+import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -97,35 +102,53 @@ import kotlinx.coroutines.launch
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PagerPreview() {
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {}
+        override fun login(newUser: User) {}
+        override fun logout() {}
+        override val accessToken: String? get() = null
+        override fun refresh(freshUser: User) {}
+        override fun observable(): Observable<KsOptional<User>> = Observable.just(KsOptional.empty())
+        override fun getUser(): User? = null
+    }
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
+        .build()
+
+    val fakeViewModel = remember { FilterMenuViewModel(environment = env) }
+
     KSTheme {
-        val testPagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
-        val testSheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true
-        )
-
-        val categories = CategoryFactory.rootCategories()
-        val selectedStatus = DiscoveryParams.State.LIVE
-
-        val appliedFilters = mutableListOf<Pair<DiscoveryParams.State?, Category?>>()
-        val dismissed = mutableListOf<Boolean>()
-        val selectedCounts = mutableListOf<Pair<Int?, Int?>>()
-
-        Box(modifier = Modifier.size(400.dp)) {
-            FilterPagerSheet(
-                selectedProjectStatus = selectedStatus,
-                currentCategory = categories[0],
-                categories = categories,
-                onDismiss = { dismissed.add(true) },
-                onApply = { state, category, bucket, location, amountBucket, _, _, _, _, goalBucket -> appliedFilters.add(Pair(state, category)) },
-                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount, _, _, _, _, goalBucketCount ->
-                    selectedCounts.add(
-                        statusCount to categoryCount
-                    )
-                },
-                pagerState = testPagerState,
-                sheetState = testSheetState,
-                shouldShowPhase = true
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            val testPagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
+            val testSheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true
             )
+
+            val categories = CategoryFactory.rootCategories()
+            val selectedStatus = DiscoveryParams.State.LIVE
+
+            val appliedFilters = remember { mutableListOf<Pair<DiscoveryParams.State?, Category?>>() }
+            val dismissed = remember { mutableListOf<Boolean>() }
+            val selectedCounts = remember { mutableListOf<Pair<Int?, Int?>>() }
+
+            Box(modifier = Modifier.size(400.dp)) {
+                FilterPagerSheet(
+                    selectedProjectStatus = selectedStatus,
+                    currentCategory = categories[0],
+                    categories = categories,
+                    onDismiss = { dismissed.add(true) },
+                    onApply = { state, category, bucket, location, amountBucket, _, _, _, _, goalBucket -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount, _, _, _, _, goalBucketCount ->
+                        selectedCounts.add(
+                            statusCount to categoryCount
+                        )
+                    },
+                    pagerState = testPagerState,
+                    sheetState = testSheetState,
+                    shouldShowPhase = true
+                )
+            }
         }
     }
 }
@@ -134,27 +157,44 @@ fun PagerPreview() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchScreenPreviewNonEmpty() {
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {}
+        override fun login(newUser: User) {}
+        override fun logout() {}
+        override val accessToken: String? get() = null
+        override fun refresh(freshUser: User) {}
+        override fun observable(): Observable<KsOptional<User>> = Observable.just(KsOptional.empty())
+        override fun getUser(): User? = null
+    }
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
+        .build()
+
+    val fakeViewModel = remember { FilterMenuViewModel(environment = env) }
     KSTheme {
-        SearchScreen(
-            onBackClicked = { },
-            errorSnackBarHostState = SnackbarHostState(),
-            isLoading = false,
-            isDefaultList = true,
-            itemsList = List(100) {
-                Project.builder()
-                    .name("This is a test $it")
-                    .pledged((it * 2).toDouble())
-                    .photo(Photo.builder().altText("").full("").build())
-                    .goal(100.0)
-                    .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
-                    .build()
-            },
-            lazyColumnListState = rememberLazyListState(),
-            showEmptyView = false,
-            categories = listOf(),
-            onSearchTermChanged = {},
-            onItemClicked = { project -> }
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchScreen(
+                onBackClicked = { },
+                errorSnackBarHostState = SnackbarHostState(),
+                isLoading = false,
+                isDefaultList = true,
+                itemsList = List(100) {
+                    Project.builder()
+                        .name("This is a test $it")
+                        .pledged((it * 2).toDouble())
+                        .photo(Photo.builder().altText("").full("").build())
+                        .goal(100.0)
+                        .state(if (it in 10..20) Project.STATE_SUBMITTED else Project.STATE_LIVE)
+                        .build()
+                },
+                lazyColumnListState = rememberLazyListState(),
+                showEmptyView = false,
+                categories = listOf(),
+                onSearchTermChanged = {},
+                onItemClicked = { project -> }
+            )
+        }
     }
 }
 
@@ -162,18 +202,35 @@ fun SearchScreenPreviewNonEmpty() {
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SearchScreenPreviewEmpty() {
+    val mockUser = object : CurrentUserTypeV2() {
+        override fun setToken(accessToken: String) {}
+        override fun login(newUser: User) {}
+        override fun logout() {}
+        override val accessToken: String? get() = null
+        override fun refresh(freshUser: User) {}
+        override fun observable(): Observable<KsOptional<User>> = Observable.just(KsOptional.empty())
+        override fun getUser(): User? = null
+    }
+    val env = Environment.builder()
+        .apolloClientV2(MockApolloClientV2())
+        .currentUserV2(mockUser)
+        .build()
+
+    val fakeViewModel = remember { FilterMenuViewModel(environment = env) }
     KSTheme {
-        SearchScreen(
-            onBackClicked = { },
-            errorSnackBarHostState = SnackbarHostState(),
-            isLoading = true,
-            itemsList = listOf(),
-            lazyColumnListState = rememberLazyListState(),
-            showEmptyView = true,
-            categories = listOf(),
-            onSearchTermChanged = {},
-            onItemClicked = { project -> }
-        )
+        CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+            SearchScreen(
+                onBackClicked = { },
+                errorSnackBarHostState = SnackbarHostState(),
+                isLoading = true,
+                itemsList = listOf(),
+                lazyColumnListState = rememberLazyListState(),
+                showEmptyView = true,
+                categories = listOf(),
+                onSearchTermChanged = {},
+                onItemClicked = { project -> }
+            )
+        }
     }
 }
 
@@ -413,7 +470,7 @@ fun SearchScreen(
     val currentRecommended = remember { mutableStateOf<Boolean>(false) }
 
     val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)
@@ -504,153 +561,157 @@ fun SearchScreen(
         },
         containerColor = colors.backgroundSurfacePrimary
     ) { padding ->
-        if (showEmptyView) {
-            var numbersActive = 0
-            selectedFilterCounts.entries.map { entry ->
-                numbersActive += entry.value
-            }
-
-            SearchEmptyView(
-                modifier = Modifier
-                    .padding(top = padding.calculateTopPadding())
-                    .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
-                    .background(colors.backgroundSurfacePrimary),
-                environment = environment,
-                currentSearchTerm = currentSearchTerm,
-                activeFilters = numbersActive > 0,
-                onClick = {
-                    selectedFilterCounts.keys.forEach { key ->
-                        selectedFilterCounts[key] = 0
-                    }
-
-                    currentCategory.value = null
-                    currentProjectState.value = null
-                    currentPercentage.value = null
-                    currentLocation.value = null
-                    currentAmountRaised.value = null
-                    currentRecommended.value = false
-                    currentStaffPicked.value = false
-                    currentStarred.value = false
-                    currentSocial.value = false
-                    currentGoal.value = null
-                    onApplySearchWithParams(
-                        currentCategory.value,
-                        currentSort.value,
-                        currentProjectState.value,
-                        currentPercentage.value,
-                        currentLocation.value,
-                        currentAmountRaised.value,
-                        currentRecommended.value,
-                        currentStaffPicked.value,
-                        currentStarred.value,
-                        currentSocial.value,
-                        currentGoal.value
-                    )
-                }
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .testTag(SearchScreenTestTag.LIST_VIEW.name)
-                    .padding(padding)
-                    .background(colors.backgroundSurfacePrimary)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(
-                    start = dimensions.paddingMediumLarge,
-                    end = dimensions.paddingMediumLarge
-                ),
-                state = lazyColumnListState,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if (isVideoFeedBannerVisible) {
-                    item {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                        KSVideoFeedBanner(onButtonClick = onVideoFeedBannerClicked)
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                    }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            if (showEmptyView) {
+                var numbersActive = 0
+                selectedFilterCounts.entries.map { entry ->
+                    numbersActive += entry.value
                 }
 
-                itemsIndexed(itemsList) { index, project ->
-                    if (index == 0 && isDefaultList) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                SearchEmptyView(
+                    modifier = Modifier
+                        .testTag(SearchScreenTestTag.EMPTY_VIEW.name)
+                        .background(colors.backgroundSurfacePrimary),
+                    environment = environment,
+                    currentSearchTerm = currentSearchTerm,
+                    activeFilters = numbersActive > 0,
+                    onClick = {
+                        selectedFilterCounts.keys.forEach { key ->
+                            selectedFilterCounts[key] = 0
+                        }
 
-                        Text(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
-                                .fillMaxWidth(),
-                            text = stringResource(id = R.string.activity_empty_state_logged_in_button),
-                            style = typographyV2.title2,
-                            color = colors.kds_support_700,
-                            textAlign = TextAlign.Start
+                        currentCategory.value = null
+                        currentProjectState.value = null
+                        currentPercentage.value = null
+                        currentLocation.value = null
+                        currentAmountRaised.value = null
+                        currentRecommended.value = false
+                        currentStaffPicked.value = false
+                        currentStarred.value = false
+                        currentSocial.value = false
+                        currentGoal.value = null
+                        onApplySearchWithParams(
+                            currentCategory.value,
+                            currentSort.value,
+                            currentProjectState.value,
+                            currentPercentage.value,
+                            currentLocation.value,
+                            currentAmountRaised.value,
+                            currentRecommended.value,
+                            currentStaffPicked.value,
+                            currentStarred.value,
+                            currentSocial.value,
+                            currentGoal.value
                         )
                     }
-
-                    val state = getCardProjectState(project)
-                    val fundingInfoString = getFundingInfoString(state, environment, project)
-
-                    if (index == 0) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                        KSProjectCardLarge(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
-                            photo = project.photo(),
-                            title = project.name(),
-                            state = state,
-                            fundingInfoString = fundingInfoString,
-                            fundedPercentage = project.percentageFunded().toInt(),
-                        ) {
-                            onItemClicked(project)
-                        }
-
-                        if (itemsList.size > 1) {
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .testTag(SearchScreenTestTag.LIST_VIEW.name)
+                        .background(colors.backgroundSurfacePrimary)
+                        .fillMaxWidth(),
+                    contentPadding = PaddingValues(
+                        start = dimensions.paddingMediumLarge,
+                        end = dimensions.paddingMediumLarge
+                    ),
+                    state = lazyColumnListState,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    if (isVideoFeedBannerVisible) {
+                        item {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                            KSVideoFeedBanner(onButtonClick = onVideoFeedBannerClicked)
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                         }
-                    } else {
-                        KSProjectCardSmall(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
-                            photo = project.photo(),
-                            title = project.name(),
-                            state = state,
-                            fundingInfoString = fundingInfoString,
-                            fundedPercentage = project.percentageFunded().toInt(),
-                        ) {
-                            onItemClicked(project)
+                    }
+
+                    itemsIndexed(itemsList) { index, project ->
+                        if (index == 0 && isDefaultList) {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                            Text(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.DISCOVER_PROJECTS_TITLE.name)
+                                    .fillMaxWidth(),
+                                text = stringResource(id = R.string.activity_empty_state_logged_in_button),
+                                style = typographyV2.title2,
+                                color = colors.kds_support_700,
+                                textAlign = TextAlign.Start
+                            )
                         }
 
-                        if (index < itemsList.size - 1) {
+                        val state = getCardProjectState(project)
+                        val fundingInfoString = getFundingInfoString(state, environment, project)
+
+                        if (index == 0) {
                             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                            KSProjectCardLarge(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.FEATURED_PROJECT_VIEW.name),
+                                photo = project.photo(),
+                                title = project.name(),
+                                state = state,
+                                fundingInfoString = fundingInfoString,
+                                fundedPercentage = project.percentageFunded().toInt(),
+                            ) {
+                                onItemClicked(project)
+                            }
+
+                            if (itemsList.size > 1) {
+                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                            }
                         } else {
-                            Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                            KSProjectCardSmall(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.NORMAL_PROJECT_VIEW.name + index),
+                                photo = project.photo(),
+                                title = project.name(),
+                                state = state,
+                                fundingInfoString = fundingInfoString,
+                                fundedPercentage = project.percentageFunded().toInt(),
+                            ) {
+                                onItemClicked(project)
+                            }
+
+                            if (index < itemsList.size - 1) {
+                                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+                            } else {
+                                Spacer(modifier = Modifier.height(dimensions.paddingMediumLarge))
+                            }
+                        }
+                    }
+
+                    item(isLoading) {
+                        if (isLoading && itemsList.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+
+                            KSCircularProgressIndicator(
+                                modifier = Modifier
+                                    .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
+                                    .size(size = dimensions.imageSizeLarge)
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensions.paddingMedium))
                         }
                     }
                 }
-
-                item(isLoading) {
-                    if (isLoading && itemsList.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-
-                        KSCircularProgressIndicator(
-                            modifier = Modifier
-                                .testTag(SearchScreenTestTag.IN_LIST_LOADING_VIEW.name)
-                                .size(size = dimensions.imageSizeLarge)
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
-                    }
-                }
             }
-        }
 
-        if (isLoading && itemsList.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .testTag(SearchScreenTestTag.LOADING_VIEW.name)
-                    .fillMaxSize()
-                    .background(color = colors.backgroundSurfacePrimary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                KSCircularProgressIndicator()
+            if (isLoading && itemsList.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .testTag(SearchScreenTestTag.LOADING_VIEW.name)
+                        .fillMaxSize()
+                        .background(color = colors.backgroundSurfacePrimary.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    KSCircularProgressIndicator()
+                }
             }
         }
     }

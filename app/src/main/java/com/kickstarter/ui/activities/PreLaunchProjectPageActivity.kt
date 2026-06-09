@@ -8,15 +8,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.kickstarter.R
+import com.kickstarter.features.socialshare.AndroidSocialShareService
+import com.kickstarter.features.socialshare.data.SocialShareData
+import com.kickstarter.features.socialshare.ui.LocalSocialShareViewModel
+import com.kickstarter.features.socialshare.ui.SocialShareSheet
+import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -82,6 +93,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val projectState = viewModel.project().subscribeAsState(initial = null)
                 val similarProjectsState = similarProjectsViewModel.similarProjectsUiState.collectAsState()
+                var shareData: SocialShareData? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(projectState.value) {
                     projectState.value?.let {
@@ -96,7 +108,20 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                     rightOnClickAction = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
                     },
-                    middleRightClickAction = { this.viewModel.inputs.shareButtonClicked() },
+                    middleRightClickAction = {
+                        if (viewModel.outputs.isNewSocialShareEnabled()) {
+                            projectState.value?.let { project ->
+                                shareData = SocialShareData(
+                                    projectName = project.name() ?: "",
+                                    projectUrl = project.urls()?.web()?.project() ?: "",
+                                    imageUrl = project.photo()?.full() ?: "",
+                                    creatorName = project.creator()?.name() ?: ""
+                                )
+                            }
+                        } else {
+                            this.viewModel.inputs.shareButtonClicked()
+                        }
+                    },
                     onCreatorLayoutClicked = { this.viewModel.inputs.creatorInfoClicked() },
                     onButtonClicked = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }
@@ -118,6 +143,25 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                         startActivity(intent)
                     }
                 )
+
+                shareData?.let { data ->
+                    val shareViewModel = remember(data) {
+                        SocialShareViewModel(
+                            environment = requireNotNull(getEnvironment()),
+                            shareService = AndroidSocialShareService(context.applicationContext),
+                            shareData = data,
+                            contextPage = ContextPageName.PRE_LAUNCH_PROJECT
+                        )
+                    }
+                    CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
+                        SocialShareSheet(
+                            shareData = data,
+                            isVisible = true,
+                            onDismiss = { shareData = null },
+                            onIntentReady = { startActivity(it) }
+                        )
+                    }
+                }
             }
         }
 

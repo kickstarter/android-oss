@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.rx.transformers.TakeWhenTransformerV2
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.KsOptional
@@ -62,6 +63,9 @@ interface PrelaunchProjectViewModel {
         fun showSavedPrompt(): Observable<Unit>
 
         fun startCreatorView(): Observable<Project>
+
+        /** Returns true when the new social sharing experience should be shown. */
+        fun isNewSocialShareEnabled(): Boolean
     }
 
     class PrelaunchProjectViewModel(val environment: Environment) : ViewModel(), Inputs, Outputs {
@@ -77,6 +81,7 @@ interface PrelaunchProjectViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val attributionEvents = requireNotNull(environment.attributionEvents())
+        private val statsigClient = requireNotNull(environment.statsigClient())
 
         private val intent = BehaviorSubject.create<Intent>()
         private val creatorInfoClicked = PublishSubject.create<Unit>()
@@ -367,6 +372,9 @@ interface PrelaunchProjectViewModel {
         override fun startLoginToutActivity(): Observable<Unit> = this.startLoginToutActivity
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
         override fun startCreatorView(): Observable<Project> = this.startCreatorView
+        override fun isNewSocialShareEnabled(): Boolean =
+            statsigClient.isReady.value &&
+                statsigClient.checkGate(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key)
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

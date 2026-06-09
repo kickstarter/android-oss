@@ -32,7 +32,8 @@ import kotlinx.coroutines.rx2.asFlow
 import timber.log.Timber
 
 enum class StatsigGateKey(val key: String) {
-    ANDROID_VIDEO_FEED("android_video_feed")
+    ANDROID_VIDEO_FEED("android_video_feed"),
+    ANDROID_PRELAUNCH_SOCIAL_SHARE("android_social_share")
 }
 
 object StatsigExperiments {

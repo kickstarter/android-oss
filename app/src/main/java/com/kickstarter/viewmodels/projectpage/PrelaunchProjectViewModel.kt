@@ -81,7 +81,7 @@ interface PrelaunchProjectViewModel {
         private val sharedPreferences = requireNotNull(environment.sharedPreferences())
         private val ffClient = requireNotNull(environment.featureFlagClient())
         private val attributionEvents = requireNotNull(environment.attributionEvents())
-        private val statsigClient = environment.statsigClient()
+        private val statsigClient = requireNotNull(environment.statsigClient())
 
         private val intent = BehaviorSubject.create<Intent>()
         private val creatorInfoClicked = PublishSubject.create<Unit>()
@@ -373,7 +373,8 @@ interface PrelaunchProjectViewModel {
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
         override fun startCreatorView(): Observable<Project> = this.startCreatorView
         override fun isNewSocialShareEnabled(): Boolean =
-            statsigClient?.checkGate(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key) ?: false
+            statsigClient.isReady.value &&
+                statsigClient.checkGate(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key)
     }
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {

@@ -6,7 +6,9 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.ThirdPartyEventValues
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
@@ -325,6 +327,28 @@ class PrelaunchProjectViewModelTest : KSRobolectricTestCase() {
         vm.inputs.configureWith(intent = intent)
 
         assertEquals(true, this.vm.onThirdPartyEventSent.value)
+    }
+
+    @Test
+    fun testIsNewSocialShareEnabled_whenFlagIsOn() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key to true)
+        )
+        setUpEnvironment(testEnvironment.toBuilder().statsigClient(statsigClient).build())
+
+        assertTrue(vm.outputs.isNewSocialShareEnabled())
+    }
+
+    @Test
+    fun testIsNewSocialShareEnabled_whenFlagIsOff() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key to false)
+        )
+        setUpEnvironment(testEnvironment.toBuilder().statsigClient(statsigClient).build())
+
+        assertFalse(vm.outputs.isNewSocialShareEnabled())
     }
 
     @After

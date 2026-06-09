@@ -117,6 +117,7 @@ fun PreLaunchProjectPageScreen(
                 middle = {
                     ToolbarIconButton(
                         icon = Icons.Filled.Share,
+                        contentDescription = stringResource(R.string.project_accessibility_button_share_label),
                         clickAction = { middleRightClickAction.invoke() }
                     )
                 },

@@ -194,11 +194,11 @@ fun TopToolBarBetaIcon(
 }
 
 @Composable
-fun ToolbarIconButton(icon: ImageVector, clickAction: () -> Unit = {}) =
+fun ToolbarIconButton(icon: ImageVector, contentDescription: String? = null, clickAction: () -> Unit = {}) =
     IconButton(onClick = { clickAction.invoke() }) {
         Icon(
             imageVector = icon,
-            contentDescription = null
+            contentDescription = contentDescription
         )
     }
 

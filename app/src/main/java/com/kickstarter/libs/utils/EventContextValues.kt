@@ -109,6 +109,7 @@ class EventContextValues {
         TWO_FACTOR_AUTH("two_factor_auth"),
         ONBOARDING("onboarding"),
         VIDEO_FEED("video_feed"),
+        PRE_LAUNCH_PROJECT("pre_launch_project"),
     }
 
     /**

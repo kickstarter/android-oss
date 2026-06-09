@@ -120,7 +120,7 @@ fun PagerPreview() {
 
     KSTheme {
         CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
-            val testPagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
+            val testPagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
             val testSheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = true
             )
@@ -470,7 +470,7 @@ fun SearchScreen(
     val currentRecommended = remember { mutableStateOf<Boolean>(false) }
 
     val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.values().size })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)

@@ -122,16 +122,17 @@ fun KSLinearProgressIndicator(
 @Composable
 fun KSCircularProgressIndicator(
     modifier: Modifier = Modifier,
-    progress: Float? = null
+    progress: Float? = null,
+    color: Color = colors.kds_create_700
 ) {
     if (progress != null) {
         CircularProgressIndicator(
             progress = { progress },
             modifier = modifier,
-            color = colors.kds_create_700
+            color = color
         )
     } else {
-        CircularProgressIndicator(modifier = modifier, color = colors.kds_create_700)
+        CircularProgressIndicator(modifier = modifier, color = color)
     }
 }
 

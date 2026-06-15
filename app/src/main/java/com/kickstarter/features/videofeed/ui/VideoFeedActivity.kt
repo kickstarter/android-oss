@@ -68,6 +68,7 @@ class VideoFeedActivity : ComponentActivity() {
                     environment = env,
                     errorSnackBarHostState = snackbarHostState,
                     hasMore = uiState.hasMore,
+                    isLoading = uiState.isLoading,
                     onLoadMore = {
                         viewModel.loadVideoFeed()
                     },

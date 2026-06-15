@@ -96,6 +96,65 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `loadVideoFeed sets isLoading true while fetching and false once items arrive`() = runTest {
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val feedSignal = CompletableDeferred<Result<VideoFeedEnvelope>>()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> =
+                    feedSignal.await()
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
+        // Run the coroutine up to the suspended network call, not beyond
+        testScheduler.runCurrent()
+
+        // While the request is in flight, isLoading is true and no items are present yet
+        assertTrue(viewModel.videoFeedUIState.value.isLoading)
+        assertTrue(viewModel.videoFeedUIState.value.items.isEmpty())
+
+        feedSignal.complete(Result.success(VideoFeedEnvelope(items = listOf(item))))
+        advanceUntilIdle()
+
+        assertFalse(viewModel.videoFeedUIState.value.isLoading)
+        assertEquals(listOf(item), viewModel.videoFeedUIState.value.items)
+    }
+
+    @Test
+    fun `loadVideoFeed does not start a second request while one is already in flight`() = runTest {
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val feedSignal = CompletableDeferred<Result<VideoFeedEnvelope>>()
+        var fetchCount = 0
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
+                    fetchCount++
+                    return feedSignal.await()
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+        viewModel.loadVideoFeed()
+        testScheduler.runCurrent()
+
+        // A second call while loading is a no-op
+        viewModel.loadVideoFeed()
+        testScheduler.runCurrent()
+
+        feedSignal.complete(Result.success(VideoFeedEnvelope(items = listOf(item))))
+        advanceUntilIdle()
+
+        assertEquals(1, fetchCount)
+    }
+
+    @Test
     fun `bookmarkProject on unstarred project calls watchProjectSuspend and sets isStarred true`() = runTest {
         val project = ProjectFactory.project().toBuilder().id(1L).isStarred(false).build()
         val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)

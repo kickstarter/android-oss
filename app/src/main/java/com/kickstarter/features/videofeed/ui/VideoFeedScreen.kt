@@ -2,6 +2,7 @@ package com.kickstarter.features.videofeed.ui
 
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,7 @@ import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toCompactFormat
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
+import com.kickstarter.ui.compose.designsystem.KSCircularProgressIndicator
 import com.kickstarter.ui.compose.designsystem.KSSnackbarTypes
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -71,8 +73,13 @@ import kotlinx.coroutines.launch
 enum class VideoFeedScreenTestTag {
     VIDEO_FEED_PAGER,
     VIDEO_FEED_OVERLAY_CONTAINER,
-    VIDEO_FEED_CLOSE_BUTTON
+    VIDEO_FEED_CLOSE_BUTTON,
+    VIDEO_FEED_LOADING_PAGE
 }
+
+// Stable pager key for the trailing pagination loading page. Project ids are positive,
+// so this sentinel never collides with a real item key.
+private const val LOADING_PAGE_KEY = Long.MIN_VALUE
 
 @Composable
 fun VideoFeedScreen(
@@ -80,6 +87,7 @@ fun VideoFeedScreen(
     environment: Environment,
     errorSnackBarHostState: SnackbarHostState = SnackbarHostState(),
     hasMore: Boolean = true,
+    isLoading: Boolean = false,
     onLoadMore: () -> Unit = {},
     onReachedLastVideo: () -> Unit = {},
     onClose: () -> Unit = {},
@@ -94,7 +102,11 @@ fun VideoFeedScreen(
     onProgressBarTap: (item: VideoFeedItem, progress: Float) -> Unit = { _, _ -> },
     onShareCTAClick: (project: Project) -> Unit = { _ -> }
 ) {
-    val pagerState = rememberPagerState(pageCount = { items.size })
+    // Append a trailing loading page while the next page is being fetched. The prefetch in the
+    // pagination LaunchedEffect usually completes before the user reaches the end, so this is only
+    // seen when the user out-swipes the request (or during the very first load).
+    val showLoadingPage = isLoading && hasMore
+    val pagerState = rememberPagerState(pageCount = { items.size + if (showLoadingPage) 1 else 0 })
 
     var previousSettledPage by remember { mutableStateOf(-1) }
     var hasTriggeredReview by remember { mutableStateOf(false) }
@@ -155,8 +167,13 @@ fun VideoFeedScreen(
                 .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
             state = pagerState,
             beyondViewportPageCount = 1,
-            key = { index -> items[index].project.id() }
+            key = { index -> if (index < items.size) items[index].project.id() else LOADING_PAGE_KEY }
         ) { page ->
+
+            if (page >= items.size) {
+                VideoFeedLoadingPage()
+                return@VerticalPager
+            }
 
             val item = items[page]
             val project = item.project
@@ -302,6 +319,32 @@ fun VideoFeedScreen(
                 KSVideoFeedSnackbar(text = data.visuals.message, hazeState = screenHazeState)
             }
         )
+    }
+}
+
+/**
+ * Full-screen loading page rendered as the trailing page of the feed while the next page is
+ * being fetched. A centered spinner over the video background keeps the look consistent with the
+ * player while the user waits for more videos to load.
+ */
+@Composable
+fun VideoFeedLoadingPage(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(KSTheme.colors.videoPlayer.background)
+            .testTag(VideoFeedScreenTestTag.VIDEO_FEED_LOADING_PAGE.name),
+        contentAlignment = Alignment.Center
+    ) {
+        KSCircularProgressIndicator(color = KSTheme.colors.videoPlayer.content)
+    }
+}
+
+@Preview
+@Composable
+fun VideoFeedLoadingPagePreview() {
+    KSTheme {
+        VideoFeedLoadingPage()
     }
 }
 

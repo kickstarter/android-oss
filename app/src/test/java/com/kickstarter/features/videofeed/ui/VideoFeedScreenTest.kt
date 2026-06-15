@@ -519,6 +519,79 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `pagination loading page is shown at the end when isLoading and hasMore are true`() {
+        val project = ProjectFactory.project().toBuilder().id(8001L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    hasMore = true,
+                    isLoading = true
+                )
+            }
+        }
+
+        // The loading page is the trailing page; it exists in composition (beyondViewportPageCount = 1)
+        // but is not displayed until the user swipes past the last video.
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_LOADING_PAGE.name, useUnmergedTree = true)
+            .assertExists()
+            .assertIsNotDisplayed()
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name)
+            .performTouchInput { swipeUp() }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_LOADING_PAGE.name, useUnmergedTree = true)
+            .assertExists()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `pagination loading page is not shown when isLoading is false`() {
+        val project = ProjectFactory.project().toBuilder().id(8002L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    hasMore = true,
+                    isLoading = false
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_LOADING_PAGE.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `pagination loading page is not shown when there are no more pages`() {
+        val project = ProjectFactory.project().toBuilder().id(8003L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    hasMore = false,
+                    isLoading = true
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(VideoFeedScreenTestTag.VIDEO_FEED_LOADING_PAGE.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
     fun `error snackbar is displayed when errorSnackBarHostState receives a message`() {
         val snackbarHostState = SnackbarHostState()
         val errorMessage = "Something went wrong, please try again"

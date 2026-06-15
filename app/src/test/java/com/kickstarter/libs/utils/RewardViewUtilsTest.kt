@@ -208,6 +208,6 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
             useAbout = false,
         )
 
-        assert(estimatedShippingString.isEmpty())
+        assertTrue(estimatedShippingString.isEmpty())
     }
 }

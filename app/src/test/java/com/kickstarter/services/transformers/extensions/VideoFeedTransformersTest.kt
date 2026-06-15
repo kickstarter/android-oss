@@ -141,6 +141,33 @@ class VideoFeedTransformersTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `toVideoFeedEnvelope maps previewImageUrl from verticalVideo`() {
+        val expectedUrl = "https://example.com/poster.jpg"
+        val node = fixtureNode(
+            project = fixtureProject(
+                verticalVideo = VideoFeedProject.VerticalVideo(
+                    id = "VmlkZW8t",
+                    previewImageUrl = expectedUrl,
+                    videoSources = VideoFeedProject.VideoSources(
+                        hls = VideoFeedProject.Hls(src = "https://example.com/video.m3u8")
+                    )
+                )
+            )
+        )
+        val item = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first()
+
+        assertEquals(expectedUrl, item.previewImageUrl)
+    }
+
+    @Test
+    fun `toVideoFeedEnvelope maps null verticalVideo to null previewImageUrl`() {
+        val node = fixtureNode(project = fixtureProject(verticalVideo = null))
+        val item = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first()
+
+        assertNull(item.previewImageUrl)
+    }
+
+    @Test
     fun `toVideoFeedEnvelope maps backersCount correctly`() {
         val node = fixtureNode(project = fixtureProject(backersCount = 431))
         val project = fixtureVideoFeed(nodes = listOf(node)).toVideoFeedEnvelope().items.first().project

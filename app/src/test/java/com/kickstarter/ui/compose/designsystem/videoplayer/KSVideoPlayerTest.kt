@@ -21,6 +21,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -579,6 +580,74 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         // Since isActive is false, it should have been set to false initially and stay false.
         verify(mockPlayer, atLeastOnce()).playWhenReady = false
         verify(mockPlayer, never()).play()
+    }
+
+    @Test
+    fun `poster is displayed while the first frame has not rendered`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    previewImageUrl = "https://example.com/poster.jpg",
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_POSTER.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `poster is not shown when previewImageUrl is null`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    previewImageUrl = null,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_POSTER.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `poster is removed once the player renders its first frame`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    previewImageUrl = "https://example.com/poster.jpg",
+                    player = mockPlayer
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        // - Poster is present before the first frame renders
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_POSTER.name, useUnmergedTree = true)
+            .assertExists()
+
+        // - Capture the player listener registered by the TextureView factory and simulate the first frame
+        val listenerCaptor = ArgumentCaptor.forClass(Player.Listener::class.java)
+        verify(mockPlayer, atLeastOnce()).addListener(listenerCaptor.capture())
+        composeTestRule.runOnUiThread {
+            listenerCaptor.allValues.forEach { it.onRenderedFirstFrame() }
+        }
+        composeTestRule.waitForIdle()
+
+        // - Poster fades out and is removed once the video is rendering
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_POSTER.name, useUnmergedTree = true)
+            .assertDoesNotExist()
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

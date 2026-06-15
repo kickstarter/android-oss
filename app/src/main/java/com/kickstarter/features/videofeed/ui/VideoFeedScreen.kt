@@ -197,6 +197,7 @@ fun VideoFeedScreen(
                 KSVideoPlayer(
                     videoUrl = videoUrl,
                     isActive = pagerState.currentPage == page,
+                    previewImageUrl = item.previewImageUrl,
                     onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
                     onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
                     onBecameInactive = { watchTimeMs, videoDurationMs ->

@@ -50,8 +50,6 @@ class VideoFeedViewModel(
             currentUserV2.isLoggedIn.asFlow().collect { _isUserLoggedIn.value = it }
         }
 
-        // Initial load is owned by the VM so it runs exactly once and is not
-        // re-triggered when the Activity's Compose content is recreated (e.g. config change)
         loadVideoFeed()
     }
 

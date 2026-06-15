@@ -21,6 +21,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import com.kickstarter.features.socialshare.ui.SocialShareSheet
 import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
+import com.kickstarter.features.videofeed.player.VideoPlayerPool
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumn
 import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRow
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCard
@@ -55,6 +57,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.libs.utils.extensions.toCompactFormat
 import com.kickstarter.mock.factories.ProjectFactory
@@ -157,6 +160,15 @@ fun VideoFeedScreen(
         previousSettledPage = currentPage
     }
 
+    // A small pool of reusable ExoPlayer instances shared across pages. Reusing players avoids
+    // creating — and, critically, releasing — one per swipe; releasing a MediaCodec on the main
+    // thread mid-scroll is what froze the UI. Released once, when the feed leaves the screen.
+    val context = LocalContext.current
+    val playerPool = remember { VideoPlayerPool(playerFactory = { context.initializeExoplayer() }) }
+    DisposableEffect(Unit) {
+        onDispose { playerPool.release() }
+    }
+
     val screenHazeState = rememberHazeState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -178,6 +190,12 @@ fun VideoFeedScreen(
             val item = items[page]
             val project = item.project
             val videoUrl = item.hlsUrl ?: ""
+            // Reuse a pooled player for this page instead of letting KSVideoPlayer create/release its
+            // own. Neighbouring pages (composed ahead by the pager) pre-buffer into their own pooled
+            // players, so swiping resumes near-instantly.
+            val pooledPlayer = remember(page, videoUrl) {
+                if (videoUrl.isNotEmpty()) playerPool.acquire(page, videoUrl) else null
+            }
             val profileImage = project.creator()?.avatar()?.medium() ?: ""
             val projectTitle = project.name()
             val bookmarkCount = remember(project) { project.watchesCount().toCompactFormat() }
@@ -198,6 +216,7 @@ fun VideoFeedScreen(
                     videoUrl = videoUrl,
                     isActive = pagerState.currentPage == page,
                     previewImageUrl = item.previewImageUrl,
+                    player = pooledPlayer,
                     onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
                     onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
                     onBecameInactive = { watchTimeMs, videoDurationMs ->
@@ -287,7 +306,6 @@ fun VideoFeedScreen(
         }
 
         shareData?.let { data ->
-            val context = LocalContext.current
             val shareViewModel = remember(data) {
                 SocialShareViewModel(
                     environment = environment,

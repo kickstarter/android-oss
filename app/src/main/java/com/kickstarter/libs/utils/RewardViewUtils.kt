@@ -216,8 +216,7 @@ object RewardViewUtils {
         selectedShippingRule: ShippingRule,
         multipleQuantitiesAllowed: Boolean,
         useUserPreference: Boolean,
-        useAbout: Boolean,
-        forceSelectedShippingRule: Boolean = false,
+        useAbout: Boolean
     ): String {
         var min = ""
         var max = ""
@@ -225,29 +224,22 @@ object RewardViewUtils {
         var maxtotal = 0.0
 
         rewards.forEach { reward ->
-            val shippingRule = reward.shippingRules()?.firstOrNull {
+            if (RewardUtils.isDigital(reward) || RewardUtils.isLocalPickup(reward) || !RewardUtils.isShippable(reward))
+                return@forEach
+
+            var shippingRule = reward.shippingRules()?.firstOrNull {
                 it.location()?.id() == selectedShippingRule.location()?.id()
             }
 
-            val selectedShippingRuleCondition =
-                (forceSelectedShippingRule && shippingRule != null)
+            if (shippingRule == null && RewardUtils.shipsWorldwide(reward))
+                shippingRule = reward.shippingRules()?.firstOrNull()
 
-            if (!RewardUtils.isDigital(reward) && (selectedShippingRuleCondition || RewardUtils.shipsToRestrictedLocations(reward)) && !RewardUtils.isLocalPickup(reward)) {
-                reward.shippingRules()?.filter {
-                    it.location()?.id() == selectedShippingRule.location()?.id()
-                }?.map {
-                    minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
-                    maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))
-                }
-            }
-
-            if (!selectedShippingRuleCondition && RewardUtils.shipsWorldwide(reward) && !reward.shippingRules().isNullOrEmpty()) {
-                reward.shippingRules()?.first()?.let {
-                    minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
-                    maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))
-                }
+            shippingRule?.let {
+                minTotal += (it.estimatedMin() * (reward.quantity() ?: 1))
+                maxtotal += (it.estimatedMax() * (reward.quantity() ?: 1))
             }
         }
+
         if (minTotal <= 0 || maxtotal <= 0) return ""
 
         min = if (useUserPreference) {

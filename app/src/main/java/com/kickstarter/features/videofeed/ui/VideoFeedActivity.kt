@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,12 +54,6 @@ class VideoFeedActivity : ComponentActivity() {
                 val snackbarHostState = remember { SnackbarHostState() }
                 val errorAction = setUpVideoFeedErrorActions(snackbarHostState)
                 viewModel.provideErrorAction { message -> errorAction.invoke(message) }
-
-                // Initial load must live within LaunchedEffect, calling it directly in the
-                // composable body re-runs it on every recomposition (e.g. when items emit)
-                LaunchedEffect(Unit) {
-                    viewModel.loadVideoFeed()
-                }
 
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(

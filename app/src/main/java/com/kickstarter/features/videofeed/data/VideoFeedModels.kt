@@ -21,6 +21,7 @@ data class VideoFeedItem(
     val badges: List<KSVideoBadgeType>,
     val project: Project,
     val hlsUrl: String?,
+    val previewImageUrl: String? = null,
     val videoId: Long = 0
 )
 

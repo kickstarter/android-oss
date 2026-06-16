@@ -55,15 +55,16 @@ class VideoFeedActivity : ComponentActivity() {
                 val errorAction = setUpVideoFeedErrorActions(snackbarHostState)
                 viewModel.provideErrorAction { message -> errorAction.invoke(message) }
 
-                viewModel.loadVideoFeed()
-
                 val uiState by viewModel.videoFeedUIState.collectAsStateWithLifecycle()
                 VideoFeedScreen(
                     items = uiState.items,
                     environment = env,
                     errorSnackBarHostState = snackbarHostState,
                     hasMore = uiState.hasMore,
-                    onLoadMore = { viewModel.loadVideoFeed() },
+                    isLoading = uiState.isLoading,
+                    onLoadMore = {
+                        viewModel.loadVideoFeed()
+                    },
                     onReachedLastVideo = {
                         showRatingDialogWidget()
                     },

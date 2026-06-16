@@ -49,6 +49,8 @@ class VideoFeedViewModel(
         scope.launch {
             currentUserV2.isLoggedIn.asFlow().collect { _isUserLoggedIn.value = it }
         }
+
+        loadVideoFeed()
     }
 
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {

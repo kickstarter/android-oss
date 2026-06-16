@@ -228,8 +228,8 @@ val KSStandardDimensions = KSDimensions(
     videoFeedSnackbarHorizontalMargin = 10.dp,
 
     // Discovery Banner dimensions
-    discoveryBannerImageWidth = 86.dp,
-    discoveryBannerImageHeight = 116.dp,
+    discoveryBannerImageWidth = 102.dp,
+    discoveryBannerImageHeight = 150.dp,
 
     // Social Share dimensions
     socialShareCardWidth = 276.dp,

@@ -120,7 +120,6 @@ fun KSVideoFeedBanner(
             painter = painterResource(id = R.drawable.entrypoint_banner),
             contentDescription = null,
             modifier = Modifier
-                .size(width = dimensions.discoveryBannerImageWidth, height = dimensions.discoveryBannerImageHeight)
                 .testTag(KSVideoFeedBannerTestTag.BANNER_IMAGE.name),
             contentScale = ContentScale.Fit
         )

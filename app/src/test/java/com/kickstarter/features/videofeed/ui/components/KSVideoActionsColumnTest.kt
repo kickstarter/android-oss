@@ -33,17 +33,19 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
         val profileDesc = context().getString(R.string.fpo_Profile)
         composeTestRule.onNodeWithContentDescription(profileDesc).assertIsDisplayed()
 
-        // Verify bookmark button and count
-        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
+        // Verify bookmark button and count (unsaved → accessible name "Save")
+        val bookmarkDesc = context().getString(R.string.Save)
         composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
         composeTestRule.onNodeWithText("1.2k").assertIsDisplayed()
         composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name, useUnmergedTree = true)
             .assertExists()
 
-        // Verify share button and count
-        val shareDesc = context().getString(R.string.fpo_Share)
-        composeTestRule.onNodeWithContentDescription(shareDesc).assertIsDisplayed()
-        composeTestRule.onNodeWithText("45").assertIsDisplayed()
+        // Verify share button and count. The count is exposed via stateDescription; the visible
+        // number is accessibility-decorative, so it isn't part of the semantics text tree.
+        val shareDesc = context().getString(R.string.Share)
+        composeTestRule.onNodeWithContentDescription(shareDesc)
+            .assertIsDisplayed()
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "45"))
         composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name, useUnmergedTree = true)
             .assertExists()
 
@@ -70,7 +72,47 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `KSVideoActionsColumn accessibility stateDescription matches counts`() {
+    fun `KSVideoActionsColumn bookmark stateDescription is Saved when bookmarked`() {
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    bookmarkCount = "1.2k",
+                    isBookmarked = true,
+                    shareCount = "45"
+                )
+            }
+        }
+
+        // Stable accessible name ("Save") + saved state via stateDescription ("Saved"),
+        // so TalkBack reads "Save, 1.2k, Saved". The count comes from the visible label only.
+        val saveDesc = context().getString(R.string.Save)
+        val savedState = context().getString(R.string.Saved)
+        composeTestRule.onNodeWithContentDescription(saveDesc)
+            .assertIsDisplayed()
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, savedState))
+    }
+
+    @Test
+    fun `KSVideoActionsColumn bookmark stateDescription reuses Save when not bookmarked`() {
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoActionsColumn(
+                    bookmarkCount = "1.2k",
+                    isBookmarked = false,
+                    shareCount = "45"
+                )
+            }
+        }
+
+        // No "Not saved" string exists yet, so the unsaved state reuses "Save".
+        val saveDesc = context().getString(R.string.Save)
+        composeTestRule.onNodeWithContentDescription(saveDesc)
+            .assertIsDisplayed()
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, saveDesc))
+    }
+
+    @Test
+    fun `KSVideoActionsColumn share stateDescription is the count`() {
         composeTestRule.setContent {
             KSTheme {
                 KSVideoActionsColumn(
@@ -80,33 +122,11 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
             }
         }
 
-        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
-        composeTestRule.onNodeWithContentDescription(bookmarkDesc)
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "1.2k"))
-
-        val shareDesc = context().getString(R.string.fpo_Share)
+        // Share has no on/off state, so the count is its stateDescription. The visible number is
+        // decorative, so TalkBack reads "Share, 45" once instead of "Share, 45, 45".
+        val shareDesc = context().getString(R.string.Share)
         composeTestRule.onNodeWithContentDescription(shareDesc)
             .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "45"))
-    }
-
-    @Test
-    fun `KSVideoActionsColumn accessibility stateDescription is empty when counts are null`() {
-        composeTestRule.setContent {
-            KSTheme {
-                KSVideoActionsColumn(
-                    bookmarkCount = null,
-                    shareCount = null
-                )
-            }
-        }
-
-        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
-        composeTestRule.onNodeWithContentDescription(bookmarkDesc)
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, ""))
-
-        val shareDesc = context().getString(R.string.fpo_Share)
-        composeTestRule.onNodeWithContentDescription(shareDesc)
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, ""))
     }
 
     @Test
@@ -133,10 +153,11 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithContentDescription(context().getString(R.string.fpo_Profile)).performClick()
         verify(onProfileClick).invoke()
 
-        composeTestRule.onNodeWithContentDescription(context().getString(R.string.fpo_Bookmark)).performClick()
+        // Not bookmarked by default, so the bookmark button's accessible name is "Save".
+        composeTestRule.onNodeWithContentDescription(context().getString(R.string.Save)).performClick()
         verify(onBookmarkClick).invoke()
 
-        composeTestRule.onNodeWithContentDescription(context().getString(R.string.fpo_Share)).performClick()
+        composeTestRule.onNodeWithContentDescription(context().getString(R.string.Share)).performClick()
         verify(onShareClick).invoke()
     }
 
@@ -160,8 +181,8 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `bookmark button content description is present when not bookmarked`() {
-        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
+    fun `bookmark button accessible name is Save when not bookmarked`() {
+        val saveDesc = context().getString(R.string.Save)
 
         composeTestRule.setContent {
             KSTheme {
@@ -169,12 +190,14 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(saveDesc).assertIsDisplayed()
     }
 
     @Test
-    fun `bookmark button content description is present when bookmarked`() {
-        val bookmarkDesc = context().getString(R.string.fpo_Bookmark)
+    fun `bookmark button accessible name stays Save when bookmarked`() {
+        // The name is stable across states; the saved/unsaved distinction lives in the
+        // stateDescription, not the name.
+        val saveDesc = context().getString(R.string.Save)
 
         composeTestRule.setContent {
             KSTheme {
@@ -182,7 +205,7 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(bookmarkDesc).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(saveDesc).assertIsDisplayed()
     }
 
     @Test

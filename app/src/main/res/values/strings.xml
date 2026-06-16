@@ -121,12 +121,8 @@
   <string name="fpo_Near_you" formatted="false">Near you</string>
   <string name="fpo_Trending" formatted="false">Trending</string>
   <string name="fpo_Hot_right_now" formatted="false">Hot right now</string>
-  <string name="fpo_Bookmark" formatted="false">Bookmark</string>
-  <string name="fpo_Share" formatted="false">Share</string>
   <string name="fpo_More_options" formatted="false">More options</string>
   <string name="fpo_Profile" formatted="false">Profile</string>
-  <string name="fpo_Bookmark_this_project" formatted="false">Bookmark this project</string>
-  <string name="fpo_Share_this_project" formatted="false">Share this project</string>
   <string name="fpo_View_more_options" formatted="false">View more options</string>
   <string name="fpo_View_creator_profile" formatted="false">View creator profile</string>
   <string name="fpo_Rewind">Rewind</string>
@@ -134,6 +130,7 @@
   <string name="fpo_Play">Play</string>
   <string name="fpo_Forward">Forward 5 seconds</string>
   <string name="fpo_Campaign_goal_reached" formatted="false">Campaign goal reached</string>
+  <string name="fpo_percent_funded">%1$d%% funded</string>
   <string name="fpo_try_our_new_discovery_mode" formatted="false">Try our new discovery mode</string>
   <string name="fpo_swipe_through_a_video_feed_tuning_your_recommendations_along_the_way" formatted="false">Swipe through a video feed, tuning your recommendations along the way.</string>
   <string name="fpo_try_it_now" formatted="false">Try it now</string>

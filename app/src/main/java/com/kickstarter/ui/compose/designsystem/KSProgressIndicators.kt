@@ -49,6 +49,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
@@ -155,6 +156,7 @@ fun KSVideoProgressIndicator(
     icon: ImageVector? = null,
     text: String = "",
     contentDescription: String = "",
+    stateDescription: String = "",
     baseColor: Color = colors.videoPlayer.progressBase,
     completeColor: Color = colors.videoPlayer.progressComplete,
     trackColor: Color = colors.videoPlayer.progressTrack
@@ -227,9 +229,12 @@ fun KSVideoProgressIndicator(
         modifier = modifier
             .size(44.dp)
             .semantics(mergeDescendants = true) {
-                this.contentDescription = contentDescription
-                this.stateDescription = text
-                this.progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
+                if (contentDescription.isNotEmpty()) {
+                    this.contentDescription = contentDescription
+                }
+                if (stateDescription.isNotEmpty()) {
+                    this.stateDescription = stateDescription
+                }
             },
         contentAlignment = Alignment.Center
     ) {
@@ -300,9 +305,11 @@ fun KSVideoProgressIndicator(
             }
         }
 
-        // Text overlay (shown during progress phase only)
+        // Text overlay (shown during progress phase only). Decorative for accessibility —
+        // the value is announced via the stateDescription, not this drawn number.
         if (phase == 0 && text.isNotEmpty()) {
             Text(
+                modifier = Modifier.clearAndSetSemantics { },
                 text = text,
                 color = baseColor,
                 style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)

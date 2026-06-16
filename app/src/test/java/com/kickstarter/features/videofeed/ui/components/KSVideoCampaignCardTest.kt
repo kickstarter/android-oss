@@ -1,6 +1,5 @@
 package com.kickstarter.features.videofeed.ui.components
 
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -9,6 +8,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -63,11 +63,14 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
             }
         }
 
+        // Funding value is exposed as a stateDescription (not a contentDescription), and there's
+        // no progressBarRangeInfo — so TalkBack no longer reads the raw ring value or "progress bar".
+        val expectedState = context().getString(R.string.fpo_percent_funded, progress.toInt())
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name)
             .assertIsDisplayed()
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf(""))) // No content description when not fully funded
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "50"))
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ProgressBarRangeInfo, ProgressBarRangeInfo(0.5f, 0f..1f)))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, expectedState))
+            .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ContentDescription))
+            .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
     }
 
     @Test
@@ -85,10 +88,12 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
             }
         }
 
+        // Fully funded announces only "Campaign goal reached" (as a state) — no "one point oh"
+        // prefix from a progressBarRangeInfo value.
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name)
             .assertIsDisplayed()
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf("Campaign goal reached")))
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, ""))
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ProgressBarRangeInfo, ProgressBarRangeInfo(1f, 0f..1f)))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Campaign goal reached"))
+            .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ContentDescription))
+            .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
     }
 }

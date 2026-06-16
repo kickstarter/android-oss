@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -47,6 +48,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.kickstarter.R
 import com.kickstarter.libs.utils.extensions.initializeExoplayer
 import com.kickstarter.ui.compose.designsystem.KSControlIcon
@@ -65,7 +68,8 @@ enum class KSVideoPlayerTestTag {
     VIDEO_PLAYER_PLAY_BUTTON,
     VIDEO_PLAYER_FORWARD_BUTTON,
     VIDEO_PLAYER_REWIND_BUTTON,
-    VIDEO_PLAYER_PROGRESS_BAR
+    VIDEO_PLAYER_PROGRESS_BAR,
+    VIDEO_PLAYER_POSTER
 }
 
 /**
@@ -122,6 +126,9 @@ fun TextureView.applyZoomMatrix(videoWidth: Int, videoHeight: Int) {
  * @param isActive A boolean flag indicating if the video should be playing. When true, the video
  * starts/resumes; when false, it pauses.
  * @param modifier The [Modifier] to be applied to the player's outer container.
+ * @param previewImageUrl Optional poster (first frame) of the video. When provided, it is shown
+ * center-cropped over the surface while the stream buffers and fades out once the player renders
+ * its first frame, avoiding a black flash on each page.
  * //TODO will potentially change in future versions to not create internally any instance
  * @param player An optional, pre-configured [ExoPlayer] instance. If null, a default instance
  * is created and managed internally, then released when the Composable is disposed.
@@ -133,6 +140,7 @@ fun KSVideoPlayer(
     videoUrl: String,
     isActive: Boolean,
     modifier: Modifier = Modifier,
+    previewImageUrl: String? = null,
     player: ExoPlayer? = null,
     overlayContent: @Composable BoxScope.(HazeState) -> Unit = {},
     onPlayPauseToggle: (isPlaying: Boolean) -> Unit = {},
@@ -149,6 +157,10 @@ fun KSVideoPlayer(
             prepare()
         }
     }
+
+    // Tracks whether the player has drawn its first frame. Until then we keep the poster visible
+    // to cover the black surface while the stream buffers. Reset when the player instance changes.
+    var firstFrameRendered by remember(player ?: videoUrl) { mutableStateOf(false) }
 
     var progress by remember { mutableFloatStateOf(0f) }
     var isScrubbing by remember { mutableStateOf(false) }
@@ -264,6 +276,10 @@ fun KSVideoPlayer(
                                 this@apply.applyZoomMatrix(videoSize.width, videoSize.height)
                             }
                         }
+
+                        override fun onRenderedFirstFrame() {
+                            firstFrameRendered = true
+                        }
                     }
                     tag = listener
                     exoPlayer.setVideoTextureView(this)
@@ -278,6 +294,28 @@ fun KSVideoPlayer(
                 .fillMaxSize()
                 .hazeSource(state = hazeState)
         )
+
+        // Poster shown over the surface until the player renders its first frame, eliminating the
+        // black flash while the HLS stream buffers (most noticeable on fast swipes / slow networks).
+        AnimatedVisibility(
+            visible = !firstFrameRendered && !previewImageUrl.isNullOrEmpty(),
+            exit = fadeOut(),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            AsyncImage(
+                model = remember(previewImageUrl) {
+                    ImageRequest.Builder(context)
+                        .data(previewImageUrl)
+                        .crossfade(true)
+                        .build()
+                },
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_POSTER.name)
+            )
+        }
 
         ControlsContainer(
             modifier = Modifier.align(Alignment.Center),

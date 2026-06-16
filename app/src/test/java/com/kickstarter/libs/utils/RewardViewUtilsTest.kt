@@ -108,6 +108,10 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
             .estimatedMin(2.0)
             .estimatedMax(20.0)
             .build()
+        val caRule = ShippingRuleFactory.canadaShippingRule().toBuilder()
+            .estimatedMin(3.0)
+            .estimatedMax(30.0)
+            .build()
 
         val shippingPreference = Reward.ShippingPreference.UNRESTRICTED
         val reward = RewardFactory.reward().toBuilder()
@@ -118,7 +122,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
             .build()
         val rewards = listOf(reward)
 
-        val selectedShippingRule = usRule
+        val selectedShippingRule = caRule
 
         val estimatedShippingString = RewardViewUtils.getEstimatedShippingCostString(
             context, ksCurrency, ksString, project, rewards, selectedShippingRule,
@@ -131,7 +135,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test estimated shipping range for reward with worldwide shipping uses first selected shipping rule when forced`() {
+    fun `test estimated shipping range for reward with restricted shipping`() {
         val context = context()
 
         val config = ConfigFactory.configForUSUser()
@@ -140,7 +144,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
         val ksCurrency = KSCurrency(currentConfig)
 
         val ksString = ksString()
-        val project = ProjectFactory.project() // KSCurrency.formatWithUserPreference()
+        val project = ProjectFactory.project()
 
         val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
             .estimatedMin(1.0)
@@ -151,11 +155,12 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
             .estimatedMax(20.0)
             .build()
 
-        val shippingPreference = Reward.ShippingPreference.UNRESTRICTED
+        val shippingPreference = Reward.ShippingPreference.RESTRICTED
+
         val reward = RewardFactory.reward().toBuilder()
-            .shippingPreference(shippingPreference.name)
-            .shippingType(shippingPreference.name)
             .shippingPreferenceType(shippingPreference)
+            .shippingPreference(shippingPreference.name.lowercase())
+            .shippingType(shippingPreference.name.lowercase())
             .shippingRules(listOf(mxRule, usRule))
             .build()
         val rewards = listOf(reward)
@@ -167,9 +172,42 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
             multipleQuantitiesAllowed = false,
             useUserPreference = false,
             useAbout = false,
-            forceSelectedShippingRule = true
         )
 
         assertEquals("$1-$10", estimatedShippingString)
+    }
+
+    @Test
+    fun `test estimated shipping range for digital reward`() {
+        val context = context()
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(config)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val project = ProjectFactory.project()
+
+        val shippingPreference = Reward.ShippingPreference.NONE
+
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreferenceType(shippingPreference)
+            .shippingPreference(shippingPreference.name.lowercase())
+            .shippingType(shippingPreference.name.lowercase())
+            .shippingRules(listOf())
+            .build()
+        val rewards = listOf(reward)
+
+        val selectedShippingRule = ShippingRuleFactory.usShippingRule()
+
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCostString(
+            context, ksCurrency, ksString, project, rewards, selectedShippingRule,
+            multipleQuantitiesAllowed = false,
+            useUserPreference = false,
+            useAbout = false,
+        )
+
+        assertTrue(estimatedShippingString.isEmpty())
     }
 }

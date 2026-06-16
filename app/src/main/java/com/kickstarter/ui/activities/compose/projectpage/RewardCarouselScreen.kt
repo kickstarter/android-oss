@@ -43,6 +43,7 @@ import com.kickstarter.libs.utils.extensions.isNullOrZero
 import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -361,16 +362,13 @@ fun RewardCarouselScreen(
                             if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
                                 environment.ksCurrency()?.let { ksCurrency ->
                                     environment.ksString()?.let { ksString ->
-                                        RewardViewUtils.getEstimatedShippingCostString(
+                                        RewardViewUtils.getEstimatedShippingCost(
                                             context = context,
                                             ksCurrency = ksCurrency,
                                             ksString = ksString,
                                             project = project,
-                                            rewards = listOf(reward),
-                                            selectedShippingRule = currentShippingRule,
-                                            multipleQuantitiesAllowed = false,
-                                            useUserPreference = false,
-                                            useAbout = true
+                                            reward = reward,
+                                            locationId = currentShippingRule.location()?.id() ?: Location.builder().build().id(),
                                         )
                                     }
                                 }

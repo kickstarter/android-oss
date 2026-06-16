@@ -6,6 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.mock.MockCurrentConfigV2
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -124,7 +125,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
 
         val selectedShippingRule = caRule
 
-        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCostString(
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingRange(
             context, ksCurrency, ksString, project, rewards, selectedShippingRule,
             multipleQuantitiesAllowed = false,
             useUserPreference = false,
@@ -167,7 +168,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
 
         val selectedShippingRule = usRule
 
-        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCostString(
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingRange(
             context, ksCurrency, ksString, project, rewards, selectedShippingRule,
             multipleQuantitiesAllowed = false,
             useUserPreference = false,
@@ -201,7 +202,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
 
         val selectedShippingRule = ShippingRuleFactory.usShippingRule()
 
-        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCostString(
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingRange(
             context, ksCurrency, ksString, project, rewards, selectedShippingRule,
             multipleQuantitiesAllowed = false,
             useUserPreference = false,
@@ -209,5 +210,280 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
         )
 
         assertTrue(estimatedShippingString.isEmpty())
+    }
+
+    @Test
+    fun `test estimated shipping range when min or max is 0, when min and max are 0`() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
+            .estimatedMin(0.0)
+            .estimatedMax(0.0)
+            .build()
+        val mxRule = ShippingRuleFactory.mexicoShippingRule().toBuilder()
+            .estimatedMin(0.0)
+            .estimatedMax(20.0)
+            .build()
+
+        val shippingPreference = Reward.ShippingPreference.RESTRICTED
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreference(shippingPreference.name)
+            .shippingType(shippingPreference.name)
+            .shippingPreferenceType(shippingPreference)
+            .shippingRules(listOf(mxRule, usRule))
+            .build()
+        val rewards = listOf(reward)
+
+        val estimatedShippingStringForUS = RewardViewUtils.getEstimatedShippingRange(
+            context, ksCurrency, ksString, caProject, rewards, usRule,
+            multipleQuantitiesAllowed = false,
+            useUserPreference = false,
+            useAbout = false,
+        )
+        val estimatedShippingStringForMX = RewardViewUtils.getEstimatedShippingRange(
+            context, ksCurrency, ksString, caProject, rewards, mxRule,
+            multipleQuantitiesAllowed = false,
+            useUserPreference = false,
+            useAbout = false,
+        )
+
+        assertEquals("", estimatedShippingStringForUS)
+        assertEquals("CA$ 0-CA$ 20", estimatedShippingStringForMX)
+    }
+
+    @Test
+    fun `getEstimatedShippingCost - returns null when reward is not shippable`() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val shippingPreference = Reward.ShippingPreference.NONE
+        val digitalReward = RewardFactory.reward().toBuilder()
+            .shippingPreferenceType(shippingPreference)
+            .shippingPreference(shippingPreference.name.lowercase())
+            .shippingType(shippingPreference.name.lowercase())
+            // For testing. In practice, the shipping rules list for digital rewards is typically empty.
+            .shippingRules(listOf(ShippingRuleFactory.usShippingRule()))
+            .build()
+
+        val selectedLocation = LocationFactory.unitedStates()
+
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, digitalReward, selectedLocation.id(),
+        )
+
+        assertNull(estimatedShippingString)
+    }
+
+    @Test
+    fun `getEstimatedShippingCost - returns null when no shipping rule matches and reward shipping is restricted `() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
+            .estimatedMin(1.0)
+            .estimatedMax(10.0)
+            .build()
+        val mxRule = ShippingRuleFactory.mexicoShippingRule().toBuilder()
+            .estimatedMin(2.0)
+            .estimatedMax(20.0)
+            .build()
+
+        val shippingPreference = Reward.ShippingPreference.RESTRICTED
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreferenceType(shippingPreference)
+            .shippingPreference(shippingPreference.name.lowercase())
+            .shippingType(shippingPreference.name.lowercase())
+            .shippingRules(listOf(mxRule, usRule))
+            .build()
+
+        val selectedLocation = LocationFactory.canada()
+
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, selectedLocation.id(),
+        )
+
+        assertNull(estimatedShippingString)
+    }
+
+    @Test
+    fun `getEstimatedShippingCost - uses first shipping rule by default when none match but reward ships worldwide `() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
+            .estimatedMin(1.0)
+            .estimatedMax(10.0)
+            .build()
+
+        val mxLocation = LocationFactory.mexico()
+        val mxRule = ShippingRuleFactory.mexicoShippingRule().toBuilder()
+            .location(mxLocation)
+            .estimatedMin(2.0)
+            .estimatedMax(20.0)
+            .build()
+
+        val shippingPreference = Reward.ShippingPreference.UNRESTRICTED
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreference(shippingPreference.name)
+            .shippingType(shippingPreference.name)
+            .shippingPreferenceType(shippingPreference)
+            .shippingRules(listOf(mxRule, usRule))
+            .build()
+
+        val caLocation = LocationFactory.canada()
+
+        val selectedLocation = caLocation
+
+        val expectedEstimatedShippingString = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, mxLocation.id()
+        )
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, selectedLocation.id(),
+        )
+
+        assertEquals(expectedEstimatedShippingString, estimatedShippingString)
+    }
+
+    @Test
+    fun `getEstimatedShippingCost - returns formatted range when min or max is non-zero`() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val usLocation = LocationFactory.unitedStates()
+        val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
+            .location(usLocation)
+            .estimatedMin(0.0)
+            .estimatedMax(10.0)
+            .build()
+        val mxLocation = LocationFactory.mexico()
+        val mxRule = ShippingRuleFactory.mexicoShippingRule().toBuilder()
+            .location(mxLocation)
+            .estimatedMin(2.0)
+            .estimatedMax(20.0)
+            .build()
+
+        val shippingPreference = Reward.ShippingPreference.RESTRICTED
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreference(shippingPreference.name)
+            .shippingType(shippingPreference.name)
+            .shippingPreferenceType(shippingPreference)
+            .shippingRules(listOf(mxRule, usRule))
+            .build()
+
+        val estimatedShippingStringForUS = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, usLocation.id(),
+        )
+        val estimatedShippingStringForMX = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, mxLocation.id(),
+        )
+
+        assertEquals("About CA$ 0-CA$ 10", estimatedShippingStringForUS)
+        assertEquals("About CA$ 2-CA$ 20", estimatedShippingStringForMX)
+    }
+
+    @Test
+    fun `getEstimatedShippingCost - returns formatted cost when min and max are 0, cost is positive`() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val usLocation = LocationFactory.unitedStates()
+        val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
+            .location(usLocation)
+            .estimatedMin(0.0)
+            .estimatedMax(0.0)
+            .cost(10.0)
+            .build()
+
+        val shippingPreference = Reward.ShippingPreference.RESTRICTED
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreference(shippingPreference.name)
+            .shippingType(shippingPreference.name)
+            .shippingPreferenceType(shippingPreference)
+            .shippingRules(listOf(usRule))
+            .build()
+
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, usLocation.id(),
+        )
+
+        assertEquals("CA$ 10", estimatedShippingString)
+    }
+
+    @Test
+    fun `getEstimatedShippingCost - returns empty string when min, max, and cost are 0`() {
+        val context = context()
+
+        val configForUSUser = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfigV2()
+        currentConfig.config(configForUSUser)
+        val ksCurrency = KSCurrency(currentConfig)
+
+        val ksString = ksString()
+        val caProject = ProjectFactory.caProject()
+
+        val usLocation = LocationFactory.unitedStates()
+        val usRule = ShippingRuleFactory.usShippingRule().toBuilder()
+            .location(usLocation)
+            .estimatedMin(0.0)
+            .estimatedMax(0.0)
+            .cost(0.0)
+            .build()
+
+        val shippingPreference = Reward.ShippingPreference.RESTRICTED
+        val reward = RewardFactory.reward().toBuilder()
+            .shippingPreference(shippingPreference.name)
+            .shippingType(shippingPreference.name)
+            .shippingPreferenceType(shippingPreference)
+            .shippingRules(listOf(usRule))
+            .build()
+
+        val estimatedShippingString = RewardViewUtils.getEstimatedShippingCost(
+            context, ksCurrency, ksString, caProject, reward, usLocation.id(),
+        )
+
+        assertEquals("", estimatedShippingString)
     }
 }

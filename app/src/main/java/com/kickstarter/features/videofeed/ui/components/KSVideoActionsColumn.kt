@@ -104,7 +104,7 @@ fun KSVideoActionsColumn(
             enabled = false,
             icon = Ellipsis,
             onClick = onMoreOptionsClick,
-            contentDescription = stringResource(id = R.string.fpo_More_options),
+            contentDescription = stringResource(id = R.string.More_options),
             onClickLabel = stringResource(id = R.string.fpo_View_more_options)
         )
     }

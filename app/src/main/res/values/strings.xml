@@ -110,30 +110,13 @@
   <!-- FPO's for BottomNav -->
   <string name="internal_tools_home_activity">Home Activity</string>
 
-  <!-- FPO's for Reward Card for Featured Reward Badge -->
-  <string name="fpo_featured_reward" formatted="false">Featured</string>
-
   <!-- FPO's for VideoFeed -->
-  <string name="fpo_Project_We_Love" formatted="false">Project We Love</string>
-  <string name="fpo_Just_launched" formatted="false">Just launched</string>
-  <string name="fpo_First_time_creator" formatted="false">First-time creator</string>
-  <string name="fpo_By_a_superbacker" formatted="false">By a superbacker</string>
-  <string name="fpo_Near_you" formatted="false">Near you</string>
-  <string name="fpo_Trending" formatted="false">Trending</string>
-  <string name="fpo_Hot_right_now" formatted="false">Hot right now</string>
-  <string name="fpo_More_options" formatted="false">More options</string>
   <string name="fpo_Profile" formatted="false">Profile</string>
   <string name="fpo_View_more_options" formatted="false">View more options</string>
   <string name="fpo_View_creator_profile" formatted="false">View creator profile</string>
   <string name="fpo_Rewind">Rewind</string>
   <string name="fpo_Rewind_10_seconds">Rewind 5 seconds</string>
-  <string name="fpo_Play">Play</string>
   <string name="fpo_Forward">Forward 5 seconds</string>
-  <string name="fpo_Campaign_goal_reached" formatted="false">Campaign goal reached</string>
-  <string name="fpo_percent_funded">%1$d%% funded</string>
-  <string name="fpo_try_our_new_discovery_mode" formatted="false">Try our new discovery mode</string>
-  <string name="fpo_swipe_through_a_video_feed_tuning_your_recommendations_along_the_way" formatted="false">Swipe through a video feed, tuning your recommendations along the way.</string>
-  <string name="fpo_try_it_now" formatted="false">Try it now</string>
   <string name="fpo_discovery_banner_image_content_description" formatted="false">Discovery mode preview</string>
 
 </resources>

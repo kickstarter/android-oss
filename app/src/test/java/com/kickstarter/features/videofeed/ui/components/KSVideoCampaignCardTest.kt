@@ -63,13 +63,13 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
             }
         }
 
-        // Funding value is exposed as a stateDescription (not a contentDescription), and there's
-        // no progressBarRangeInfo — so TalkBack no longer reads the raw ring value or "progress bar".
-        val expectedState = context().getString(R.string.fpo_percent_funded, progress.toInt())
+        // Name in contentDescription ("Funded percentage"), value in stateDescription ("50%"),
+        // and no progressBarRangeInfo — so TalkBack no longer reads the raw ring value or "progress bar".
+        val expectedName = context().getString(R.string.Funded_percentage)
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name)
             .assertIsDisplayed()
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, expectedState))
-            .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ContentDescription))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf(expectedName)))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "${progress.toInt()}%"))
             .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
     }
 
@@ -88,12 +88,14 @@ class KSVideoCampaignCardTest : KSRobolectricTestCase() {
             }
         }
 
-        // Fully funded announces only "Campaign goal reached" (as a state) — no "one point oh"
-        // prefix from a progressBarRangeInfo value.
+        // Fully funded: "Campaign goal reached" as the state (no "one point oh" prefix from a
+        // progressBarRangeInfo value), with the same "Funded percentage" name.
+        val expectedName = context().getString(R.string.Funded_percentage)
+        val goalReached = context().getString(R.string.Campaign_goal_reached)
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name)
             .assertIsDisplayed()
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Campaign goal reached"))
-            .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ContentDescription))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.ContentDescription, listOf(expectedName)))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, goalReached))
             .assert(SemanticsMatcher.keyNotDefined(SemanticsProperties.ProgressBarRangeInfo))
     }
 }

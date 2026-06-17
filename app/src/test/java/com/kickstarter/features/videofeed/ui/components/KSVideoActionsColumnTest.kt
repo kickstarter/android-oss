@@ -50,7 +50,7 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
             .assertExists()
 
         // More options button exists in the tree (reserves space) but is invisible
-        val moreDesc = context().getString(R.string.fpo_More_options)
+        val moreDesc = context().getString(R.string.More_options)
         composeTestRule.onNodeWithContentDescription(moreDesc).assertExists()
     }
 

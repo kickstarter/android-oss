@@ -26,16 +26,16 @@ class KSVideoBadgesRowTest : KSRobolectricTestCase() {
             }
         }
 
-        val projectWeLoveText = context().getString(R.string.fpo_Project_We_Love)
+        val projectWeLoveText = context().getString(R.string.Project_We_Love)
         composeTestRule.onNodeWithText(projectWeLoveText).assertIsDisplayed()
 
         composeTestRule.onNodeWithText("3 days left").assertIsDisplayed()
 
         // - Third badge (and beyond) should NOT exist/be displayed
-        val justLaunchedText = context().getString(R.string.fpo_Just_launched)
+        val justLaunchedText = context().getString(R.string.Just_launched)
         composeTestRule.onNodeWithText(justLaunchedText).assertDoesNotExist()
 
-        val trendingText = context().getString(R.string.fpo_Trending)
+        val trendingText = context().getString(R.string.Trending)
         composeTestRule.onNodeWithText(trendingText).assertDoesNotExist()
     }
 
@@ -62,7 +62,7 @@ class KSVideoBadgesRowTest : KSRobolectricTestCase() {
             }
         }
 
-        val projectWeLoveText = context().getString(R.string.fpo_Project_We_Love)
+        val projectWeLoveText = context().getString(R.string.Project_We_Love)
 
         // - Verify that the node is found by content description (merged from text)
         // - This confirms semantics(mergeDescendants = true) is working as expected

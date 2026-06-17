@@ -46,7 +46,6 @@ fun KSVideoActionsColumn(
     onMoreOptionsClick: () -> Unit = {}
 ) {
     val savedStateDescription = stringResource(id = R.string.Saved)
-    val notSavedStateDescription = stringResource(id = R.string.Save)
 
     Column(
         modifier = modifier.testTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name),
@@ -70,7 +69,7 @@ fun KSVideoActionsColumn(
             KSVideoPlayerIconButton(
                 modifier = Modifier
                     .semantics {
-                        stateDescription = if (bookmarked) savedStateDescription else notSavedStateDescription
+                        stateDescription = if (bookmarked) savedStateDescription else ""
                     }
                     .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
                 icon = if (bookmarked) BookmarkFilled else Bookmark,

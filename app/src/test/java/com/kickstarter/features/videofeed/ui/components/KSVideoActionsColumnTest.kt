@@ -93,7 +93,7 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `KSVideoActionsColumn bookmark stateDescription reuses Save when not bookmarked`() {
+    fun `KSVideoActionsColumn bookmark stateDescription is empty when not bookmarked`() {
         composeTestRule.setContent {
             KSTheme {
                 KSVideoActionsColumn(
@@ -104,11 +104,12 @@ class KSVideoActionsColumnTest : KSRobolectricTestCase() {
             }
         }
 
-        // No "Not saved" string exists yet, so the unsaved state reuses "Save".
+        // Unsaved has no extra state to announce; the accessible name ("Save") already conveys the
+        // action, so stateDescription is empty and TalkBack reads "Save, 1.2k" (not "Save, 1.2k, Save").
         val saveDesc = context().getString(R.string.Save)
         composeTestRule.onNodeWithContentDescription(saveDesc)
             .assertIsDisplayed()
-            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, saveDesc))
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, ""))
     }
 
     @Test

@@ -234,7 +234,6 @@ object RewardViewUtils {
         val estimatedMax = shippingRule.estimatedMax()
         val cost = shippingRule.cost()
 
-        // consistent w/ iOS but no longer w/ the other getEstimatedShippingCostString()
         if (estimatedMin > 0.0 || estimatedMax > 0.0) {
             val estimatedMinFormatted = ksCurrency.format(estimatedMin, project, RoundingMode.HALF_UP)
             val estimatedMaxFormatted = ksCurrency.format(estimatedMax, project, RoundingMode.HALF_UP)
@@ -258,8 +257,8 @@ object RewardViewUtils {
     }
 
     /**
-     * Return a string for the estimated shipping costs for a collection Rewards (i.e. a base Reward + Add-Ons)
-     * for a given shipping rule.
+     * Return a string for the estimated shipping costs for a collection of
+     * Rewards (i.e. a base Reward + Add-Ons) for a given shipping rule.
      *
      * Ex. "About $10-$15" or "About $10-$15 each"
      *

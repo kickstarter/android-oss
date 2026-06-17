@@ -290,7 +290,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `getEstimatedShippingCost - returns null when no shipping rule matches and reward shipping is restricted `() {
+    fun `getEstimatedShippingCost - returns null when no shipping rule matches and reward shipping is restricted`() {
         val context = context()
 
         val configForUSUser = ConfigFactory.configForUSUser()
@@ -328,7 +328,7 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `getEstimatedShippingCost - uses first shipping rule by default when none match but reward ships worldwide `() {
+    fun `getEstimatedShippingCost - uses first shipping rule by default when none match but reward ships worldwide`() {
         val context = context()
 
         val configForUSUser = ConfigFactory.configForUSUser()

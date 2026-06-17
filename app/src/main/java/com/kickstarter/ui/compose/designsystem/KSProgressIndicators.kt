@@ -63,6 +63,7 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Check
+import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -300,10 +301,13 @@ fun KSVideoProgressIndicator(
             }
         }
 
-        // Text overlay (shown during progress phase only)
+        // Text overlay (shown during progress phase only).
         if (phase == 0 && text.isNotEmpty()) {
+            val coercedTarget = targetProgress.coerceIn(0f, 1f)
+            val sweepFraction = if (coercedTarget > 0f) (animatedProgress / coercedTarget).coerceIn(0f, 1f) else 0f
+            val displayText = text.toIntOrNull()?.let { (it * sweepFraction).roundToInt().toString() } ?: text
             Text(
-                text = text,
+                text = displayText,
                 color = baseColor,
                 style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
             )

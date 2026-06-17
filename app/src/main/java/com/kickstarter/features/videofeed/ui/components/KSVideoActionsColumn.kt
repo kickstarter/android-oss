@@ -84,8 +84,6 @@ fun KSVideoActionsColumn(
         KSVideoPlayerIconButton(
             modifier = Modifier
                 .semantics {
-                    // Share has no on/off state, so the count is its state. The visible
-                    // number is decorative (textIsDecorative), so it isn't read twice.
                     stateDescription = shareCount ?: ""
                 }
                 .testTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name),

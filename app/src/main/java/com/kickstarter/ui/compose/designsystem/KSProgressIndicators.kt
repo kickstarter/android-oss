@@ -305,8 +305,7 @@ fun KSVideoProgressIndicator(
             }
         }
 
-        // Text overlay (shown during progress phase only). Decorative for accessibility —
-        // the value is announced via the stateDescription, not this drawn number.
+        // Text overlay (shown during progress phase only). Decorative for accessibility
         if (phase == 0 && text.isNotEmpty()) {
             Text(
                 modifier = Modifier.clearAndSetSemantics { },

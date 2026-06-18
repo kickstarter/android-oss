@@ -51,6 +51,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 
+const val SAMPLE_PROJECT_URL = "https://www.kickstarter.com/projects/peak-design/roller-pro-carry-on-luggage-by-peak-design"
 class ProjectStoryActivity : ComponentActivity() {
 
     private lateinit var projectStoryViewModelFactory: ProjectStoryViewModel.Factory
@@ -79,9 +80,8 @@ class ProjectStoryActivity : ComponentActivity() {
                     useDarkTheme = isDarkModeEnabled(env)
                 ) {
                     val uiState = projectStoryViewModel.projectStoryUiState.collectAsState()
-                    val txtState = projectStoryViewModel.txt
                     CompositionLocalProvider(LocalUriHandler provides uriHandler) {
-                        CampaignScreen(uiState, txtState)
+                        CampaignScreen(uiState)
 //                        CaptionedImageScreen()
                     }
                 }
@@ -94,18 +94,18 @@ class ProjectStoryActivity : ComponentActivity() {
     private fun CampaignScreenPreview() {
         val projectStoryUiState = ProjectStoryUiState()
         val uiState = remember { mutableStateOf(projectStoryUiState) }
-        val txtState = remember { mutableStateOf("kiwamiyatei/grill-x-carbon-graphite-grill-for-perfect-charcoal-flavor") }
         KSTheme {
-            CampaignScreen(uiState, txtState)
+            CampaignScreen(uiState)
         }
     }
 
     @Composable
     private fun CampaignScreen(
         uiState: State<ProjectStoryUiState>,
-        txtState: State<String>,
     ) {
         val context = LocalContext.current
+
+        val txtState = remember { mutableStateOf(SAMPLE_PROJECT_URL) }
 
         val storiedProject = uiState.value.storiedProject
         val project = storiedProject?.project
@@ -131,7 +131,7 @@ class ProjectStoryActivity : ComponentActivity() {
                 TextField(
                     value = txtState.value,
                     onValueChange = {
-                        projectStoryViewModel.updateTxt(it)
+                        txtState.value = it
                     },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
@@ -143,6 +143,7 @@ class ProjectStoryActivity : ComponentActivity() {
                     onClick = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
+                        projectStoryViewModel._provideProjectUrl(txtState.value)
                         projectStoryViewModel.fetchProject()
                     },
                 ) {

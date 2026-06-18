@@ -63,6 +63,7 @@ import com.kickstarter.WatchProjectMutation
 import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -114,6 +115,7 @@ import com.kickstarter.services.transformers.commentTransformer
 import com.kickstarter.services.transformers.complexRewardItemsTransformer
 import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
+import com.kickstarter.services.transformers.extensions.toStoriedProject
 import com.kickstarter.services.transformers.extensions.toVideoFeedEnvelope
 import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
@@ -257,7 +259,7 @@ interface ApolloClientTypeV2 {
     suspend fun getCategories(): Result<List<Category>>
     suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float? = null, long: Float? = null, radius: Float? = null, filterByCoordinates: Boolean? = null): Result<List<Location>>
 
-    suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?>
+    suspend fun fetchProjectStory(slug: String): Result<StoriedProject>
 
     suspend fun getVideoFeed(first: Int, cursor: String? = null, categoryId: String? = null): Result<VideoFeedEnvelope>
 
@@ -1972,7 +1974,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         } ?: emptyList()
     }
 
-    override suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?> = executeForResult {
+    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> = executeForResult {
         val query = FetchProjectStoryQuery(
             slug = slug
         )
@@ -1982,7 +1984,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         if (response.hasErrors())
             throw buildClientException(response.errors)
 
-        response.data?.project
+        response.data?.project?.projectStoryFragment.toStoriedProject()
     }
 
     override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> = executeForResult {

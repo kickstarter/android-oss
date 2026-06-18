@@ -67,6 +67,7 @@ import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Check
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -307,9 +308,12 @@ fun KSVideoProgressIndicator(
 
         // Text overlay (shown during progress phase only). Decorative for accessibility
         if (phase == 0 && text.isNotEmpty()) {
+            val coercedTarget = targetProgress.coerceIn(0f, 1f)
+            val sweepFraction = if (coercedTarget > 0f) (animatedProgress / coercedTarget).coerceIn(0f, 1f) else 0f
+            val displayText = text.toIntOrNull()?.let { (it * sweepFraction).roundToInt().toString() } ?: text
             Text(
                 modifier = Modifier.clearAndSetSemantics { },
-                text = text,
+                text = displayText,
                 color = baseColor,
                 style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
             )

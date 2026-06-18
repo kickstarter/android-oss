@@ -203,11 +203,68 @@ object RewardViewUtils {
     }
 
     /**
-     * Return the string for the estimated shipping costs for a given shipping rule
+     * Return a string for the estimated shipping cost of a single Reward for a given Location:
+     * either a range or a fixed cost, depending on the shipping rule for that location.
      *
-     * Ex. "About $10-$15" or "About $10-%15 each"
+     * Ex. "About $10-$15" or "$10"
+     *
+     * Used specifically for each Reward Card in the Rewards Carousel.
      */
-    fun getEstimatedShippingCostString(
+    fun getEstimatedShippingCost(
+        context: Context,
+        ksCurrency: KSCurrency,
+        ksString: KSString,
+        project: Project,
+        reward: Reward,
+        locationId: Long,
+    ): String? {
+        // TO-DO: move to class-level constant and replace all instances of ""
+        val EMPTY_STRING = ""
+
+        if (RewardUtils.isDigital(reward) || RewardUtils.isLocalPickup(reward) || !RewardUtils.isShippable(reward))
+            return null
+
+        val shippingRule = reward.shippingRules()?.firstOrNull { it.location()?.id() == locationId }
+            ?: if (RewardUtils.shipsWorldwide(reward)) reward.shippingRules()?.firstOrNull() else null
+
+        if (shippingRule == null)
+            return null
+
+        val estimatedMin = shippingRule.estimatedMin()
+        val estimatedMax = shippingRule.estimatedMax()
+        val cost = shippingRule.cost()
+
+        if (estimatedMin > 0.0 || estimatedMax > 0.0) {
+            val estimatedMinFormatted = ksCurrency.format(estimatedMin, project, RoundingMode.HALF_UP)
+            val estimatedMaxFormatted = ksCurrency.format(estimatedMax, project, RoundingMode.HALF_UP)
+            return if (estimatedMinFormatted.isEmpty() || estimatedMaxFormatted.isEmpty()) {
+                EMPTY_STRING
+            } else {
+                ksString.format(
+                    context.getString(R.string.About_reward_amount),
+                    "reward_amount",
+                    "$estimatedMinFormatted-$estimatedMaxFormatted"
+                )
+            }
+        } else if (cost > 0) {
+            val costFormatted = ksCurrency.format(cost, project, RoundingMode.HALF_UP)
+            return costFormatted.ifEmpty {
+                EMPTY_STRING
+            }
+        } else {
+            return EMPTY_STRING
+        }
+    }
+
+    /**
+     * Return a string for the estimated shipping costs for a collection of
+     * Rewards (i.e. a base Reward + Add-Ons) for a given shipping rule.
+     *
+     * Ex. "About $10-$15" or "About $10-$15 each"
+     *
+     * Used for Add-On Cards (for now) and on the Checkout Screen.
+     */
+    fun getEstimatedShippingRange(
         context: Context,
         ksCurrency: KSCurrency,
         ksString: KSString,
@@ -240,7 +297,7 @@ object RewardViewUtils {
             }
         }
 
-        if (minTotal <= 0 || maxtotal <= 0) return ""
+        if (minTotal <= 0 && maxtotal <= 0) return ""
 
         min = if (useUserPreference) {
             ksCurrency.formatWithUserPreference(minTotal, project, RoundingMode.HALF_UP, precision = 2)

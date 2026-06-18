@@ -288,7 +288,7 @@ fun AddOnsScreen(
                         if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
                             environment.ksCurrency()?.let { ksCurrency ->
                                 environment.ksString()?.let { ksString ->
-                                    RewardViewUtils.getEstimatedShippingCostString(
+                                    RewardViewUtils.getEstimatedShippingRange(
                                         context = context,
                                         ksCurrency = ksCurrency,
                                         ksString = ksString,

@@ -638,7 +638,7 @@ fun CheckoutScreen(
                     .isNotNull() && currentShippingRule.isNotNull()
                 ) {
                     val estimatedShippingRangeString =
-                        RewardViewUtils.getEstimatedShippingCostString(
+                        RewardViewUtils.getEstimatedShippingRange(
                             context = LocalContext.current,
                             ksCurrency = environment.ksCurrency()!!,
                             ksString = environment.ksString()!!,
@@ -653,7 +653,7 @@ fun CheckoutScreen(
                     val estimatedShippingRangeConversionString =
                         if (project.currentCurrency() == project.currency()) null
                         else {
-                            RewardViewUtils.getEstimatedShippingCostString(
+                            RewardViewUtils.getEstimatedShippingRange(
                                 context = LocalContext.current,
                                 ksCurrency = environment.ksCurrency()!!,
                                 ksString = environment.ksString()!!,

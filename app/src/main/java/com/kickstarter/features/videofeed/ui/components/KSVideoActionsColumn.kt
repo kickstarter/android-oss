@@ -45,6 +45,8 @@ fun KSVideoActionsColumn(
     onShareClick: () -> Unit = {},
     onMoreOptionsClick: () -> Unit = {}
 ) {
+    val savedStateDescription = stringResource(id = R.string.Saved)
+
     Column(
         modifier = modifier.testTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,14 +69,14 @@ fun KSVideoActionsColumn(
             KSVideoPlayerIconButton(
                 modifier = Modifier
                     .semantics {
-                        stateDescription = bookmarkCount ?: ""
+                        stateDescription = if (bookmarked) savedStateDescription else ""
                     }
                     .testTag(KSVideoActionsColumnTestTag.BOOKMARK_BUTTON.name),
                 icon = if (bookmarked) BookmarkFilled else Bookmark,
                 text = bookmarkCount,
                 onClick = onBookmarkClick,
-                contentDescription = stringResource(id = R.string.fpo_Bookmark),
-                onClickLabel = stringResource(id = R.string.fpo_Bookmark_this_project)
+                contentDescription = stringResource(id = R.string.Save),
+                onClickLabel = stringResource(id = R.string.Save_this_project)
             )
         }
 
@@ -86,9 +88,10 @@ fun KSVideoActionsColumn(
                 .testTag(KSVideoActionsColumnTestTag.SHARE_BUTTON.name),
             icon = Share,
             text = shareCount,
+            textIsDecorative = true,
             onClick = onShareClick,
-            contentDescription = stringResource(id = R.string.fpo_Share),
-            onClickLabel = stringResource(id = R.string.fpo_Share_this_project)
+            contentDescription = stringResource(id = R.string.Share),
+            onClickLabel = stringResource(id = R.string.Share_this_project)
         )
 
         KSVideoPlayerIconButton(
@@ -98,7 +101,7 @@ fun KSVideoActionsColumn(
             enabled = false,
             icon = Ellipsis,
             onClick = onMoreOptionsClick,
-            contentDescription = stringResource(id = R.string.fpo_More_options),
+            contentDescription = stringResource(id = R.string.More_options),
             onClickLabel = stringResource(id = R.string.fpo_View_more_options)
         )
     }

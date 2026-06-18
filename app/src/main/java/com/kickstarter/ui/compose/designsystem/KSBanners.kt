@@ -72,7 +72,7 @@ fun KSVideoFeedBanner(
             .clickable(
                 onClick = onButtonClick,
                 role = Role.Button,
-                onClickLabel = stringResource(id = R.string.fpo_try_it_now)
+                onClickLabel = stringResource(id = R.string.try_it_now)
             )
             .padding(dimensions.paddingMedium)
             .testTag(KSVideoFeedBannerTestTag.BANNER_CONTAINER.name),
@@ -84,7 +84,7 @@ fun KSVideoFeedBanner(
             verticalArrangement = Arrangement.spacedBy(dimensions.paddingSmall)
         ) {
             Text(
-                text = stringResource(id = R.string.fpo_try_our_new_discovery_mode),
+                text = stringResource(id = R.string.try_our_new_discovery_mode),
                 style = typographyV2.headingLG,
                 color = colors.discoveryBanner.text,
                 modifier = Modifier
@@ -92,7 +92,7 @@ fun KSVideoFeedBanner(
             )
 
             Text(
-                text = stringResource(id = R.string.fpo_swipe_through_a_video_feed_tuning_your_recommendations_along_the_way),
+                text = stringResource(id = R.string.swipe_through_a_video_feed_tuning_your_recommendations_along_the_way),
                 style = typographyV2.bodyMD,
                 color = colors.discoveryBanner.text,
                 modifier = Modifier
@@ -105,7 +105,7 @@ fun KSVideoFeedBanner(
                 onClickAction = onButtonClick,
                 isEnabled = true,
                 backgroundColor = colors.discoveryBanner.buttonBackground,
-                text = stringResource(id = R.string.fpo_try_it_now),
+                text = stringResource(id = R.string.try_it_now),
                 textColor = colors.discoveryBanner.buttonText,
                 radius = dimensions.pillButtonShapeSize,
                 modifier = Modifier

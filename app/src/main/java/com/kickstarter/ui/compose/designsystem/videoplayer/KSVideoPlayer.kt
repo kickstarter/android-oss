@@ -257,7 +257,7 @@ fun KSVideoPlayer(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null, // Remove ripple for the background tap
-                onClickLabel = stringResource(id = if (showControls) R.string.accessibility_discovery_buttons_close else R.string.fpo_Play)
+                onClickLabel = stringResource(id = if (showControls) R.string.accessibility_discovery_buttons_close else R.string.Play)
             ) {
                 onToggleControls()
             }
@@ -436,7 +436,7 @@ private fun ControlsContainer(
                 },
                 hazeState = hazeState,
                 modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PLAY_BUTTON.name),
-                contentDescription = stringResource(id = R.string.fpo_Play)
+                contentDescription = stringResource(id = R.string.Play)
             )
         }
     }

@@ -51,7 +51,7 @@ import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 
-const val SAMPLE_PROJECT_URL = "https://www.kickstarter.com/projects/peak-design/roller-pro-carry-on-luggage-by-peak-design"
+private const val SAMPLE_PROJECT_URL = "https://www.kickstarter.com/projects/peak-design/roller-pro-carry-on-luggage-by-peak-design"
 class ProjectStoryActivity : ComponentActivity() {
 
     private lateinit var projectStoryViewModelFactory: ProjectStoryViewModel.Factory

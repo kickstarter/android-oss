@@ -28,7 +28,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `test no provided slug, fetch project, check emissions`() = runTest {
+    fun `test nothing is fetched if a slug has not been provided`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
 
         setUpEnvironment(environment(), standardDispatcher)
@@ -48,7 +48,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `provide invalid slug, fetch project, check emissions`() = runTest {
+    fun `test nothing is fetched when the provided slug is blank or null`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
 
         setUpEnvironment(environment(), standardDispatcher)
@@ -69,7 +69,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `provide slug, fetch project, network error, check emissions`() = runTest {
+    fun `test error state is emitted given an exception at in the api client`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
         val throwable = Exception("Network error")
 
@@ -100,7 +100,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `provide slug, fetch nonexistent project, check emissions`() = runTest {
+    fun `test success state is emitted with 'empty' data for a project that does not exist`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
         val slug = "project-that-does-not-exist"
 
@@ -133,7 +133,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `provide slug, fetch existing project, check emissions`() = runTest {
+    fun `test successful emissions for a project that exists`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
         val slug = "creator/project"
 
@@ -166,7 +166,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `provide slug, fetch project multiple times, check emissions`() = runTest {
+    fun `test story data is only fetched once after being fetched successfully`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
         val slug = "creator/project"
         val storiedProject = StoriedProject(
@@ -204,7 +204,7 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `provide slug, fetch project, provide different slug, fetch project, check emissions`() = runTest {
+    fun `test story data is re-fetched when the provided project is different`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
 
         val slugToStories = mapOf(

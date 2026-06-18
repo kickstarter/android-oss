@@ -102,10 +102,10 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 LaunchedEffect(projectState.value) {
                     projectState.value?.let { project ->
                         similarProjectsViewModel.provideProject(project)
-                        project.slug()?.let {
-                            projectStoryViewModel.provideProjectSlug(it)
-                            projectStoryViewModel.fetchProject()
-                        }
+//                        project.slug()?.let {
+//                            projectStoryViewModel.provideProjectSlug(it)
+//                            projectStoryViewModel.fetchProject()
+//                        }
                     }
                 }
 

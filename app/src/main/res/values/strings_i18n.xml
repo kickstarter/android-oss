@@ -112,8 +112,11 @@ backers</string>
   <string name="Blocked_user_confirmation" formatted="false">Blocking this user means that you won’t see their comments or content anymore. If you have saved or backed projects from this user, you must remove your pledge before blocking. To unblock a user in the future, please go through our Help Center.</string>
   <string name="Bonus" formatted="false">Bonus</string>
   <string name="Bonus_support" formatted="false">Bonus support</string>
+  <string name="Bookmark" formatted="false">Bookmark</string>
+  <string name="Bookmark_this_project" formatted="false">Bookmark this project</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
+  <string name="By_a_superbacker" formatted="false">By a superbacker</string>
   <string name="By_creating_an_account_you_agree_to_Kickstarters_Terms_of_Use_and_Privacy_Policy" formatted="false">By creating an account, you agree to Kickstarter’s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a> and &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a>.</string>
   <string name="By_pledging_you_acknowledge" formatted="false">By pledging, you acknowledge that rewards or reimbursements aren’t guaranteed by either Kickstarter or the creator.</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
@@ -122,6 +125,7 @@ backers</string>
   <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">By submitting your pledge, you agree that our payment processor, Stripe, may charge your payment method.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Campaign" formatted="false">Campaign</string>
+  <string name="Campaign_goal_reached" formatted="false">Campaign goal reached</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
@@ -186,6 +190,7 @@ Please tap to retry.</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
   <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">Couldn\'t load more comments.\n
 Tap to retry</string>
+  <string name="Couldnt_load_video" formatted="false">Couldn\'t load video</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Couldn‘t open live stream. Try again later.</string>
   <string name="Couldnt_post" formatted="false">Couldn\'t post. Tap to retry</string>
   <string name="Couldnt_remove_attachment" formatted="false">Couldn\'t remove attachment</string>
@@ -308,6 +313,7 @@ Tap to retry</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Find projects you’ll love and help bring creative ideas to life.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
+  <string name="First_time_creator" formatted="false">First-time creator</string>
   <string name="Fix" formatted="false">Fix</string>
   <string name="Fix_payment" formatted="false">Fix Payment</string>
   <string name="Fix_payment_method" formatted="false">Fix payment method</string>
@@ -341,6 +347,7 @@ Tap to retry</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Technology&lt;/i> project.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Theater&lt;/i> project.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} launched a project!</string>
+  <string name="Funded_percentage" formatted="false">Funded percentage</string>
   <string name="Funding_successful" formatted="false">Funding successful</string>
   <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified" formatted="false">Get notified</string>
@@ -373,6 +380,7 @@ Tap to retry</string>
   <string name="Help_local_businesses_keep_the_lights" formatted="false">Help local businesses keep the lights on during COVID-19 closures.</string>
   <string name="Hide_password" formatted="false">Hide password</string>
   <string name="Home" formatted="false">Home</string>
+  <string name="Hot_right_now" formatted="false">This project is hot!</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="I_am_incorporating_AI_in_my_project" formatted="false">I am incorporating AI in my project in another way.</string>
   <string name="I_plan_to_use_AI_generated_content" formatted="false">I plan to use AI-generated content in my project.</string>
@@ -410,6 +418,7 @@ with friends.</string>
   <string name="Join_our_secret_society" formatted="false">Join our secret society.</string>
   <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
   <string name="Just_for_you" formatted="false">Just for you.</string>
+  <string name="Just_launched" formatted="false">Just launched</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Keep in touch after your campaign and plan your next project.</string>
   <string name="Keep_reading" formatted="false">Keep reading</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Keep up with future live streams</string>
@@ -476,12 +485,14 @@ with friends.</string>
   <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Million_plus" formatted="false">%{total_amount} million+</string>
+  <string name="More_options" formatted="false">More options</string>
   <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
   <string name="Most_backed" formatted="false">Most backed</string>
   <string name="Most_funded" formatted="false">Most funded</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">My project seeks funding for AI technology.</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Near_me" formatted="false">Near me</string>
+  <string name="Near_you" formatted="false">Near you</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_email" formatted="false">New email</string>
   <string name="New_password" formatted="false">New password</string>
@@ -559,6 +570,7 @@ from friends yet.</string>
   <string name="Percentage_raised_pill_bucket_0" formatted="false">Under 75% raised</string>
   <string name="Percentage_raised_pill_bucket_1" formatted="false">75% to 100% raised</string>
   <string name="Percentage_raised_pill_bucket_2" formatted="false">More than 100% raised</string>
+  <string name="Play" formatted="false">Play</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Please enter a pledge amount between %{min} and %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Please enter an amount of %{amount} or less.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Please enter an amount of %{amount} or more.</string>
@@ -573,6 +585,11 @@ from friends yet.</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} pledged</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Pledge any amount to help bring this project to life.</string>
   <string name="Pledge_details" formatted="false">Pledge details</string>
+  <string name="Pledge_flow_navigation_bar_titles_Addons" formatted="false">Add-ons</string>
+  <string name="Pledge_flow_navigation_bar_titles_Bonus_support" formatted="false">Bonus Support</string>
+  <string name="Pledge_flow_navigation_bar_titles_Payment" formatted="false">Payment</string>
+  <string name="Pledge_flow_navigation_bar_titles_Project" formatted="false">Project</string>
+  <string name="Pledge_flow_navigation_bar_titles_Rewards" formatted="false">Rewards</string>
   <string name="Pledge_in_full" formatted="false">Pledge in full</string>
   <string name="Pledge_label" formatted="false">Pledge</string>
   <string name="Pledge_management" formatted="false">Pledge management</string>
@@ -599,6 +616,7 @@ from friends yet.</string>
   <string name="Prohibited_items" formatted="false">Prohibited items</string>
   <string name="Project_Cancelled" formatted="false">Project Cancelled.</string>
   <string name="Project_Suspended" formatted="false">Project Suspended.</string>
+  <string name="Project_We_Love" formatted="false">Project We Love</string>
   <string name="Project_activity" formatted="false">Project activity</string>
   <string name="Project_alerts" formatted="false">Project Alerts</string>
   <string name="Project_cancelled" formatted="false">Project cancelled</string>
@@ -867,6 +885,7 @@ catch your eye?</string>
   <string name="Track_shipment" formatted="false">Track shipment</string>
   <string name="Track_your_backings" formatted="false">Track your backings</string>
   <string name="Tracking_number" formatted="false">Tracking number: %{number}</string>
+  <string name="Trending" formatted="false">Trending</string>
   <string name="Try_adjusting_the_filters" formatted="false">Try adjusting the filters</string>
   <string name="Try_rephrasing_your_search" formatted="false">Try rephrasing your search</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Try rephrasing your search or adjusting the filters</string>
@@ -1449,6 +1468,7 @@ Please try again later.</string>
   <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">Since you\'ve been gone...</string>
   <string name="discovery_all_of_scope" formatted="false">All of %{scope}</string>
   <string name="discovery_backing" formatted="false">Backing</string>
+  <string name="discovery_banner_image_content_description" formatted="false">Discovery mode preview</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
   <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Location</string>
   <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>Read%{space}more&lt;/u>%{space}</string>
@@ -2041,6 +2061,7 @@ saved</string>
   <string name="support_email_subject" formatted="false">Hello Kickstarter App Support</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
+  <string name="swipe_through_a_video_feed_tuning_your_recommendations_along_the_way" formatted="false">Swipe through a video feed, tuning your recommendations along the way.</string>
   <string name="tabbar_activity" formatted="false">Activity</string>
   <string name="tabbar_backings" formatted="false">Backings</string>
   <string name="tabbar_dashboard" formatted="false">Dashboard</string>
@@ -2050,6 +2071,8 @@ saved</string>
   <string name="tabbar_profile" formatted="false">Profile</string>
   <string name="tabbar_search" formatted="false">Search</string>
   <string name="tabbar_search_projects" formatted="false">Search projects</string>
+  <string name="try_it_now" formatted="false">Try it now</string>
+  <string name="try_our_new_discovery_mode" formatted="false">Try our new discovery mode</string>
   <string name="two_factor_buttons_resend" formatted="false">Resend</string>
   <string name="two_factor_buttons_submit" formatted="false">Submit</string>
   <string name="two_factor_code_placeholder" formatted="false">Enter code</string>
@@ -2077,4 +2100,5 @@ saved</string>
   <string name="via_custom" formatted="false">via custom</string>
   <string name="via_external" formatted="false">via external</string>
   <string name="via_kickstarter" formatted="false">via Kickstarter</string>
+  <string name="video_feed_campaign_subtitle" formatted="false">%{pledged} pledged • Join %{backers} backers</string>
 </resources>

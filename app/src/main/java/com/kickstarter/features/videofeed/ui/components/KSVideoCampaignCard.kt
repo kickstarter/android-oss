@@ -102,7 +102,12 @@ fun KSVideoCampaignCard(
                 progress = progressValue,
                 icon = if (isComplete) Check else null,
                 text = if (!isComplete) progress.toInt().toString() else "",
-                contentDescription = if (isComplete) stringResource(id = R.string.fpo_Campaign_goal_reached) else ""
+                contentDescription = stringResource(id = R.string.Funded_percentage),
+                stateDescription = if (isComplete) {
+                    stringResource(id = R.string.Campaign_goal_reached)
+                } else {
+                    "${progress.toInt()}%"
+                }
             )
         }
 

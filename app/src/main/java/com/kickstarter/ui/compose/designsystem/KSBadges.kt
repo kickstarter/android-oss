@@ -345,11 +345,11 @@ fun KSFeaturedRewardBadge(
                 .padding(end = dimensions.paddingXSmall)
                 .size(dimensions.alertIconSize),
             imageVector = featuredRewardStar,
-            contentDescription = stringResource(R.string.fpo_featured_reward),
+            contentDescription = stringResource(R.string.Featured),
             colorFilter = ColorFilter.tint(iconTint)
         )
         Text(
-            text = stringResource(R.string.fpo_featured_reward),
+            text = stringResource(R.string.Featured),
             color = purple_08,
             style = typographyV2.headingSM
         )
@@ -424,7 +424,7 @@ fun KSProjectWeLoveVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_Project_We_Love),
+        text = stringResource(R.string.Project_We_Love),
         icon = ProjectWeLove,
         hazeState = hazeState
     )
@@ -451,7 +451,7 @@ fun KSJustLaunchedVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_Just_launched),
+        text = stringResource(R.string.Just_launched),
         hazeState = hazeState
     )
 }
@@ -463,7 +463,7 @@ fun KSFirstTimeCreatorVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_First_time_creator),
+        text = stringResource(R.string.First_time_creator),
         hazeState = hazeState
     )
 }
@@ -475,7 +475,7 @@ fun KSSuperbackerVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_By_a_superbacker),
+        text = stringResource(R.string.By_a_superbacker),
         hazeState = hazeState
     )
 }
@@ -487,7 +487,7 @@ fun KSNearYouVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_Near_you),
+        text = stringResource(R.string.Near_you),
         hazeState = hazeState
     )
 }
@@ -523,7 +523,7 @@ fun KSTrendingVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_Trending),
+        text = stringResource(R.string.Trending),
         icon = Whatshot,
         hazeState = hazeState
     )
@@ -549,7 +549,7 @@ fun KSHotVideoBadge(
 ) {
     KSVideoBadge(
         modifier = modifier,
-        text = stringResource(R.string.fpo_Hot_right_now),
+        text = stringResource(R.string.Hot_right_now),
         icon = Whatshot,
         hazeState = hazeState
     )

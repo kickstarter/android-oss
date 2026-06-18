@@ -112,8 +112,11 @@ contributeurs</string>
   <string name="Blocked_user_confirmation" formatted="false">Si vous bloquez cet utilisateur, vous ne verrez plus ses commentaires ni son contenu. Si vous avez sauvegardé ou soutenu ses projets, veuillez supprimer votre engagement avant de le bloquer. Pour débloquer un utilisateur, veuillez consulter notre Centre d\'assistance.</string>
   <string name="Bonus" formatted="false">Bonus</string>
   <string name="Bonus_support" formatted="false">Coup de pouce</string>
+  <string name="Bookmark" formatted="false">Enregistrer</string>
+  <string name="Bookmark_this_project" formatted="false">Enregistrer ce projet</string>
   <string name="Bookmarks" formatted="false">Signets</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Réalisez vos projets créatifs.</string>
+  <string name="By_a_superbacker" formatted="false">Par un Superbacker</string>
   <string name="By_creating_an_account_you_agree_to_Kickstarters_Terms_of_Use_and_Privacy_Policy" formatted="false">Lorsque vous créez un compte, vous acceptez les &lt;a href="%{terms_of_use_link}">Conditions d\'utilisation&lt;/a> et la &lt;a href="%{privacy_policy_link}">Politique de confidentialité&lt;/a> de Kickstarter.</string>
   <string name="By_pledging_you_acknowledge" formatted="false">En vous engageant, vous reconnaissez que ni Kickstarter ni le créateur ne garantit une récompense ou un remboursement.</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Lorsque vous vous engagez, vous acceptez les &lt;a href="%{terms_of_use_link}">Conditions d\'utilisation&lt;/a> de Kickstarter, notre &lt;a href="%{privacy_policy_link}">Politique de confidentialité&lt;/a> et notre &lt;a href="%{cookie_policy_link}">Politique en matière de cookies&lt;/a>.</string>
@@ -122,6 +125,7 @@ contributeurs</string>
   <string name="By_submitting_your_pledge_you_agree_that_Stripe_may_charge_your_payment_method" formatted="false">En vous engageant, vous acceptez que Stripe, notre prestataire de traitement des règlements, débite votre moyen de paiement.</string>
   <string name="CVC" formatted="false">Cryptogramme</string>
   <string name="Campaign" formatted="false">Campagne</string>
+  <string name="Campaign_goal_reached" formatted="false">Objectif de campagne atteint</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
@@ -186,6 +190,7 @@ contributeurs</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_load_more_comments_Tap_to_retry" formatted="false">Impossible de charger plus de commentaires.\n
 Cliquez pour réessayer.</string>
+  <string name="Couldnt_load_video" formatted="false">Impossible de charger la vidéo</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_post" formatted="false">Publication impossible. Cliquez pour réessayer.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
@@ -308,6 +313,7 @@ Cliquez pour réessayer.</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Découvrez de beaux projets et participez à la concrétisation d\'idées créatives.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Découvrez des projets que vous allez adorer : art, design, cinéma, jeux, musique et plus encore. L\'activité des projets que vous soutenez s\'affichera ici.</string>
   <string name="First_created" formatted="false">Premier projet créé</string>
+  <string name="First_time_creator" formatted="false">Nouveau créateur</string>
   <string name="Fix" formatted="false">Corriger</string>
   <string name="Fix_payment" formatted="false">Corriger mon paiement</string>
   <string name="Fix_payment_method" formatted="false">Correction du moyen de paiement</string>
@@ -341,6 +347,7 @@ Cliquez pour réessayer.</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>technologie&lt;/i>.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>théâtre&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} a lancé un projet !</string>
+  <string name="Funded_percentage" formatted="false">Pourcentage de financement</string>
   <string name="Funding_successful" formatted="false">Intégralement financé</string>
   <string name="Games_newsletter" formatted="false">Un mix de nouveaux projets et d\'actus sur le thème des jeux, soigneusement sélectionné par l\'équipe Jeux de Kickstarter.</string>
   <string name="Get_notified" formatted="false">Notifiez-moi</string>
@@ -373,6 +380,7 @@ Cliquez pour réessayer.</string>
   <string name="Help_local_businesses_keep_the_lights" formatted="false">À l\'ère du COVID-19, les entreprises de votre région ont besoin de vous pour survire.</string>
   <string name="Hide_password" formatted="false">Masquer le mot de passe</string>
   <string name="Home" formatted="false">Accueil</string>
+  <string name="Hot_right_now" formatted="false">Ce projet décolle !</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
   <string name="I_am_incorporating_AI_in_my_project" formatted="false">Je prévois d\'incorporer une IA dans mon projet d\'une autre façon.</string>
   <string name="I_plan_to_use_AI_generated_content" formatted="false">Je prévois d\'utiliser du contenu généré par une IA dans mon projet.</string>
@@ -409,6 +417,7 @@ Cliquez pour réessayer.</string>
   <string name="Join_our_secret_society" formatted="false">Notre société secrète n\'attend que vous.</string>
   <string name="Joining_the_live_stream" formatted="false">Connexion à la diffusion en direct en cours</string>
   <string name="Just_for_you" formatted="false">Rien que pour vous.</string>
+  <string name="Just_launched" formatted="false">En début de campagne</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Une façon de garder le contact après votre campagne et de prévoir votre prochain projet.</string>
   <string name="Keep_reading" formatted="false">Plus</string>
   <string name="Keep_up_with_future_live_streams" formatted="false">Soyez informé des prochaines diffusions en direct</string>
@@ -475,12 +484,14 @@ Cliquez pour réessayer.</string>
   <string name="Message_user_name" formatted="false">Envoyer un message à %{user_name}</string>
   <string name="Messages" formatted="false">Messages</string>
   <string name="Million_plus" formatted="false">Plus de %{total_amount} millions</string>
+  <string name="More_options" formatted="false">Plus d\'options</string>
   <string name="More_than_number_of_items_items" formatted="false">Plus de %{number_of_items} éléments</string>
   <string name="Most_backed" formatted="false">Nombre d\'engagements</string>
   <string name="Most_funded" formatted="false">Financement</string>
   <string name="My_project_seeks_funding_for_AI_technology" formatted="false">Le but de mon projet est de financer une technologie d\'IA.</string>
   <string name="Name" formatted="false">Nom</string>
   <string name="Near_me" formatted="false">Près de moi</string>
+  <string name="Near_you" formatted="false">Près de chez moi</string>
   <string name="Never" formatted="false">Jamais</string>
   <string name="New_email" formatted="false">Nouvelle adresse e-mail</string>
   <string name="New_password" formatted="false">Nouveau mot de passe</string>
@@ -558,6 +569,7 @@ n\'ont rien soutenu.</string>
   <string name="Percentage_raised_pill_bucket_0" formatted="false">Financé à moins de 75 %</string>
   <string name="Percentage_raised_pill_bucket_1" formatted="false">Financé entre 75 % et 100 %</string>
   <string name="Percentage_raised_pill_bucket_2" formatted="false">Financé à plus de 100 %</string>
+  <string name="Play" formatted="false">Lecture</string>
   <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Veuillez saisir un engagement entre %{min} et %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Veuillez saisir un montant de %{amount} ou moins.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Veuillez saisir un montant de %{amount} ou plus.</string>
@@ -572,6 +584,11 @@ n\'ont rien soutenu.</string>
   <string name="Pledge_amount_pledged" formatted="false">%{pledge_amount} engagés</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_details" formatted="false">Détails de mon engagement</string>
+  <string name="Pledge_flow_navigation_bar_titles_Addons" formatted="false">Compléments</string>
+  <string name="Pledge_flow_navigation_bar_titles_Bonus_support" formatted="false">Coup de pouce</string>
+  <string name="Pledge_flow_navigation_bar_titles_Payment" formatted="false">Paiement</string>
+  <string name="Pledge_flow_navigation_bar_titles_Project" formatted="false">Projet</string>
+  <string name="Pledge_flow_navigation_bar_titles_Rewards" formatted="false">Vos récompenses</string>
   <string name="Pledge_in_full" formatted="false">Engagement intégral</string>
   <string name="Pledge_label" formatted="false">Contribution</string>
   <string name="Pledge_management" formatted="false">Gestion des engagements</string>
@@ -598,6 +615,7 @@ n\'ont rien soutenu.</string>
   <string name="Prohibited_items" formatted="false">Articles interdits</string>
   <string name="Project_Cancelled" formatted="false">Projet annulé.</string>
   <string name="Project_Suspended" formatted="false">Projet suspendu.</string>
+  <string name="Project_We_Love" formatted="false">Nos coups de cœur</string>
   <string name="Project_activity" formatted="false">Activité de mon projet</string>
   <string name="Project_alerts" formatted="false">Alertes sur les projets</string>
   <string name="Project_cancelled" formatted="false">Projet annulé</string>
@@ -864,6 +882,7 @@ n\'ont rien soutenu.</string>
   <string name="Track_shipment" formatted="false">Suivre le colis</string>
   <string name="Track_your_backings" formatted="false">Suivi de vos engagements</string>
   <string name="Tracking_number" formatted="false">Numéro de suivi : %{number}</string>
+  <string name="Trending" formatted="false">Les tendances</string>
   <string name="Try_adjusting_the_filters" formatted="false">Essayez de modifier les filtres</string>
   <string name="Try_rephrasing_your_search" formatted="false">Essayez de reformuler votre recherche</string>
   <string name="Try_rephrasing_your_search_or_adjusting_the_filters" formatted="false">Essayez de reformuler votre recherche ou de modifier les filtres</string>
@@ -1446,6 +1465,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">Depuis votre dernière visite...</string>
   <string name="discovery_all_of_scope" formatted="false">Toute la catégorie %{scope}</string>
   <string name="discovery_backing" formatted="false">Engagements</string>
+  <string name="discovery_banner_image_content_description" formatted="false">Aperçu du mode découverte</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Catégorie</string>
   <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Lieu</string>
   <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>Plus&lt;/u>%{space}</string>
@@ -2035,6 +2055,7 @@ projets enregistrés</string>
   <string name="support_email_subject" formatted="false">Bonjour, Assistance de l\'application Kickstarter</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
   <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
+  <string name="swipe_through_a_video_feed_tuning_your_recommendations_along_the_way" formatted="false">À découvrir : un flux de vidéos qui affinera vos recommandations au fur et à mesure.</string>
   <string name="tabbar_activity" formatted="false">Activité</string>
   <string name="tabbar_backings" formatted="false">Engagements</string>
   <string name="tabbar_dashboard" formatted="false">Tableau de bord</string>
@@ -2044,6 +2065,8 @@ projets enregistrés</string>
   <string name="tabbar_profile" formatted="false">Profil</string>
   <string name="tabbar_search" formatted="false">Recherche</string>
   <string name="tabbar_search_projects" formatted="false">Rechercher des projets</string>
+  <string name="try_it_now" formatted="false">J\'essaie</string>
+  <string name="try_our_new_discovery_mode" formatted="false">Essayez notre nouveau mode découverte</string>
   <string name="two_factor_buttons_resend" formatted="false">Renvoyer</string>
   <string name="two_factor_buttons_submit" formatted="false">Envoyer</string>
   <string name="two_factor_code_placeholder" formatted="false">Saisir le code</string>
@@ -2071,4 +2094,5 @@ projets enregistrés</string>
   <string name="via_custom" formatted="false">sites référents personnalisés</string>
   <string name="via_external" formatted="false">sites référents externes</string>
   <string name="via_kickstarter" formatted="false">Kickstarter</string>
+  <string name="video_feed_campaign_subtitle" formatted="false">%{pledged} engagés • Rejoignez les %{backers} contributeurs</string>
 </resources>

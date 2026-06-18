@@ -1,6 +1,5 @@
 package com.kickstarter.features.projectstory
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isProjectUri
-import com.kickstarter.models.Project
-import com.kickstarter.services.transformers.extensions.toStoriedProject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +23,7 @@ data class ProjectStoryUiState(
 )
 
 class ProjectStoryViewModel(
-    environment: Environment,
+    private val environment: Environment,
     testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
@@ -36,31 +33,35 @@ class ProjectStoryViewModel(
     private val _projectStoryUiState = MutableStateFlow(ProjectStoryUiState())
     val projectStoryUiState = _projectStoryUiState.asStateFlow()
 
-    private var project: Project? = null
-
-    val txt = mutableStateOf("https://www.kickstarter.com/projects/peak-design/roller-pro-carry-on-luggage-by-peak-design")
-//    val txt = mutableStateOf("https://www.kickstarter.com/projects/glennf/flong-time-no-see")
-
+    private var projectSlug: String? = null
     private var job: Job? = null
 
-    fun provideProject(project: Project) {
-        if (this.project?.id() != project.id()) {
-            this.project = project
+    fun provideProjectSlug(slug: String) {
+        if (projectSlug != slug) {
+            projectSlug = slug
         }
     }
 
-    fun updateTxt(txt: String) {
-        this.txt.value = txt
-    }
-
-    private fun parseSlug(s: String): String? {
-        val uri = s.toUri()
-        return if (uri.isProjectUri()) uri.path else null
+    fun _provideProjectUrl(url: String) {
+        val uri = url.toUri()
+        val parsedSlug =
+            if (uri.isProjectUri(environment.webEndpoint()))
+                uri.path?.substringAfter("/projects/")
+            else
+                null
+        parsedSlug?.let { provideProjectSlug(it) }
     }
 
     fun fetchProject() {
-        Timber.d("project.slug: ${project?.slug()}")
-        val slug = project?.slug() ?: parseSlug(txt.value) ?: return
+        if (projectStoryUiState.value.storiedProject?.project?.slug() == projectSlug) {
+            Timber.d("Project already fetched for slug: $projectSlug")
+            return
+        }
+
+        val slug = projectSlug.takeIf { !it.isNullOrBlank() } ?: run {
+            Timber.d("Project slug is null, cannot fetch project.")
+            return
+        }
 
         job?.cancel()
         job = scope.launch {
@@ -71,7 +72,7 @@ class ProjectStoryViewModel(
                     _projectStoryUiState.value = ProjectStoryUiState(
                         isLoading = false,
                         error = null,
-                        storiedProject = it?.projectStoryFragment.toStoriedProject()
+                        storiedProject = it
                     )
                     Timber.d("storiedProject: ${projectStoryUiState.value.storiedProject}")
                 }

@@ -3,7 +3,6 @@ package com.kickstarter.mock.services
 import android.util.Pair
 import com.kickstarter.CreatePasswordMutation
 import com.kickstarter.DeletePaymentSourceMutation
-import com.kickstarter.FetchProjectStoryQuery
 import com.kickstarter.SendEmailVerificationMutation
 import com.kickstarter.UpdateUserCurrencyMutation
 import com.kickstarter.UpdateUserEmailMutation
@@ -11,6 +10,8 @@ import com.kickstarter.UpdateUserPasswordMutation
 import com.kickstarter.features.checkout.data.AddOnsEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewEnvelope
 import com.kickstarter.features.pledgedprojectsoverview.data.PledgedProjectsOverviewQueryData
+import com.kickstarter.features.projectstory.data.RichTextComponent
+import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.mock.factories.BackingFactory
@@ -380,8 +381,8 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
         return Result.success(emptyList())
     }
 
-    override suspend fun fetchProjectStory(slug: String): Result<FetchProjectStoryQuery.Project?> {
-        return Result.success(null)
+    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
+        return Result.success(StoriedProject(ProjectFactory.project(), RichTextComponent(emptyList())))
     }
 
     override suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String?): Result<SearchEnvelope> {

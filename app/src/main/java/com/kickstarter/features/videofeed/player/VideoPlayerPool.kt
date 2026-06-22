@@ -15,23 +15,45 @@ import androidx.media3.exoplayer.ExoPlayer
  * built once and, when the pool is full, the least-recently-used one is *rebound* to the new page's
  * media rather than released.
  *
+ * Capping LIVE decoders (the reason [park] exists): a *prepared* [ExoPlayer] holds a hardware
+ * [android.media.MediaCodec] video decoder. Devices have a small budget of concurrent decoders, and
+ * when it is exceeded Android's media resource manager starts RECLAIMING the app's decoders — which
+ * stops whatever video is currently playing (observed on a Pixel 6a as repeated
+ * "MediaCodec: Released by resource manager" while fast-scrolling, with the visible video freezing).
+ * So keeping a player merely *retained* is fine, but keeping it *prepared* is not. [park] stops a
+ * player whose page has scrolled off — freeing its decoder while keeping the instance for reuse — so
+ * the number of LIVE decoders tracks only the pages on screen (~3), the same footprint as building
+ * one player per visible page.
+ *
+ * Preparation is the consumer's job: [acquire] binds the media but does NOT [ExoPlayer.prepare] (the
+ * step that allocates the decoder). KSVideoPlayer prepares behind a short debounce, so pages flung
+ * past — composed and disposed within the debounce — never allocate a decoder, capping the
+ * allocation rate. So the pool here only manages instance reuse and decoder *freeing* ([park]).
+ *
  * Contract:
- *  - [acquire] is the only call on the scroll path and NEVER calls [ExoPlayer.release].
+ *  - [acquire] and [park] are the only calls on the scroll path and NEVER call [ExoPlayer.release].
  *  - [release] is called once, when the feed leaves the screen, and releases every pooled player.
  *  - Not thread-safe: all calls must come from the main thread (the players' application thread),
  *    which is where Compose composition and the pager already run.
  *
  * Sizing: [maxPlayers] must be >= the number of pages composed at once. The pager uses
  * beyondViewportPageCount = 1 (current ± 1 = 3 pages); the default leaves headroom so a player
- * bound to a still-composed page is never recycled out from under it during a fast fling. Each
- * retained player keeps a prepared decoder + buffer alive, so this also bounds the feed's video
- * memory; raising it trades memory for headroom.
+ * bound to a still-composed page is never recycled out from under it during a fast fling. Because
+ * off-screen players are [park]ed, the extra retained instances are stopped (no decoder, no buffer),
+ * so the headroom costs idle instances rather than live decoders.
  */
 class VideoPlayerPool(
     private val maxPlayers: Int = DEFAULT_MAX_PLAYERS,
     private val playerFactory: () -> ExoPlayer,
 ) {
-    private class PooledPlayer(val player: ExoPlayer, var key: Any, var videoUrl: String)
+    private class PooledPlayer(
+        val player: ExoPlayer,
+        var key: Any,
+        var videoUrl: String,
+        // True once [park] has stopped this player: its decoder/buffer are released and it must be
+        // re-prepared before it can play again.
+        var parked: Boolean = false,
+    )
 
     // Ordered least-recently-used (front) → most-recently-used (back).
     private val players = ArrayDeque<PooledPlayer>()
@@ -49,6 +71,10 @@ class VideoPlayerPool(
             if (existing.videoUrl != videoUrl) {
                 existing.videoUrl = videoUrl
                 bindMedia(existing.player, videoUrl)
+            } else if (existing.parked) {
+                // Scrolled back to a page we parked: clear the flag. The consumer re-prepares (it has
+                // to anyway, since the decoder was freed) on its debounce, re-acquiring a decoder.
+                existing.parked = false
             }
             return existing.player
         }
@@ -62,6 +88,23 @@ class VideoPlayerPool(
         players.addLast(pooled)
         byKey[pooled.key] = pooled
         return pooled.player
+    }
+
+    /**
+     * Stops the player bound to [key], freeing its hardware [android.media.MediaCodec] decoder and
+     * buffer while keeping the instance pooled for reuse. Call when a page scrolls out of the
+     * composed window so only the visible pages hold a live decoder; the consumer re-prepares it after
+     * its next [acquire]. Deliberately NO release() — that whole-player teardown on the main thread is
+     * the stall this pool exists to prevent.
+     *
+     * No-op if [key] is no longer pooled (already recycled to another page) or is already parked, so
+     * it is safe to call from a page's disposal effect.
+     */
+    fun park(key: Any) {
+        val pooled = byKey[key] ?: return
+        if (pooled.parked) return
+        pooled.player.stop()
+        pooled.parked = true
     }
 
     /** Releases every pooled player and empties the pool. Call once when the feed is disposed. */
@@ -79,6 +122,7 @@ class VideoPlayerPool(
         lru.player.stop()
         lru.key = key
         lru.videoUrl = videoUrl
+        lru.parked = false
         bindMedia(lru.player, videoUrl)
         return lru
     }
@@ -91,9 +135,12 @@ class VideoPlayerPool(
     }
 
     private fun bindMedia(player: ExoPlayer, videoUrl: String) {
+        // Set the media but do NOT prepare(). prepare() is what allocates the hardware decoder, and
+        // the consumer (KSVideoPlayer) defers it behind a short debounce so pages the user FLINGS past
+        // — composed and disposed within the debounce — never grab a decoder. That caps the decoder-
+        // allocation rate that makes the OS reclaim the playing video's decoder during fast scroll.
         player.setMediaItem(MediaItem.fromUri(videoUrl))
         player.repeatMode = Player.REPEAT_MODE_ONE
-        player.prepare()
     }
 
     companion object {

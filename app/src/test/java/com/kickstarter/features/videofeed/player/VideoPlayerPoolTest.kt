@@ -5,6 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 
 class VideoPlayerPoolTest : KSRobolectricTestCase() {
@@ -96,6 +97,72 @@ class VideoPlayerPoolTest : KSRobolectricTestCase() {
 
         assertEquals(3, created.size)
         created.forEach { verify(it, never()).release() }
+    }
+
+    @Test
+    fun `park stops the player to free its decoder but keeps it pooled for reuse`() {
+        val pool = pool()
+        val player = pool.acquire(0, URL_A)
+
+        pool.park(0)
+
+        verify(player).stop() // decoder freed while off-screen...
+        verify(player, never()).release() // ...but never released on the scroll path
+
+        val again = pool.acquire(0, URL_A)
+        assertSame(player, again) // same instance reused, never re-created
+        assertEquals(1, created.size)
+    }
+
+    @Test
+    fun `re-acquiring a parked player reuses it without re-stopping`() {
+        val pool = pool()
+        val player = pool.acquire(0, URL_A)
+        pool.park(0) // stop() once
+
+        val again = pool.acquire(0, URL_A) // clears the parked flag, returns the same instance
+
+        assertSame(player, again)
+        verify(player, times(1)).stop() // only the park's stop, none added by re-acquire
+    }
+
+    @Test
+    fun `the pool never prepares - the consumer owns prepare`() {
+        // prepare() allocates the hardware decoder; it is deliberately deferred to KSVideoPlayer's
+        // debounce so flung-past pages never allocate one. The pool must never call it.
+        val pool = pool(maxPlayers = 3)
+        val p0 = pool.acquire(0, URL_A) // new player
+        pool.acquire(1, URL_B)
+        pool.acquire(2, URL_C)
+        pool.acquire(3, URL_D) // recycles p0
+        pool.park(1)
+        pool.acquire(1, URL_B) // re-acquire parked
+
+        created.forEach { verify(it, never()).prepare() }
+        verify(p0).stop() // recycle still stops before rebinding (frees the old decoder)
+    }
+
+    @Test
+    fun `park is a no-op for an unknown key`() {
+        val pool = pool()
+        val player = pool.acquire(0, URL_A)
+
+        pool.park(99) // never pooled
+
+        verify(player, never()).stop()
+    }
+
+    @Test
+    fun `park does not stop a player whose key was already recycled to another page`() {
+        val pool = pool(maxPlayers = 3)
+        val evicted = pool.acquire(0, URL_A)
+        pool.acquire(1, URL_B)
+        pool.acquire(2, URL_C)
+        pool.acquire(3, URL_D) // recycles key 0's player (one stop) and rebinds it to key 3
+
+        pool.park(0) // key 0 no longer maps to that player → must not stop the now-key-3 player
+
+        verify(evicted, times(1)).stop() // only the recycle's stop, none added by park
     }
 
     companion object {

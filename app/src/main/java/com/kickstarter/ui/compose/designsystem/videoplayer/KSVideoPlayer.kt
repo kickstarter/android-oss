@@ -45,6 +45,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
@@ -71,6 +72,17 @@ enum class KSVideoPlayerTestTag {
     VIDEO_PLAYER_PROGRESS_BAR,
     VIDEO_PLAYER_POSTER
 }
+
+// How many times a single player will re-prepare itself after a playback error before giving up.
+// Covers transient decoder reclaims (re-prepare succeeds once a decoder frees up) without looping on
+// permanently-broken media. Reset whenever the player reaches STATE_READY.
+private const val MAX_DECODER_RECOVERY_ATTEMPTS = 3
+
+// Delay before a pooled player allocates its hardware decoder (via prepare()). A page the user flings
+// past is disposed before this elapses, so it never grabs a decoder — capping the allocation rate
+// that makes the OS reclaim the playing video's decoder during fast scroll. Pages lingered on (and
+// their neighbours, composed ahead) clear it and pre-buffer, so normal swipes stay instant.
+private const val DECODER_PREPARE_DEBOUNCE_MS = 200L
 
 /**
  * Applies a transformation matrix to the [TextureView] to emulate a "Center Crop" (RESIZE_MODE_ZOOM)
@@ -187,6 +199,20 @@ fun KSVideoPlayer(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    // Defer the pooled player's decoder allocation. The pool binds the media but leaves the player
+    // un-prepared; we prepare it here, ~DECODER_PREPARE_DEBOUNCE_MS after composing, only if it is
+    // still idle. A page flung past is disposed before the delay (this effect is cancelled), so it
+    // never allocates a hardware decoder. Internal (non-pool) players are prepared eagerly above and
+    // skip this. playWhenReady (set below) is preserved, so the active page auto-plays once prepared.
+    if (player != null) {
+        LaunchedEffect(exoPlayer) {
+            delay(DECODER_PREPARE_DEBOUNCE_MS)
+            if (exoPlayer.playbackState == Player.STATE_IDLE) {
+                exoPlayer.prepare()
+            }
         }
     }
 
@@ -356,6 +382,30 @@ fun KSVideoPlayer(
     // External (pool) players are never released here — the pool owns their lifecycle.
     DisposableEffect(exoPlayer) {
         onDispose { if (player == null) exoPlayer.release() }
+    }
+
+    // Auto-recover from recoverable playback errors. The common one here is the OS reclaiming our
+    // hardware video decoder under codec pressure (logcat: "MediaCodec: Released by resource manager"),
+    // which drops the player to STATE_IDLE and otherwise leaves the video frozen until the page is
+    // recycled. Re-preparing re-acquires a decoder and resumes (playWhenReady is preserved across the
+    // error). Bounded so genuinely-broken media can't loop forever; the budget resets once playback
+    // recovers.
+    DisposableEffect(exoPlayer) {
+        var recoveryAttempts = 0
+        val recoveryListener = object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_READY) recoveryAttempts = 0
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                if (recoveryAttempts < MAX_DECODER_RECOVERY_ATTEMPTS) {
+                    recoveryAttempts++
+                    exoPlayer.prepare()
+                }
+            }
+        }
+        exoPlayer.addListener(recoveryListener)
+        onDispose { exoPlayer.removeListener(recoveryListener) }
     }
 
     DisposableEffect(isActive) {

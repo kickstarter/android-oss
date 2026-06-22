@@ -26,6 +26,10 @@ import com.kickstarter.ui.extensions.startCreatorBioWebViewActivity
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
 import com.kickstarter.ui.extensions.startProjectActivity
 
+/**
+ * Activity that hosts the Video Feed feature.
+ * Responsible for initializing the ViewModel, handling navigation, and managing the UI state.
+ */
 class VideoFeedActivity : ComponentActivity() {
 
     private lateinit var videoFeedFactory: VideoFeedViewModel.Factory

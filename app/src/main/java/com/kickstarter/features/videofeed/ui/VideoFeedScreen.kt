@@ -84,6 +84,29 @@ enum class VideoFeedScreenTestTag {
 // so this sentinel never collides with a real item key.
 private const val LOADING_PAGE_KEY = Long.MIN_VALUE
 
+/**
+ * Main screen for the Video Feed feature.
+ * Displays a vertical pager of videos from various Kickstarter projects.
+ *
+ * @param items The list of [VideoFeedItem] to display.
+ * @param environment The app environment for dependencies.
+ * @param errorSnackBarHostState State for the error snackbar.
+ * @param hasMore Whether there are more items to load.
+ * @param isLoading Whether a load operation is currently in progress.
+ * @param onLoadMore Callback triggered when the user reaches the end of the list.
+ * @param onReachedLastVideo Callback triggered when the user reaches the very last video and no more items are available.
+ * @param onClose Callback triggered when the close button is clicked.
+ * @param onProfileClick Callback triggered when the creator's profile is clicked.
+ * @param onBookmarkClick Callback triggered when the bookmark/save button is clicked.
+ * @param onShareIntentReady Callback triggered when a share intent is prepared and ready to be launched.
+ * @param preLaunchedCallback Callback for handling pre-launch projects.
+ * @param projectCallback Callback for handling standard projects.
+ * @param onVideoImpression Callback for tracking video impressions.
+ * @param onVideoPageSettled Callback for tracking when a video page becomes the active (settled) page.
+ * @param onPlayPauseTap Callback for tracking play/pause interactions.
+ * @param onProgressBarTap Callback for tracking progress bar interactions.
+ * @param onShareCTAClick Callback for tracking share CTA clicks.
+ */
 @Composable
 fun VideoFeedScreen(
     items: List<VideoFeedItem>,
@@ -354,6 +377,8 @@ fun VideoFeedScreen(
  * Full-screen loading page rendered as the trailing page of the feed while the next page is
  * being fetched. A centered spinner over the video background keeps the look consistent with the
  * player while the user waits for more videos to load.
+ *
+ * @param modifier Modifier for the container.
  */
 @Composable
 fun VideoFeedLoadingPage(modifier: Modifier = Modifier) {
@@ -376,6 +401,13 @@ fun VideoFeedLoadingPagePreview() {
     }
 }
 
+/**
+ * Sets up the error actions for the video feed.
+ * Provides a callback that shows a snackbar with an error message.
+ *
+ * @param snackbarHostState The [SnackbarHostState] to use for showing the snackbar.
+ * @return A callback that takes an optional error message string.
+ */
 @Composable
 fun setUpVideoFeedErrorActions(snackbarHostState: SnackbarHostState): (String?) -> Unit {
     val scope = rememberCoroutineScope()

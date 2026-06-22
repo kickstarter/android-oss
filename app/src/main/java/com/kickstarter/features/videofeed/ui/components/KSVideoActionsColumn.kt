@@ -33,6 +33,20 @@ enum class KSVideoActionsColumnTestTag {
     MORE_OPTIONS_BUTTON
 }
 
+/**
+ * A column of action buttons displayed on top of the video player.
+ * Includes profile, bookmark, share, and more options buttons.
+ *
+ * @param modifier Modifier for the column.
+ * @param profileImageUrl URL for the creator's profile image.
+ * @param bookmarkCount String representation of the number of bookmarks.
+ * @param isBookmarked Whether the project is currently bookmarked by the user.
+ * @param shareCount String representation of the number of shares.
+ * @param onProfileClick Callback for clicking the profile button.
+ * @param onBookmarkClick Callback for clicking the bookmark button.
+ * @param onShareClick Callback for clicking the share button.
+ * @param onMoreOptionsClick Callback for clicking the more options button.
+ */
 @Composable
 fun KSVideoActionsColumn(
     modifier: Modifier = Modifier,

@@ -31,6 +31,14 @@ enum class KSVideoBadgesRowTestTag {
     BADGES_ROW_CONTAINER
 }
 
+/**
+ * A horizontal row that displays a set of [KSVideoBadgeType] badges.
+ * Only the first two badges from the list are shown to maintain UI clarity.
+ *
+ * @param modifier Modifier for the row.
+ * @param badges List of [KSVideoBadgeType] to display.
+ * @param hazeState Optional [HazeState] for applying a glass/blur effect to the badges.
+ */
 @Composable
 fun KSVideoBadgesRow(
     modifier: Modifier = Modifier,

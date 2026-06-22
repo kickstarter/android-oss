@@ -23,6 +23,14 @@ data class VideoFeedUIState(
     val hasMore: Boolean = true
 )
 
+/**
+ * ViewModel for the Video Feed feature.
+ * Handles loading video feed items from Apollo, project bookmarking, and analytics tracking.
+ *
+ * @param environment The app environment providing dependencies like Apollo client and analytics.
+ * @param entrySurface The surface from which the user entered the video feed (for analytics).
+ * @param testDispatcher Optional [CoroutineDispatcher] for testing purposes.
+ */
 class VideoFeedViewModel(
     private val environment: Environment,
     private val entrySurface: String,
@@ -53,10 +61,19 @@ class VideoFeedViewModel(
         loadVideoFeed()
     }
 
+    /**
+     * Provides an error action callback to be used by the ViewModel when errors occur.
+     *
+     * @param errorAction A callback that takes an optional error message.
+     */
     fun provideErrorAction(errorAction: (message: String?) -> Unit) {
         this.errorAction = errorAction
     }
 
+    /**
+     * Loads the next page of the video feed.
+     * If a load is already in progress or there are no more items, it does nothing.
+     */
     fun loadVideoFeed() {
         if (!hasMore) return
         scope.launch {
@@ -92,6 +109,13 @@ class VideoFeedViewModel(
         }
     }
 
+    /**
+     * Bookmarks or un-bookmarks a project at the given index.
+     * Performs an optimistic update of the UI state and reverts if the network request fails.
+     *
+     * @param project The [Project] to bookmark/un-bookmark.
+     * @param index The index of the item in the current list.
+     */
     fun bookmarkProject(project: Project, index: Int) {
         scope.launch {
             val isStarred = project.isStarred()
@@ -124,10 +148,25 @@ class VideoFeedViewModel(
         }
     }
 
+    /**
+     * Tracks a video impression event.
+     *
+     * @param item The [VideoFeedItem] that was impressed.
+     * @param position The position of the item in the feed.
+     */
     fun onVideoImpression(item: VideoFeedItem, position: Int) {
         analyticEvents.trackVideoFeedImpression(item, position, entrySurface)
     }
 
+    /**
+     * Tracks a video page settled event, including watch time data from the previous page.
+     *
+     * @param videoFeedItem The [VideoFeedItem] that is now settled.
+     * @param toPosition The position of the settled item.
+     * @param fromVideoFeedItem The [VideoFeedItem] that was previously settled.
+     * @param watchTimeMs The watch time in milliseconds of the previous video.
+     * @param videoDurationMs The total duration in milliseconds of the previous video.
+     */
     fun onVideoPageSettled(
         videoFeedItem: VideoFeedItem,
         toPosition: Int,
@@ -138,10 +177,24 @@ class VideoFeedViewModel(
         analyticEvents.trackVideoFeedPageViewed(videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs, entrySurface)
     }
 
+    /**
+     * Tracks a progress bar tap event.
+     *
+     * @param item The [VideoFeedItem] being interacted with.
+     * @param percentageWatched The percentage of the video watched at the time of the tap.
+     * @param watchTimeAtClick The watch time in milliseconds at the time of the tap.
+     */
     fun onProgressBarTapped(item: VideoFeedItem, percentageWatched: Float, watchTimeAtClick: Long? = null) {
         analyticEvents.trackVideoFeedProgressBarTap(item, percentageWatched, watchTimeAtClick)
     }
 
+    /**
+     * Tracks a CTA (Call To Action) click event.
+     *
+     * @param project The [Project] associated with the CTA.
+     * @param ctaType The type of CTA clicked.
+     * @param watchTimeAtClick The watch time in milliseconds at the time of the click.
+     */
     fun onCTAClicked(project: Project, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {
         analyticEvents.trackVideoFeedCTAClicked(project, ctaType, watchTimeAtClick)
     }

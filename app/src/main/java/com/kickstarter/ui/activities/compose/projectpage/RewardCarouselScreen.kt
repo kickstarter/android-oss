@@ -348,15 +348,7 @@ fun RewardCarouselScreen(
                             },
                             remainingText =
                             environment.ksString()?.let { ksString ->
-                                if (!reward.isLimited()) {
-                                    if (remaining > 0) {
-                                        ksString.format(
-                                            stringResource(id = R.string.Left_count_left_few),
-                                            "left_count",
-                                            NumberUtils.format(remaining)
-                                        )
-                                    } else ""
-                                } else ""
+                                RewardViewUtils.getQuantityRemainingString(context, ksString, reward)
                             },
                             estimatedShippingCost =
                             if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {

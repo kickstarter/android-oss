@@ -36,6 +36,7 @@ import com.kickstarter.ui.compose.designsystem.KSFeaturedRewardBadge
 import com.kickstarter.ui.compose.designsystem.KSGreenBadge
 import com.kickstarter.ui.compose.designsystem.KSPrimaryGreenButton
 import com.kickstarter.ui.compose.designsystem.KSSecretRewardBadge
+import com.kickstarter.ui.compose.designsystem.KSSubtleWarningBadge
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
@@ -623,7 +624,7 @@ fun KSRewardCard(
                             KSGreenBadge(text = expirationDateText)
                         }
                         if (!remainingText.isNullOrEmpty()) {
-                            KSGreenBadge(text = remainingText)
+                            KSSubtleWarningBadge(text = remainingText)
                         }
                         if (!shippingSummaryText.isNullOrEmpty()) {
                             KSGreenBadge(text = shippingSummaryText)

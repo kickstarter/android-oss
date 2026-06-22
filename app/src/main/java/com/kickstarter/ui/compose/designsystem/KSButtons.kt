@@ -48,6 +48,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -943,6 +944,7 @@ fun KSVideoPlayerIconButton(
     enabled: Boolean = true,
     iconTint: Color = Color.Unspecified,
     text: String? = null,
+    textIsDecorative: Boolean = false,
     contentDescription: String? = null,
     onClickLabel: String? = null
 ) {
@@ -978,6 +980,7 @@ fun KSVideoPlayerIconButton(
         if (!text.isNullOrEmpty()) {
             Spacer(modifier = Modifier.height(dimensions.paddingXSmall))
             Text(
+                modifier = if (textIsDecorative) Modifier.clearAndSetSemantics { } else Modifier,
                 text = text,
                 color = colors.videoPlayer.content,
                 style = typographyV2.bodyBoldSM.copy(

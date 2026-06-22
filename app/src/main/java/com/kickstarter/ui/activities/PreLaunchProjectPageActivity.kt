@@ -18,6 +18,7 @@ import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.kickstarter.R
+import com.kickstarter.features.projectstory.ProjectStoryViewModel
 import com.kickstarter.features.socialshare.AndroidSocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.ui.LocalSocialShareViewModel
@@ -50,6 +51,8 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
     private val viewModel: PrelaunchProjectViewModel.PrelaunchProjectViewModel by viewModels { viewModelFactory }
     private lateinit var similarProjectsViewModelFactory: SimilarProjectsViewModel.Factory
     private val similarProjectsViewModel: SimilarProjectsViewModel by viewModels { similarProjectsViewModelFactory }
+    private lateinit var projectStoryViewModelFactory: ProjectStoryViewModel.Factory
+    private val projectStoryViewModel: ProjectStoryViewModel by viewModels { projectStoryViewModelFactory }
     private val compositeDisposable = CompositeDisposable()
     private var ksString: KSString? = null
 
@@ -68,6 +71,7 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
         this.getEnvironment()?.let { env ->
             viewModelFactory = PrelaunchProjectViewModel.Factory(env)
             similarProjectsViewModelFactory = SimilarProjectsViewModel.Factory(env)
+            projectStoryViewModelFactory = ProjectStoryViewModel.Factory(env)
             darkModeEnabled = env.featureFlagClient()?.getBoolean(FlagKey.ANDROID_DARK_MODE_ENABLED) ?: false
             theme = env.sharedPreferences()
                 ?.getInt(SharedPreferenceKey.APP_THEME, AppThemes.MATCH_SYSTEM.ordinal)
@@ -96,8 +100,12 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 var shareData: SocialShareData? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(projectState.value) {
-                    projectState.value?.let {
-                        similarProjectsViewModel.provideProject(it)
+                    projectState.value?.let { project ->
+                        similarProjectsViewModel.provideProject(project)
+//                        project.slug()?.let {
+//                            projectStoryViewModel.provideProjectSlug(it)
+//                            projectStoryViewModel.fetchProject()
+//                        }
                     }
                 }
 

@@ -49,6 +49,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
@@ -66,6 +67,7 @@ import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Check
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Composable
 @Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
@@ -155,6 +157,7 @@ fun KSVideoProgressIndicator(
     icon: ImageVector? = null,
     text: String = "",
     contentDescription: String = "",
+    stateDescription: String = "",
     baseColor: Color = colors.videoPlayer.progressBase,
     completeColor: Color = colors.videoPlayer.progressComplete,
     trackColor: Color = colors.videoPlayer.progressTrack
@@ -227,9 +230,12 @@ fun KSVideoProgressIndicator(
         modifier = modifier
             .size(44.dp)
             .semantics(mergeDescendants = true) {
-                this.contentDescription = contentDescription
-                this.stateDescription = text
-                this.progressBarRangeInfo = ProgressBarRangeInfo(progress, 0f..1f)
+                if (contentDescription.isNotEmpty()) {
+                    this.contentDescription = contentDescription
+                }
+                if (stateDescription.isNotEmpty()) {
+                    this.stateDescription = stateDescription
+                }
             },
         contentAlignment = Alignment.Center
     ) {
@@ -300,10 +306,14 @@ fun KSVideoProgressIndicator(
             }
         }
 
-        // Text overlay (shown during progress phase only)
+        // Text overlay (shown during progress phase only). Decorative for accessibility
         if (phase == 0 && text.isNotEmpty()) {
+            val coercedTarget = targetProgress.coerceIn(0f, 1f)
+            val sweepFraction = if (coercedTarget > 0f) (animatedProgress / coercedTarget).coerceIn(0f, 1f) else 0f
+            val displayText = text.toIntOrNull()?.let { (it * sweepFraction).roundToInt().toString() } ?: text
             Text(
-                text = text,
+                modifier = Modifier.clearAndSetSemantics { },
+                text = displayText,
                 color = baseColor,
                 style = typographyV2.bodyBoldXS.copy(fontSize = 12.sp)
             )

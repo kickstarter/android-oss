@@ -290,6 +290,60 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test tapping progress bar does not show controls`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap the progress bar (a pure tap, no drag)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                click(position = Offset(x = width * 0.25f, y = height / 2f))
+            }
+        composeTestRule.waitForIdle()
+
+        // - The tap should seek but must not fall through to the surface click and show controls
+        verify(mockPlayer).seekTo(25000L)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `test dragging progress bar does not show controls`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+                moveBy(Offset(x = width * 0.5f, y = 0f))
+                up()
+            }
+        composeTestRule.waitForIdle()
+
+        // - The drag must not fall through to the surface click and show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
     fun `test scrubbing while controls visible does not resume playback on release`() {
         val mockPlayer = mock(ExoPlayer::class.java)
         `when`(mockPlayer.duration).thenReturn(100000L)

@@ -368,7 +368,7 @@ object RewardViewUtils {
 
     fun getQuantityRemainingString(context: Context, ksString: KSString, reward: Reward): String {
         val limit = reward.limit()
-        if (limit != null && limit > 0) { // matches web + we don't know if `limit` of `0` is possible or what it implies.
+        if (limit != null && limit > 0) { // Matches the web, and we don't know what a `limit` of `0` implies.
             val remaining = reward.remaining()
             if (remaining != null && remaining > 0) {
                 val remainingCountLeftOfLimitCountString = context.getString(R.string.remaining_count_left_of_limit_count)
@@ -379,7 +379,7 @@ object RewardViewUtils {
                     "limit_count",
                     NumberUtils.format(limit),
                 )
-            } else { // matches existing behavior for the ui. hide the badge if the remaining quantity is <= 0. implementation detail, but would be unclear without this comment.
+            } else { // To match pre-existing UI behavior: hide the badge if the remaining quantity is <= 0.
                 return EMPTY_STRING
             }
         } else {

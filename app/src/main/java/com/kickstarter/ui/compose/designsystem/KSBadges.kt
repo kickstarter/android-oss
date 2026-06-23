@@ -90,6 +90,10 @@ fun KSBadgesPreview() {
             Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
 
             KSVideoBadge(text = "Just launched")
+
+            Spacer(modifier = Modifier.height(dimensions.listItemSpacingSmall))
+
+            KSSubtleWarningBadge(text = "19 left of 1,000")
         }
     }
 }
@@ -261,6 +265,37 @@ fun KSWarningBadge(
                 style = typographyV2.footNoteMedium
             )
         }
+    }
+}
+
+@Composable
+fun KSSubtleWarningBadge(
+    modifier: Modifier = Modifier,
+    text: String,
+    leadingIcon: (@Composable (iconTint: Color) -> Unit)? = null,
+    iconTint: Color = colors.textAccentYellowBold,
+    textColor: Color = colors.textAccentYellowBold,
+    textStyle: TextStyle = typographyV2.footNoteMedium
+) {
+    Row(
+        modifier
+            .background(
+                color = colors.backgroundWarningSubtle,
+                shape = shapes.small
+            )
+            .padding(
+                start = dimensions.paddingMediumSmall,
+                top = dimensions.paddingSmall,
+                bottom = dimensions.paddingSmall,
+                end = dimensions.paddingMediumSmall
+            )
+    ) {
+        leadingIcon?.invoke(iconTint)
+        Text(
+            text = text,
+            color = textColor,
+            style = textStyle
+        )
     }
 }
 

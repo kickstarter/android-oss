@@ -486,4 +486,83 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
 
         assertEquals("", estimatedShippingString)
     }
+
+    @Test
+    fun `getQuantityRemainingString - returns empty string for unknown limit`() {
+        val context = context()
+        val ksString = ksString()
+
+        listOf(-1, 0, null).forEach { limit ->
+            val reward = RewardFactory.reward().toBuilder()
+                .limit(limit)
+                .remaining(10)
+                .build()
+            val quantityRemainingString = RewardViewUtils.getQuantityRemainingString(context, ksString, reward)
+            assertEquals("", quantityRemainingString)
+        }
+    }
+
+    @Test
+    fun `getQuantityRemainingString - returns empty string for unknown remaining quantity`() {
+        val context = context()
+        val ksString = ksString()
+
+        listOf(-1, null).forEach { remaining ->
+            val reward = RewardFactory.reward().toBuilder()
+                .limit(10)
+                .remaining(remaining)
+                .build()
+            val quantityRemainingString = RewardViewUtils.getQuantityRemainingString(context, ksString, reward)
+            assertEquals("", quantityRemainingString)
+        }
+    }
+
+    @Test
+    fun `getQuantityRemainingString - returns empty string for when remaining quantity is 0`() {
+        // Separate test case for this scenario because it is an intentional design choice.
+        val context = context()
+        val ksString = ksString()
+
+        val reward = RewardFactory.reward().toBuilder()
+            .limit(10)
+            .remaining(0)
+            .build()
+        val quantityRemainingString = RewardViewUtils.getQuantityRemainingString(context, ksString, reward)
+        assertEquals("", quantityRemainingString)
+    }
+
+    @Test
+    fun `getQuantityRemainingString - returns formatted string when limit and remaining quantity are positive`() {
+        val context = context()
+        val ksString = ksString()
+
+        var reward = RewardFactory.reward().toBuilder()
+            .limit(10)
+            .remaining(5)
+            .build()
+        assertEquals("5 left of 10", RewardViewUtils.getQuantityRemainingString(context, ksString, reward))
+
+        // Test with larger numbers to ensure formatting is correct.
+        reward = RewardFactory.reward().toBuilder()
+            .limit(10_000)
+            .remaining(5_000)
+            .build()
+        assertEquals("5,000 left of 10,000", RewardViewUtils.getQuantityRemainingString(context, ksString, reward))
+    }
+
+    @Test
+    fun `getQuantityRemainingString - returns formatted string when remaining quantity is larger than limit`() {
+        /* Separate test case for this scenario so that it's consideration is intentional.
+         * Should not happen in practice, but we validate the same expected behavior regardless. */
+
+        val context = context()
+        val ksString = ksString()
+
+        val reward = RewardFactory.reward().toBuilder()
+            .limit(20)
+            .remaining(100)
+            .build()
+
+        assertEquals("100 left of 20", RewardViewUtils.getQuantityRemainingString(context, ksString, reward))
+    }
 }

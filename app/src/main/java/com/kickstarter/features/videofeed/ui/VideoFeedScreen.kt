@@ -202,7 +202,11 @@ fun VideoFeedScreen(
                 .testTag(VideoFeedScreenTestTag.VIDEO_FEED_PAGER.name),
             state = pagerState,
             beyondViewportPageCount = 1,
-            key = { index -> if (index < items.size) items[index].project.id() else LOADING_PAGE_KEY }
+            // EXPERIMENT (artificial infinite feed): key by list index, not project id. The feed loops
+            // the same projects, so project ids repeat — index keeps every page key unique (the feed
+            // is append-only, so an item's index is stable). Indices are non-negative, so they never
+            // collide with the LOADING_PAGE_KEY sentinel.
+            key = { index -> if (index < items.size) index.toLong() else LOADING_PAGE_KEY }
         ) { page ->
 
             if (page >= items.size) {

@@ -74,6 +74,31 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `loopFeed keeps hasMore true and re-fetches the first page when the backend is exhausted`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val cursors = mutableListOf<String?>()
+        val item = VideoFeedItem(badges = emptyList(), project = ProjectFactory.project(), hlsUrl = null)
+        // Backend reports no more pages every time → with loopFeed on, the VM must loop the cursor.
+        val pageInfo = PageInfoEnvelope.builder().hasNextPage(false).endCursor("end").build()
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override suspend fun getVideoFeed(first: Int, cursor: String?, categoryId: String?): Result<VideoFeedEnvelope> {
+                    cursors.add(cursor)
+                    return Result.success(VideoFeedEnvelope(items = listOf(item), pageInfo = pageInfo))
+                }
+            })
+            .build()
+
+        val viewModel = VideoFeedViewModel.Factory(environment, "", dispatcher, loopFeed = true)
+            .create(VideoFeedViewModel::class.java) // init() loads the first page
+        viewModel.loadVideoFeed() // backend was exhausted → cursor must loop back to null
+        advanceUntilIdle()
+
+        assertTrue(viewModel.videoFeedUIState.value.hasMore) // never reports the end
+        assertEquals(listOf(null, null), cursors) // looped back to the first page (null cursor)
+    }
+
+    @Test
     fun `loadVideoFeed on success emits items`() = runTest {
         val project = ProjectFactory.project()
         val item = VideoFeedItem(badges = emptyList(), project = project, hlsUrl = null)

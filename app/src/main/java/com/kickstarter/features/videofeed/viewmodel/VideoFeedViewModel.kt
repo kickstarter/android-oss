@@ -34,7 +34,10 @@ data class VideoFeedUIState(
 class VideoFeedViewModel(
     private val environment: Environment,
     private val entrySurface: String,
-    private val testDispatcher: CoroutineDispatcher? = null
+    private val testDispatcher: CoroutineDispatcher? = null,
+    // EXPERIMENT: when true, the feed loops back to the first page instead of ending, so it feels
+    // infinite. Off by default (ViewModel tests get normal pagination); the Activity turns it on.
+    private val loopFeed: Boolean = false
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
@@ -90,8 +93,16 @@ class VideoFeedViewModel(
                 }
 
                 val envelope = result.getOrNull()
+                val backendHasMore = envelope?.pageInfo?.hasNextPage ?: false
                 nextPage = envelope?.pageInfo?.endCursor
-                hasMore = envelope?.pageInfo?.hasNextPage ?: false
+                hasMore = backendHasMore
+                // EXPERIMENT — artificial infinite feed: when enabled and the backend runs out of
+                // pages, loop the cursor back to the first page (null) so the next load re-fetches it
+                // and the user keeps scrolling the same content; the feed never reports the end.
+                if (loopFeed && !backendHasMore) {
+                    nextPage = null
+                    hasMore = true
+                }
                 val newItems = envelope?.items ?: emptyList()
 
                 _videoFeedUIState.emit(
@@ -202,10 +213,11 @@ class VideoFeedViewModel(
     class Factory(
         private val environment: Environment,
         private val entrySurface: String,
-        private val testDispatcher: CoroutineDispatcher? = null
+        private val testDispatcher: CoroutineDispatcher? = null,
+        private val loopFeed: Boolean = false
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return VideoFeedViewModel(environment, entrySurface, testDispatcher) as T
+            return VideoFeedViewModel(environment, entrySurface, testDispatcher, loopFeed) as T
         }
     }
 }

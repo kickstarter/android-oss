@@ -50,7 +50,9 @@ class VideoFeedActivity : ComponentActivity() {
         this.getEnvironment()?.let {
             env = it
             val entrySurface = intent.getStringExtra(IntentKey.PREVIOUS_SCREEN) ?: ""
-            videoFeedFactory = VideoFeedViewModel.Factory(env, entrySurface)
+            // EXPERIMENT: loopFeed = true makes the feed artificially infinite (loops back to the
+            // first page when the backend runs out). Flip to false to restore normal pagination.
+            videoFeedFactory = VideoFeedViewModel.Factory(env, entrySurface, loopFeed = true)
         }
 
         setContent {

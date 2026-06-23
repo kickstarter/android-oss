@@ -42,31 +42,56 @@ class VideoPlayerPoolTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `acquiring beyond capacity recycles the least-recently-used player without releasing it`() {
+    fun `at capacity acquire recycles the least-recently-used PARKED player without releasing it`() {
         val pool = pool(maxPlayers = 3)
 
-        val lru = pool.acquire(0, URL_A) // becomes least-recently-used after the next two
+        val lru = pool.acquire(0, URL_A)
         pool.acquire(1, URL_B)
         pool.acquire(2, URL_C)
+        pool.park(0) // page 0 scrolled off-screen → eligible for recycling
 
-        val recycled = pool.acquire(3, URL_D) // pool is full → must evict key 0
+        val recycled = pool.acquire(3, URL_D) // pool full → reuse the parked LRU
 
-        assertEquals(3, created.size) // no new player created — the LRU was reused
-        assertSame(lru, recycled) // ...and it is the same instance
-        verify(lru).stop() // stopped before being rebound to the new media
+        assertEquals(3, created.size) // no new player created — the parked LRU was reused
+        assertSame(lru, recycled)
         // The whole point of the pool: release() must NEVER run on the scroll path.
         created.forEach { verify(it, never()).release() }
     }
 
     @Test
-    fun `re-acquiring a key after it was evicted does not resurrect the old binding`() {
+    fun `at capacity acquire NEVER recycles an on-screen (non-parked) player`() {
+        // Regression guard for the core bug: with nothing parked, every pooled player is on screen.
+        // Recycling one would stop a visible video and rebind its player to another page (observed as
+        // the active page freezing while a neighbour's audio kept playing). A fresh instance is created
+        // instead — never steal a visible player.
+        val pool = pool(maxPlayers = 3)
+
+        val p0 = pool.acquire(0, URL_A)
+        val p1 = pool.acquire(1, URL_B)
+        val p2 = pool.acquire(2, URL_C)
+
+        val p3 = pool.acquire(3, URL_D) // full, but none parked
+
+        verify(p0, never()).stop()
+        verify(p1, never()).stop()
+        verify(p2, never()).stop()
+        assertNotSame(p0, p3)
+        assertNotSame(p1, p3)
+        assertNotSame(p2, p3)
+        assertEquals(4, created.size) // a new instance was created rather than steal an on-screen one
+    }
+
+    @Test
+    fun `re-acquiring a key after it was recycled does not resurrect the old binding`() {
         val pool = pool(maxPlayers = 3)
 
         pool.acquire(0, URL_A)
         pool.acquire(1, URL_B)
         pool.acquire(2, URL_C)
-        pool.acquire(3, URL_D) // evicts key 0
-        pool.acquire(0, URL_A) // key 0 is gone → evicts the new LRU, still no new instance
+        pool.park(0)
+        pool.acquire(3, URL_D) // recycles parked key 0
+        pool.park(1) // free another off-screen slot
+        pool.acquire(0, URL_A) // key 0 is gone → recycles parked key 1, still no new instance
 
         assertEquals(3, created.size)
         created.forEach { verify(it, never()).release() }
@@ -88,10 +113,13 @@ class VideoPlayerPoolTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `a long fast scroll never grows past capacity nor releases a player mid-scroll`() {
+    fun `a realistic long scroll never grows past capacity nor releases a player mid-scroll`() {
         val pool = pool(maxPlayers = 3)
 
+        // Mimic the pager: ~3 pages composed at once, and the page that leaves the window is parked as
+        // each new one enters, so there is always an off-screen player to recycle.
         for (page in 0 until 30) {
+            if (page >= 3) pool.park(page - 3)
             pool.acquire(page, "https://videos.test/$page.m3u8")
         }
 
@@ -134,12 +162,14 @@ class VideoPlayerPoolTest : KSRobolectricTestCase() {
         val p0 = pool.acquire(0, URL_A) // new player
         pool.acquire(1, URL_B)
         pool.acquire(2, URL_C)
-        pool.acquire(3, URL_D) // recycles p0
+        pool.park(0)
+        pool.acquire(3, URL_D) // recycles parked p0
         pool.park(1)
-        pool.acquire(1, URL_B) // re-acquire parked
+        pool.acquire(1, URL_B) // re-acquire parked key 1
 
         created.forEach { verify(it, never()).prepare() }
-        verify(p0).stop() // recycle still stops before rebinding (frees the old decoder)
+        // p0 is stopped twice: once by park(0), once by the recycle that rebinds it — never released.
+        verify(p0, times(2)).stop()
     }
 
     @Test
@@ -158,11 +188,13 @@ class VideoPlayerPoolTest : KSRobolectricTestCase() {
         val evicted = pool.acquire(0, URL_A)
         pool.acquire(1, URL_B)
         pool.acquire(2, URL_C)
-        pool.acquire(3, URL_D) // recycles key 0's player (one stop) and rebinds it to key 3
+        pool.park(0) // off-screen → eligible
+        pool.acquire(3, URL_D) // recycles key 0's player and rebinds it to key 3
 
-        pool.park(0) // key 0 no longer maps to that player → must not stop the now-key-3 player
+        pool.park(0) // key 0 no longer maps to anything → must not stop the now-key-3 player
 
-        verify(evicted, times(1)).stop() // only the recycle's stop, none added by park
+        // stop count: park(0) [1] + recycle [2]; the final park(0) is a MISS and adds nothing.
+        verify(evicted, times(2)).stop()
     }
 
     companion object {

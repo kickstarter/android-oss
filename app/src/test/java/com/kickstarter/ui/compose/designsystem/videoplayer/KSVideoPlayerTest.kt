@@ -290,6 +290,60 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `test tapping progress bar does not show controls`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap the progress bar (a pure tap, no drag)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                click(position = Offset(x = width * 0.25f, y = height / 2f))
+            }
+        composeTestRule.waitForIdle()
+
+        // - The tap should seek but must not fall through to the surface click and show controls
+        verify(mockPlayer).seekTo(25000L)
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `test dragging progress bar does not show controls`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        `when`(mockPlayer.duration).thenReturn(100000L)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name, useUnmergedTree = true)
+            .performTouchInput {
+                down(Offset(x = width * 0.2f, y = height / 2f))
+                moveBy(Offset(x = width * 0.5f, y = 0f))
+                up()
+            }
+        composeTestRule.waitForIdle()
+
+        // - The drag must not fall through to the surface click and show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
     fun `test scrubbing while controls visible does not resume playback on release`() {
         val mockPlayer = mock(ExoPlayer::class.java)
         `when`(mockPlayer.duration).thenReturn(100000L)
@@ -580,6 +634,84 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         // Since isActive is false, it should have been set to false initially and stay false.
         verify(mockPlayer, atLeastOnce()).playWhenReady = false
         verify(mockPlayer, never()).play()
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun `test controls are hidden when paused video becomes active again after swiping away and back`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+
+        var isActive by mutableStateOf(true)
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = isActive,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap surface to pause and show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+
+        // - Swipe away to the next video (page deactivates)
+        isActive = false
+        composeTestRule.waitForIdle()
+
+        // - Swipe back (page reactivates and the video auto-resumes)
+        isActive = true
+        composeTestRule.waitForIdle()
+
+        // - Controls overlay should be hidden to reflect the playing state
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun `test controls are hidden when paused video resumes after app returns to foreground`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        val lifecycleOwner = object : LifecycleOwner {
+            private val registry = LifecycleRegistry(this)
+            override val lifecycle: Lifecycle = registry
+            fun handleEvent(event: Lifecycle.Event) = registry.handleLifecycleEvent(event)
+        }
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
+                    KSVideoPlayer(
+                        videoUrl = "https://example.com/video.mp4",
+                        isActive = true,
+                        player = mockPlayer
+                    )
+                }
+            }
+        }
+
+        // - Tap surface to pause and show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+
+        // - Navigate away (app backgrounds)
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_PAUSE)
+        composeTestRule.waitForIdle()
+
+        // - Return to the video feed (app foregrounds and the video auto-resumes)
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+        composeTestRule.waitForIdle()
+
+        // - Controls overlay should be hidden to reflect the playing state
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
     }
 
     @Test

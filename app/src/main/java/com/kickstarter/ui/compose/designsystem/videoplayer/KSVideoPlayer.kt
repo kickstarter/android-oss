@@ -221,6 +221,7 @@ fun KSVideoPlayer(
         val shouldPlay = isActive && isAppInForeground
         exoPlayer.playWhenReady = shouldPlay
         if (shouldPlay) {
+            showControls = false
             while (true) {
                 if (!isScrubbing) {
                     val duration = exoPlayer.duration

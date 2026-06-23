@@ -582,6 +582,84 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         verify(mockPlayer, never()).play()
     }
 
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun `test controls are hidden when paused video becomes active again after swiping away and back`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+
+        var isActive by mutableStateOf(true)
+
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = isActive,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - Tap surface to pause and show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+
+        // - Swipe away to the next video (page deactivates)
+        isActive = false
+        composeTestRule.waitForIdle()
+
+        // - Swipe back (page reactivates and the video auto-resumes)
+        isActive = true
+        composeTestRule.waitForIdle()
+
+        // - Controls overlay should be hidden to reflect the playing state
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun `test controls are hidden when paused video resumes after app returns to foreground`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        val lifecycleOwner = object : LifecycleOwner {
+            private val registry = LifecycleRegistry(this)
+            override val lifecycle: Lifecycle = registry
+            fun handleEvent(event: Lifecycle.Event) = registry.handleLifecycleEvent(event)
+        }
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
+                    KSVideoPlayer(
+                        videoUrl = "https://example.com/video.mp4",
+                        isActive = true,
+                        player = mockPlayer
+                    )
+                }
+            }
+        }
+
+        // - Tap surface to pause and show controls
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+
+        // - Navigate away (app backgrounds)
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_PAUSE)
+        composeTestRule.waitForIdle()
+
+        // - Return to the video feed (app foregrounds and the video auto-resumes)
+        lifecycleOwner.handleEvent(Lifecycle.Event.ON_RESUME)
+        composeTestRule.waitForIdle()
+
+        // - Controls overlay should be hidden to reflect the playing state
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_CONTROLS.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+    }
+
     @Test
     fun `poster is displayed while the first frame has not rendered`() {
         val mockPlayer = mock(ExoPlayer::class.java)

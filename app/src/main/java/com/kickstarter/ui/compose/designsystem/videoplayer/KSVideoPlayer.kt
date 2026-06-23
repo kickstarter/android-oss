@@ -195,6 +195,11 @@ fun KSVideoPlayer(
         val shouldPlay = isActive && isAppInForeground
         exoPlayer.playWhenReady = shouldPlay
         if (shouldPlay) {
+            // The player auto-resumes when the page becomes active or the app returns to the
+            // foreground, overriding any earlier manual pause. Reset the controls overlay so the
+            // play button doesn't linger on screen while the video is actually playing
+            // (e.g. pause → swipe away → swipe back, or pause → leave the screen → return).
+            showControls = false
             while (true) {
                 if (!isScrubbing) {
                     val duration = exoPlayer.duration

@@ -216,16 +216,16 @@ fun VideoFeedScreen(
             // Reuse a pooled player for this page instead of letting KSVideoPlayer create/release its
             // own. Neighbouring pages (composed ahead by the pager) pre-buffer into their own pooled
             // players, so swiping resumes near-instantly.
-            val pooledPlayer = remember(page, videoUrl) {
-                if (videoUrl.isNotEmpty()) playerPool.acquire(page, videoUrl) else null
+            val pooledPlayer = remember(project.id(), videoUrl) {
+                if (videoUrl.isNotEmpty()) playerPool.acquire(project.id(), videoUrl) else null
             }
             // When this page scrolls out of the composed window (current ± 1) the pager disposes it;
             // park its player so its hardware decoder is freed and the device's concurrent-decoder
             // budget isn't exceeded (which otherwise makes the OS reclaim the playing video's decoder
             // and freeze it). It is re-prepared if the user scrolls back to this page.
             if (videoUrl.isNotEmpty()) {
-                DisposableEffect(page, videoUrl) {
-                    onDispose { playerPool.park(page) }
+                DisposableEffect(project.id()) {
+                    onDispose { playerPool.park(project.id()) }
                 }
             }
             val profileImage = project.creator()?.avatar()?.medium() ?: ""

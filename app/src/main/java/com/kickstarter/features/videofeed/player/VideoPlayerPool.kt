@@ -46,6 +46,10 @@ class VideoPlayerPool(
     private val maxPlayers: Int = DEFAULT_MAX_PLAYERS,
     private val playerFactory: () -> ExoPlayer,
 ) {
+    init {
+        require(maxPlayers > 0) { "maxPlayers must be > 0, was $maxPlayers" }
+    }
+
     private class PooledPlayer(
         val player: ExoPlayer,
         var key: Any,

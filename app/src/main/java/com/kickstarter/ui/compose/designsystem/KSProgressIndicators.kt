@@ -398,6 +398,7 @@ fun KSVideoScrubBar(
                 awaitEachGesture {
                     // - detect touch down for scale animation
                     val down = awaitFirstDown()
+                    down.consume()
                     isDragging = true
                     onScrubStart()
                     dragProgress = (down.position.x / size.width).coerceIn(0f, 1f)

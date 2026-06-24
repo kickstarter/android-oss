@@ -23,6 +23,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -36,6 +37,7 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import java.io.IOException
 
 class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
@@ -835,8 +837,10 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         }
         composeTestRule.waitForIdle()
 
-        val error = mock(PlaybackException::class.java)
-        `when`(error.errorCode).thenReturn(PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED)
+        val error = ExoPlaybackException.createForSource(
+            IOException("decoder reclaimed"),
+            PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED
+        )
         val listenerCaptor = ArgumentCaptor.forClass(Player.Listener::class.java)
         verify(mockPlayer, atLeastOnce()).addListener(listenerCaptor.capture())
         composeTestRule.runOnUiThread {
@@ -863,8 +867,10 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         }
         composeTestRule.waitForIdle()
 
-        val error = mock(PlaybackException::class.java)
-        `when`(error.errorCode).thenReturn(PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED)
+        val error = ExoPlaybackException.createForSource(
+            IOException("decoder reclaimed"),
+            PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED
+        )
         val listenerCaptor = ArgumentCaptor.forClass(Player.Listener::class.java)
         verify(mockPlayer, atLeastOnce()).addListener(listenerCaptor.capture())
         composeTestRule.runOnUiThread {

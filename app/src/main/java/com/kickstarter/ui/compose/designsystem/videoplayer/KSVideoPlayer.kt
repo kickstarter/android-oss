@@ -377,13 +377,9 @@ fun KSVideoPlayer(
     }
 
     // Playback-error telemetry + bounded self-recovery for the on-screen video. We always report the error (telemetry) and, additionally, re-prepare to recover —
-    // but ONLY with the guardrails the freeze-loop on the pooled version taught us:
-    //  - only the on-screen video recovers ([isActive]); an off-screen player must not re-grab a
-    //    decoder it doesn't need and feed the very pressure that caused the reclaim;
-    //  - only recoverable errors are retried (reclaim / transient network), never broken media;
+    //  - only the on-screen video recovers ([isActive]);
+    //  - only recoverable errors are retried, never broken media
     //  - retries are bounded, and the budget refills only once the video genuinely plays again
-    //    (onIsPlayingChanged), never on a momentary STATE_READY between reclaims — so a device that is
-    //    truly over budget tries a few times then gives up (still reported) instead of looping forever.
     DisposableEffect(exoPlayer) {
         var recoveryAttempts = 0
         val errorListener = object : Player.Listener {

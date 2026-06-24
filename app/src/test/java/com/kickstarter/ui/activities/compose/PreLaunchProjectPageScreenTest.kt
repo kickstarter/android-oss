@@ -2,13 +2,17 @@ package com.kickstarter.ui.activities.compose
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.features.projectstory.ProjectStoryUiState
+import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.COMING_SOON_BADGE
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.CREATOR_LAYOUT
@@ -43,7 +47,8 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 val projectState = remember { mutableStateOf(null) }
                 val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
-                PreLaunchProjectPageScreen(projectState, similarProjectsState)
+                val projectStoryState = remember { mutableStateOf(ProjectStoryUiState()) }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
             }
         }
         projectImage.assertExists()
@@ -57,7 +62,7 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
         projectSaveButton.assertExists()
         projectSaveButton.assertTextEquals(context().getString(R.string.Notify_me_on_launch))
         projectFollowers.assertDoesNotExist()
-        similarProjectsContainer.assertExists()
+        similarProjectsContainer.assertDoesNotExist()
     }
 
     @Test
@@ -72,10 +77,12 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 val projectState = remember { mutableStateOf(project) }
                 val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                val projectStoryState = remember { mutableStateOf(ProjectStoryUiState()) }
 
                 PreLaunchProjectPageScreen(
                     projectState,
                     similarProjectsState,
+                    projectStoryState,
                     onButtonClicked = {
                         projectState.value = project.toBuilder().isStarred(true).watchesCount(2).build()
                     },
@@ -107,5 +114,43 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
 
         projectSaveButton.assertTextEquals(context().getString(R.string.Saved))
         projectFollowers.assertTextEquals("2 followers")
+    }
+
+    @Test
+    fun `test spc is displayed when project story state is either successful or failed but not loading`() {
+        val projectStoryState = mutableStateOf(
+            ProjectStoryUiState(
+                isLoading = false, error = null, storiedProject = null
+            )
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                val projectState = remember { mutableStateOf(null) }
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                val projectStoryState = remember { projectStoryState }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
+            }
+        }
+
+        similarProjectsContainer.assertDoesNotExist()
+
+        projectStoryState.value = ProjectStoryUiState(
+            isLoading = true, error = null, storiedProject = null
+        )
+
+        similarProjectsContainer.assertDoesNotExist()
+
+        projectStoryState.value = ProjectStoryUiState(
+            isLoading = false, error = Throwable(), storiedProject = null
+        )
+
+        similarProjectsContainer.assertIsDisplayed()
+
+        projectStoryState.value = ProjectStoryUiState(
+            isLoading = false, error = null, storiedProject = StoriedProject(Project.builder().build(), null)
+        )
+
+        similarProjectsContainer.assertIsDisplayed()
     }
 }

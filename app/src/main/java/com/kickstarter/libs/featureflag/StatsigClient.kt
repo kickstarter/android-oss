@@ -33,7 +33,8 @@ import timber.log.Timber
 
 enum class StatsigGateKey(val key: String) {
     ANDROID_VIDEO_FEED("android_video_feed"),
-    ANDROID_PRELAUNCH_SOCIAL_SHARE("android_social_share")
+    ANDROID_PRELAUNCH_SOCIAL_SHARE("android_social_share"),
+    ANDROID_PRELAUNCH_PROJECT_STORY("android_pre-launch_project_story"),
 }
 
 object StatsigExperiments {

@@ -97,21 +97,23 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 val context = LocalContext.current
                 val projectState = viewModel.project().subscribeAsState(initial = null)
                 val similarProjectsState = similarProjectsViewModel.similarProjectsUiState.collectAsState()
+                val projectStoryState = projectStoryViewModel.projectStoryUiState.collectAsState()
                 var shareData: SocialShareData? by remember { mutableStateOf(null) }
 
                 LaunchedEffect(projectState.value) {
                     projectState.value?.let { project ->
                         similarProjectsViewModel.provideProject(project)
-//                        project.slug()?.let {
-//                            projectStoryViewModel.provideProjectSlug(it)
-//                            projectStoryViewModel.fetchProject()
-//                        }
+                        project.slug()?.let {
+                            projectStoryViewModel.provideProjectSlug(it)
+                            projectStoryViewModel.fetchProject()
+                        }
                     }
                 }
 
                 PreLaunchProjectPageScreen(
                     projectState = projectState,
                     similarProjectsState = similarProjectsState,
+                    projectStoryState = projectStoryState,
                     leftOnClickAction = { finish() },
                     rightOnClickAction = {
                         projectState.value?.let { this.viewModel.inputs.bookmarkButtonClicked() }

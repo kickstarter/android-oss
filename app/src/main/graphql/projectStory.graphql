@@ -63,6 +63,7 @@ fragment storyRichTextComponentFragment on RichTextComponent {
       iframeUrl
       width
       height
+      providerName
       html
     }
     ... on RichTextPhoto {

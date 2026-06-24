@@ -45,6 +45,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
@@ -70,6 +71,19 @@ enum class KSVideoPlayerTestTag {
     VIDEO_PLAYER_REWIND_BUTTON,
     VIDEO_PLAYER_PROGRESS_BAR,
     VIDEO_PLAYER_POSTER
+}
+
+/** How many times the on-screen player will re-prepare after a *recoverable* error before giving up.
+* Bounded so a device that is genuinely over its decoder budget. */
+private const val MAX_PLAYBACK_RECOVERY_ATTEMPTS = 3
+
+/** A reclaimed decoder or a transient network failure can succeed on a re-prepare;
+* format/source/DRM errors cannot, so we never retry (or loop on) those.*/
+private fun PlaybackException.isRecoverable(): Boolean = when (errorCode) {
+    PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED,
+    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED,
+    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> true
+    else -> false
 }
 
 /**
@@ -145,7 +159,8 @@ fun KSVideoPlayer(
     overlayContent: @Composable BoxScope.(HazeState) -> Unit = {},
     onPlayPauseToggle: (isPlaying: Boolean) -> Unit = {},
     onProgressBarInteraction: (currentProgress: Float) -> Unit = {},
-    onBecameInactive: (watchTimeMs: Long, videoDurationMs: Long) -> Unit = { _, _ -> }
+    onBecameInactive: (watchTimeMs: Long, videoDurationMs: Long) -> Unit = { _, _ -> },
+    onPlaybackError: (error: PlaybackException, isActive: Boolean) -> Unit = { _, _ -> }
 ) {
     if (videoUrl.isEmpty()) return // TODO: Check video format of the url on the VM
     val context = LocalContext.current
@@ -175,6 +190,8 @@ fun KSVideoPlayer(
     val onPlayPauseToggleState = rememberUpdatedState(onPlayPauseToggle)
     val onProgressBarInteractionState = rememberUpdatedState(onProgressBarInteraction)
     val onBecameInactiveState = rememberUpdatedState(onBecameInactive)
+    val onPlaybackErrorState = rememberUpdatedState(onPlaybackError)
+    val isActiveState = rememberUpdatedState(isActive)
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -357,6 +374,33 @@ fun KSVideoPlayer(
     // External (pool) players are never released here — the pool owns their lifecycle.
     DisposableEffect(exoPlayer) {
         onDispose { if (player == null) exoPlayer.release() }
+    }
+
+    // Playback-error telemetry + bounded self-recovery for the on-screen video. We always report the error (telemetry) and, additionally, re-prepare to recover —
+    // but ONLY with the guardrails the freeze-loop on the pooled version taught us:
+    //  - only the on-screen video recovers ([isActive]); an off-screen player must not re-grab a
+    //    decoder it doesn't need and feed the very pressure that caused the reclaim;
+    //  - only recoverable errors are retried (reclaim / transient network), never broken media;
+    //  - retries are bounded, and the budget refills only once the video genuinely plays again
+    //    (onIsPlayingChanged), never on a momentary STATE_READY between reclaims — so a device that is
+    //    truly over budget tries a few times then gives up (still reported) instead of looping forever.
+    DisposableEffect(exoPlayer) {
+        var recoveryAttempts = 0
+        val errorListener = object : Player.Listener {
+            override fun onPlayerError(error: PlaybackException) {
+                onPlaybackErrorState.value(error, isActiveState.value)
+                if (isActiveState.value && error.isRecoverable() && recoveryAttempts < MAX_PLAYBACK_RECOVERY_ATTEMPTS) {
+                    recoveryAttempts++
+                    exoPlayer.prepare()
+                }
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying) recoveryAttempts = 0
+            }
+        }
+        exoPlayer.addListener(errorListener)
+        onDispose { exoPlayer.removeListener(errorListener) }
     }
 
     DisposableEffect(isActive) {

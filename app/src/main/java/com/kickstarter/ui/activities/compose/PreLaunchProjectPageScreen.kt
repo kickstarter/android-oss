@@ -307,8 +307,13 @@ fun PreLaunchProjectPageScreen(
                             is RichTextItem.Oembed -> {
                                 Timber.d("RichTextItem.Oembed item: $item")
                                 if (item.iframeUrl.isNotEmpty()) {
+                                    val aspectRatio = if (item.width > 0 && item.height > 0) {
+                                        item.width.toFloat() / item.height.toFloat()
+                                    } else {
+                                        16f / 9f
+                                    }
                                     Box(
-                                        modifier = Modifier.fillMaxWidth().aspectRatio(item.width / item.height.toFloat())
+                                        modifier = Modifier.fillMaxWidth().aspectRatio(aspectRatio)
                                     ) {
                                         WebViewComponent(item.iframeUrl)
                                     }

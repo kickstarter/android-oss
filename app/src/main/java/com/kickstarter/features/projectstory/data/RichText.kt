@@ -77,3 +77,6 @@ sealed interface RichTextItem {
         val _present: Boolean,
     ) : RichTextItem
 }
+
+val RichTextItem.Oembed.aspectRatio: Float?
+    get() = if (height > 0) width.toFloat() / height.toFloat() else null

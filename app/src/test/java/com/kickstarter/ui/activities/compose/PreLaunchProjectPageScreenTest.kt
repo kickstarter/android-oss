@@ -2,19 +2,29 @@ package com.kickstarter.ui.activities.compose
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToIndex
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.features.projectstory.ProjectStoryUiState
+import com.kickstarter.features.projectstory.data.RichTextComponent
+import com.kickstarter.features.projectstory.data.RichTextItem
 import com.kickstarter.features.projectstory.data.StoriedProject
+import com.kickstarter.features.projectstory.ui.ProjectStoryCaptionedImageTestTag
+import com.kickstarter.features.projectstory.ui.ProjectStoryComponentTestTag
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Urls
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.COMING_SOON_BADGE
+import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.CONTENT_LIST
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.CREATOR_LAYOUT
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_CATEGORY_NAME
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.PROJECT_DESCRIPTION
@@ -26,6 +36,8 @@ import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.P
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.SIMILAR_PROJECTS_CONTAINER
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.viewmodels.projectpage.SimilarProjectsUiState
+import io.mockk.every
+import io.mockk.mockk
 import org.joda.time.DateTime
 import org.junit.Test
 
@@ -40,6 +52,8 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
     private val projectSaveButton = composeTestRule.onNodeWithTag(PROJECT_SAVE_BUTTON.name)
     private val projectFollowers = composeTestRule.onNodeWithTag(PROJECT_FOLLOWERS.name)
     private val similarProjectsContainer = composeTestRule.onNodeWithTag(SIMILAR_PROJECTS_CONTAINER.name)
+
+    private val contentList = composeTestRule.onNodeWithTag(CONTENT_LIST.name)
 
     @Test
     fun verifyInitState() {
@@ -118,7 +132,7 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
 
     @Test
     fun `test spc is displayed when project story state is either successful or failed but not loading`() {
-        val projectStoryState = mutableStateOf(
+        val projectStoryUiState = mutableStateOf(
             ProjectStoryUiState(
                 isLoading = false, error = null, storiedProject = null
             )
@@ -128,29 +142,217 @@ class PreLaunchProjectPageScreenTest : KSRobolectricTestCase() {
             KSTheme {
                 val projectState = remember { mutableStateOf(null) }
                 val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
-                val projectStoryState = remember { projectStoryState }
+                val projectStoryState = remember { projectStoryUiState }
                 PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
             }
         }
 
         similarProjectsContainer.assertDoesNotExist()
 
-        projectStoryState.value = ProjectStoryUiState(
+        projectStoryUiState.value = ProjectStoryUiState(
             isLoading = true, error = null, storiedProject = null
         )
 
         similarProjectsContainer.assertDoesNotExist()
 
-        projectStoryState.value = ProjectStoryUiState(
+        projectStoryUiState.value = ProjectStoryUiState(
             isLoading = false, error = Throwable(), storiedProject = null
         )
 
         similarProjectsContainer.assertIsDisplayed()
 
-        projectStoryState.value = ProjectStoryUiState(
+        projectStoryUiState.value = ProjectStoryUiState(
             isLoading = false, error = null, storiedProject = StoriedProject(Project.builder().build(), null)
         )
 
         similarProjectsContainer.assertIsDisplayed()
+    }
+
+    @Test
+    fun `test no rich text components are displayed when items list is empty`() {
+        val richTextComponent = RichTextComponent(
+            items = listOf()
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                val projectState = remember { mutableStateOf(null) }
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                val projectStoryState = remember {
+                    mutableStateOf(
+                        ProjectStoryUiState(
+                            isLoading = false,
+                            error = null,
+                            storiedProject = StoriedProject(Project.builder().build(), richTextComponent)
+                        )
+                    )
+                }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
+            }
+        }
+
+        composeTestRule.onAllNodesWithTag(PreLaunchProjectPageScreenTestTag.RICH_TEXT_COMPONENT.name).assertCountEquals(0)
+    }
+
+    @Test
+    fun `test webview component only renders when url is not empty`() {
+        val projectStoryUiState = mutableStateOf(
+            ProjectStoryUiState(
+                isLoading = false, error = null,
+                StoriedProject(
+                    Project.builder().build(),
+                    RichTextComponent(
+                        items = listOf(
+                            mockk<RichTextItem.Oembed>(relaxed = true).apply {
+                                every { iframeUrl } returns "https://www.youtube.com/embed/ExB50D08nE8?feature=oembed"
+                            }
+                        )
+                    )
+                )
+            )
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                val projectState = remember { mutableStateOf(null) }
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                val projectStoryState = remember { projectStoryUiState }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
+            }
+        }
+
+        composeTestRule.onAllNodesWithTag(PreLaunchProjectPageScreenTestTag.RICH_TEXT_COMPONENT.name).assertCountEquals(1)
+        composeTestRule.onNodeWithTag(ProjectStoryComponentTestTag.WEBVIEW.name).assertExists()
+
+        projectStoryUiState.value = ProjectStoryUiState(
+            isLoading = false, error = null,
+            StoriedProject(
+                Project.builder().build(),
+                RichTextComponent(
+                    items = listOf(
+                        mockk<RichTextItem.Oembed>(relaxed = true).apply {
+                            every { iframeUrl } returns ""
+                        }
+                    )
+                )
+            )
+        )
+
+        composeTestRule.onAllNodesWithTag(PreLaunchProjectPageScreenTestTag.RICH_TEXT_COMPONENT.name).assertCountEquals(1)
+        composeTestRule.onNodeWithTag(ProjectStoryComponentTestTag.WEBVIEW.name).assertDoesNotExist()
+    }
+
+    @Test
+    fun `test rich text paragraph with photo child renders photo component`() {
+        val projectStoryUiState = mutableStateOf(
+            ProjectStoryUiState(
+                isLoading = false, error = null,
+                StoriedProject(
+                    Project.builder().build(),
+                    RichTextComponent(
+                        items = listOf(
+                            mockk<RichTextItem.Text.Paragraph>(relaxed = true).apply {
+                                every { children } returns listOf(
+                                    mockk<RichTextItem.Text.ChildParagraph>(relaxed = true)
+                                )
+                            },
+                            mockk<RichTextItem.Text.Paragraph>(relaxed = true).apply {
+                                every { children } returns listOf(
+                                    mockk<RichTextItem.Photo>(relaxed = true).apply {
+                                        every { url } returns "https://example.com/photo.jpg"
+                                        every { altText } returns "Example Photo"
+                                        every { caption } returns "This is an example photo."
+                                    }
+                                )
+                            }
+                        )
+                    )
+                )
+            )
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                val projectState = remember { mutableStateOf(null) }
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                val projectStoryState = remember { projectStoryUiState }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
+            }
+        }
+
+        composeTestRule.onAllNodesWithTag(PreLaunchProjectPageScreenTestTag.RICH_TEXT_COMPONENT.name).assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag(ProjectStoryComponentTestTag.TEXT.name).assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag(ProjectStoryComponentTestTag.PHOTO.name).assertCountEquals(1)
+    }
+
+    @Test
+    fun `test rich items render expected components and in order`() {
+        val projectStoryUiState = mutableStateOf(
+            ProjectStoryUiState(
+                isLoading = false, error = null,
+                StoriedProject(
+                    Project.builder().build(),
+                    RichTextComponent(
+                        items = listOf(
+                            mockk<RichTextItem.Text.Paragraph>(relaxed = true).apply {
+                                every { text } returns "Paragraph Text"
+                            },
+                            mockk<RichTextItem.Text.Paragraph>(relaxed = true).apply {
+                                every { children } returns listOf(
+                                    mockk<RichTextItem.Text.ChildParagraph>(relaxed = true).apply {
+                                        every { text } returns "Child Paragraph Text"
+                                    }
+                                )
+                            },
+                            mockk<RichTextItem.Text.Header>(relaxed = true).apply {
+                                every { text } returns "Header Text"
+                            },
+                            mockk<RichTextItem.ListOpen>(relaxed = true), // Doesn't render a particular component. Will follow up on a test after the data model is cleaned up.
+                            mockk<RichTextItem.Text.ListItem>(relaxed = true).apply {
+                                every { text } returns "List Item Text"
+                            },
+                            mockk<RichTextItem.ListClose>(relaxed = true), // Doesn't render a particular component. Will follow up on a test after the data model is cleaned up.
+                            mockk<RichTextItem.Photo>(relaxed = true),
+                            mockk<RichTextItem.Oembed>(relaxed = true).apply {
+                                every { iframeUrl } returns "https://www.youtube.com/embed/ExB50D08nE8?feature=oembed"
+                            }
+                        )
+                    )
+                )
+            )
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                val projectState = remember { mutableStateOf(null) }
+                val similarProjectsState = remember { mutableStateOf(SimilarProjectsUiState()) }
+                val projectStoryState = remember { projectStoryUiState }
+                PreLaunchProjectPageScreen(projectState, similarProjectsState, projectStoryState)
+            }
+        }
+
+        val initialIndex = 1 // First two items are the Pre-launch Project Header and a Spacer
+
+        contentList.performScrollToIndex(initialIndex + 1)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.TEXT.name) and hasText("Paragraph Text")).assertExists()
+
+        contentList.performScrollToIndex(initialIndex + 2)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.TEXT.name) and hasText("Child Paragraph Text")).assertExists()
+
+        contentList.performScrollToIndex(initialIndex + 3)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.TEXT.name) and hasText("Header Text")).assertExists()
+
+        contentList.performScrollToIndex(initialIndex + 5)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.TEXT.name) and hasText("List Item Text")).assertExists()
+
+        contentList.performScrollToIndex(initialIndex + 5)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.TEXT.name) and hasText("List Item Text")).assertExists()
+
+        contentList.performScrollToIndex(initialIndex + 7)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.PHOTO.name)).assertExists()
+        composeTestRule.onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.IMAGE.name)).assertExists()
+
+        contentList.performScrollToIndex(initialIndex + 8)
+        composeTestRule.onNode(hasTestTag(ProjectStoryComponentTestTag.WEBVIEW.name)).assertExists()
     }
 }

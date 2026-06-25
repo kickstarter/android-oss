@@ -37,6 +37,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.SizeResolver
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.grey_04
 import org.joda.time.DateTime
 
@@ -191,7 +192,7 @@ fun ProjectStoryCaptionedImage(
                     .fillMaxWidth()
                     .testTag(ProjectStoryCaptionedImageTestTag.CAPTION.name),
                 text = caption,
-                color = if (link.isNullOrBlank()) Color.Unspecified else StoryTheme.InlineStyles.link.color,
+                color = if (link.isNullOrBlank()) colors.kds_support_700 else StoryTheme.InlineStyles.link.color,
                 fontStyle = FontStyle.Italic,
                 textDecoration = if (link.isNullOrBlank()) null else TextDecoration.Underline,
                 textAlign = TextAlign.Center,

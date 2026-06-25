@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LocalPinnableContainer
+import androidx.compose.ui.layout.PinnableContainer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Bullet
 import androidx.compose.ui.text.LinkAnnotation
@@ -30,16 +31,17 @@ import coil.compose.AsyncImagePainter
 import com.kickstarter.features.projectstory.data.RichTextItem
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.getEnvironment
+import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.kds_create_700
 import timber.log.Timber
 
 object StoryTheme {
     object Typography {
         val paragraph = TextStyle.Default.merge(fontSize = 16.sp)
-        val heading1 = TextStyle.Default.merge(fontSize = 28.sp)
-        val heading2 = TextStyle.Default.merge(fontSize = 26.sp)
-        val heading3 = TextStyle.Default.merge(fontSize = 24.sp)
-        val heading4 = TextStyle.Default.merge(fontSize = 22.sp)
+        val heading1 = TextStyle.Default.merge(fontSize = 32.sp)
+        val heading2 = TextStyle.Default.merge(fontSize = 30.sp)
+        val heading3 = TextStyle.Default.merge(fontSize = 28.sp)
+        val heading4 = TextStyle.Default.merge(fontSize = 20.sp)
     }
 
     object InlineStyles {
@@ -120,7 +122,7 @@ fun RichTextItemTextComponent(item: RichTextItem.Text) {
             else -> baseAnnotatedString
         }
 
-    Text(annotatedString, style = textStyle)
+    Text(annotatedString, color = colors.kds_support_700, style = textStyle)
 }
 
 private fun parseRichTextChildrenOfRichText(children: List<RichTextItem.Text.ChildParagraph>): AnnotatedString {
@@ -147,14 +149,6 @@ private fun parseRichTextChildrenOfRichText(children: List<RichTextItem.Text.Chi
                         style = linkBaseStyle
                     )
                 )
-            }
-
-            /* Join all sibling text with a space _except_ if the text starts with certain
-             * kinds of punctuation. This is to handle a peculiarity of how the server-side parser
-             * deals w/ spaces, and is likely to be changed on the server-side in the near future. */
-            val firstCharacter = text.firstOrNull()
-            if (index != 0 && firstCharacter.needsLeadingSpace()) {
-                append(" ")
             }
 
             when {
@@ -204,7 +198,7 @@ fun WebViewComponent(url: String) {
     Timber.d("WebViewComponent($url)")
     lateinit var context: Context
 
-    val pinnedHandle = LocalPinnableContainer.current?.pin()
+    val pinnedHandle: PinnableContainer.PinnedHandle? = LocalPinnableContainer.current?.pin()
     Timber.d("pinnedHandle: $pinnedHandle")
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -224,10 +218,11 @@ fun WebViewComponent(url: String) {
             }
         },
         update = {
-            if (it.url.isNullOrEmpty()) {
+            val wv = it
+            if (wv.url.isNullOrEmpty()) {
                 val baseUrl = context.getEnvironment()?.webEndpoint() ?: Secrets.WebEndpoint.PRODUCTION
                 val additionalHeaders = mapOf("Referer" to baseUrl)
-                it.loadUrl(url, additionalHeaders)
+                wv.loadUrl(url, additionalHeaders)
             }
         },
         onRelease = {

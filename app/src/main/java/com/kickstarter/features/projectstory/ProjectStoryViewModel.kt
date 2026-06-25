@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.extensions.isProjectUri
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -22,13 +23,15 @@ data class ProjectStoryUiState(
     val storiedProject: StoriedProject? = null,
 )
 
+private object StatsigGateException : Exception()
 class ProjectStoryViewModel(
     private val environment: Environment,
     testDispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
 
     private val scope = viewModelScope + (testDispatcher ?: EmptyCoroutineContext)
-    private val apolloClient = environment.apolloClientV2()!!
+    private val apolloClient = requireNotNull(environment.apolloClientV2())
+    private val statsigClient = requireNotNull(environment.statsigClient())
 
     private val _projectStoryUiState = MutableStateFlow(ProjectStoryUiState())
     val projectStoryUiState = _projectStoryUiState.asStateFlow()
@@ -53,6 +56,11 @@ class ProjectStoryViewModel(
     }
 
     fun fetchProject() {
+        if (!statsigClient.isReady.value || !statsigClient.checkGate(StatsigGateKey.ANDROID_PRELAUNCH_PROJECT_STORY.key)) {
+            _projectStoryUiState.value = ProjectStoryUiState(isLoading = false, error = StatsigGateException)
+            return
+        }
+
         if (projectStoryUiState.value.storiedProject?.project?.slug() == projectSlug) {
             Timber.d("Project already fetched for slug: $projectSlug")
             return

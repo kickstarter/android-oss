@@ -21,18 +21,23 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import java.io.IOException
 
 class KSVideoPlayerTest() : KSRobolectricTestCase() {
 
@@ -780,6 +785,102 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         // - Poster fades out and is removed once the video is rendering
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_POSTER.name, useUnmergedTree = true)
             .assertDoesNotExist()
+    }
+
+    @Test
+    fun `onPlaybackError surfaces the player error with the active flag`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        var reportedError: PlaybackException? = null
+        var reportedIsActive: Boolean? = null
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer,
+                    onPlaybackError = { error, isActive ->
+                        reportedError = error
+                        reportedIsActive = isActive
+                    }
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        // Capture the listeners KSVideoPlayer registered and simulate a player error.
+        val error = mock(PlaybackException::class.java)
+        val listenerCaptor = ArgumentCaptor.forClass(Player.Listener::class.java)
+        verify(mockPlayer, atLeastOnce()).addListener(listenerCaptor.capture())
+        composeTestRule.runOnUiThread {
+            listenerCaptor.allValues.forEach { it.onPlayerError(error) }
+        }
+        composeTestRule.waitForIdle()
+
+        // A non-recoverable error (mock errorCode defaults to 0) is surfaced (isActive=true) but the
+        // player is NOT retried.
+        assertEquals(error, reportedError)
+        assertEquals(true, reportedIsActive)
+        verify(mockPlayer, never()).prepare()
+    }
+
+    @Test
+    fun `a recoverable error on the active video is re-prepared`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val error = ExoPlaybackException.createForSource(
+            IOException("decoder reclaimed"),
+            PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED
+        )
+        val listenerCaptor = ArgumentCaptor.forClass(Player.Listener::class.java)
+        verify(mockPlayer, atLeastOnce()).addListener(listenerCaptor.capture())
+        composeTestRule.runOnUiThread {
+            listenerCaptor.allValues.forEach { it.onPlayerError(error) }
+        }
+        composeTestRule.waitForIdle()
+
+        verify(mockPlayer, times(1)).prepare()
+    }
+
+    @Test
+    fun `a recoverable error on an inactive video is reported but not re-prepared`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        var reported = false
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = false,
+                    player = mockPlayer,
+                    onPlaybackError = { _, _ -> reported = true }
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        val error = ExoPlaybackException.createForSource(
+            IOException("decoder reclaimed"),
+            PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED
+        )
+        val listenerCaptor = ArgumentCaptor.forClass(Player.Listener::class.java)
+        verify(mockPlayer, atLeastOnce()).addListener(listenerCaptor.capture())
+        composeTestRule.runOnUiThread {
+            listenerCaptor.allValues.forEach { it.onPlayerError(error) }
+        }
+        composeTestRule.waitForIdle()
+
+        // Off-screen: reported for telemetry, but never re-prepared (must not re-grab a decoder).
+        assertEquals(true, reported)
+        verify(mockPlayer, never()).prepare()
     }
 
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()

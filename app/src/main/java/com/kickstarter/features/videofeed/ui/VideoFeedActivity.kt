@@ -113,6 +113,9 @@ class VideoFeedActivity : ComponentActivity() {
                     },
                     onShareCTAClick = { project ->
                         viewModel.onCTAClicked(project, CtaContextName.VIDEO_SHARE)
+                    },
+                    onVideoPlaybackError = { videoFeedItem, position, error, isActive ->
+                        viewModel.onVideoPlaybackError(videoFeedItem, position, error, isActive)
                     }
                 )
             }

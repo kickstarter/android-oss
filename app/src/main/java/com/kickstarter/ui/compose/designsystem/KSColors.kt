@@ -181,6 +181,11 @@ data class KSVideoPlayerColors(
 )
 
 @Immutable
+data class PreLaunchProjectPageColors(
+    val background: Color = Color.Unspecified,
+)
+
+@Immutable
 data class KSCustomColors(
     // NEW COLORS
     // Text Colors
@@ -276,6 +281,7 @@ data class KSCustomColors(
     val discoveryBanner: KSDiscoveryBannerColors = KSDiscoveryBannerColors(),
     val videoPlayer: KSVideoPlayerColors = KSVideoPlayerColors(),
     val socialShare: KSSocialShareColors = KSSocialShareColors(),
+    val preLaunchProjectPage: PreLaunchProjectPageColors = PreLaunchProjectPageColors(),
 
     // OLD COLORS
     // Greens
@@ -448,6 +454,10 @@ val KSLightCustomColors = KSCustomColors(
         monochromeIconTint = black
     ),
 
+    preLaunchProjectPage = PreLaunchProjectPageColors(
+        background = kds_white
+    ),
+
     // OLD COLORS
     // Greens
     kds_create_100 = kds_create_100,
@@ -615,6 +625,10 @@ val KSDarkCustomColors = KSCustomColors(
         platformLabel = black,
         iconBackground = kds_support_700,
         monochromeIconTint = white
+    ),
+
+    preLaunchProjectPage = PreLaunchProjectPageColors(
+        background = kds_support_700
     ),
 
     // OLD COLORS

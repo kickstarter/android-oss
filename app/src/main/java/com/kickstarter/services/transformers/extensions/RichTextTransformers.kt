@@ -115,7 +115,11 @@ fun StoryRichTextComponentFragment.toRichTextComponent(): RichTextComponent {
                 RichTextItem.Oembed(
                     fragmentItem.onRichTextOembed.__typename,
                     fragmentItem.onRichTextOembed.type,
-                    fragmentItem.onRichTextOembed.iframeUrl
+                    fragmentItem.onRichTextOembed.iframeUrl,
+                    fragmentItem.onRichTextOembed.width,
+                    fragmentItem.onRichTextOembed.height,
+                    fragmentItem.onRichTextOembed.providerName,
+                    fragmentItem.onRichTextOembed.html,
                 )
             }
             else -> null

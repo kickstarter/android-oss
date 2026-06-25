@@ -63,6 +63,10 @@ sealed interface RichTextItem {
         val __typename: String,
         val type: String,
         val iframeUrl: String,
+        val width: Int,
+        val height: Int,
+        val providerName: String,
+        val html: String
     ) : RichTextItem
     data class ListOpen(
         val __typename: String,

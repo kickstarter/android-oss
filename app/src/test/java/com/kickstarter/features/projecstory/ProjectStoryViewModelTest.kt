@@ -6,6 +6,8 @@ import com.kickstarter.features.projectstory.ProjectStoryViewModel
 import com.kickstarter.features.projectstory.data.RichTextComponent
 import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockStatsigClient
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,15 +25,111 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var viewModel: ProjectStoryViewModel
 
+    private fun mockStatsigClient(
+        gateMap: Map<String, Boolean> = mapOf(
+            StatsigGateKey.ANDROID_PRELAUNCH_PROJECT_STORY.key to true
+        ),
+        startReady: Boolean = true
+    ) = MockStatsigClient(
+        context = application(),
+        gateMap = gateMap,
+        startReady = startReady
+    )
+
     private fun setUpEnvironment(environment: Environment, dispatcher: CoroutineDispatcher) {
         viewModel = ProjectStoryViewModel.Factory(environment, dispatcher).create(ProjectStoryViewModel::class.java)
+    }
+
+    @Test
+    fun `test error state is emitted, and only once, if statsig is not ready`() = runTest {
+        val standardDispatcher = StandardTestDispatcher(testScheduler)
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .statsigClient(
+                    mockStatsigClient(
+                        gateMap = mapOf(StatsigGateKey.ANDROID_PRELAUNCH_PROJECT_STORY.key to true),
+                        startReady = false
+                    )
+                )
+                .build(),
+            standardDispatcher
+        )
+
+        val uiStates = mutableListOf<ProjectStoryUiState>()
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(unconfinedDispatcher) {
+            viewModel.projectStoryUiState.toList(uiStates)
+        }
+
+        viewModel.provideProjectSlug("any-slug")
+
+        viewModel.fetchProject()
+        advanceUntilIdle()
+
+        assertEquals(2, uiStates.size)
+        assertEquals(false, uiStates.first().isLoading)
+        assertNull(uiStates.first().error)
+        assertNull(uiStates.first().storiedProject)
+        assertEquals(false, uiStates.last().isLoading)
+        assertNotNull(uiStates.last().error)
+        assertNull(uiStates.last().storiedProject)
+
+        viewModel.fetchProject()
+        advanceUntilIdle()
+
+        assertEquals(2, uiStates.size)
+    }
+
+    @Test
+    fun `test error state is emitted, and only once, if feature gate is false`() = runTest {
+        val standardDispatcher = StandardTestDispatcher(testScheduler)
+
+        setUpEnvironment(
+            environment().toBuilder()
+                .statsigClient(
+                    mockStatsigClient(
+                        gateMap = mapOf(StatsigGateKey.ANDROID_PRELAUNCH_PROJECT_STORY.key to false),
+                        startReady = true
+                    )
+                )
+                .build(),
+            standardDispatcher
+        )
+
+        val uiStates = mutableListOf<ProjectStoryUiState>()
+        val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(unconfinedDispatcher) {
+            viewModel.projectStoryUiState.toList(uiStates)
+        }
+
+        viewModel.provideProjectSlug("any-slug")
+
+        viewModel.fetchProject()
+        advanceUntilIdle()
+
+        assertEquals(2, uiStates.size)
+        assertEquals(false, uiStates.first().isLoading)
+        assertNull(uiStates.first().error)
+        assertNull(uiStates.first().storiedProject)
+        assertEquals(false, uiStates.last().isLoading)
+        assertNotNull(uiStates.last().error)
+        assertNull(uiStates.last().storiedProject)
+
+        viewModel.fetchProject()
+        advanceUntilIdle()
+
+        assertEquals(2, uiStates.size)
     }
 
     @Test
     fun `test nothing is fetched if a slug has not been provided`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
 
-        setUpEnvironment(environment(), standardDispatcher)
+        setUpEnvironment(
+            environment().toBuilder().statsigClient(mockStatsigClient()).build(),
+            standardDispatcher
+        )
 
         val uiStates = mutableListOf<ProjectStoryUiState>()
         val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -51,7 +149,10 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
     fun `test nothing is fetched when the provided slug is blank or null`() = runTest {
         val standardDispatcher = StandardTestDispatcher(testScheduler)
 
-        setUpEnvironment(environment(), standardDispatcher)
+        setUpEnvironment(
+            environment().toBuilder().statsigClient(mockStatsigClient()).build(),
+            standardDispatcher
+        )
 
         val uiStates = mutableListOf<ProjectStoryUiState>()
         val unconfinedDispatcher = UnconfinedTestDispatcher(testScheduler)
@@ -74,11 +175,14 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
         val throwable = Exception("Network error")
 
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
-                    return Result.failure(throwable)
-                }
-            }).build(),
+            environment().toBuilder()
+                .statsigClient(mockStatsigClient())
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
+                        return Result.failure(throwable)
+                    }
+                })
+                .build(),
             standardDispatcher
         )
 
@@ -105,11 +209,14 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
         val slug = "project-that-does-not-exist"
 
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
-                    return Result.success(StoriedProject(Project.builder().build(), null))
-                }
-            }).build(),
+            environment().toBuilder()
+                .statsigClient(mockStatsigClient())
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
+                        return Result.success(StoriedProject(Project.builder().build(), null))
+                    }
+                })
+                .build(),
             standardDispatcher
         )
 
@@ -138,11 +245,14 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
         val slug = "creator/project"
 
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
-                    return Result.success(StoriedProject(Project.builder().build(), RichTextComponent(emptyList())))
-                }
-            }).build(),
+            environment().toBuilder()
+                .statsigClient(mockStatsigClient())
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
+                        return Result.success(StoriedProject(Project.builder().build(), RichTextComponent(emptyList())))
+                    }
+                })
+                .build(),
             standardDispatcher
         )
 
@@ -175,11 +285,14 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
         )
 
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
-                    return Result.success(storiedProject)
-                }
-            }).build(),
+            environment().toBuilder()
+                .statsigClient(mockStatsigClient())
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
+                        return Result.success(storiedProject)
+                    }
+                })
+                .build(),
             standardDispatcher
         )
 
@@ -219,12 +332,15 @@ class ProjectStoryViewModelTest : KSRobolectricTestCase() {
         )
 
         setUpEnvironment(
-            environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
-                override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
-                    return slugToStories[slug]?.let { Result.success(it) }
-                        ?: Result.failure(Exception("Project not found"))
-                }
-            }).build(),
+            environment().toBuilder()
+                .statsigClient(mockStatsigClient())
+                .apolloClientV2(object : MockApolloClientV2() {
+                    override suspend fun fetchProjectStory(slug: String): Result<StoriedProject> {
+                        return slugToStories[slug]?.let { Result.success(it) }
+                            ?: Result.failure(Exception("Project not found"))
+                    }
+                })
+                .build(),
             standardDispatcher
         )
 

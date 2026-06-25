@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.layout.PinnableContainer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Bullet
 import androidx.compose.ui.text.LinkAnnotation
@@ -34,6 +35,10 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.kds_create_700
 import timber.log.Timber
+
+enum class ProjectStoryComponentTestTag {
+    TEXT, PHOTO, WEBVIEW
+}
 
 object StoryTheme {
     object Typography {
@@ -122,7 +127,7 @@ fun RichTextItemTextComponent(item: RichTextItem.Text) {
             else -> baseAnnotatedString
         }
 
-    Text(annotatedString, color = colors.kds_support_700, style = textStyle)
+    Text(annotatedString, color = colors.kds_support_700, style = textStyle, modifier = Modifier.testTag(ProjectStoryComponentTestTag.TEXT.name))
 }
 
 private fun parseRichTextChildrenOfRichText(children: List<RichTextItem.Text.ChildParagraph>): AnnotatedString {
@@ -186,6 +191,7 @@ fun RichTextItemPhotoComponent(item: RichTextItem.Photo, link: String? = null) {
         }
     }
     ProjectStoryCaptionedImage(
+        modifier = Modifier.testTag(ProjectStoryComponentTestTag.PHOTO.name),
         image = imageUrl,
         caption = caption,
         link = link,
@@ -203,7 +209,9 @@ fun WebViewComponent(url: String) {
 
     @SuppressLint("SetJavaScriptEnabled")
     AndroidView(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(ProjectStoryComponentTestTag.WEBVIEW.name),
         factory = {
             context = it
             WebView(it).apply {

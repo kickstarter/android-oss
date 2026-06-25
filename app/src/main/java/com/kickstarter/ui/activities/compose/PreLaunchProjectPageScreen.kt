@@ -39,6 +39,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.kickstarter.R
 import com.kickstarter.features.projectstory.ProjectStoryUiState
 import com.kickstarter.features.projectstory.data.RichTextItem
+import com.kickstarter.features.projectstory.data.aspectRatio
 import com.kickstarter.features.projectstory.ui.RichTextItemPhotoComponent
 import com.kickstarter.features.projectstory.ui.RichTextItemTextComponent
 import com.kickstarter.features.projectstory.ui.WebViewComponent
@@ -95,7 +96,9 @@ enum class PreLaunchProjectPageScreenTestTag() {
     PROJECT_LOCATION_NAME,
     PROJECT_SAVE_BUTTON,
     PROJECT_FOLLOWERS,
-    SIMILAR_PROJECTS_CONTAINER
+    SIMILAR_PROJECTS_CONTAINER,
+    CONTENT_LIST,
+    RICH_TEXT_COMPONENT
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -156,6 +159,7 @@ fun PreLaunchProjectPageScreen(
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     }
+                    .testTag(PreLaunchProjectPageScreenTestTag.CONTENT_LIST.name)
             ) {
                 item {
                     ConstraintLayout(
@@ -269,15 +273,17 @@ fun PreLaunchProjectPageScreen(
                     }
                 }
 
-                if (story?.items != null && story.items.isNotEmpty()) {
+                if (!story?.items.isNullOrEmpty()) {
                     item {
                         Spacer(Modifier.height(dimensionResource(id = R.dimen.grid_2)))
                     }
                 }
 
-                items(story?.items ?: listOf<RichTextItem>(), contentType = { it::class.simpleName }) { item ->
+                items(story?.items ?: emptyList(), contentType = { it::class.simpleName }) { item ->
                     Box(
-                        modifier = Modifier.padding(horizontal = screenPadding, vertical = dimensionResource(id = R.dimen.grid_1))
+                        modifier = Modifier
+                            .padding(horizontal = screenPadding, vertical = dimensionResource(id = R.dimen.grid_1))
+                            .testTag(PreLaunchProjectPageScreenTestTag.RICH_TEXT_COMPONENT.name)
                     ) {
                         when (item) {
                             is RichTextItem.Text -> {
@@ -299,19 +305,15 @@ fun PreLaunchProjectPageScreen(
                             }
                             is RichTextItem.Photo -> {
                                 Box(
-                                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp) // .defaultMinSize(minHeight = 200.dp)
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = dimensionResource(id = R.dimen.grid_1))
                                 ) {
                                     RichTextItemPhotoComponent(item)
                                 }
                             }
                             is RichTextItem.Oembed -> {
                                 Timber.d("RichTextItem.Oembed item: $item")
-                                if (item.iframeUrl.isNotEmpty()) {
-                                    val aspectRatio = if (item.width > 0 && item.height > 0) {
-                                        item.width.toFloat() / item.height.toFloat()
-                                    } else {
-                                        16f / 9f
-                                    }
+                                if (item.iframeUrl.isNotBlank()) {
+                                    val aspectRatio = item.aspectRatio?.takeIf { it > 0 } ?: (16f / 9f)
                                     Box(
                                         modifier = Modifier.fillMaxWidth().aspectRatio(aspectRatio)
                                     ) {

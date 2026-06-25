@@ -3,6 +3,7 @@ package com.kickstarter.features.projectstory.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +39,7 @@ import coil.request.ImageRequest
 import coil.size.SizeResolver
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
+import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.grey_04
 import org.joda.time.DateTime
 
@@ -158,7 +160,8 @@ fun ProjectStoryCaptionedImage(
     Column(
         modifier = Modifier
             .then(modifier)
-            .then(clickableModifier)
+            .then(clickableModifier),
+        verticalArrangement = Arrangement.spacedBy(dimensions.paddingXSmall)
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()

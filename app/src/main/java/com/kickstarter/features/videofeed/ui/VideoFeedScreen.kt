@@ -40,6 +40,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
+import androidx.media3.common.PlaybackException
 import com.kickstarter.R
 import com.kickstarter.features.socialshare.AndroidSocialShareService
 import com.kickstarter.features.socialshare.data.SocialShareData
@@ -100,7 +101,8 @@ fun VideoFeedScreen(
     onVideoPageSettled: (videoFeedItem: VideoFeedItem, toPosition: Int, fromVideoFeedItem: VideoFeedItem, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
     onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
     onProgressBarTap: (item: VideoFeedItem, progress: Float) -> Unit = { _, _ -> },
-    onShareCTAClick: (project: Project) -> Unit = { _ -> }
+    onShareCTAClick: (project: Project) -> Unit = { _ -> },
+    onVideoPlaybackError: (item: VideoFeedItem, position: Int, error: PlaybackException, isActive: Boolean) -> Unit = { _, _, _, _ -> }
 ) {
     // Append a trailing loading page while the next page is being fetched. The prefetch in the
     // pagination LaunchedEffect usually completes before the user reaches the end, so this is only
@@ -203,6 +205,7 @@ fun VideoFeedScreen(
                     onBecameInactive = { watchTimeMs, videoDurationMs ->
                         watchTimeByPage[page] = Pair(watchTimeMs, videoDurationMs)
                     },
+                    onPlaybackError = { error, active -> onVideoPlaybackError(item, page, error, active) },
                     overlayContent = { hazeState ->
                         Column(
                             modifier = Modifier

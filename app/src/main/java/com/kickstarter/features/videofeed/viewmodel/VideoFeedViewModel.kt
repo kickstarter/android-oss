@@ -3,6 +3,8 @@ package com.kickstarter.features.videofeed.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.PlaybackException
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName
@@ -144,6 +146,26 @@ class VideoFeedViewModel(
 
     fun onCTAClicked(project: Project, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {
         analyticEvents.trackVideoFeedCTAClicked(project, ctaType, watchTimeAtClick)
+    }
+
+    /**
+     * Observe-only telemetry for a video playback failure. Records a Crashlytics non-fatal so we can
+     * see, segmented by device/OS, how often feed videos fail and whether it was the on-screen video
+     * ([isActive]) — e.g. [PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED] flags a device
+     * running out of hardware-decoder budget. Wrapped so telemetry can never affect playback.
+     */
+    fun onVideoPlaybackError(item: VideoFeedItem, position: Int, error: PlaybackException, isActive: Boolean) {
+        try {
+            FirebaseCrashlytics.getInstance().apply {
+                setCustomKey("video_feed_video_id", item.videoId)
+                setCustomKey("video_feed_error_code", error.errorCodeName)
+                setCustomKey("video_feed_is_active", isActive)
+                setCustomKey("video_feed_position", position)
+                recordException(error)
+            }
+        } catch (t: Throwable) {
+            Timber.w(t, "Failed to record video feed playback error telemetry")
+        }
     }
 
     class Factory(

@@ -55,6 +55,14 @@ fun Project.updateProjectWith(config: Config, user: User?): Project {
         .build()
 }
 
+/**
+ * The watch/unwatch mutations build their Relay id from [Project.id] via `encodeRelayId`. An
+ * invalid id (e.g. `-1`) yields a malformed id like Base64("Project--1") and a backend 500,
+ * so callers should skip the request for such a project.
+ * see https://kickstarter.atlassian.net/browse/DISC-264
+ */
+fun Project.hasValidRelayId(): Boolean = this.id() > 0L
+
 fun Project.showLatePledgeFlow() = this.isInPostCampaignPledgingPhase() ?: false && this.postCampaignPledgingEnabled() ?: false && !this.isBacking()
 
 fun Project.isLatePledgesActive() = this.isInPostCampaignPledgingPhase() ?: false && this.postCampaignPledgingEnabled() ?: false

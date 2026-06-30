@@ -560,4 +560,22 @@ class ProjectExtTest : KSRobolectricTestCase() {
 
         assertFalse(project.pledgeManagementAvailable())
     }
+
+    @Test
+    fun `test hasValidRelayId when id is positive should return true`() {
+        val project = ProjectFactory.project().toBuilder().id(123L).build()
+        assertTrue(project.hasValidRelayId())
+    }
+
+    @Test
+    fun `test hasValidRelayId when id is the -1 decode-failure sentinel should return false`() {
+        val project = ProjectFactory.project().toBuilder().id(-1L).build()
+        assertFalse(project.hasValidRelayId())
+    }
+
+    @Test
+    fun `test hasValidRelayId when id is zero default should return false`() {
+        val project = ProjectFactory.project().toBuilder().id(0L).build()
+        assertFalse(project.hasValidRelayId())
+    }
 }

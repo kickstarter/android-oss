@@ -67,6 +67,7 @@ import com.kickstarter.features.projectstory.data.StoriedProject
 import com.kickstarter.features.search.data.SearchEnvelope
 import com.kickstarter.features.videofeed.data.VideoFeedEnvelope
 import com.kickstarter.libs.utils.extensions.addToDisposable
+import com.kickstarter.libs.utils.extensions.hasValidRelayId
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -543,6 +544,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     }
 
     override fun watchProject(project: Project): Observable<Project> {
+        if (!project.hasValidRelayId()) {
+            return Observable.error(invalidProjectException(project))
+        }
         return Observable.defer {
             val ps = PublishSubject.create<Project>()
             val mutation = WatchProjectMutation(
@@ -575,6 +579,9 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     }
 
     override fun unWatchProject(project: Project): Observable<Project> {
+        if (!project.hasValidRelayId()) {
+            return Observable.error(invalidProjectException(project))
+        }
         return Observable.defer {
             val ps = PublishSubject.create<Project>()
             val mutation = UnwatchProjectMutation(
@@ -2002,27 +2009,33 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         response.data?.videoFeed.toVideoFeedEnvelope()
     }
 
-    override suspend fun watchProjectSuspend(project: Project): Result<Project> = executeForResult {
-        val mutation = WatchProjectMutation(id = encodeRelayId(project))
-        val response = this.service.mutation(mutation).execute()
+    override suspend fun watchProjectSuspend(project: Project): Result<Project> {
+        if (!project.hasValidRelayId()) {
+            return Result.failure(invalidProjectException(project))
+        }
+        return executeForResult {
+            val mutation = WatchProjectMutation(id = encodeRelayId(project))
+            val response = this.service.mutation(mutation).execute()
 
-        if (response.hasErrors())
-            throw buildClientException(response.errors)
-
-        // TODO: review, might not require this part, "update" the project on the UI side,
-        // risking here overriding VideoFeed information
-        projectTransformer(response.data?.watchProject?.project?.fullProject)
+            if (response.hasErrors())
+                throw buildClientException(response.errors)
+            projectTransformer(response.data?.watchProject?.project?.fullProject)
+        }
     }
 
-    // TODO: review if we can join watchProjectSuspend with unWatchProjectSuspend and namming
-    override suspend fun unWatchProjectSuspend(project: Project): Result<Project> = executeForResult {
-        val mutation = UnwatchProjectMutation(id = encodeRelayId(project))
-        val response = this.service.mutation(mutation).execute()
+    override suspend fun unWatchProjectSuspend(project: Project): Result<Project> {
+        if (!project.hasValidRelayId()) {
+            return Result.failure(invalidProjectException(project))
+        }
+        return executeForResult {
+            val mutation = UnwatchProjectMutation(id = encodeRelayId(project))
+            val response = this.service.mutation(mutation).execute()
 
-        if (response.hasErrors())
-            throw buildClientException(response.errors)
+            if (response.hasErrors())
+                throw buildClientException(response.errors)
 
-        projectTransformer(response.data?.watchProject?.project?.fullProject)
+            projectTransformer(response.data?.watchProject?.project?.fullProject)
+        }
     }
 
     override suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float?, long: Float?, radius: Float?, filterByCoordinates: Boolean?): Result<List<Location>> = executeForResult {
@@ -2071,10 +2084,22 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             message: String? = null,
             cause: Throwable? = null
         ) : KSApolloClientV2Exception(message, cause)
+        class InvalidProject(
+            message: String? = null,
+            cause: Throwable? = null
+        ) : KSApolloClientV2Exception(message, cause)
     }
 
     private fun buildClientException(errors: List<Error>?): KSApolloClientV2Exception {
         return KSApolloClientV2Exception.ApiError(errors?.first()?.message)
+    }
+
+    private fun invalidProjectException(project: Project): KSApolloClientV2Exception {
+        val exception = KSApolloClientV2Exception.InvalidProject(
+            "Attempted watch/unwatch mutation with invalid project id: ${project.id()}"
+        )
+        FirebaseCrashlytics.getInstance().recordException(exception)
+        return exception
     }
 
     private fun ApolloException.toClientException(): Exception =

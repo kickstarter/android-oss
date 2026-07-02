@@ -7,6 +7,7 @@ import com.kickstarter.fragment.AiDisclosure
 import com.kickstarter.fragment.Amount
 import com.kickstarter.fragment.EnvironmentalCommitment
 import com.kickstarter.fragment.Faq
+import com.kickstarter.fragment.FullProject
 import com.kickstarter.fragment.Reward
 import com.kickstarter.fragment.Reward.AllowedAddons
 import com.kickstarter.fragment.User
@@ -344,5 +345,12 @@ class GraphQLTransformersTest : KSRobolectricTestCase() {
         )
 
         assertFalse(nonFeaturedReward.isFeatured())
+    }
+
+    @Test
+    fun `test projectTransformer with a null fragment produces an invalid project id`() {
+        val project = projectTransformer(null as FullProject?)
+
+        assertEquals(-1L, project.id())
     }
 }

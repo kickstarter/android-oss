@@ -143,6 +143,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.nio.charset.Charset
 import kotlin.coroutines.cancellation.CancellationException
@@ -298,14 +299,14 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                 }
                 .subscribe { response ->
                     if (response.hasErrors()) {
-                        if (response.hasErrors()) ps.onError(java.lang.Exception(response.errors?.first()?.message))
+                        ps.onError(java.lang.Exception(response.errors?.first()?.message))
                     } else {
-                        response.data?.let { responseData ->
-                            ps.onNext(
-                                projectTransformer(
-                                    responseData.project?.fullProject
-                                )
-                            )
+                        // Evidence of A null/partial project node transforms to a project with an invalid id see DISC-264.
+                        val project = projectTransformer(response.data?.project?.fullProject)
+                        if (project.hasValidRelayId()) {
+                            ps.onNext(project)
+                        } else {
+                            ps.onError(invalidProjectException(project, "getProject($slug)"))
                         }
                     }
                     ps.onComplete()
@@ -544,10 +545,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     }
 
     override fun watchProject(project: Project): Observable<Project> {
-        if (!project.hasValidRelayId()) {
-            return Observable.error(invalidProjectException(project))
-        }
         return Observable.defer {
+            if (!project.hasValidRelayId()) {
+                return@defer Observable.error<Project>(invalidProjectException(project))
+            }
             val ps = PublishSubject.create<Project>()
             val mutation = WatchProjectMutation(
                 id = encodeRelayId(project)
@@ -579,10 +580,10 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     }
 
     override fun unWatchProject(project: Project): Observable<Project> {
-        if (!project.hasValidRelayId()) {
-            return Observable.error(invalidProjectException(project))
-        }
         return Observable.defer {
+            if (!project.hasValidRelayId()) {
+                return@defer Observable.error<Project>(invalidProjectException(project))
+            }
             val ps = PublishSubject.create<Project>()
             val mutation = UnwatchProjectMutation(
                 id = encodeRelayId(project)
@@ -2094,11 +2095,18 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         return KSApolloClientV2Exception.ApiError(errors?.first()?.message)
     }
 
-    private fun invalidProjectException(project: Project): KSApolloClientV2Exception {
+    private fun invalidProjectException(
+        project: Project,
+        context: String = "Attempted watch/unwatch mutation"
+    ): KSApolloClientV2Exception {
         val exception = KSApolloClientV2Exception.InvalidProject(
-            "Attempted watch/unwatch mutation with invalid project id: ${project.id()}"
+            "$context: Invalid project id: ${project.id()}"
         )
-        FirebaseCrashlytics.getInstance().recordException(exception)
+        runCatching {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }.onFailure { e ->
+            Timber.e(e, "Error recording exception in Firebase")
+        }
         return exception
     }
 

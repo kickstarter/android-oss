@@ -547,7 +547,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
     override fun watchProject(project: Project): Observable<Project> {
         return Observable.defer {
             if (!project.hasValidRelayId()) {
-                return@defer Observable.error<Project>(invalidProjectException(project))
+                return@defer Observable.error<Project>(invalidProjectException(project, "watchProject"))
             }
             val ps = PublishSubject.create<Project>()
             val mutation = WatchProjectMutation(
@@ -576,13 +576,13 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     ps.onComplete()
                 }.addToDisposable(disposables)
             return@defer ps
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun unWatchProject(project: Project): Observable<Project> {
         return Observable.defer {
             if (!project.hasValidRelayId()) {
-                return@defer Observable.error<Project>(invalidProjectException(project))
+                return@defer Observable.error<Project>(invalidProjectException(project, "unWatchProject"))
             }
             val ps = PublishSubject.create<Project>()
             val mutation = UnwatchProjectMutation(
@@ -610,7 +610,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     ps.onComplete()
                 }.addToDisposable(disposables)
             return@defer ps
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun updateUserPassword(
@@ -2012,7 +2012,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override suspend fun watchProjectSuspend(project: Project): Result<Project> {
         if (!project.hasValidRelayId()) {
-            return Result.failure(invalidProjectException(project))
+            return Result.failure(invalidProjectException(project, "watchProjectSuspend"))
         }
         return executeForResult {
             val mutation = WatchProjectMutation(id = encodeRelayId(project))
@@ -2026,7 +2026,7 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
 
     override suspend fun unWatchProjectSuspend(project: Project): Result<Project> {
         if (!project.hasValidRelayId()) {
-            return Result.failure(invalidProjectException(project))
+            return Result.failure(invalidProjectException(project, "unWatchProjectSuspend"))
         }
         return executeForResult {
             val mutation = UnwatchProjectMutation(id = encodeRelayId(project))

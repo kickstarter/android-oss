@@ -1,6 +1,7 @@
 package com.kickstarter.features.socialshare.viewmodel
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -59,7 +60,7 @@ class SocialShareViewModel(
 
     init {
         detectInstalledPlatforms()
-        cacheShareImage()
+        loadHeroImage()
     }
 
     fun provideErrorAction(action: (message: String?) -> Unit) {
@@ -116,12 +117,38 @@ class SocialShareViewModel(
         }
     }
 
-    private fun cacheShareImage() {
+    /**
+     * Retrieve step. Downloads the hero image and exposes it via [SocialShareUIState.heroBitmap] so
+     * the share card can render it. [SocialShareUIState.isGeneratingImage] stays true after this
+     * completes — it is only cleared once the rendered card has been captured and cached in
+     * [onCardCaptured], since that captured card is the asset image-bearing platforms actually share.
+     */
+    private fun loadHeroImage() {
         if (shareData.imageUrl.isEmpty()) return
 
         scope.launch {
             _uiState.emit(_uiState.value.copy(isGeneratingImage = true))
-            val uri = shareService.cacheImage(shareData.imageUrl)
+            val bitmap = shareService.loadShareImage(shareData.imageUrl)
+            if (bitmap == null) {
+                errorAction.invoke("Failed to load share image")
+                _uiState.emit(_uiState.value.copy(isGeneratingImage = false))
+                return@launch
+            }
+            _uiState.emit(_uiState.value.copy(heroBitmap = bitmap))
+        }
+    }
+
+    /**
+     * Capture + persist step, driven by the UI once the share card has been rasterized from a
+     * [androidx.compose.ui.graphics.layer.GraphicsLayer]. Writes the captured card to the cache as a
+     * PNG and publishes its `content://` URI as [SocialShareUIState.shareImageUri]. No-ops if a card
+     * has already been captured for this session.
+     */
+    fun onCardCaptured(bitmap: Bitmap) {
+        if (_uiState.value.shareImageUri != null) return
+
+        scope.launch {
+            val uri = shareService.cacheShareImage(bitmap)
             if (uri == null) {
                 errorAction.invoke("Failed to cache share image")
             }

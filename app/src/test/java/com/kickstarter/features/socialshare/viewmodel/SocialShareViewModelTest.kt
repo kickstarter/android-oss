@@ -1,6 +1,7 @@
 package com.kickstarter.features.socialshare.viewmodel
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.socialshare.SocialShareService
@@ -28,7 +29,9 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
     )
 
     private val fakeImageUri: Uri =
-        Uri.parse("content://com.kickstarter.fileprovider/share_images/kickstarter_share.jpg")
+        Uri.parse("content://com.kickstarter.fileprovider/share_images/kickstarter_share.png")
+
+    private fun fakeBitmap(): Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
     private fun fakePlatforms() = listOf(
         SocialSharePlatform.X,
@@ -78,33 +81,37 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // init: cacheShareImage
+    // init: loadHeroImage (retrieve) + onCardCaptured (persist)
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     @Test
-    fun `init stores cached image URI in uiState`() = runTest {
+    fun `init loads hero bitmap and keeps generating until the card is captured`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val heroBitmap = fakeBitmap()
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
+            override suspend fun loadShareImage(imageUrl: String): Bitmap = heroBitmap
         }
 
         val viewModel = buildViewModel(service, dispatcher = dispatcher)
         advanceUntilIdle()
 
-        assertEquals(fakeImageUri, viewModel.uiState.value.shareImageUri)
-        assertFalse(viewModel.uiState.value.isGeneratingImage)
+        assertEquals(heroBitmap, viewModel.uiState.value.heroBitmap)
+        // shareImageUri is produced from the captured card, not the raw hero, so it stays null...
+        assertNull(viewModel.uiState.value.shareImageUri)
+        // ...and image-requiring platforms remain gated until the card has been captured.
+        assertTrue(viewModel.uiState.value.isGeneratingImage)
     }
 
     @Test
-    fun `init calls errorAction when cacheImage returns null`() = runTest {
+    fun `init calls errorAction when hero image fails to load`() = runTest {
         // StandardTestDispatcher is required: with UnconfinedTestDispatcher the init
         // coroutines execute synchronously inside the constructor, before provideErrorAction
         // can be registered. StandardTestDispatcher queues them so we can wire callbacks first.
         val dispatcher = StandardTestDispatcher(testScheduler)
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri? = null
+            override suspend fun loadShareImage(imageUrl: String): Bitmap? = null
         }
 
         var errorMessage: String? = null
@@ -113,28 +120,91 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         assertNotNull(errorMessage)
+        assertNull(viewModel.uiState.value.heroBitmap)
         assertNull(viewModel.uiState.value.shareImageUri)
         assertFalse(viewModel.uiState.value.isGeneratingImage)
     }
 
     @Test
-    fun `init skips cacheShareImage when imageUrl is empty`() = runTest {
+    fun `init skips loading the hero image when imageUrl is empty`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
-        var cacheWasCalled = false
+        var loadWasCalled = false
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri? {
-                cacheWasCalled = true
-                return fakeImageUri
+            override suspend fun loadShareImage(imageUrl: String): Bitmap {
+                loadWasCalled = true
+                return fakeBitmap()
             }
         }
 
         val viewModel = buildViewModel(service, data = shareData.copy(imageUrl = ""), dispatcher = dispatcher)
         advanceUntilIdle()
 
-        assertFalse(cacheWasCalled)
+        assertFalse(loadWasCalled)
+        assertNull(viewModel.uiState.value.heroBitmap)
         assertNull(viewModel.uiState.value.shareImageUri)
         assertFalse(viewModel.uiState.value.isGeneratingImage)
+    }
+
+    @Test
+    fun `onCardCaptured caches the captured card and stops generating`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val service = object : FakeSocialShareService() {
+            override suspend fun cacheShareImage(bitmap: Bitmap): Uri = fakeImageUri
+        }
+
+        val viewModel = buildViewModel(service, dispatcher = dispatcher)
+        advanceUntilIdle()
+
+        viewModel.onCardCaptured(fakeBitmap())
+        advanceUntilIdle()
+
+        assertEquals(fakeImageUri, viewModel.uiState.value.shareImageUri)
+        assertFalse(viewModel.uiState.value.isGeneratingImage)
+    }
+
+    @Test
+    fun `onCardCaptured calls errorAction when caching fails`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+
+        val service = object : FakeSocialShareService() {
+            override suspend fun cacheShareImage(bitmap: Bitmap): Uri? = null
+        }
+
+        var errorMessage: String? = null
+        val viewModel = buildViewModel(service, dispatcher = dispatcher)
+        viewModel.provideErrorAction { errorMessage = it }
+        advanceUntilIdle()
+
+        viewModel.onCardCaptured(fakeBitmap())
+        advanceUntilIdle()
+
+        assertNotNull(errorMessage)
+        assertNull(viewModel.uiState.value.shareImageUri)
+        assertFalse(viewModel.uiState.value.isGeneratingImage)
+    }
+
+    @Test
+    fun `onCardCaptured only caches once per session`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        var cacheCount = 0
+
+        val service = object : FakeSocialShareService() {
+            override suspend fun cacheShareImage(bitmap: Bitmap): Uri {
+                cacheCount++
+                return fakeImageUri
+            }
+        }
+
+        val viewModel = buildViewModel(service, dispatcher = dispatcher)
+        advanceUntilIdle()
+
+        viewModel.onCardCaptured(fakeBitmap())
+        viewModel.onCardCaptured(fakeBitmap())
+        advanceUntilIdle()
+
+        assertEquals(1, cacheCount)
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,7 +218,6 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         var capturedIntent: Intent? = null
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
             override fun buildIntent(
                 platform: SocialSharePlatform,
                 shareData: SocialShareData,
@@ -170,7 +239,6 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
             override fun buildIntent(
                 platform: SocialSharePlatform,
                 shareData: SocialShareData,
@@ -195,9 +263,9 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
     fun `onPlatformSelected calls errorAction when image is still generating and platform requires image`() = runTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
-        // cacheImage never completes → isGeneratingImage stays true
+        // loadShareImage never completes → isGeneratingImage stays true
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri? {
+            override suspend fun loadShareImage(imageUrl: String): Bitmap? {
                 kotlinx.coroutines.awaitCancellation()
             }
         }
@@ -221,9 +289,9 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val fakeIntent = Intent(Intent.ACTION_SEND)
 
-        // cacheImage never completes → isGeneratingImage stays true
+        // loadShareImage never completes → isGeneratingImage stays true
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri? {
+            override suspend fun loadShareImage(imageUrl: String): Bitmap? {
                 kotlinx.coroutines.awaitCancellation()
             }
 
@@ -250,7 +318,6 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         var capturedShareData: SocialShareData? = null
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
             override fun buildIntent(
                 platform: SocialSharePlatform,
                 shareData: SocialShareData,
@@ -275,7 +342,6 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
         }
 
         val viewModel = buildViewModel(service, dispatcher = dispatcher)
@@ -291,7 +357,6 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
 
         val service = object : FakeSocialShareService() {
-            override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
             override fun buildIntent(
                 platform: SocialSharePlatform,
                 shareData: SocialShareData,
@@ -377,7 +442,8 @@ class SocialShareViewModelTest : KSRobolectricTestCase() {
     private open inner class FakeSocialShareService : SocialShareService {
         override fun getInstalledPlatforms(): List<SocialSharePlatform> = fakePlatforms()
         override fun copyToClipboard(label: String, url: String) {}
-        override suspend fun cacheImage(imageUrl: String): Uri? = null
+        override suspend fun loadShareImage(imageUrl: String): Bitmap? = fakeBitmap()
+        override suspend fun cacheShareImage(bitmap: Bitmap): Uri? = fakeImageUri
         override fun buildIntent(
             platform: SocialSharePlatform,
             shareData: SocialShareData,

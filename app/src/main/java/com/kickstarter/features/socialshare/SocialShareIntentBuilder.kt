@@ -26,6 +26,22 @@ import com.kickstarter.features.socialshare.data.SocialSharePlatform
  */
 object SocialShareIntentBuilder {
 
+    /**
+     * MIME type for every image-bearing intent. The shared asset is the rendered
+     * [com.kickstarter.features.socialshare.ui.components.SocialShareProjectCard], captured as a
+     * PNG so its rounded corners keep their transparency (JPEG would flatten them to black) — and
+     * because X explicitly recommends PNG for text/graphic-heavy images like a branded card.
+     *
+     * This MUST stay in sync with the format written in
+     * [com.kickstarter.features.socialshare.ShareImageCache.cacheBitmap]: a declared MIME that does
+     * not match the actual bytes makes some receivers reject or mis-decode the stream.
+     *
+     * Caveat for the Stories actions (Instagram/Facebook): Meta's docs list PNG as a supported
+     * file format but only ever show `image/jpeg` as the MIME string in their samples, so
+     * `image/png` here should be verified on-device for both Story apps.
+     */
+    private const val IMAGE_MIME_TYPE = "image/png"
+
     fun buildIntent(
         context: Context,
         platform: SocialSharePlatform,
@@ -53,7 +69,7 @@ object SocialShareIntentBuilder {
         imageUri ?: return null
         val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         return Intent(Intent.ACTION_SEND).apply {
-            type = "image/jpeg"
+            type = IMAGE_MIME_TYPE
             putExtra(Intent.EXTRA_STREAM, imageUri)
             putExtra(Intent.EXTRA_TEXT, text)
             clipData = ClipData.newRawUri(null, imageUri)
@@ -68,7 +84,7 @@ object SocialShareIntentBuilder {
     private fun instagramStoriesIntent(context: Context, imageUri: Uri?): Intent? {
         imageUri ?: return null
         return Intent("com.instagram.share.ADD_TO_STORY").apply {
-            setDataAndType(imageUri, "image/jpeg")
+            setDataAndType(imageUri, IMAGE_MIME_TYPE)
             clipData = ClipData.newRawUri(null, imageUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra("source_application", context.packageName)
@@ -77,13 +93,13 @@ object SocialShareIntentBuilder {
 
     /**
      * X (Twitter) — text always included; image attached when available.
-     * X's app accepts ACTION_SEND with image/jpeg + EXTRA_TEXT simultaneously.
+     * X's app accepts ACTION_SEND with an image + EXTRA_TEXT simultaneously.
      */
     private fun xIntent(shareData: SocialShareData, imageUri: Uri?): Intent {
         val text = "I just backed ${shareData.projectName} on @Kickstarter! Check it out: ${shareData.projectUrl}"
         return if (imageUri != null) {
             Intent(Intent.ACTION_SEND).apply {
-                type = "image/jpeg"
+                type = IMAGE_MIME_TYPE
                 putExtra(Intent.EXTRA_TEXT, text)
                 putExtra(Intent.EXTRA_STREAM, imageUri)
                 clipData = ClipData.newRawUri(null, imageUri)
@@ -108,7 +124,7 @@ object SocialShareIntentBuilder {
         imageUri ?: return null
         val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         return Intent(Intent.ACTION_SEND).apply {
-            type = "image/jpeg"
+            type = IMAGE_MIME_TYPE
             putExtra(Intent.EXTRA_STREAM, imageUri)
             putExtra(Intent.EXTRA_TEXT, text)
             clipData = ClipData.newRawUri(null, imageUri)
@@ -123,7 +139,7 @@ object SocialShareIntentBuilder {
     private fun facebookStoriesIntent(imageUri: Uri?): Intent? {
         imageUri ?: return null
         return Intent("com.facebook.stories.ADD_TO_STORY").apply {
-            type = "image/jpeg"
+            type = IMAGE_MIME_TYPE
             putExtra("backgroundAssetUri", imageUri)
             clipData = ClipData.newRawUri(null, imageUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -139,7 +155,7 @@ object SocialShareIntentBuilder {
         val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         return if (imageUri != null) {
             Intent(Intent.ACTION_SEND).apply {
-                type = "image/jpeg"
+                type = IMAGE_MIME_TYPE
                 putExtra(Intent.EXTRA_TEXT, text)
                 putExtra(Intent.EXTRA_STREAM, imageUri)
                 clipData = ClipData.newRawUri(null, imageUri)
@@ -204,7 +220,7 @@ object SocialShareIntentBuilder {
         val text = "Hey! I backed this project on Kickstarter: ${shareData.projectName} ${shareData.projectUrl}"
         val sendIntent = Intent(Intent.ACTION_SEND).apply {
             if (imageUri != null) {
-                type = "image/jpeg"
+                type = IMAGE_MIME_TYPE
                 putExtra(Intent.EXTRA_STREAM, imageUri)
                 clipData = ClipData.newRawUri(null, imageUri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

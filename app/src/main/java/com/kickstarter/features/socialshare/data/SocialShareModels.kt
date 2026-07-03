@@ -1,5 +1,6 @@
 package com.kickstarter.features.socialshare.data
 
+import android.graphics.Bitmap
 import android.net.Uri
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.EventContextValues.SharePlatformContextType
@@ -60,7 +61,20 @@ fun SocialSharePlatform.analyticsContextType(): String = when (this) {
 
 data class SocialShareUIState(
     val availablePlatforms: List<SocialSharePlatform> = emptyList(),
+    /**
+     * The downloaded hero image, fed into [com.kickstarter.features.socialshare.ui.components.SocialShareProjectCard]
+     * so it renders deterministically before the card is captured. Null until the retrieve step completes.
+     */
+    val heroBitmap: Bitmap? = null,
+    /**
+     * `content://` URI of the captured, branded share card (PNG). This — not the raw hero image — is
+     * the asset attached to image-bearing intents. Null until the card has been captured and cached.
+     */
     val shareImageUri: Uri? = null,
+    /**
+     * True from the moment the hero image starts downloading until the captured card has been cached.
+     * While true, platforms that [SocialSharePlatform.requiresImage] are gated in the ViewModel.
+     */
     val isGeneratingImage: Boolean = false,
     val copiedToClipboard: Boolean = false
 )

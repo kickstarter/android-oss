@@ -17,7 +17,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
     )
 
     private val imageUri: Uri =
-        Uri.parse("content://com.kickstarter.fileprovider/share_images/kickstarter_share.jpg")
+        Uri.parse("content://com.kickstarter.fileprovider/share_images/kickstarter_share.png")
 
     @Test
     fun `COPY_LINK returns null, handled by clipboard, not an intent`() {
@@ -36,7 +36,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
         val intent = SocialShareIntentBuilder.buildIntent(context(), SocialSharePlatform.INSTAGRAM_FEED, shareData, imageUri)
 
         assertEquals(Intent.ACTION_SEND, intent?.action)
-        assertEquals("image/jpeg", intent?.type)
+        assertEquals("image/png", intent?.type)
         assertEquals("com.instagram.android", intent?.`package`)
         assertEquals(imageUri, intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
         assertNotNull(intent?.getStringExtra(Intent.EXTRA_TEXT))
@@ -65,7 +65,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
         val intent = SocialShareIntentBuilder.buildIntent(context(), SocialSharePlatform.X, shareData, imageUri)
 
         assertEquals(Intent.ACTION_SEND, intent?.action)
-        assertEquals("image/jpeg", intent?.type)
+        assertEquals("image/png", intent?.type)
         assertEquals("com.twitter.android", intent?.`package`)
         assertEquals(imageUri, intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
         val text = intent?.getStringExtra(Intent.EXTRA_TEXT)!!
@@ -97,7 +97,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
         val intent = SocialShareIntentBuilder.buildIntent(context(), SocialSharePlatform.FACEBOOK_FEED, shareData, imageUri)
 
         assertEquals(Intent.ACTION_SEND, intent?.action)
-        assertEquals("image/jpeg", intent?.type)
+        assertEquals("image/png", intent?.type)
         assertEquals("com.facebook.katana", intent?.`package`)
         assertEquals(imageUri, intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
         assertNotNull(intent?.getStringExtra(Intent.EXTRA_TEXT))
@@ -127,7 +127,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
         val intent = SocialShareIntentBuilder.buildIntent(context(), SocialSharePlatform.WHATSAPP, shareData, imageUri)
 
         assertEquals(Intent.ACTION_SEND, intent?.action)
-        assertEquals("image/jpeg", intent?.type)
+        assertEquals("image/png", intent?.type)
         assertEquals("com.whatsapp", intent?.`package`)
         assertEquals(imageUri, intent?.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
         assertTrue(intent?.getStringExtra(Intent.EXTRA_TEXT)!!.contains(shareData.projectUrl))
@@ -193,7 +193,7 @@ class SocialShareIntentBuilderTest : KSRobolectricTestCase() {
         @Suppress("DEPRECATION")
         val wrapped = chooser.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)!!
         assertEquals(Intent.ACTION_SEND, wrapped.action)
-        assertEquals("image/jpeg", wrapped.type)
+        assertEquals("image/png", wrapped.type)
         @Suppress("DEPRECATION")
         assertEquals(imageUri, wrapped.getParcelableExtra<Uri>(Intent.EXTRA_STREAM))
         assertTrue(wrapped.getStringExtra(Intent.EXTRA_TEXT)!!.contains(shareData.projectUrl))

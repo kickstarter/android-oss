@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.data.SocialSharePlatform
@@ -30,11 +31,16 @@ interface SocialShareService {
     fun copyToClipboard(label: String, url: String)
 
     /**
-     * Downloads the image at [imageUrl], writes it to the app cache, and returns a
-     * `content://` [Uri] that can be granted to other apps via [Intent] flags.
-     * Returns null if any step fails.
+     * Retrieve step: downloads the hero image at [imageUrl] into a software [Bitmap] so the share
+     * card can render it deterministically before being captured. Returns null if the download fails.
      */
-    suspend fun cacheImage(imageUrl: String): Uri?
+    suspend fun loadShareImage(imageUrl: String): Bitmap?
+
+    /**
+     * Persist step: writes [bitmap] (the captured share card) to the app cache as a PNG and returns a
+     * `content://` [Uri] that can be granted to other apps via [Intent] flags. Returns null on failure.
+     */
+    suspend fun cacheShareImage(bitmap: Bitmap): Uri?
 
     /**
      * Constructs a ready-to-fire [Intent] for [platform], or null when the platform
@@ -78,8 +84,11 @@ class AndroidSocialShareService(
         clipboard.setPrimaryClip(ClipData.newPlainText(label, url))
     }
 
-    override suspend fun cacheImage(imageUrl: String): Uri? =
-        ShareImageCache.cache(context, imageUrl)
+    override suspend fun loadShareImage(imageUrl: String): Bitmap? =
+        ShareImageCache.loadBitmap(context, imageUrl)
+
+    override suspend fun cacheShareImage(bitmap: Bitmap): Uri? =
+        ShareImageCache.cacheBitmap(context, bitmap)
 
     override fun buildIntent(
         platform: SocialSharePlatform,

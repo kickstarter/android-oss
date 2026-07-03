@@ -1,5 +1,6 @@
 package com.kickstarter.features.socialshare.ui.components
 
+import android.graphics.Bitmap
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -94,6 +95,37 @@ class SocialShareProjectCardTest : KSRobolectricTestCase() {
         composeTestRule
             .onNodeWithTag(SocialShareProjectCardTestTag.CREATOR_NAME.name)
             .assertTextEquals(updatedData.creatorName)
+    }
+
+    @Test
+    fun `SocialShareProjectCard renders branded content via the preloaded hero bitmap path`() {
+        // A non-null heroBitmap takes the synchronous Image(bitmap) branch used at capture time
+        // (instead of the async KSAsyncImage). The branded content must still be present.
+        val heroBitmap = Bitmap.createBitmap(4, 4, Bitmap.Config.ARGB_8888)
+
+        composeTestRule.setContent {
+            KSTheme {
+                SocialShareProjectCard(shareData = defaultShareData, heroBitmap = heroBitmap)
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag(SocialShareProjectCardTestTag.PROJECT_NAME.name)
+            .assertIsDisplayed()
+            .assertTextEquals(defaultShareData.projectName)
+
+        composeTestRule
+            .onNodeWithTag(SocialShareProjectCardTestTag.CREATOR_NAME.name)
+            .assertIsDisplayed()
+            .assertTextEquals(defaultShareData.creatorName)
+
+        composeTestRule
+            .onNodeWithTag(SocialShareProjectCardTestTag.KS_LOGO.name)
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithContentDescription("Kickstarter")
+            .assertIsDisplayed()
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.kickstarter.features.socialshare.ui
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -126,6 +127,8 @@ fun SocialShareSheet(
             SocialShareSheetContent(
                 shareData = shareData,
                 availablePlatforms = uiState.availablePlatforms,
+                heroBitmap = uiState.heroBitmap,
+                onCardCaptured = viewModel::onCardCaptured,
                 onPlatformSelected = { viewModel.onPlatformSelected(it) },
                 onCopyLinkSelected = { viewModel.onCopyLinkClicked() },
                 onDismiss = smoothDismiss
@@ -140,7 +143,9 @@ private fun SocialShareSheetContent(
     availablePlatforms: List<SocialSharePlatform>,
     onPlatformSelected: (SocialSharePlatform) -> Unit,
     onCopyLinkSelected: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    heroBitmap: Bitmap? = null,
+    onCardCaptured: ((Bitmap) -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -162,7 +167,11 @@ private fun SocialShareSheetContent(
             SocialShareHeader()
             Spacer(modifier = Modifier.height(dimensions.paddingMedium))
             Box(modifier = Modifier.testTag(SocialShareSheetTestTag.PROJECT_CARD.name)) {
-                SocialShareProjectCard(shareData = shareData)
+                SocialShareProjectCard(
+                    shareData = shareData,
+                    heroBitmap = heroBitmap,
+                    onCaptured = onCardCaptured
+                )
             }
             Spacer(modifier = Modifier.height(dimensions.paddingXLarge))
             Box(

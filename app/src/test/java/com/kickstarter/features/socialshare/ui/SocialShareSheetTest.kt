@@ -1,6 +1,7 @@
 package com.kickstarter.features.socialshare.ui
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -35,7 +36,7 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
     )
 
     private val fakeImageUri: Uri =
-        Uri.parse("content://com.kickstarter.fileprovider/share_images/kickstarter_share.jpg")
+        Uri.parse("content://com.kickstarter.fileprovider/share_images/kickstarter_share.png")
 
     @Test
     fun `sheet content is displayed when isVisible is true`() {
@@ -307,7 +308,10 @@ class SocialShareSheetTest : KSRobolectricTestCase() {
             SocialSharePlatform.MORE
         )
         override fun copyToClipboard(label: String, url: String) {}
-        override suspend fun cacheImage(imageUrl: String): Uri = fakeImageUri
+        override suspend fun loadShareImage(imageUrl: String): Bitmap? {
+            kotlinx.coroutines.awaitCancellation()
+        }
+        override suspend fun cacheShareImage(bitmap: Bitmap): Uri = fakeImageUri
         override fun buildIntent(
             platform: SocialSharePlatform,
             shareData: SocialShareData,

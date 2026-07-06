@@ -15,6 +15,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.ignoreValuesV2
@@ -228,8 +229,15 @@ interface ProjectPageViewModel {
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Unit>
 
-        /** Emits when we should show the share sheet with the name of the project and share URL.  */
+        /** Emits when we should show the old native share sheet with the name of the project and share URL.  */
         fun showShareSheet(): Observable<Pair<String, String>>
+
+        /** Emits the project to share when the new in-app social share experience is gated on. The
+         *  Activity polishes it into the SocialShareData the sheet needs. */
+        fun showSocialShareSheet(): Observable<Project>
+
+        /** Whether the new in-app social share experience is enabled (Statsig `android_social_share`). */
+        fun isNewSocialShareEnabled(): Boolean
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment]. */
         fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>>
@@ -303,6 +311,7 @@ interface ProjectPageViewModel {
         private val apolloClient = requireNotNull(environment.apolloClientV2())
         private val currentConfig = requireNotNull(environment.currentConfigV2())
         private val featureFlagClient = requireNotNull(environment.featureFlagClient())
+        private val statsigClient = requireNotNull(environment.statsigClient())
         private val analyticEvents = requireNotNull(environment.analytics())
         private val attributionEvents = requireNotNull(environment.attributionEvents())
 
@@ -355,6 +364,7 @@ interface ProjectPageViewModel {
         private val showCancelPledgeSuccess = PublishSubject.create<Unit>()
         private val showPledgeNotCancelableDialog = PublishSubject.create<Unit>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
+        private val showSocialShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Unit>()
         private val updatePledgeData = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
@@ -711,15 +721,24 @@ interface ProjectPageViewModel {
                         }
                 }
             }
+            // Reuses the existing "project when the share button is clicked" stream and evaluates
+            // the social-share gate in a single subscription. Gated off → the old native chooser
+            // (name + ref-tagged URL Pair, unchanged). Gated on → the raw project is forwarded so
+            // the Activity can polish it into the richer SocialShareData the new sheet needs.
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
-                .map {
-                    Pair(
-                        it.name(),
-                        UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())
-                    )
+                .subscribe { project ->
+                    if (isNewSocialShareEnabled()) {
+                        this.showSocialShareSheet.onNext(project)
+                    } else {
+                        this.showShareSheet.onNext(
+                            Pair(
+                                project.name(),
+                                UrlUtils.appendRefTag(project.webProjectUrl(), RefTag.projectShare().tag())
+                            )
+                        )
+                    }
                 }
-                .subscribe { this.showShareSheet.onNext(it) }
                 .addToDisposable(disposables)
 
             val latestProjectAndProjectData =
@@ -1446,6 +1465,12 @@ interface ProjectPageViewModel {
         override fun showSavedPrompt(): Observable<Unit> = this.showSavedPrompt
 
         override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
+
+        override fun showSocialShareSheet(): Observable<Project> = this.showSocialShareSheet
+
+        override fun isNewSocialShareEnabled(): Boolean =
+            statsigClient.isReady.value &&
+                statsigClient.checkGate(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key)
 
         override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> =
             this.showUpdatePledge

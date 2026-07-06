@@ -207,5 +207,15 @@
         android:contentDescription="@string/A_little_extra_to_help"
         android:layout_margin="16dp" />
 
+    <!--
+      Hosts the new in-app social share bottom sheet (gated behind android_social_share).
+      Kept GONE until the sheet is shown so this full-screen overlay never intercepts touches
+      (e.g. the toolbar share button).
+    -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/social_share_compose_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

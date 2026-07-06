@@ -26,8 +26,11 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -36,6 +39,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,6 +50,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityProjectPageBinding
+import com.kickstarter.features.socialshare.AndroidSocialShareService
+import com.kickstarter.features.socialshare.data.SocialShareData
+import com.kickstarter.features.socialshare.ui.LocalSocialShareViewModel
+import com.kickstarter.features.socialshare.ui.SocialShareSheet
+import com.kickstarter.features.socialshare.viewmodel.SocialShareViewModel
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
@@ -54,6 +63,7 @@ import com.kickstarter.libs.MessagePreviousScreenType
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.ApplicationUtils
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -165,6 +175,10 @@ class ProjectPageActivity :
 
     private var disposables = CompositeDisposable()
 
+    // Bridges the RxJava social-share output into the Compose host below. Non-null → the sheet is
+    // shown for that project; null → hidden.
+    private val socialShareData = mutableStateOf<SocialShareData?>(null)
+
     private val pagerAdapterList = mutableListOf(
         ProjectPagerTabs.OVERVIEW,
         ProjectPagerTabs.CAMPAIGN,
@@ -211,6 +225,8 @@ class ProjectPageActivity :
         }
 
         ffClient.activate(this)
+
+        socialShareSetUp(binding.socialShareComposeView)
 
         flowController = PaymentSheet.FlowController.create(
             activity = this,
@@ -420,6 +436,11 @@ class ProjectPageActivity :
             .subscribe { startShareIntent(it) }
             .addToDisposable(disposables)
 
+        this.viewModel.outputs.showSocialShareSheet()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSocialShareSheet(it) }
+            .addToDisposable(disposables)
+
         this.viewModel.outputs.showUpdatePledge()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeFragment(it) }
@@ -572,6 +593,60 @@ class ProjectPageActivity :
 
         this.onBackPressedDispatcher.addCallback {
             finishWithAnimation()
+        }
+    }
+
+    /**
+     * Polishes the project emitted by the gated `showSocialShareSheet` output into the
+     * [SocialShareData] the new sheet needs — the base project URL (no ref tag; the per-platform ref
+     * tag is added inside SocialShareViewModel), the hero image, and the creator name. Then reveals
+     * the Compose host.
+     */
+    private fun showSocialShareSheet(project: Project) {
+        socialShareData.value = SocialShareData(
+            projectName = project.name() ?: "",
+            projectUrl = project.webProjectUrl(),
+            imageUrl = project.photo()?.full() ?: "",
+            creatorName = project.creator()?.name() ?: ""
+        )
+        binding.socialShareComposeView.isVisible = true
+    }
+
+    /**
+     * Hosts the new in-app social share bottom sheet. The host view stays GONE (see layout) until a
+     * share is triggered, so this full-screen overlay never intercepts touches meant for the rest of
+     * the screen. A [SocialShareViewModel] is only built once [socialShareData] is set. Mirrors the
+     * integration in PreLaunchProjectPageActivity / VideoFeed.
+     */
+    private fun socialShareSetUp(composeView: ComposeView) {
+        composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                KickstarterApp {
+                    val data = socialShareData.value
+                    if (data != null) {
+                        val shareViewModel = remember(data) {
+                            SocialShareViewModel(
+                                environment = environment,
+                                shareService = AndroidSocialShareService(applicationContext),
+                                shareData = data,
+                                contextPage = ContextPageName.PROJECT
+                            )
+                        }
+                        CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
+                            SocialShareSheet(
+                                shareData = data,
+                                isVisible = true,
+                                onDismiss = {
+                                    socialShareData.value = null
+                                    binding.socialShareComposeView.isGone = true
+                                },
+                                onIntentReady = { startActivity(it) }
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 

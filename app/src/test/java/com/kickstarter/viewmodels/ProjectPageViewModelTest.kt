@@ -14,8 +14,10 @@ import com.kickstarter.libs.Config
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.addToDisposable
 import com.kickstarter.mock.MockCurrentConfigV2
@@ -93,6 +95,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
     private val showPledgeNotCancelableDialog = TestSubscriber<Unit>()
     private val showSavedPromptTest = TestSubscriber<Unit>()
     private val showShareSheet = TestSubscriber<Pair<String, String>>()
+    private val showSocialShareSheet = TestSubscriber<Project>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Unit>()
     private val startRootCommentsActivity = TestSubscriber<ProjectData>()
@@ -147,6 +150,7 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showPledgeNotCancelableDialog().subscribe { this.showPledgeNotCancelableDialog.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showSavedPrompt().subscribe { this.showSavedPromptTest.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showShareSheet().subscribe { this.showShareSheet.onNext(it) }.addToDisposable(disposables)
+        this.vm.outputs.showSocialShareSheet().subscribe { this.showSocialShareSheet.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showUpdatePledge().subscribe { this.showUpdatePledge.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe { this.showUpdatePledgeSuccess.onNext(it) }.addToDisposable(disposables)
         this.vm.outputs.startLoginToutActivity().subscribe { this.startLoginToutActivity.onNext(it) }.addToDisposable(disposables)
@@ -977,7 +981,49 @@ class ProjectPageViewModelTest : KSRobolectricTestCase() {
             assertTrue(it.second == expectedShareUrl)
         }.addToDisposable(disposables)
 
+        // Gated off (default) → native chooser fires, new in-app sheet does not.
+        this.showSocialShareSheet.assertNoValues()
+        assertFalse(this.vm.outputs.isNewSocialShareEnabled())
+
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun testShowSocialShareSheet_whenGateOn_emitsProjectAndSkipsNativeSheet() {
+        val creator = UserFactory.creator()
+        val slug = "best-project-2k19"
+        val projectUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug
+        val webUrls = Web.builder()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .name("Best Project 2K19")
+            .creator(creator)
+            .urls(Urls.builder().web(webUrls).build())
+            .build()
+
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PRELAUNCH_SOCIAL_SHARE.key to true)
+        )
+        setUpEnvironment(
+            environment()
+                .toBuilder()
+                .apolloClientV2(apolloClientSuccessfulGetProject())
+                .statsigClient(statsigClient)
+                .build()
+        )
+        this.vm.configureWith(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.shareButtonClicked()
+
+        // The raw project is forwarded to the new sheet (Activity polishes it); native chooser stays quiet.
+        this.showSocialShareSheet.assertValueCount(1)
+        this.showShareSheet.assertNoValues()
+        assertTrue(this.vm.outputs.isNewSocialShareEnabled())
     }
 
     @Test

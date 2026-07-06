@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlin.coroutines.EmptyCoroutineContext
@@ -99,21 +100,17 @@ class SocialShareViewModel(
         val urlWithRefTag = UrlUtils.appendRefTag(shareData.projectUrl, SocialSharePlatform.COPY_LINK.refTag().tag())
         shareService.copyToClipboard("Kickstarter project link", urlWithRefTag)
         analyticEvents.trackSharePlatformCTAClicked(SocialSharePlatform.COPY_LINK, contextPage)
-        scope.launch {
-            _uiState.emit(_uiState.value.copy(copiedToClipboard = true))
-        }
+        _uiState.update { it.copy(copiedToClipboard = true) }
     }
 
     fun onCopiedToastShown() {
-        scope.launch {
-            _uiState.emit(_uiState.value.copy(copiedToClipboard = false))
-        }
+        _uiState.update { it.copy(copiedToClipboard = false) }
     }
 
     private fun detectInstalledPlatforms() {
         scope.launch {
             val available = shareService.getInstalledPlatforms()
-            _uiState.emit(_uiState.value.copy(availablePlatforms = available))
+            _uiState.update { it.copy(availablePlatforms = available) }
         }
     }
 
@@ -127,14 +124,14 @@ class SocialShareViewModel(
         if (shareData.imageUrl.isEmpty()) return
 
         scope.launch {
-            _uiState.emit(_uiState.value.copy(isGeneratingImage = true))
+            _uiState.update { it.copy(isGeneratingImage = true) }
             val bitmap = shareService.loadShareImage(shareData.imageUrl)
             if (bitmap == null) {
                 errorAction.invoke("Failed to load share image")
-                _uiState.emit(_uiState.value.copy(isGeneratingImage = false))
+                _uiState.update { it.copy(isGeneratingImage = false) }
                 return@launch
             }
-            _uiState.emit(_uiState.value.copy(heroBitmap = bitmap))
+            _uiState.update { it.copy(heroBitmap = bitmap) }
         }
     }
 
@@ -152,7 +149,7 @@ class SocialShareViewModel(
             if (uri == null) {
                 errorAction.invoke("Failed to cache share image")
             }
-            _uiState.emit(_uiState.value.copy(shareImageUri = uri, isGeneratingImage = false))
+            _uiState.update { it.copy(shareImageUri = uri, isGeneratingImage = false) }
         }
     }
 

@@ -2,6 +2,7 @@ package com.kickstarter.features.socialshare.ui.components
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -88,6 +90,9 @@ fun SocialShareProjectCard(
     var rendered by remember { mutableStateOf(false) }
     var captured by remember { mutableStateOf(false) }
 
+    // - The card's own surface color, used to fill the transparent rounded-corner cut-outs
+    val cardBackgroundArgb = colors.backgroundSurfaceRaised.toArgb()
+
     val captureModifier = if (onCaptured != null) {
         Modifier.drawWithContent {
             graphicsLayer.record { this@drawWithContent.drawContent() }
@@ -102,7 +107,8 @@ fun SocialShareProjectCard(
         if (onCaptured != null && heroBitmap != null && rendered && !captured) {
             withFrameNanos { }
             captured = true
-            onCaptured(graphicsLayer.toImageBitmap().asAndroidBitmap())
+            val cardBitmap = graphicsLayer.toImageBitmap().asAndroidBitmap()
+            onCaptured(cardBitmap.flattenOnOpaqueBackground(cardBackgroundArgb))
         }
     }
 
@@ -168,4 +174,28 @@ fun SocialShareProjectCard(
             )
         }
     }
+}
+
+/**
+ * Composites the captured card — which has transparent rounded-corner cut-outs — onto an opaque
+ * [backgroundArgb] fill. The result is a clean rectangle with no transparent/black corner artifacts
+ * on the receiving surface; using the card's own surface colour makes the fill blend seamlessly with
+ * the card body.
+ */
+private fun Bitmap.flattenOnOpaqueBackground(backgroundArgb: Int): Bitmap {
+    // graphicsLayer.toImageBitmap() yields a HARDWARE bitmap on API 26+, which is GPU-backed and
+    // read-only: it can't be the source of a draw on a software Canvas. Copy it to a software
+    // (ARGB_8888) config first so the composite below works on every device.
+    val source = if (config == Bitmap.Config.HARDWARE) {
+        copy(Bitmap.Config.ARGB_8888, false)
+    } else {
+        this
+    }
+    val result = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+    Canvas(result).apply {
+        drawColor(backgroundArgb)
+        drawBitmap(source, 0f, 0f, null)
+    }
+    if (source !== this) source.recycle()
+    return result
 }

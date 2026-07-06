@@ -30,7 +30,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -43,6 +42,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.tabs.TabLayout
@@ -604,10 +604,10 @@ class ProjectPageActivity :
      */
     private fun showSocialShareSheet(project: Project) {
         socialShareData.value = SocialShareData(
-            projectName = project.name() ?: "",
+            projectName = project.name(),
             projectUrl = project.webProjectUrl(),
             imageUrl = project.photo()?.full() ?: "",
-            creatorName = project.creator()?.name() ?: ""
+            creatorName = project.creator().name()
         )
         binding.socialShareComposeView.isVisible = true
     }
@@ -625,14 +625,15 @@ class ProjectPageActivity :
                 KickstarterApp {
                     val data = socialShareData.value
                     if (data != null) {
-                        val shareViewModel = remember(data) {
-                            SocialShareViewModel(
+                        val shareViewModel: SocialShareViewModel = viewModel(
+                            key = data.projectUrl,
+                            factory = SocialShareViewModel.Factory(
                                 environment = environment,
-                                shareService = AndroidSocialShareService(applicationContext),
+                                service = AndroidSocialShareService(applicationContext),
                                 shareData = data,
                                 contextPage = ContextPageName.PROJECT
                             )
-                        }
+                        )
                         CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
                             SocialShareSheet(
                                 shareData = data,

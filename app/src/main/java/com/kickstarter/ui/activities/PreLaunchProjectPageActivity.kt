@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava2.subscribeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kickstarter.R
 import com.kickstarter.features.projectstory.ProjectStoryViewModel
 import com.kickstarter.features.socialshare.AndroidSocialShareService
@@ -160,14 +161,15 @@ class PreLaunchProjectPageActivity : ComponentActivity() {
                 )
 
                 shareData?.let { data ->
-                    val shareViewModel = remember(data) {
-                        SocialShareViewModel(
+                    val shareViewModel: SocialShareViewModel = viewModel(
+                        key = data.projectUrl,
+                        factory = SocialShareViewModel.Factory(
                             environment = requireNotNull(getEnvironment()),
-                            shareService = AndroidSocialShareService(context.applicationContext),
+                            service = AndroidSocialShareService(context.applicationContext),
                             shareData = data,
                             contextPage = ContextPageName.PRE_LAUNCH_PROJECT
                         )
-                    }
+                    )
                     CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
                         SocialShareSheet(
                             shareData = data,

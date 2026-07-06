@@ -30,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.platform.LocalContext
@@ -291,14 +292,15 @@ fun VideoFeedScreen(
 
         shareData?.let { data ->
             val context = LocalContext.current
-            val shareViewModel = remember(data) {
-                SocialShareViewModel(
+            val shareViewModel: SocialShareViewModel = viewModel(
+                key = data.projectUrl,
+                factory = SocialShareViewModel.Factory(
                     environment = environment,
-                    shareService = AndroidSocialShareService(context.applicationContext),
+                    service = AndroidSocialShareService(context.applicationContext),
                     shareData = data,
                     contextPage = ContextPageName.VIDEO_FEED
                 )
-            }
+            )
             CompositionLocalProvider(LocalSocialShareViewModel provides shareViewModel) {
                 SocialShareSheet(
                     shareData = data,

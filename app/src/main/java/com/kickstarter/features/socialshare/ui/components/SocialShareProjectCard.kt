@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.createBitmap
 import com.kickstarter.features.socialshare.data.SocialShareData
 import com.kickstarter.features.socialshare.ui.icons.KSLogo
 import com.kickstarter.models.Photo
@@ -183,15 +184,12 @@ fun SocialShareProjectCard(
  * the card body.
  */
 private fun Bitmap.flattenOnOpaqueBackground(backgroundArgb: Int): Bitmap {
-    // graphicsLayer.toImageBitmap() yields a HARDWARE bitmap on API 26+, which is GPU-backed and
-    // read-only: it can't be the source of a draw on a software Canvas. Copy it to a software
-    // (ARGB_8888) config first so the composite below works on every device.
     val source = if (config == Bitmap.Config.HARDWARE) {
         copy(Bitmap.Config.ARGB_8888, false)
     } else {
         this
     }
-    val result = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
+    val result = createBitmap(source.width, source.height)
     Canvas(result).apply {
         drawColor(backgroundArgb)
         drawBitmap(source, 0f, 0f, null)

@@ -721,10 +721,9 @@ interface ProjectPageViewModel {
                         }
                 }
             }
-            // Reuses the existing "project when the share button is clicked" stream and evaluates
-            // the social-share gate in a single subscription. Gated off → the old native chooser
-            // (name + ref-tagged URL Pair, unchanged). Gated on → the raw project is forwarded so
-            // the Activity can polish it into the richer SocialShareData the new sheet needs.
+            // - "share button is clicked" stream that evaluates the social-share gate.
+            // Gated off → the old native chooser.
+            // Gated on → the raw project is forwarded so the Activity can polish it into the richer SocialShareData the new sheet needs.
             currentProject
                 .compose(takeWhenV2(this.shareButtonClicked))
                 .subscribe { project ->

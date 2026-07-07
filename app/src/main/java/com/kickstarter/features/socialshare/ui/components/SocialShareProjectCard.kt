@@ -96,9 +96,16 @@ fun SocialShareProjectCard(
 
     val captureModifier = if (onCaptured != null) {
         Modifier.drawWithContent {
-            graphicsLayer.record { this@drawWithContent.drawContent() }
-            drawLayer(graphicsLayer)
-            if (!rendered && size.minDimension > 0f) rendered = true
+            // Only record into the graphics layer until the one-shot capture is done; after that,
+            // draw the card normally so we don't re-record/re-draw the layer on every frame while
+            // the sheet stays visible.
+            if (!captured) {
+                graphicsLayer.record { this@drawWithContent.drawContent() }
+                drawLayer(graphicsLayer)
+                if (!rendered && size.minDimension > 0f) rendered = true
+            } else {
+                drawContent()
+            }
         }
     } else {
         Modifier

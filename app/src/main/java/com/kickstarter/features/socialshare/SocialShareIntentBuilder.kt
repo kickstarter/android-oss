@@ -29,8 +29,12 @@ object SocialShareIntentBuilder {
     /**
      * MIME type for every image-bearing intent. The shared asset is the rendered
      * [com.kickstarter.features.socialshare.ui.components.SocialShareProjectCard], captured as a
-     * PNG so its rounded corners keep their transparency (JPEG would flatten them to black) — and
-     * because X explicitly recommends PNG for text/graphic-heavy images like a branded card.
+     * PNG because it is lossless: the card is text/logo-heavy and JPEG compression would introduce
+     * visible artifacts around the type and branding. X also explicitly recommends PNG for
+     * text/graphic-heavy images like this. (The captured card is flattened onto an opaque
+     * background before caching — see
+     * [com.kickstarter.features.socialshare.ui.components.SocialShareProjectCard], so PNG is not
+     * used here to preserve transparency.)
      *
      * This MUST stay in sync with the format written in
      * [com.kickstarter.features.socialshare.ShareImageCache.cacheBitmap]: a declared MIME that does

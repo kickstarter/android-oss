@@ -61,15 +61,16 @@ object ShareImageCache {
      * Persist step: writes a rendered bitmap (the captured [SocialShareProjectCard]) to the app's
      * internal cache directory and returns a shareable `content://` URI for it.
      *
-     * Saves the image as a **PNG** into a dedicated 'share_images' subfolder so the card's rounded
-     * corners keep their transparency; this must match the MIME type declared in
-     * [SocialShareIntentBuilder]. The compress + disk write run on [Dispatchers.IO] because the
-     * captured card can be large and this is called from the ViewModel's main-scoped coroutine.
+     * Saves the image as a lossless **PNG** into a dedicated 'share_images' subfolder: the card is
+     * text/logo-heavy and JPEG compression would introduce visible artifacts around the type and
+     * branding. This must match the MIME type declared in [SocialShareIntentBuilder]. The compress +
+     * disk write run on [Dispatchers.IO] because the captured card can be large and this is called
+     * from the ViewModel's main-scoped coroutine.
      *
      * @param context Context to access [Context.getCacheDir].
-     * @param bitmap The software-backed bitmap to write (typically the captured share card).
+     * @param bitmap The software-backed bitmap to write (typically the captured share card, already
+     *   flattened onto an opaque background).
      * @return A content:// Uri for the file, or null if the write operation fails.
-     * TODO: Explore options here, likely not entirely needed keeping the transparency on the rounded corners
      */
     suspend fun cacheBitmap(context: Context, bitmap: android.graphics.Bitmap): Uri? =
         withContext(Dispatchers.IO) {

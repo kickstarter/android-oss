@@ -624,6 +624,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .build()
     val urls = Urls.builder().web(urlsWeb).build()
     val video = videoTransformer(projectFragment?.video?.video)
+    val watchesCount = projectFragment?.watchesCount ?: 0
     val displayPrelaunch = (projectFragment?.isLaunched ?: false).negate()
     val isInPostCampaignPledgingPhase = projectFragment?.isInPostCampaignPledgingPhase ?: false
     val postCampaignPledgingEnabled = projectFragment?.postCampaignPledgingEnabled ?: false
@@ -662,6 +663,7 @@ fun projectTransformer(projectFragment: ProjectCard?): Project {
         .isInPostCampaignPledgingPhase(isInPostCampaignPledgingPhase)
         .video(video)
         .postCampaignPledgingEnabled(postCampaignPledgingEnabled)
+        .watchesCount(watchesCount)
         .build()
 }
 

@@ -83,6 +83,7 @@ fragment projectCard on Project {
     state
     stateChangedAt
     url
+    watchesCount
     isInPostCampaignPledgingPhase
     postCampaignPledgingEnabled
     pledgeOverTimeCollectionPlanChargeExplanation

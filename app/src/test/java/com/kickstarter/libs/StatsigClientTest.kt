@@ -319,7 +319,7 @@ class StatsigClientTest : KSRobolectricTestCase() {
     fun `test user data observation`() = runTest {
         val testScope = TestScope(UnconfinedTestDispatcher(testScheduler))
 
-        val data = mutableListOf<Triple<String?, String?, String?>>()
+        val data = mutableListOf<ObservedData>()
 
         val currentUser = MockCurrentUserV2()
         val segmentTrackingClient = mockSegmentTrackingClient()
@@ -332,28 +332,74 @@ class StatsigClientTest : KSRobolectricTestCase() {
             override suspend fun handleObservedUserData(
                 stableId: String?,
                 segmentAnonymousId: String?,
-                userId: String?
+                userId: String?,
+                isAdmin: Boolean
             ) {
-                data += Triple(stableId, segmentAnonymousId, userId)
+                data += ObservedData(stableId, segmentAnonymousId, userId, isAdmin)
             }
         }
 
         statsigClient.observeUserAndFetchConfigs(testScope)
 
-        assertEquals(Triple(null, null, null), data.last())
+        assertEquals(ObservedData(null, null, null, false), data.last())
 
         statsigClient.triggerReady()
 
-        assertEquals(data.last(), Triple(statsigClient.getStableId(), null, null))
+        assertEquals(ObservedData(statsigClient.getStableId(), null, null, false), data.last())
 
         segmentTrackingClient.initialize()
 
-        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull(), null))
+        assertEquals(ObservedData(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull(), null, false), data.last())
 
         val user = UserFactory.user()
         currentUser.login(user)
 
-        assertEquals(data.last(), Triple(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull()!!, user.id().toString()))
+        assertEquals(ObservedData(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull()!!, user.id().toString(), false), data.last())
+
+        val adminUser = user.toBuilder().isAdmin(true).build()
+        currentUser.login(adminUser)
+
+        assertEquals(ObservedData(statsigClient.getStableId(), segmentTrackingClient.getAnonymousIdOrNull()!!, adminUser.id().toString(), true), data.last())
+    }
+
+    @Test
+    fun `handleObservedUserData - forwards is_ksr_admin as a private attribute for logged-in users`() = runTest {
+        val testScope = TestScope(UnconfinedTestDispatcher(testScheduler))
+
+        val currentUser = MockCurrentUserV2()
+        val segmentTrackingClient = mockSegmentTrackingClient()
+
+        val updatedUsers = mutableListOf<StatsigUser>()
+        val statsigClient = object : MockStatsigClient(
+            context = application(),
+            currentUser = currentUser,
+            segmentTrackingClient = segmentTrackingClient,
+            startReady = false
+        ) {
+            override suspend fun updateUser(user: StatsigUser) { updatedUsers += user }
+        }
+
+        statsigClient.observeUserAndFetchConfigs(testScope)
+        statsigClient.triggerReady()
+        segmentTrackingClient.initialize()
+        advanceUntilIdle()
+
+        // Anonymous users carry no admin concept, so no admin attribute is attached.
+        assertNull(updatedUsers.last().privateAttributes)
+
+        // Logged-in non-admin: is_ksr_admin = false.
+        val user = UserFactory.user()
+        currentUser.login(user)
+        advanceUntilIdle()
+        assertEquals(user.id().toString(), updatedUsers.last().userID)
+        assertEquals(mapOf(StatsigClient.KEY_IS_KSR_ADMIN to false), updatedUsers.last().privateAttributes)
+
+        // Admin (same id, only isAdmin flips): is_ksr_admin = true is forwarded to Statsig. Also
+        // guards against distinctUntilChanged swallowing an admin-status change on an unchanged id.
+        val adminUser = user.toBuilder().isAdmin(true).build()
+        currentUser.login(adminUser)
+        advanceUntilIdle()
+        assertEquals(mapOf(StatsigClient.KEY_IS_KSR_ADMIN to true), updatedUsers.last().privateAttributes)
     }
 
     @Test
@@ -439,6 +485,14 @@ class StatsigClientTest : KSRobolectricTestCase() {
 
         assertEquals(0, count)
     }
+
+    /** Test-only mirror of the params passed to [StatsigClient.handleObservedUserData]. */
+    private data class ObservedData(
+        val stableId: String?,
+        val segmentAnonymousId: String?,
+        val userId: String?,
+        val isAdmin: Boolean
+    )
 
     companion object {
         var initializationDetails: InitializationDetails? = null

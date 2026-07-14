@@ -222,7 +222,7 @@ open class StatsigClient @JvmOverloads constructor(
         }
         userId?.let {
             statsigUser.userID = userId
-            statsigUser.custom = mapOf(KEY_IS_ADMIN to isAdmin)
+            statsigUser.privateAttributes = mapOf(KEY_IS_KSR_ADMIN to isAdmin)
         }
 
         try {
@@ -250,6 +250,6 @@ open class StatsigClient @JvmOverloads constructor(
 
     companion object {
         const val KEY_SEGMENT_ANONYMOUS_ID = "segmentAnonymousID"
-        const val KEY_IS_ADMIN = "is_admin"
+        const val KEY_IS_KSR_ADMIN = "is_ksr_admin"
     }
 }

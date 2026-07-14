@@ -221,7 +221,7 @@ open class StatsigClient @JvmOverloads constructor(
             statsigUser.customIDs = mapOf(KEY_SEGMENT_ANONYMOUS_ID to it)
         }
         userId?.let {
-            statsigUser.userID = userId
+            statsigUser.userID = it
             statsigUser.privateAttributes = mapOf(KEY_IS_KSR_ADMIN to isAdmin)
         }
 

@@ -109,6 +109,7 @@ data class KSDimensions(
     val videoFeedHiddenModeHorizontalInset: Dp = Dp.Unspecified,
     val videoFeedHiddenModeTopReserve: Dp = Dp.Unspecified,
     val videoFeedHiddenModeBottomReserve: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeButtonDrop: Dp = Dp.Unspecified,
 
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
@@ -234,6 +235,7 @@ val KSStandardDimensions = KSDimensions(
     videoFeedHiddenModeHorizontalInset = 16.dp,
     videoFeedHiddenModeTopReserve = 96.dp,
     videoFeedHiddenModeBottomReserve = 172.dp,
+    videoFeedHiddenModeButtonDrop = 16.dp,
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 102.dp,

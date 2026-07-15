@@ -41,6 +41,8 @@ import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
+import com.kickstarter.ui.compose.designsystem.kds_create_700
+import com.kickstarter.ui.compose.designsystem.kds_white
 import com.kickstarter.viewmodels.ReportProjectViewModel
 import io.reactivex.Observable
 
@@ -217,7 +219,7 @@ fun FormularyScreen(
         KSButton(
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.grid_3)),
-            textColor = colors.kds_white,
+            textColor = kds_white,
             isEnabled = details.isNotEmpty(),
             onClickAction = {
                 inputs.createFlagging()
@@ -225,7 +227,7 @@ fun FormularyScreen(
             shape = RoundedCornerShape(size = dimensions.radiusExtraSmall),
             textStyle = typographyV2.buttonLabel,
             text = stringResource(id = R.string.Send),
-            backgroundColor = colors.backgroundSurfaceSecondary,
+            backgroundColor = kds_create_700,
             shouldWrapContentWidth = true
         )
     }

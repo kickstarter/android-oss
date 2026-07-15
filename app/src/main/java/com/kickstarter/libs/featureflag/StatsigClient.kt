@@ -92,7 +92,7 @@ interface StatsigClientType {
 
     val statsigUser: StateFlow<StatsigUser>
 
-    suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?)
+    suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?, isAdmin: Boolean)
 }
 
 /**
@@ -173,6 +173,18 @@ open class StatsigClient @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Snapshot of the identity attributes forwarded to Statsig on each observed change.
+     * Carried through the [observeUserAndFetchConfigs] pipeline so that [distinctUntilChanged]
+     * re-fires whenever any of them change — including [isAdmin].
+     */
+    private data class ObservedUserData(
+        val stableId: String?,
+        val segmentAnonymousId: String?,
+        val userId: String?,
+        val isAdmin: Boolean
+    )
+
     fun observeUserAndFetchConfigs(scope: CoroutineScope) {
         scope.launch {
             val statsigInitialization = isReady
@@ -182,25 +194,25 @@ open class StatsigClient @JvmOverloads constructor(
                 Triple(statsigIsReady, segmentIsReady, optionalUser)
             }
                 .map { (statsigIsReady, segmentIsReady, optionalUser) ->
+                    val user = if (optionalUser.isPresent()) optionalUser.getValue() else null
                     val stableId = if (statsigIsReady) getStableId() else null
                     val segmentAnonymousId = if (segmentIsReady) segmentTrackingClient.getAnonymousIdOrNull() else null
-                    val userId = if (optionalUser.isPresent()) optionalUser.getValue()?.id().toString() else null
-                    Triple(stableId, segmentAnonymousId, userId)
+                    val userId = user?.id()?.toString()
+                    val isAdmin = user?.isAdmin() ?: false
+                    ObservedUserData(stableId, segmentAnonymousId, userId, isAdmin)
                 }
                 .onEach {
-                    val (stableId, segmentAnonymousId, userId) = it
-                    Timber.d("onEach set of user IDs: (stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId)")
+                    Timber.d("onEach observed user data: (stableId: ${it.stableId}, segmentAnonymousId: ${it.segmentAnonymousId}, userId: ${it.userId}, isAdmin: ${it.isAdmin})")
                 }
                 .distinctUntilChanged()
                 .collect {
-                    val (stableId, segmentAnonymousId, userId) = it
-                    handleObservedUserData(stableId, segmentAnonymousId, userId)
+                    handleObservedUserData(it.stableId, it.segmentAnonymousId, it.userId, it.isAdmin)
                 }
         }
     }
 
-    override suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?) {
-        Timber.d("handleObservedUserData(stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId)")
+    override suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?, isAdmin: Boolean) {
+        Timber.d("handleObservedUserData(stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId, isAdmin: $isAdmin)")
 
         if (stableId == null) return
 
@@ -209,7 +221,8 @@ open class StatsigClient @JvmOverloads constructor(
             statsigUser.customIDs = mapOf(KEY_SEGMENT_ANONYMOUS_ID to it)
         }
         userId?.let {
-            statsigUser.userID = userId
+            statsigUser.userID = it
+            statsigUser.privateAttributes = mapOf(KEY_IS_KSR_ADMIN to isAdmin)
         }
 
         try {
@@ -237,5 +250,6 @@ open class StatsigClient @JvmOverloads constructor(
 
     companion object {
         const val KEY_SEGMENT_ANONYMOUS_ID = "segmentAnonymousID"
+        const val KEY_IS_KSR_ADMIN = "is_ksr_admin"
     }
 }

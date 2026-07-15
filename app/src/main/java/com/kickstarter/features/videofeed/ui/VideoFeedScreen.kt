@@ -1,6 +1,10 @@
 package com.kickstarter.features.videofeed.ui
 
 import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -68,6 +72,8 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoFeedSnackbar
 import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayer
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Close
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Collapse
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Expand
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
@@ -76,6 +82,7 @@ enum class VideoFeedScreenTestTag {
     VIDEO_FEED_PAGER,
     VIDEO_FEED_OVERLAY_CONTAINER,
     VIDEO_FEED_CLOSE_BUTTON,
+    VIDEO_FEED_HIDE_UI_BUTTON,
     VIDEO_FEED_LOADING_PAGE
 }
 
@@ -196,10 +203,21 @@ fun VideoFeedScreen(
                 }
             }
 
+            // HideUI mode is per-page and defaults to off, so every video starts with the chrome
+            // visible. remember(page) only re-initialises when this page is disposed and recomposed
+            // (2+ pages away, given beyondViewportPageCount = 1); the LaunchedEffect additionally
+            // resets it the moment this page stops being current, so an adjacent page that stays
+            // composed is still reset when swiped back to.
+            var hideUi by remember(page) { mutableStateOf(false) }
+            LaunchedEffect(pagerState.currentPage) {
+                if (pagerState.currentPage != page) hideUi = false
+            }
+
             Box(modifier = Modifier.fillMaxSize()) {
                 KSVideoPlayer(
                     videoUrl = videoUrl,
                     isActive = pagerState.currentPage == page,
+                    hideUi = hideUi,
                     previewImageUrl = item.previewImageUrl,
                     onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
                     onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
@@ -213,34 +231,48 @@ fun VideoFeedScreen(
                                 .fillMaxWidth()
                                 .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_OVERLAY_CONTAINER.name}_${project.id()}")
                         ) {
-                            KSVideoActionsColumn(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(end = dimensions.paddingMediumLarge),
-                                profileImageUrl = profileImage,
-                                bookmarkCount = bookmarkCount,
-                                isBookmarked = project.isStarred(),
-                                shareCount = shareCount,
-                                onProfileClick = { onProfileClick(project) },
-                                onBookmarkClick = { onBookmarkClick(project, page) },
-                                onShareClick = {
-                                    shareData = SocialShareData(
-                                        projectName = project.name() ?: "",
-                                        projectUrl = project.urls()?.web()?.project() ?: "",
-                                        imageUrl = project.photo()?.full() ?: "",
-                                        creatorName = project.creator()?.name() ?: ""
+                            // The action rail and badges fade out entirely in HideUI mode; the
+                            // campaign card keeps its CTA button but hides its details (see below).
+                            // Seed the transition from the current value so it doesn't animate in on
+                            // first composition (only on an actual toggle).
+                            val chromeVisible = remember { MutableTransitionState(!hideUi) }
+                            chromeVisible.targetState = !hideUi
+                            AnimatedVisibility(
+                                visibleState = chromeVisible,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    KSVideoActionsColumn(
+                                        modifier = Modifier
+                                            .align(Alignment.End)
+                                            .padding(end = dimensions.paddingMediumLarge),
+                                        profileImageUrl = profileImage,
+                                        bookmarkCount = bookmarkCount,
+                                        isBookmarked = project.isStarred(),
+                                        shareCount = shareCount,
+                                        onProfileClick = { onProfileClick(project) },
+                                        onBookmarkClick = { onBookmarkClick(project, page) },
+                                        onShareClick = {
+                                            shareData = SocialShareData(
+                                                projectName = project.name() ?: "",
+                                                projectUrl = project.urls()?.web()?.project() ?: "",
+                                                imageUrl = project.photo()?.full() ?: "",
+                                                creatorName = project.creator()?.name() ?: ""
+                                            )
+                                            onShareCTAClick(project)
+                                        },
+                                        onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                                     )
-                                    onShareCTAClick(project)
-                                },
-                                onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
-                            )
 
-                            Spacer(modifier = Modifier.height(dimensions.paddingLarge))
+                                    Spacer(modifier = Modifier.height(dimensions.paddingLarge))
 
-                            KSVideoBadgesRow(
-                                badges = item.badges,
-                                hazeState = hazeState
-                            )
+                                    KSVideoBadgesRow(
+                                        badges = item.badges,
+                                        hazeState = hazeState
+                                    )
+                                }
+                            }
 
                             KSVideoCampaignCard(
                                 title = projectTitle,
@@ -254,7 +286,8 @@ fun VideoFeedScreen(
                                         projectCallback(project, refTag)
                                     }
                                 },
-                                progress = percentageFounded
+                                progress = percentageFounded,
+                                detailsVisible = !hideUi
                             )
                         }
                     }
@@ -286,6 +319,37 @@ fun VideoFeedScreen(
                             role = Role.Button
                         }
                         .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
+                )
+
+                val hideUiLabel = stringResource(
+                    id = if (hideUi) R.string.fpo_Show_details else R.string.fpo_Hide_details
+                )
+                Image(
+                    imageVector = if (hideUi) Expand else Collapse,
+                    contentDescription = hideUiLabel,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(end = dimensions.paddingMediumSmall, top = dimensions.videoFeedCloseButtonTopPadding)
+                        .size(dimensions.videoFeedCloseButtonSize)
+                        .dropShadow(
+                            shape = CircleShape,
+                            shadow = Shadow(
+                                radius = dimensions.videoPlayerShadowBlur,
+                                color = KSTheme.colors.videoPlayer.iconShadow,
+                                offset = DpOffset.Zero
+                            )
+                        )
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = { hideUi = !hideUi },
+                            onClickLabel = hideUiLabel,
+                            role = Role.Button
+                        )
+                        .semantics {
+                            role = Role.Button
+                        }
+                        .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}")
                 )
             }
         }

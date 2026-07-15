@@ -105,6 +105,10 @@ data class KSDimensions(
     val videoFeedScrubBarThumbSize: Dp = Dp.Unspecified,
     val videoFeedSnackbarTopPadding: Dp = Dp.Unspecified,
     val videoFeedSnackbarHorizontalMargin: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeCornerRadius: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeHorizontalInset: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeTopReserve: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeBottomReserve: Dp = Dp.Unspecified,
 
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
@@ -226,6 +230,10 @@ val KSStandardDimensions = KSDimensions(
     videoFeedScrubBarThumbSize = 16.dp,
     videoFeedSnackbarTopPadding = 122.dp,
     videoFeedSnackbarHorizontalMargin = 10.dp,
+    videoFeedHiddenModeCornerRadius = 24.dp,
+    videoFeedHiddenModeHorizontalInset = 16.dp,
+    videoFeedHiddenModeTopReserve = 96.dp,
+    videoFeedHiddenModeBottomReserve = 172.dp,
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 102.dp,

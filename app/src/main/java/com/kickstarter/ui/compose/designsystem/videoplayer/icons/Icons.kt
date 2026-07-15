@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.PathData
 import androidx.compose.ui.graphics.vector.group
@@ -531,3 +533,89 @@ val Close: ImageVector
 
 @Suppress("ObjectPropertyName")
 private var _Close: ImageVector? = null
+
+/**
+ * Two diagonal arrows pointing inward (toward the center). Shown on the video-feed HideUI toggle
+ * while the chrome is visible — tapping it collapses the overlays and shrinks the video into a card.
+ */
+val Collapse: ImageVector
+    get() {
+        if (_Collapse != null) {
+            return _Collapse!!
+        }
+        _Collapse = ImageVector.Builder(
+            name = "Collapse",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(
+                stroke = SolidColor(Color.White),
+                strokeLineWidth = 2f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                // - Top-right arrow pointing in toward the center
+                moveTo(20f, 4f)
+                lineTo(13.5f, 10.5f)
+                moveTo(19.5f, 10.5f)
+                lineTo(13.5f, 10.5f)
+                lineTo(13.5f, 4.5f)
+                // - Bottom-left arrow pointing in toward the center
+                moveTo(4f, 20f)
+                lineTo(10.5f, 13.5f)
+                moveTo(4.5f, 13.5f)
+                lineTo(10.5f, 13.5f)
+                lineTo(10.5f, 19.5f)
+            }
+        }.build()
+
+        return _Collapse!!
+    }
+
+@Suppress("ObjectPropertyName")
+private var _Collapse: ImageVector? = null
+
+/**
+ * Two diagonal arrows pointing outward (toward the corners). Shown on the video-feed HideUI toggle
+ * while HideUI is enabled — tapping it restores the overlays and returns the video to full-bleed.
+ */
+val Expand: ImageVector
+    get() {
+        if (_Expand != null) {
+            return _Expand!!
+        }
+        _Expand = ImageVector.Builder(
+            name = "Expand",
+            defaultWidth = 24.dp,
+            defaultHeight = 24.dp,
+            viewportWidth = 24f,
+            viewportHeight = 24f
+        ).apply {
+            path(
+                stroke = SolidColor(Color.White),
+                strokeLineWidth = 2f,
+                strokeLineCap = StrokeCap.Round,
+                strokeLineJoin = StrokeJoin.Round
+            ) {
+                // - Top-right arrow pointing out toward the corner
+                moveTo(13.5f, 10.5f)
+                lineTo(20f, 4f)
+                moveTo(14f, 4f)
+                lineTo(20f, 4f)
+                lineTo(20f, 10f)
+                // - Bottom-left arrow pointing out toward the corner
+                moveTo(10.5f, 13.5f)
+                lineTo(4f, 20f)
+                moveTo(10f, 20f)
+                lineTo(4f, 20f)
+                lineTo(4f, 14f)
+            }
+        }.build()
+
+        return _Expand!!
+    }
+
+@Suppress("ObjectPropertyName")
+private var _Expand: ImageVector? = null

@@ -500,6 +500,10 @@ fun KSVideoPlayer(
                 overlayContent(hazeState)
             }
 
+            if (hideUi) {
+                Spacer(modifier = Modifier.height(dimensions.videoFeedHiddenModeScrubBarSpacing))
+            }
+
             ProgressBarContainer(
                 modifier = Modifier,
                 progressProvider = { progress },

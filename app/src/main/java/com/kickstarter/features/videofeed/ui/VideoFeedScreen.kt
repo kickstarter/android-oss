@@ -324,21 +324,12 @@ fun VideoFeedScreen(
                 val hideUiLabel = stringResource(
                     id = if (hideUi) R.string.fpo_Show_details else R.string.fpo_Hide_details
                 )
-                Image(
-                    imageVector = if (hideUi) Expand else Collapse,
-                    contentDescription = hideUiLabel,
+
+                Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(end = dimensions.paddingMediumSmall, top = dimensions.videoFeedCloseButtonTopPadding)
                         .size(dimensions.videoFeedCloseButtonSize)
-                        .dropShadow(
-                            shape = CircleShape,
-                            shadow = Shadow(
-                                radius = dimensions.videoPlayerShadowBlur,
-                                color = KSTheme.colors.videoPlayer.iconShadow,
-                                offset = DpOffset.Zero
-                            )
-                        )
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
@@ -346,11 +337,27 @@ fun VideoFeedScreen(
                             onClickLabel = hideUiLabel,
                             role = Role.Button
                         )
-                        .semantics {
+                        .semantics(mergeDescendants = true) {
                             role = Role.Button
                         }
-                        .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}")
-                )
+                        .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}"),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        imageVector = if (hideUi) Expand else Collapse,
+                        contentDescription = hideUiLabel,
+                        modifier = Modifier
+                            .size(dimensions.videoFeedHideUiIconSize)
+                            .dropShadow(
+                                shape = CircleShape,
+                                shadow = Shadow(
+                                    radius = dimensions.videoPlayerShadowBlur,
+                                    color = KSTheme.colors.videoPlayer.iconShadow,
+                                    offset = DpOffset.Zero
+                                )
+                            )
+                    )
+                }
             }
         }
 

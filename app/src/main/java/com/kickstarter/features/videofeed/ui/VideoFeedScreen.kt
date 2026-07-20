@@ -330,6 +330,14 @@ fun VideoFeedScreen(
                         .align(Alignment.TopEnd)
                         .padding(end = dimensions.paddingMediumSmall, top = dimensions.videoFeedCloseButtonTopPadding)
                         .size(dimensions.videoFeedCloseButtonSize)
+                        .dropShadow(
+                            shape = CircleShape,
+                            shadow = Shadow(
+                                radius = dimensions.videoPlayerShadowBlur,
+                                color = KSTheme.colors.videoPlayer.iconShadow,
+                                offset = DpOffset.Zero
+                            )
+                        )
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
@@ -346,16 +354,7 @@ fun VideoFeedScreen(
                     Image(
                         imageVector = if (hideUi) Expand else Collapse,
                         contentDescription = hideUiLabel,
-                        modifier = Modifier
-                            .size(dimensions.videoFeedHideUiIconSize)
-                            .dropShadow(
-                                shape = CircleShape,
-                                shadow = Shadow(
-                                    radius = dimensions.videoPlayerShadowBlur,
-                                    color = KSTheme.colors.videoPlayer.iconShadow,
-                                    offset = DpOffset.Zero
-                                )
-                            )
+                        modifier = Modifier.size(dimensions.videoFeedHideUiIconSize)
                     )
                 }
             }

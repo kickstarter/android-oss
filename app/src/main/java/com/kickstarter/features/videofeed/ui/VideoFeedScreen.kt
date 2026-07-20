@@ -351,9 +351,7 @@ fun VideoFeedScreen(
                             onClickLabel = hideUiLabel,
                             role = Role.Button
                         )
-                        .semantics(mergeDescendants = true) {
-                            role = Role.Button
-                        }
+                        .semantics(mergeDescendants = true) { }
                         .testTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}"),
                     contentAlignment = Alignment.Center
                 ) {

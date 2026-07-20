@@ -12,11 +12,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -125,6 +128,9 @@ fun VideoFeedScreen(
     // settledPage fires after the animation completes, so the data is always ready.
     val watchTimeByPage = remember { mutableMapOf<Int, Pair<Long, Long>>() }
     var shareData: SocialShareData? by remember { mutableStateOf(null) }
+
+    val statusBarInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val iconTopPadding = maxOf(dimensions.videoFeedCloseButtonTopPadding, statusBarInset + dimensions.paddingSmall)
 
     // - Pagination:
     // Threshold: items.size - (beyondViewportPageCount + 2)
@@ -298,7 +304,7 @@ fun VideoFeedScreen(
                     contentDescription = stringResource(id = R.string.accessibility_discovery_buttons_close),
                     modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(start = dimensions.paddingMediumSmall, top = dimensions.videoFeedCloseButtonTopPadding)
+                        .padding(start = dimensions.paddingMediumSmall, top = iconTopPadding)
                         .size(dimensions.videoFeedCloseButtonSize)
                         .dropShadow(
                             shape = CircleShape,
@@ -328,7 +334,7 @@ fun VideoFeedScreen(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(end = dimensions.paddingMediumSmall, top = dimensions.videoFeedCloseButtonTopPadding)
+                        .padding(end = dimensions.paddingMediumSmall, top = iconTopPadding)
                         .size(dimensions.videoFeedCloseButtonSize)
                         .dropShadow(
                             shape = CircleShape,

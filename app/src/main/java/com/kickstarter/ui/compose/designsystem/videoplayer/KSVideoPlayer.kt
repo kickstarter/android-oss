@@ -20,12 +20,16 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -371,9 +375,12 @@ fun KSVideoPlayer(
             val fullWidth = maxWidth
             val fullHeight = maxHeight
 
-            // - Reserve space for the top icons and the bottom CTA + scrub bar so the card clears them.
-            val topReserve = dimensions.videoFeedHiddenModeTopReserve
-            val bottomReserve = dimensions.videoFeedHiddenModeBottomReserve
+            val statusBarInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+            val navBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            val iconRowTop = maxOf(dimensions.videoFeedCloseButtonTopPadding, statusBarInset + dimensions.paddingSmall)
+            val topReserve = iconRowTop + (dimensions.videoFeedHiddenModeTopReserve - dimensions.videoFeedCloseButtonTopPadding)
+            val bottomReserve = maxOf(dimensions.videoFeedScrubBarBottomPadding, navBarInset) +
+                (dimensions.videoFeedHiddenModeBottomReserve - dimensions.videoFeedScrubBarBottomPadding)
             val availableHeight = (fullHeight - topReserve - bottomReserve).coerceAtLeast(0.dp)
             val inset = dimensions.videoFeedHiddenModeHorizontalInset
             val widthConstrained = (fullWidth - inset * 2).coerceAtLeast(0.dp)
@@ -575,13 +582,14 @@ private fun ProgressBarContainer(
     onScrubEnd: () -> Unit = {},
     showThumb: Boolean = true
 ) {
+    val navBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     KSVideoScrubBar(
         progress = progressProvider(),
         onSeek = onSeek,
         onScrubStart = onScrubStart,
         onScrubEnd = onScrubEnd,
         modifier = modifier
-            .padding(bottom = 24.dp)
+            .padding(bottom = maxOf(dimensions.videoFeedScrubBarBottomPadding, navBarInset))
             .padding(horizontal = dimensions.paddingMedium)
             .testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_PROGRESS_BAR.name),
         activeColor = Color.White,

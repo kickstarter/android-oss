@@ -167,6 +167,8 @@ fun ProjectStoryCaptionedImage(
     val isLoading = asyncPainter.state is AsyncImagePainter.State.Empty ||
         asyncPainter.state is AsyncImagePainter.State.Loading
 
+    val placeholderAspectRatio = placeholderAspectRatio?.takeIf { it > 0f }
+
     Column(
         modifier = Modifier
             .then(modifier)

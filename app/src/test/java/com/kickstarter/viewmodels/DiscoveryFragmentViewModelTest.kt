@@ -840,7 +840,8 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         shouldShowVideoFeedBanner.assertValues(true)
 
         logUserIn(currentUser)
-        shouldShowVideoFeedBanner.assertValues(true, true)
+        // Still visible after login. The redundant re-emit is now coalesced by distinctUntilChanged.
+        shouldShowVideoFeedBanner.assertValues(true)
     }
 
     @Test
@@ -875,8 +876,67 @@ class DiscoveryFragmentViewModelTest : KSRobolectricTestCase() {
         setUpInitialHomeAllProjectsParams()
         shouldShowVideoFeedBanner.assertValues(true)
 
+        // clearPage no longer force-hides the banner; its visibility is derived reactively, so the
+        // last emitted value (true) stands until this page's params are re-pushed.
         vm.inputs.clearPage()
-        shouldShowVideoFeedBanner.assertValues(true, false)
+        shouldShowVideoFeedBanner.assertValues(true)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_userReloadWindow_keepsBannerInsteadOfHiding() {
+        // Regression: the gate re-reads as Loading:Unrecognized/false during the async Statsig
+        // updateUser triggered by login/logout. While values reload the banner must keep its current
+        // (shown) state rather than flip to false.
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        setUpInitialHomeAllProjectsParams()
+        shouldShowVideoFeedBanner.assertValue(true)
+
+        // A user change starts: values are being refetched for the new user (Loading:Unrecognized).
+        statsigClient.beginUserReload()
+        // Even if params are re-pushed mid-reload (as when Discovery is recreated on logout), the
+        // banner must not flip to false.
+        vm.inputs.paramsFromActivity(
+            getDefaultParams(null).toBuilder().sort(DiscoveryParams.Sort.MAGIC).build()
+        )
+        shouldShowVideoFeedBanner.assertValue(true)
+        shouldShowVideoFeedBanner.assertValueCount(1)
+
+        // Values settle for the new user; still shown, with no redundant re-emit.
+        statsigClient.completeUserReload()
+        shouldShowVideoFeedBanner.assertValue(true)
+        shouldShowVideoFeedBanner.assertValueCount(1)
+    }
+
+    @Test
+    fun testShouldShowVideoFeedBanner_createdDuringReload_showsOnceSettled() {
+        // Simulates Discovery being recreated on logout while Statsig is still reloading values for
+        // the now-anonymous user: the banner shouldn't read the gate yet (it would be
+        // Loading:Unrecognized/false), and should appear once values settle.
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment().toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+        setUpEnvironment(environment)
+
+        // Reload already in flight before the fragment pushes its params.
+        statsigClient.beginUserReload()
+        setUpInitialHomeAllProjectsParams()
+        // Gate value not trustworthy yet -> banner not shown, but not decided as false either.
+        shouldShowVideoFeedBanner.assertNoValues()
+
+        statsigClient.completeUserReload()
+        shouldShowVideoFeedBanner.assertValue(true)
     }
 
     private fun logUserIn(currentUser: CurrentUserTypeV2) {

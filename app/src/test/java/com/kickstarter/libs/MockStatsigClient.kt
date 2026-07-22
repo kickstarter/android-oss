@@ -47,25 +47,66 @@ open class MockStatsigClient(
     segmentTrackingClient = segmentTrackingClient,
     sdkInitializer = { null }
 ) {
+    /**
+     * When true, simulates the async `updateUser` reload window: [configReady] is `false` and gate
+     * reads come back with reason `Loading:Unrecognized` (value `false`), exactly like the real SDK
+     * between a user change and the new values landing.
+     */
+    private var reloadingValues = false
+
     init {
-        if (startReady) _isReady.value = true
+        if (startReady) {
+            _isReady.value = true
+            _configReady.value = true
+        }
     }
 
+    /**
+     * Simulates a successful cold-start init: the SDK is ready ([isReady]) and values for the
+     * initial user have settled ([configReady]). In production both flip to `true` once the first
+     * init/updateUser completes; use [beginUserReload]/[completeUserReload] to model a later
+     * user-change reload window where only [configReady] toggles.
+     */
     fun triggerReady() {
         _isReady.value = true
+        _configReady.value = true
+    }
+
+    /**
+     * Simulates the start of a user change (login/logout): values for the new user are not loaded
+     * yet, so [configReady] flips to `false` and gate reads become `Loading:Unrecognized`. Mirrors
+     * production [StatsigClient.handleObservedUserData] before `updateUser` completes.
+     */
+    fun beginUserReload() {
+        reloadingValues = true
+        _configReady.value = false
+    }
+
+    /** Simulates the reload finishing: values have settled for the current user. */
+    fun completeUserReload() {
+        reloadingValues = false
+        _configReady.value = true
     }
 
     override fun isInitialized(): Boolean = true
 
     override fun checkGate(gateName: String): Boolean =
-        gateMap[gateName] ?: false
+        if (reloadingValues) false else gateMap[gateName] ?: false
 
     override fun getFeatureGate(gateName: String): FeatureGate =
-        FeatureGate(
-            gateName,
-            EvalDetails(EvalSource.NoValues, EvalReason.Unrecognized),
-            gateMap[gateName] ?: false
-        )
+        if (reloadingValues) {
+            FeatureGate(
+                gateName,
+                EvalDetails(EvalSource.Loading, EvalReason.Unrecognized),
+                false
+            )
+        } else {
+            FeatureGate(
+                gateName,
+                EvalDetails(EvalSource.Network, EvalReason.Recognized),
+                gateMap[gateName] ?: false
+            )
+        }
 
     override fun getExperiment(experimentName: String): DynamicConfig =
         DynamicConfig(

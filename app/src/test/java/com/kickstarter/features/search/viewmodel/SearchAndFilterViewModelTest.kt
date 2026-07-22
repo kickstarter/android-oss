@@ -521,4 +521,35 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle()
         assertTrue(viewModel.isVideoFeedBannerVisible.value)
     }
+
+    @Test
+    fun `test isVideoFeedBannerVisible keeps shown state during user reload window`() = runTest {
+        // Regression: the gate re-reads as Loading:Unrecognized/false during the async Statsig
+        // updateUser triggered by login/logout. While values reload the banner must keep its
+        // current (shown) state rather than flip to false, and must not log a phantom exposure.
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_VIDEO_FEED.key to true)
+        )
+        val environment = environment()
+            .toBuilder()
+            .statsigClient(statsigClient)
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        advanceUntilIdle()
+        assertTrue(viewModel.isVideoFeedBannerVisible.value)
+
+        // A user change starts: values are being refetched for the new user (Loading:Unrecognized).
+        statsigClient.beginUserReload()
+        advanceUntilIdle()
+        assertTrue(viewModel.isVideoFeedBannerVisible.value)
+
+        // Values settle for the new user; still shown.
+        statsigClient.completeUserReload()
+        advanceUntilIdle()
+        assertTrue(viewModel.isVideoFeedBannerVisible.value)
+    }
 }

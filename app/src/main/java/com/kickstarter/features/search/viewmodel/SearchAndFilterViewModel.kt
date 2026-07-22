@@ -12,6 +12,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
+import com.statsig.androidsdk.EvalReason
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,14 @@ class SearchAndFilterViewModel(
     private val analyticEvents = requireNotNull(environment.analytics())
     private val statsigClient = requireNotNull(environment.statsigClient())
 
+    /**
+     * Whether the video feed banner should show, derived from the [StatsigGateKey.ANDROID_VIDEO_FEED]
+     * gate. It is recomputed whenever gate values settle for the current user (the client's
+     * `configReady`) rather than on the one-shot `isReady`, so the gate is never read mid user-reload
+     * (login/logout) where it returns `Loading:Unrecognized`/`false`. While values are (re)loading, or
+     * come back unrecognized, the banner keeps its current state instead of flipping to hidden and
+     * logging a phantom exposure.
+     */
     private val _isVideoFeedBannerVisible = MutableStateFlow(false)
     val isVideoFeedBannerVisible: StateFlow<Boolean> = _isVideoFeedBannerVisible.asStateFlow()
 
@@ -82,8 +91,11 @@ class SearchAndFilterViewModel(
 
     init {
         scope.launch {
-            statsigClient.isReady.collect { isReady ->
-                _isVideoFeedBannerVisible.value = isReady && statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+            statsigClient.configReady.collect { configReady ->
+                if (!configReady) return@collect
+                val gate = statsigClient.getFeatureGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+                if (gate.getEvalDetails().reason == EvalReason.Unrecognized) return@collect
+                _isVideoFeedBannerVisible.value = gate.getValue()
             }
         }
 

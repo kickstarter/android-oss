@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -22,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -40,6 +42,8 @@ import com.kickstarter.R
 import com.kickstarter.features.projectstory.ProjectStoryUiState
 import com.kickstarter.features.projectstory.data.RichTextItem
 import com.kickstarter.features.projectstory.data.aspectRatio
+import com.kickstarter.features.projectstory.data.childPhoto
+import com.kickstarter.features.projectstory.data.hasChildPhoto
 import com.kickstarter.features.projectstory.ui.RichTextItemPhotoComponent
 import com.kickstarter.features.projectstory.ui.RichTextItemTextComponent
 import com.kickstarter.features.projectstory.ui.WebViewComponent
@@ -117,6 +121,7 @@ fun PreLaunchProjectPageScreen(
 ) {
     val project = projectState.value
     val story = projectStoryState.value.storiedProject?.story
+    val photoAspectRatiosByUrl = remember { mutableStateMapOf<String, Float>() }
 
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
@@ -279,7 +284,7 @@ fun PreLaunchProjectPageScreen(
                     }
                 }
 
-                items(story?.items ?: emptyList(), contentType = { it::class.simpleName }) { item ->
+                itemsIndexed(story?.items ?: emptyList(), key = { index, item -> "$item$index" }, contentType = { index, item -> item.lazyListContentType() }) { index, item ->
                     Box(
                         modifier = Modifier
                             .padding(horizontal = screenPadding, vertical = dimensionResource(id = R.dimen.grid_1))
@@ -289,11 +294,19 @@ fun PreLaunchProjectPageScreen(
                             is RichTextItem.Text -> {
                                 when (item) {
                                     is RichTextItem.Text.Paragraph -> {
-                                        val childPhoto = item.children?.firstOrNull { it is RichTextItem.Photo } as? RichTextItem.Photo
+                                        val childPhoto = item.childPhoto()
                                         when {
                                             childPhoto != null -> {
                                                 val link = item.link
-                                                RichTextItemPhotoComponent(childPhoto, link)
+                                                val photoUrl = childPhoto.asset?.url ?: childPhoto.url
+                                                RichTextItemPhotoComponent(
+                                                    childPhoto,
+                                                    link,
+                                                    placeholderAspectRatio = photoAspectRatiosByUrl[photoUrl],
+                                                    onPhotoAspectRatioResolved = { aspectRatio ->
+                                                        photoAspectRatiosByUrl[photoUrl] = aspectRatio
+                                                    }
+                                                )
                                             }
                                             else -> RichTextItemTextComponent(item)
                                         }
@@ -307,7 +320,14 @@ fun PreLaunchProjectPageScreen(
                                 Box(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = dimensionResource(id = R.dimen.grid_1))
                                 ) {
-                                    RichTextItemPhotoComponent(item)
+                                    val photoUrl = item.asset?.url ?: item.url
+                                    RichTextItemPhotoComponent(
+                                        item,
+                                        placeholderAspectRatio = photoAspectRatiosByUrl[photoUrl],
+                                        onPhotoAspectRatioResolved = { aspectRatio ->
+                                            photoAspectRatiosByUrl[photoUrl] = aspectRatio
+                                        }
+                                    )
                                 }
                             }
                             is RichTextItem.Oembed -> {
@@ -413,3 +433,10 @@ fun PreLaunchProjectPageScreen(
         }
     }
 }
+
+private fun RichTextItem.lazyListContentType(): String =
+    if (this is RichTextItem.Text.Paragraph && hasChildPhoto()) {
+        RichTextItem.Photo::class.simpleName.orEmpty()
+    } else {
+        this::class.simpleName.orEmpty()
+    }

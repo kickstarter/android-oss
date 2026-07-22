@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -301,6 +302,46 @@ class ProjectStoryCaptionedImageTest : KSRobolectricTestCase() {
         onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.CAPTION.name))
             .assertTextEquals(caption)
             .assertIsDisplayed()
+    }
+
+    @Test
+    @OptIn(ExperimentalTestApi::class)
+    fun `test image loading with aspect ratio placeholder`() = runComposeUiTest {
+        val standardDispatcher = StandardTestDispatcher(mainClock.scheduler)
+
+        setUpImageLoader(
+            ImageLoader.Builder(context)
+                .components { add(fakeImageLoaderEngine()) }
+                .dispatcher(standardDispatcher)
+                .interceptorDispatcher(standardDispatcher)
+                .build()
+        )
+
+        val placeholderAspectRatio = mutableStateOf<Float?>(null)
+
+        setContent {
+            ProjectStoryCaptionedImage(
+                image = "https://www.example.com/blue.jpg",
+                caption = null,
+                placeholderAspectRatio = placeholderAspectRatio.value
+            )
+        }
+
+        onNode(hasTestTag(ProjectStoryCaptionedImageTestTag.LOADING_INDICATOR.name))
+            .assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo))
+            .assertIsDisplayed()
+
+        placeholderAspectRatio.value = 1.78f
+
+        onNode(
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
+        ).assertDoesNotExist()
+
+        mainClock.advanceTimeBy(REQUEST_DELAY)
+
+        onNode(
+            SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
+        ).assertDoesNotExist()
     }
 
     @Test

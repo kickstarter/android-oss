@@ -8,7 +8,9 @@ import android.webkit.WebView
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.layout.PinnableContainer
@@ -176,26 +178,40 @@ private fun parseRichTextChildrenOfRichText(children: List<RichTextItem.Text.Chi
 }
 
 @Composable
-fun RichTextItemPhotoComponent(item: RichTextItem.Photo, link: String? = null) {
+fun RichTextItemPhotoComponent(
+    item: RichTextItem.Photo,
+    link: String? = null,
+    placeholderAspectRatio: Float? = null,
+    onPhotoAspectRatioResolved: ((Float) -> Unit)? = null
+) {
     // Consider special handling of empty image url
     val imageUrl = item.asset?.url ?: item.url
     // `item.caption` can be empty
     val caption = item.caption.ifBlank { null }
-    val pinnableContainer = LocalPinnableContainer.current
-    val onSuccess: (AsyncImagePainter.State.Success) -> Unit = remember(pinnableContainer) {
+    val currentOnPhotoAspectRatioResolved by rememberUpdatedState(onPhotoAspectRatioResolved)
+    val onSuccess: (AsyncImagePainter.State.Success) -> Unit = remember {
         {
-            // TODO: We should be able to use the dimensions of the `Drawable` contained in the `Success`
-            //  state to further optimize for only pinning tall images as determined by aspect ratio or
-            //  compared to the screen size/resolution.
-            pinnableContainer?.pin()
+            val drawable = it.result.drawable
+            val width = drawable.intrinsicWidth
+            val height = drawable.intrinsicHeight
+            val aspectRatio = if (width > 0 && height > 0) {
+                width.toFloat() / height.toFloat()
+            } else {
+                null
+            }
+            aspectRatio?.let { aspectRatio ->
+                currentOnPhotoAspectRatioResolved?.invoke(aspectRatio)
+            }
         }
     }
+
     ProjectStoryCaptionedImage(
         modifier = Modifier.testTag(ProjectStoryComponentTestTag.PHOTO.name),
         image = imageUrl,
         caption = caption,
         link = link,
-        onSuccess = onSuccess
+        onSuccess = onSuccess,
+        placeholderAspectRatio = placeholderAspectRatio
     )
 }
 

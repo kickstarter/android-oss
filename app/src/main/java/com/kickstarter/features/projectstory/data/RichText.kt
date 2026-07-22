@@ -80,3 +80,8 @@ sealed interface RichTextItem {
 
 val RichTextItem.Oembed.aspectRatio: Float?
     get() = if (height > 0) width.toFloat() / height.toFloat() else null
+
+fun RichTextItem.Text.Paragraph.childPhoto(): RichTextItem.Photo? =
+    children?.firstOrNull { it is RichTextItem.Photo } as? RichTextItem.Photo
+
+fun RichTextItem.Text.Paragraph.hasChildPhoto(): Boolean = childPhoto() != null

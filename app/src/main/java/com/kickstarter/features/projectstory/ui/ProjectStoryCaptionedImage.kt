@@ -1,11 +1,14 @@
 package com.kickstarter.features.projectstory.ui
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -34,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import coil.drawable.CrossfadeDrawable
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.size.SizeResolver
@@ -94,7 +98,8 @@ fun ProjectStoryCaptionedImage(
     image: String?,
     caption: String?,
     link: String? = null,
-    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null
+    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null,
+    placeholderAspectRatio: Float? = null
 ) {
     val context = LocalContext.current
     val defaults = context.imageLoader.defaults
@@ -135,6 +140,7 @@ fun ProjectStoryCaptionedImage(
         sizeResolver,
         caption,
         link,
+        placeholderAspectRatio
     )
 }
 
@@ -146,6 +152,7 @@ fun ProjectStoryCaptionedImage(
     sizeResolver: SizeResolver,
     caption: String?,
     link: String? = null,
+    placeholderAspectRatio: Float? = null
 ) {
     val uriHandler = LocalUriHandler.current
 
@@ -157,14 +164,31 @@ fun ProjectStoryCaptionedImage(
                 uriHandler.openUri(link)
             }
 
+    val isLoading = asyncPainter.state is AsyncImagePainter.State.Empty ||
+        asyncPainter.state is AsyncImagePainter.State.Loading
+
+    val placeholderAspectRatio = placeholderAspectRatio?.takeIf { it > 0f }
+
     Column(
         modifier = Modifier
             .then(modifier)
             .then(clickableModifier),
         verticalArrangement = Arrangement.spacedBy(dimensions.paddingXSmall)
     ) {
+
+        val placeholderAlpha = animateFloatAsState(
+            targetValue = if (placeholderAspectRatio != null && isLoading) 1f else 0f,
+            animationSpec = tween(durationMillis = CrossfadeDrawable.DEFAULT_DURATION)
+        )
+
+        val aspectRatioModifier = if (placeholderAspectRatio != null) {
+            Modifier.aspectRatio(placeholderAspectRatio).background(grey_04.copy(alpha = placeholderAlpha.value))
+        } else {
+            Modifier
+        }
+
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().then(aspectRatioModifier)
         ) {
             ConstrainedImage(
                 modifier = Modifier
@@ -176,9 +200,7 @@ fun ProjectStoryCaptionedImage(
                 sizeResolver = sizeResolver,
                 wrapContentHeightUnbounded = true
             )
-            if (asyncPainter.state is AsyncImagePainter.State.Empty ||
-                asyncPainter.state is AsyncImagePainter.State.Loading
-            ) {
+            if (placeholderAspectRatio == null && isLoading) {
                 LinearProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)

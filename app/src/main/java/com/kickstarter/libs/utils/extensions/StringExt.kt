@@ -227,11 +227,11 @@ fun String.toHtml(): Spanned {
     return Html.fromHtml(TextUtils.htmlEncode(this), Html.FROM_HTML_MODE_LEGACY)
 }
 
-fun String.toHashedSHAEmail(): String {
+fun String.toSha256(): String {
     return MessageDigest
         .getInstance("SHA-256")
         .digest(this.toByteArray())
-        .fold("") { str, it -> str + "%02x".format(it) }
+        .joinToString("") { "%02x".format(it) }
 }
 
 fun String?.toInteger(): Int? {

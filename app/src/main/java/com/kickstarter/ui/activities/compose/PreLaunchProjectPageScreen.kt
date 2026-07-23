@@ -47,6 +47,7 @@ import com.kickstarter.features.projectstory.ui.RichTextItemPhotoComponent
 import com.kickstarter.features.projectstory.ui.RichTextItemTextComponent
 import com.kickstarter.features.projectstory.ui.WebViewComponent
 import com.kickstarter.libs.utils.extensions.toHtml
+import com.kickstarter.libs.utils.extensions.toSha256
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.activities.compose.PreLaunchProjectPageScreenTestTag.COMING_SOON_BADGE
@@ -283,7 +284,7 @@ fun PreLaunchProjectPageScreen(
                     }
                 }
 
-                itemsIndexed(story?.items ?: emptyList(), key = { index, item -> "$item$index" }, contentType = { index, item -> item.lazyListContentType() }) { index, item ->
+                itemsIndexed(story?.items ?: emptyList(), key = { index, item -> item.lazyListKey(index) }, contentType = { index, item -> item.lazyListContentType() }) { index, item ->
                     Box(
                         modifier = Modifier
                             .padding(horizontal = screenPadding, vertical = dimensionResource(id = R.dimen.grid_1))
@@ -439,3 +440,6 @@ private fun RichTextItem.lazyListContentType(): String =
     } else {
         this::class.simpleName.orEmpty()
     }
+
+private fun RichTextItem.lazyListKey(index: Int): String =
+    "${this.toString().toSha256()}_$index"

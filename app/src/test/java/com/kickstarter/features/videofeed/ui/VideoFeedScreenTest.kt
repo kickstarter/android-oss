@@ -22,6 +22,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.features.videofeed.data.KSVideoBadgeType
 import com.kickstarter.features.videofeed.data.VideoFeedItem
 import com.kickstarter.features.videofeed.ui.components.KSVideoActionsColumnTestTag
+import com.kickstarter.features.videofeed.ui.components.KSVideoBadgesRowTestTag
 import com.kickstarter.features.videofeed.ui.components.KSVideoCampaignCardTestTag
 import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.ProjectFactory
@@ -29,7 +30,12 @@ import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import org.junit.Test
+import org.robolectric.annotation.Config
 
+// Render at a realistic phone size so the bottom-anchored overlay (action rail, badges, campaign
+// card) lays out below the top controls instead of overflowing upward in Robolectric's small
+// default window — otherwise the rail floats up under the top-right HideUI toggle.
+@Config(qualifiers = "w411dp-h891dp")
 class VideoFeedScreenTest : KSRobolectricTestCase() {
 
     private val hlsUrl = "https://ksr-video.imgix.net/projects/3275127/video-865539-hls_playlist.m3u8"
@@ -780,5 +786,64 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             .performClick()
 
         assertEquals(photoUrl, shareImageUrl)
+    }
+
+    @Test
+    fun `HideUI toggle hides the action rail, badges and campaign details but keeps close, toggle and back button`() {
+        val project = ProjectFactory.project().toBuilder().id(11001L).build()
+        val items = listOf(
+            VideoFeedItem(badges = listOf(KSVideoBadgeType.ProjectWeLove), project = project, hlsUrl = hlsUrl)
+        )
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(environment = environment(), items = items)
+            }
+        }
+
+        // - Chrome is visible by default
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(KSVideoBadgesRowTestTag.BADGES_ROW_CONTAINER.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.TITLE_SUBTITLE_CONTAINER.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+
+        // - Enable HideUI
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}")
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        // - The action rail, badges and campaign details are gone
+        composeTestRule.onNodeWithTag(KSVideoActionsColumnTestTag.COLUMN_CONTAINER.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+        composeTestRule.onNodeWithTag(KSVideoBadgesRowTestTag.BADGES_ROW_CONTAINER.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.TITLE_SUBTITLE_CONTAINER.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+
+        // - Close, HideUI toggle and the Back button remain
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_CLOSE_BUTTON.name}_${project.id()}")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `HideUI toggle button is displayed with a button role`() {
+        val project = ProjectFactory.project().toBuilder().id(11002L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(environment = environment(), items = items)
+            }
+        }
+
+        composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}")
+            .assertIsDisplayed()
+            .assert(SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button))
     }
 }

@@ -1,6 +1,10 @@
 package com.kickstarter.features.videofeed.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,9 +13,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +31,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kickstarter.R
 import com.kickstarter.ui.compose.designsystem.KSOutlinedButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
@@ -45,6 +53,10 @@ enum class KSVideoCampaignCardTestTag {
  * This component displays the project title, subtitle, a circular progress indicator,
  * and a primary call-to-action button. It is designed to be used as an overlay or
  * complementary UI element in a video-focused interface.
+ *
+ * @param detailsVisible When false (HideUI mode) the title, subtitle and progress indicator fade
+ * out, leaving only the call-to-action button. The button is always present so it can persist
+ * across the HideUI transition.
  */
 @Composable
 fun KSVideoCampaignCard(
@@ -53,7 +65,8 @@ fun KSVideoCampaignCard(
     subtitle: String,
     buttonText: String,
     onButtonClick: () -> Unit,
-    progress: Float = 0f
+    progress: Float = 0f,
+    detailsVisible: Boolean = true
 ) {
     Column(
         modifier = modifier
@@ -62,60 +75,77 @@ fun KSVideoCampaignCard(
             .padding(top = dimensions.paddingXSmall)
             .testTag(KSVideoCampaignCardTestTag.CARD_CONTAINER.name)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
-            modifier = Modifier
-                .semantics(mergeDescendants = true) {
-                    // Combine title and subtitle for a better screen reader experience
-                    contentDescription = "$title, $subtitle"
+        // Seed the transition from the current value so details don't animate in on first
+        // composition — only when HideUI is actually toggled.
+        val detailsState = remember { MutableTransitionState(detailsVisible) }
+        detailsState.targetState = detailsVisible
+        AnimatedVisibility(visibleState = detailsState) {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(dimensions.paddingSmall),
+                    modifier = Modifier
+                        .semantics(mergeDescendants = true) {
+                            // Combine title and subtitle for a better screen reader experience
+                            contentDescription = "$title, $subtitle"
+                        }
+                        .testTag(KSVideoCampaignCardTestTag.TITLE_SUBTITLE_CONTAINER.name)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clearAndSetSemantics { } // Semantics are handled by the parent Row
+                    ) {
+                        Text(
+                            text = title,
+                            style = typographyV2.headingXL,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.height(dimensions.videoFeedCampaignTitleSubtitleSpacing))
+                        Text(
+                            text = subtitle,
+                            style = typographyV2.headingMD,
+                            color = Color.White.copy(alpha = 0.8f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    val isComplete = progress >= 100
+                    val progressValue = (progress / 100f).coerceIn(0f, 1f)
+
+                    KSVideoProgressIndicator(
+                        modifier = Modifier.testTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name),
+                        progress = progressValue,
+                        icon = if (isComplete) Check else null,
+                        text = if (!isComplete) progress.toInt().toString() else "",
+                        contentDescription = stringResource(id = R.string.Funded_percentage),
+                        stateDescription = if (isComplete) {
+                            stringResource(id = R.string.Campaign_goal_reached)
+                        } else {
+                            "${progress.toInt()}%"
+                        }
+                    )
                 }
-                .testTag(KSVideoCampaignCardTestTag.TITLE_SUBTITLE_CONTAINER.name)
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clearAndSetSemantics { } // Semantics are handled by the parent Row
-            ) {
-                Text(
-                    text = title,
-                    style = typographyV2.headingXL,
-                    color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(dimensions.videoFeedCampaignTitleSubtitleSpacing))
-                Text(
-                    text = subtitle,
-                    style = typographyV2.headingMD,
-                    color = Color.White.copy(alpha = 0.8f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+
+                Spacer(modifier = Modifier.height(dimensions.paddingMedium))
             }
-
-            val isComplete = progress >= 100
-            val progressValue = (progress / 100f).coerceIn(0f, 1f)
-
-            KSVideoProgressIndicator(
-                modifier = Modifier.testTag(KSVideoCampaignCardTestTag.PROGRESS_INDICATOR.name),
-                progress = progressValue,
-                icon = if (isComplete) Check else null,
-                text = if (!isComplete) progress.toInt().toString() else "",
-                contentDescription = stringResource(id = R.string.Funded_percentage),
-                stateDescription = if (isComplete) {
-                    stringResource(id = R.string.Campaign_goal_reached)
-                } else {
-                    "${progress.toInt()}%"
-                }
-            )
         }
 
-        Spacer(modifier = Modifier.height(dimensions.paddingMedium))
+        // - In HideUI mode the button slides down toward the scrub bar. Apply an
+        // explicit downward offset that animates in sync with the details collapsing.
+        val buttonDrop by animateDpAsState(
+            targetValue = if (detailsVisible) 0.dp else dimensions.videoFeedHiddenModeButtonDrop,
+            animationSpec = tween(durationMillis = 300),
+            label = "hideUiButtonDrop"
+        )
 
         KSOutlinedButton(
             modifier = Modifier
                 .fillMaxWidth()
+                .offset(y = buttonDrop)
                 .semantics {
                     role = Role.Button
                 }

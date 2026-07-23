@@ -99,12 +99,20 @@ data class KSDimensions(
     // Video Feed dimensions
     val videoFeedCloseButtonSize: Dp = Dp.Unspecified,
     val videoFeedCloseButtonTopPadding: Dp = Dp.Unspecified,
+    val videoFeedHideUiIconSize: Dp = Dp.Unspecified,
     val videoFeedActionsSpacing: Dp = Dp.Unspecified,
     val videoFeedCampaignTitleSubtitleSpacing: Dp = Dp.Unspecified,
+    val videoFeedScrubBarBottomPadding: Dp = Dp.Unspecified,
     val videoFeedScrubBarTrackHeight: Dp = Dp.Unspecified,
     val videoFeedScrubBarThumbSize: Dp = Dp.Unspecified,
     val videoFeedSnackbarTopPadding: Dp = Dp.Unspecified,
     val videoFeedSnackbarHorizontalMargin: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeCornerRadius: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeHorizontalInset: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeTopReserve: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeBottomReserve: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeButtonDrop: Dp = Dp.Unspecified,
+    val videoFeedHiddenModeScrubBarSpacing: Dp = Dp.Unspecified,
 
     // Discovery Banner dimensions
     val discoveryBannerImageWidth: Dp = Dp.Unspecified,
@@ -220,12 +228,20 @@ val KSStandardDimensions = KSDimensions(
     // Video Feed dimensions
     videoFeedCloseButtonSize = 40.dp,
     videoFeedCloseButtonTopPadding = 66.dp,
+    videoFeedHideUiIconSize = 26.dp,
     videoFeedActionsSpacing = 20.dp,
     videoFeedCampaignTitleSubtitleSpacing = 5.dp,
+    videoFeedScrubBarBottomPadding = 24.dp,
     videoFeedScrubBarTrackHeight = 4.dp,
     videoFeedScrubBarThumbSize = 16.dp,
     videoFeedSnackbarTopPadding = 122.dp,
     videoFeedSnackbarHorizontalMargin = 10.dp,
+    videoFeedHiddenModeCornerRadius = 8.dp,
+    videoFeedHiddenModeHorizontalInset = 18.dp,
+    videoFeedHiddenModeTopReserve = 60.dp,
+    videoFeedHiddenModeBottomReserve = 60.dp,
+    videoFeedHiddenModeButtonDrop = 16.dp,
+    videoFeedHiddenModeScrubBarSpacing = 8.dp,
 
     // Discovery Banner dimensions
     discoveryBannerImageWidth = 102.dp,

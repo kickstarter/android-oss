@@ -113,6 +113,8 @@
   <string name="fpo_Profile" formatted="false">Profile</string>
   <string name="fpo_View_more_options" formatted="false">View more options</string>
   <string name="fpo_View_creator_profile" formatted="false">View creator profile</string>
+  <string name="fpo_Hide_details" formatted="false">Hide details</string>
+  <string name="fpo_Show_details" formatted="false">Show details</string>
   <string name="fpo_Rewind">Rewind</string>
   <string name="fpo_Rewind_10_seconds">Rewind 5 seconds</string>
   <string name="fpo_Forward">Forward 5 seconds</string>

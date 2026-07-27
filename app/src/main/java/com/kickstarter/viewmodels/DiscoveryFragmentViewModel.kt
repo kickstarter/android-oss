@@ -37,6 +37,7 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder
 import com.kickstarter.ui.viewholders.DiscoveryVideoFeedBannerViewHolder
+import com.statsig.androidsdk.EvalReason
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -319,7 +320,6 @@ interface DiscoveryFragmentViewModel {
             clearPage
                 .subscribe {
                     shouldShowOnboardingView.onNext(false)
-                    shouldShowVideoFeedBanner.onNext(false)
                     clearActivities.onNext(Unit)
                     projectList.onNext(emptyList())
                 }.addToDisposable(disposables)
@@ -359,18 +359,15 @@ interface DiscoveryFragmentViewModel {
                 .subscribe { shouldShowOnboardingView.onNext(it) }
                 .addToDisposable(disposables)
 
-            paramsFromActivity
-                .compose(
-                    Transformers.combineLatestPair(
-                        statsigClient.isReady.asObservable()
-                    )
-                )
-                .map {
-                    isVideoFeedBannerVisible(
-                        params = it.first,
-                        isGateOn = it.second && statsigClient.checkGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
-                    )
+            Observable.combineLatest(
+                paramsFromActivity,
+                statsigClient.configReady.asObservable()
+            ) { params, configReady -> params to configReady }
+                .concatMap { (params, configReady) ->
+                    val visible = videoFeedBannerVisibility(params, configReady)
+                    if (visible == null) Observable.empty() else Observable.just(visible)
                 }
+                .distinctUntilChanged()
                 .subscribe { shouldShowVideoFeedBanner.onNext(it) }
                 .addToDisposable(disposables)
 
@@ -582,15 +579,32 @@ interface DiscoveryFragmentViewModel {
             return params.isAllProjects.isTrue() && isSortHome && !isLoggedIn
         }
 
-        private fun isVideoFeedBannerVisible(
+        /**
+         * Single source of truth for the video feed banner's visibility for [params]. Returns `true`
+         * or `false` when the answer is known, or `null` when it is not yet decidable because the
+         * [StatsigGateKey.ANDROID_VIDEO_FEED] gate values are still (re)loading for the current user
+         * — hence gating on [configReady] rather than the one-shot `isReady`.
+         *
+         * On `null`, callers keep the banner's current state instead of hiding it. That — together
+         * with never force-hiding the banner elsewhere (e.g. on `clearPage`) — is what prevents the
+         * gate re-reading as `false` (reason `Loading:Unrecognized`) and logging a phantom exposure
+         * during the async user reload on login/logout.
+         *
+         * Surfaces that are not eligible (a category, a non-magic sort, etc.) are deterministically
+         * hidden regardless of the gate.
+         */
+        private fun videoFeedBannerVisibility(
             params: DiscoveryParams,
-            isGateOn: Boolean
-        ): Boolean {
-            if (!isGateOn) return false
+            configReady: Boolean
+        ): Boolean? {
             val isSortHome = DiscoveryParams.Sort.MAGIC == params.sort()
             val isHomeView = params.isAllProjects.isTrue() && isSortHome
             val isPwl = params.staffPicks().isTrue() && isSortHome
-            return isHomeView || isPwl
+            if (!isHomeView && !isPwl) return false
+            if (!configReady) return null
+            val gate = statsigClient.getFeatureGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
+            if (gate.getEvalDetails().reason == EvalReason.Unrecognized) return null
+            return gate.getValue()
         }
 
         private fun isSavedVisible(params: DiscoveryParams): Boolean {

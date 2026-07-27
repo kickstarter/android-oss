@@ -90,6 +90,19 @@ interface StatsigClientType {
     /** Emits true once the SDK has been successfully initialized. */
     val isReady: StateFlow<Boolean>
 
+    /**
+     * Emits `true` once gate/config values are loaded **and settled for the current Statsig user**,
+     * and `false` while they are being (re)fetched — e.g. during the async [updateUser] triggered by
+     * a login/logout.
+     *
+     * This is deliberately distinct from [isReady], which only reflects the one-time SDK
+     * initialization and stays `true` across user changes. Reactive gate consumers should gate their
+     * reads on [configReady] rather than [isReady]: reading a gate while values are reloading returns
+     * the default (reason `Loading:Unrecognized`, i.e. `false`) which would otherwise be cached as a
+     * real result and also logs a phantom exposure.
+     */
+    val configReady: StateFlow<Boolean>
+
     val statsigUser: StateFlow<StatsigUser>
 
     suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?, isAdmin: Boolean)
@@ -136,6 +149,9 @@ open class StatsigClient @JvmOverloads constructor(
 
     protected val _isReady = MutableStateFlow(false)
     override val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
+
+    protected val _configReady = MutableStateFlow(false)
+    override val configReady: StateFlow<Boolean> = _configReady.asStateFlow()
 
     private val _statsigUser = MutableStateFlow(StatsigUser())
     override val statsigUser = _statsigUser.asStateFlow()
@@ -211,6 +227,12 @@ open class StatsigClient @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Applies the latest observed user identity to Statsig and refetches gate/config values for it.
+     * [configReady] is flipped to `false` for the duration of the async [updateUser] refetch and back
+     * to `true` once values have settled, so reactive consumers don't read gates mid-reload (where
+     * they return the default with reason `Loading:Unrecognized`). See [configReady].
+     */
     override suspend fun handleObservedUserData(stableId: String?, segmentAnonymousId: String?, userId: String?, isAdmin: Boolean) {
         Timber.d("handleObservedUserData(stableId: $stableId, segmentAnonymousId: $segmentAnonymousId, userId: $userId, isAdmin: $isAdmin)")
 
@@ -226,9 +248,11 @@ open class StatsigClient @JvmOverloads constructor(
         }
 
         try {
+            _configReady.value = false
             Timber.d("Statsig.updateUser($statsigUser):")
             updateUser(statsigUser)
             _statsigUser.value = statsigUser
+            _configReady.value = true
             val initializeResponseJson = Statsig.runCatching { getInitializeResponseJson() }.getOrNull()
             initializeResponseJson?.let {
                 Timber.d("- EvaluationDetails: ${it.getEvalDetails()}")

@@ -36,6 +36,7 @@ import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
+import com.kickstarter.GetCreativePromptTagsQuery
 import com.kickstarter.GetLocationsQuery
 import com.kickstarter.GetProjectAddOnsQuery
 import com.kickstarter.GetProjectBackingQuery
@@ -95,6 +96,7 @@ import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.Tag
 import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
@@ -259,6 +261,7 @@ interface ApolloClientTypeV2 {
     suspend fun getSearchProjects(discoveryParams: DiscoveryParams, cursor: String? = null): Result<SearchEnvelope>
     suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>>
     suspend fun getCategories(): Result<List<Category>>
+    suspend fun getTags(): Result<List<Tag>>
     suspend fun getLocations(useDefault: Boolean, term: String?, lat: Float? = null, long: Float? = null, radius: Float? = null, filterByCoordinates: Boolean? = null): Result<List<Location>>
 
     suspend fun fetchProjectStory(slug: String): Result<StoriedProject>
@@ -368,9 +371,17 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             amountRaisedBucket = if (discoveryParams.amountBucket() == null) Optional.absent() else Optional.present(discoveryParams.amountBucket()?.toPledgedBucket()),
             goalBucket = if (discoveryParams.goalBucket() == null) Optional.absent() else Optional.present(discoveryParams.goalBucket()?.toGoalBucket()),
             following = if (discoveryParams.social() == null) Optional.absent() else Optional.present(discoveryParams.social().toBoolean()),
-            staffPicks = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.staffPicks())
+            staffPicks = if (discoveryParams.staffPicks() == null) Optional.absent() else Optional.present(discoveryParams.staffPicks()),
+            tagId = discoveryParams.tagId().toOptional()
         )
     }
+
+    /**
+     * Collapses the repeated `if (x == null) Optional.absent() else Optional.present(x)` pattern
+     * used when building Apollo query variables.
+     */
+    private fun <T : Any> T?.toOptional(): Optional<T> =
+        if (this == null) Optional.absent() else Optional.present(this)
 
     override fun createSetupIntent(project: Project?): Observable<String> {
         return Observable.defer {
@@ -1937,6 +1948,24 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             }
 
             categories
+        } ?: emptyList()
+    }
+
+    override suspend fun getTags(): Result<List<Tag>> = executeForResult {
+        val response = this.service.query(GetCreativePromptTagsQuery()).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.tags?.nodes?.mapNotNull { node ->
+            node?.let {
+                Tag(
+                    id = decodeRelayId(it.id) ?: return@mapNotNull null,
+                    name = it.name,
+                    url = it.url,
+                    slug = it.slug,
+                )
+            }
         } ?: emptyList()
     }
 

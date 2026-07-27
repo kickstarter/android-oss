@@ -59,6 +59,16 @@ class SearchAndFilterViewModel(
     private val _isVideoFeedBannerVisible = MutableStateFlow(false)
     val isVideoFeedBannerVisible: StateFlow<Boolean> = _isVideoFeedBannerVisible.asStateFlow()
 
+    /**
+     * Whether the Open Calls filter (pill, filter-menu row, and tag fetching) should be exposed,
+     * derived from the [StatsigGateKey.ANDROID_OPEN_CALLS] gate. Recomputed on the client's
+     * `configReady` — not the one-shot `isReady` — so the gate is never read mid user-reload
+     * (login/logout) where it returns `Loading:Unrecognized`/`false`, mirroring
+     * [isVideoFeedBannerVisible].
+     */
+    private val _isOpenCallsEnabled = MutableStateFlow(false)
+    val isOpenCallsEnabled: StateFlow<Boolean> = _isOpenCallsEnabled.asStateFlow()
+
     private val _searchUIState = MutableStateFlow(SearchUIState())
     val searchUIState: StateFlow<SearchUIState>
         get() = _searchUIState
@@ -96,6 +106,15 @@ class SearchAndFilterViewModel(
                 val gate = statsigClient.getFeatureGate(StatsigGateKey.ANDROID_VIDEO_FEED.key)
                 if (gate.getEvalDetails().reason == EvalReason.Unrecognized) return@collect
                 _isVideoFeedBannerVisible.value = gate.getValue()
+            }
+        }
+
+        scope.launch {
+            statsigClient.configReady.collect { configReady ->
+                if (!configReady) return@collect
+                val gate = statsigClient.getFeatureGate(StatsigGateKey.ANDROID_OPEN_CALLS.key)
+                if (gate.getEvalDetails().reason == EvalReason.Unrecognized) return@collect
+                _isOpenCallsEnabled.value = gate.getValue()
             }
         }
 
@@ -138,7 +157,8 @@ class SearchAndFilterViewModel(
         recommended: Boolean = false,
         projectsLoved: Boolean = false,
         savedProjects: Boolean = false,
-        social: Boolean = false
+        social: Boolean = false,
+        tagId: Int? = null
     ) {
         val update = params.value.toBuilder()
             .apply {
@@ -153,6 +173,7 @@ class SearchAndFilterViewModel(
                 this.staffPicks(if (projectsLoved) true else null)
                 this.starred(if (savedProjects) 1 else null)
                 this.social(if (social) 1 else null)
+                this.tagId(tagId)
             }
             .build()
 

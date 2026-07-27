@@ -1,0 +1,13 @@
+query GetCreativePromptTags {
+  tags(first: 21, scope: CREATIVE_PROMPT) {
+    pageInfo {
+      hasNextPage
+    }
+    nodes {
+      id
+      name
+      url
+      slug
+    }
+  }
+}

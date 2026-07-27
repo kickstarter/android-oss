@@ -39,6 +39,7 @@ import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.Tag
 import com.kickstarter.models.User
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.ApolloClientTypeV2
@@ -374,6 +375,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
     }
 
     override suspend fun getCategories(): Result<List<Category>> {
+        return Result.success(emptyList())
+    }
+
+    override suspend fun getTags(): Result<List<Tag>> {
         return Result.success(emptyList())
     }
 

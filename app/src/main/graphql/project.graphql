@@ -14,6 +14,7 @@ query FetchProjects(
   $amountRaisedBucket: PledgedBuckets,
   $goalBucket: GoalBuckets
   $following: Boolean
+  $tagId: Int
 ) {
     projects(
       first: $first,
@@ -30,7 +31,8 @@ query FetchProjects(
       locationId: $location,
       pledged: $amountRaisedBucket,
       goal: $goalBucket,
-      following: $following
+      following: $following,
+      tagId: $tagId
       ) {
         edges {
           cursor

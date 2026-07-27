@@ -548,6 +548,9 @@ fun SearchTopBar(
     savedProjectsText: String = stringResource(R.string.Saved_projects),
     followingText: String = stringResource(R.string.Following),
     goalText: String = stringResource(R.string.Goal),
+    openCallsText: String = stringResource(R.string.fpo_Open_calls),
+    isOpenCallsEnabled: Boolean = false,
+    isFromDeepLink: Boolean = false,
     onBackPressed: () -> Unit,
     onValueChanged: (String) -> Unit,
     selectedFilterCounts: Map<String, Int>,
@@ -662,6 +665,9 @@ fun SearchTopBar(
             savedProjectsText = savedProjectsText,
             followingText = followingText,
             goalText = goalText,
+            openCallsText = openCallsText,
+            isOpenCallsEnabled = isOpenCallsEnabled,
+            isFromDeepLink = isFromDeepLink,
             selectedFilterCounts = selectedFilterCounts,
             onPillPressed = onPillPressedOpensBottomSheet,
             shouldShowPhase = shouldShowPhase,
@@ -691,6 +697,9 @@ fun PillBar(
     savedProjectsText: String = stringResource(R.string.Saved_projects),
     followingText: String = stringResource(R.string.Following),
     goalText: String = stringResource(R.string.Goal),
+    openCallsText: String = stringResource(R.string.fpo_Open_calls),
+    isOpenCallsEnabled: Boolean = false,
+    isFromDeepLink: Boolean = false,
     selectedFilterCounts: Map<String, Int>,
     onPillPressed: (FilterRowPillType) -> Unit,
     shouldShowPhase: Boolean = true,
@@ -733,7 +742,8 @@ fun PillBar(
                 selectedFilterCounts.getOrDefault(FilterRowPillType.PROJECTS_LOVED.name, if (projectsLovedStatus.value.isTrue()) 1 else 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.SAVED.name, if (savedProjects.value.isTrue()) 1 else 0) +
                 selectedFilterCounts.getOrDefault(FilterRowPillType.FOLLOWING.name, if (following.value.isTrue()) 1 else 0) +
-                selectedFilterCounts.getOrDefault(FilterRowPillType.GOAL.name, 0)
+                selectedFilterCounts.getOrDefault(FilterRowPillType.GOAL.name, 0) +
+                selectedFilterCounts.getOrDefault(FilterRowPillType.OPEN_CALLS.name, 0)
 
         KSIconPillButton(
             modifier = Modifier.testTag(pillTag(FilterRowPillType.FILTER)),
@@ -745,6 +755,15 @@ fun PillBar(
             onClick = { onPillPressed(FilterRowPillType.FILTER) },
             count = activeFilters
         )
+
+        // - Deep-link entry surfaces the Open Calls pill at the front, ahead of Category.
+        if (isOpenCallsEnabled && isFromDeepLink) {
+            OpenCallsPill(
+                text = openCallsText,
+                isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.OPEN_CALLS.name, 0) > 0,
+                onClick = { onPillPressed(FilterRowPillType.OPEN_CALLS) }
+            )
+        }
 
         KSPillButton(
             shouldShowTrailingIcon = true,
@@ -902,7 +921,31 @@ fun PillBar(
                 )
             }
         }
+
+        // - Manual entry surfaces the Open Calls pill last, after Following.
+        if (isOpenCallsEnabled && !isFromDeepLink) {
+            OpenCallsPill(
+                text = openCallsText,
+                isSelected = selectedFilterCounts.getOrDefault(FilterRowPillType.OPEN_CALLS.name, 0) > 0,
+                onClick = { onPillPressed(FilterRowPillType.OPEN_CALLS) }
+            )
+        }
     }
+}
+
+@Composable
+private fun OpenCallsPill(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    KSPillButton(
+        shouldShowTrailingIcon = true,
+        modifier = Modifier.testTag(pillTag(FilterRowPillType.OPEN_CALLS)),
+        text = text,
+        isSelected = isSelected,
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -926,5 +969,6 @@ enum class FilterRowPillType {
     RECOMMENDED,
     PROJECTS_LOVED,
     SAVED,
-    FOLLOWING
+    FOLLOWING,
+    OPEN_CALLS
 }

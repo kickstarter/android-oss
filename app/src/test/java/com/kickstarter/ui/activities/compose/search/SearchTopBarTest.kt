@@ -399,4 +399,69 @@ class SearchTopBarTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.FILTER))
             .assertTextEquals("1")
     }
+
+    private val allCountsZero = mapOf(
+        FilterRowPillType.SORT.name to 0,
+        FilterRowPillType.CATEGORY.name to 0,
+        FilterRowPillType.PROJECT_STATUS.name to 0,
+        FilterRowPillType.PERCENTAGE_RAISED.name to 0,
+        FilterRowPillType.LOCATION.name to 0,
+        FilterRowPillType.AMOUNT_RAISED.name to 0,
+        FilterRowPillType.RECOMMENDED.name to 0,
+        FilterRowPillType.PROJECTS_LOVED.name to 0,
+        FilterRowPillType.SAVED.name to 0,
+        FilterRowPillType.FOLLOWING.name to 0,
+        FilterRowPillType.GOAL.name to 0,
+        FilterRowPillType.OPEN_CALLS.name to 0,
+    )
+
+    @Test
+    fun `Open Calls pill shown when gate enabled and hidden when disabled`() {
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        val fakeViewModel = FilterMenuViewModel(env)
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchTopBar(
+                        onBackPressed = {},
+                        onValueChanged = {},
+                        selectedFilterCounts = allCountsZero,
+                        onPillPressedOpensBottomSheet = {},
+                        shouldShowPhase = true,
+                        isOpenCallsEnabled = true
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.OPEN_CALLS)).assertExists()
+    }
+
+    @Test
+    fun `Open Calls pill hidden when gate disabled`() {
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        val fakeViewModel = FilterMenuViewModel(env)
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    SearchTopBar(
+                        onBackPressed = {},
+                        onValueChanged = {},
+                        selectedFilterCounts = allCountsZero,
+                        onPillPressedOpensBottomSheet = {},
+                        shouldShowPhase = true,
+                        isOpenCallsEnabled = false
+                    )
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(pillTag(FilterRowPillType.OPEN_CALLS)).assertDoesNotExist()
+    }
 }

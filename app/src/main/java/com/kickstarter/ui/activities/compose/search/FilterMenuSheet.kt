@@ -47,6 +47,7 @@ import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
+import com.kickstarter.models.Tag
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.activities.compose.search.FilterMenuTestTags.OTHERS_ROW
@@ -72,6 +73,7 @@ object FilterMenuTestTags {
     const val LOCATION_ROW = "location_row"
     const val OTHERS_ROW = "others_row"
     const val GOAL_ROW = "goal_row"
+    const val OPEN_CALLS_ROW = "open_calls_row"
     const val FOOTER = "footer"
 
     fun pillTag(state: DiscoveryParams.State?) = "pill_${state?.name ?: "ALL"}"
@@ -86,6 +88,7 @@ enum class FilterType {
     AMOUNT_RAISED,
     OTHERS,
     GOAL,
+    OPEN_CALLS,
 }
 
 @Composable
@@ -104,7 +107,8 @@ fun FilterMenuSheet(
     selectedProjectsLoved: MutableState<Boolean> = mutableStateOf(false),
     selectedSaved: MutableState<Boolean> = mutableStateOf(false),
     selectedSocial: MutableState<Boolean> = mutableStateOf(false),
-    selectedGoal: DiscoveryParams.GoalBuckets? = null
+    selectedGoal: DiscoveryParams.GoalBuckets? = null,
+    selectedOpenCallTag: Tag? = null
 ) {
     val viewModel = LocalFilterMenuViewModel.current
     val loggedInUser by viewModel.loggedInUser.collectAsStateWithLifecycle()
@@ -194,6 +198,13 @@ fun FilterMenuSheet(
                             icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             modifier = Modifier.testTag(FilterMenuTestTags.GOAL_ROW),
                             subText = selectedGoal?.let { textForBucket(it) }
+                        )
+                        FilterType.OPEN_CALLS -> FilterRow(
+                            text = titleForFilter(filter),
+                            onClickAction = { onNavigate(FilterType.OPEN_CALLS) },
+                            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            modifier = Modifier.testTag(FilterMenuTestTags.OPEN_CALLS_ROW),
+                            subText = selectedOpenCallTag?.name()
                         )
                     }
                 }
@@ -526,6 +537,7 @@ private fun titleForFilter(filter: FilterType): String {
         FilterType.AMOUNT_RAISED -> stringResource(R.string.Amount_raised)
         FilterType.GOAL -> stringResource(R.string.Goal)
         FilterType.OTHERS -> stringResource(R.string.Show_only)
+        FilterType.OPEN_CALLS -> stringResource(R.string.fpo_Open_calls)
     }
 }
 

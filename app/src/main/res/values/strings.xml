@@ -119,5 +119,7 @@
   <string name="fpo_Rewind_10_seconds">Rewind 5 seconds</string>
   <string name="fpo_Forward">Forward 5 seconds</string>
   <string name="fpo_discovery_banner_image_content_description" formatted="false">Discovery mode preview</string>
+  <string name="fpo_Open_calls" formatted="false">Open calls</string>
+  <string name="fpo_Open_calls_all" formatted="false">All</string>
 
 </resources>

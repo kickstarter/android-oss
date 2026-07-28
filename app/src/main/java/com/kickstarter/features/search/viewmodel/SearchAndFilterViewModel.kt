@@ -60,11 +60,8 @@ class SearchAndFilterViewModel(
     val isVideoFeedBannerVisible: StateFlow<Boolean> = _isVideoFeedBannerVisible.asStateFlow()
 
     /**
-     * Whether the Open Calls filter (pill, filter-menu row, and tag fetching) should be exposed,
-     * derived from the [StatsigGateKey.ANDROID_OPEN_CALLS] gate. Recomputed on the client's
-     * `configReady` — not the one-shot `isReady` — so the gate is never read mid user-reload
-     * (login/logout) where it returns `Loading:Unrecognized`/`false`, mirroring
-     * [isVideoFeedBannerVisible].
+     * Whether the Open Calls filter should be exposed,
+     * derived from the [StatsigGateKey.ANDROID_OPEN_CALLS] gate.
      */
     private val _isOpenCallsEnabled = MutableStateFlow(false)
     val isOpenCallsEnabled: StateFlow<Boolean> = _isOpenCallsEnabled.asStateFlow()

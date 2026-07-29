@@ -209,15 +209,6 @@ fun RewardCarouselScreen(
                     val ctaButtonEnabled = when {
                         RewardUtils.isNoReward(reward) -> true
 
-                        !reward.isAvailable() -> false
-
-                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> false
-
-                        !reward.hasAddons() && backing?.isBacked(reward) != true -> true
-
-                        backing?.rewardId() != reward.id() &&
-                            RewardUtils.isAvailableForProject(project, reward) -> true
-
                         reward.hasAddons() &&
                             backing?.rewardId() == reward.id() &&
                             (
@@ -227,6 +218,15 @@ fun RewardCarouselScreen(
                                     )
 
                                 ) -> true
+
+                        !reward.isAvailable() -> false
+
+                        !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> false
+
+                        !reward.hasAddons() && backing?.isBacked(reward) != true -> true
+
+                        backing?.rewardId() != reward.id() &&
+                            RewardUtils.isAvailableForProject(project, reward) -> true
 
                         else -> false
                     }

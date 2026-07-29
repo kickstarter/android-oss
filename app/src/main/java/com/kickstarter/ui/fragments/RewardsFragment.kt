@@ -76,7 +76,7 @@ class RewardsFragment : Fragment() {
                         preloadImages(LocalContext.current, rewards)
 
                         val project = projectData.project()
-                        val backing = projectData.backing()
+                        val backing = projectData.backing() ?: project.backing()
 
                         val rewardLoading = shippingUIState.loading
                         val currentUserShippingRule = shippingUIState.selectedShippingRule

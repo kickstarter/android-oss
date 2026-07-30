@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
+import com.kickstarter.models.Tag
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +26,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 data class FilterMenuUIState(
     val isLoading: Boolean = false,
-    val categoriesList: List<Category> = emptyList()
+    val categoriesList: List<Category> = emptyList(),
+    val tagsList: List<Tag> = emptyList()
 )
 
 data class LocationsUIState(
@@ -73,6 +75,7 @@ open class FilterMenuViewModel(
         )
 
     private var categoriesList = emptyList<Category>()
+    private var tagsList = emptyList<Tag>()
 
     private val _searchQuery = MutableStateFlow("")
     private var nearbyLocations = emptyList<Location>()
@@ -134,6 +137,21 @@ open class FilterMenuViewModel(
         }
     }
 
+    fun getTags() {
+        scope.launch {
+            emitCurrentState(isLoading = true)
+            val response = apolloClient.getTags()
+
+            if (response.isSuccess)
+                tagsList = response.getOrDefault(emptyList())
+            else
+                errorAction.invoke(response.exceptionOrNull()?.message)
+
+            Timber.d("${this.javaClass} tags: ${tagsList.map { "${it.name()} id: ${it.id()}"}}")
+            emitCurrentState(isLoading = false)
+        }
+    }
+
     suspend fun getLocations(default: Boolean, term: String? = null) {
         emitCurrentState(isLoading = true)
 
@@ -156,7 +174,8 @@ open class FilterMenuViewModel(
         _filterMenu.emit(
             FilterMenuUIState(
                 isLoading = isLoading,
-                categoriesList = categoriesList
+                categoriesList = categoriesList,
+                tagsList = tagsList
             )
         )
     }

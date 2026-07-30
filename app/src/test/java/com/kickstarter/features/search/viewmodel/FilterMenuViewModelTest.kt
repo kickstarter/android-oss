@@ -7,10 +7,12 @@ import com.kickstarter.libs.utils.extensions.isFalse
 import com.kickstarter.libs.utils.extensions.isTrue
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.TagFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
+import com.kickstarter.models.Tag
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -136,6 +138,63 @@ class FilterMenuViewModelTest : KSRobolectricTestCase() {
         assertEquals(errorCounter, 1)
         assertEquals(state.size, 1)
         assertEquals(state.first().categoriesList, emptyList<Category>())
+    }
+
+    @Test
+    fun `test obtain tags succeed`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getTags(): Result<List<Tag>> {
+                        return Result.success(TagFactory.tags())
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorCounter = 0
+        val state = mutableListOf<FilterMenuUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorCounter++ }
+            viewModel.getTags()
+            viewModel.filterMenuUIState.toList(state)
+        }
+
+        advanceUntilIdle()
+        assertEquals(errorCounter, 0)
+        assertEquals(state.size, 2)
+        assertEquals(state.first().tagsList, emptyList<Tag>())
+        assertEquals(state.last().tagsList, TagFactory.tags())
+    }
+
+    @Test
+    fun `test obtain tags errored`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getTags(): Result<List<Tag>> {
+                        return Result.failure(Exception())
+                    }
+                }).build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        var errorCounter = 0
+        val state = mutableListOf<FilterMenuUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideErrorAction { errorCounter++ }
+            viewModel.getTags()
+            viewModel.filterMenuUIState.toList(state)
+        }
+
+        advanceUntilIdle()
+        assertEquals(errorCounter, 1)
+        assertEquals(state.size, 1)
+        assertEquals(state.first().tagsList, emptyList<Tag>())
     }
 
     @Test

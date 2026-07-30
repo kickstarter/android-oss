@@ -1,0 +1,10 @@
+query GetCreativePromptTags {
+  tags(scope: CREATIVE_PROMPT) {
+    nodes {
+      id
+      name
+      url
+      slug
+    }
+  }
+}

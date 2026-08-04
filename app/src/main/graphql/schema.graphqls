@@ -1023,8 +1023,6 @@ enum Feature {
 
   prelaunch_story_exception
 
-  creator_nav_refresh
-
   superbacker_progress
 
   backers_can_choose_plot_v1
@@ -7128,6 +7126,16 @@ A shipment included in an Order.
 """
 type Shipment {
   """
+  The Address associated with a Shipment
+  """
+  address: Address
+
+  """
+  The date after which the address for this shipment can no longer be updated.
+  """
+  addressLockoutDate: DateTime
+
+  """
   The cost of this shipment. This is the total amount charged for shipping (base amount), minus the amount charged at pledge (voucher amount).
   """
   cost: Int!
@@ -7145,6 +7153,11 @@ type Shipment {
   parentId: ID
 
   """
+  The order items included in this shipment.
+  """
+  shipmentOrderItems: [ShipmentOrderItem!]
+
+  """
   The tracking number for this shipment.
   """
   trackingNumber: String
@@ -7158,6 +7171,18 @@ type Shipment {
   Datetime the shipment was last updated
   """
   updatedAt: DateTime!
+}
+
+"""
+An order item included in a shipment.
+"""
+type ShipmentOrderItem {
+  id: ID!
+
+  """
+  The order item included in the shipment
+  """
+  orderItem: OrderItem!
 }
 
 """
@@ -15043,6 +15068,11 @@ type FeaturedProjectCollection {
   currentlyFeaturedProject: FeaturedProjectItem!
 
   """
+  The translated text of the button for showing more results
+  """
+  customButtonText: String
+
+  """
   The featured project items in this collection
   """
   featuredProjectItems("The number of featured project items to display in this collection" limit: Int = 1, "Request all the items" all: Boolean = false): [FeaturedProjectItem]!
@@ -16606,16 +16636,16 @@ type PasswordlessAppleSignInConfig {
 }
 
 """
-A node in the flagging options tree.
+A flagging option or grouping.
 """
 type FlaggingNode {
-  children: [FlaggingNode!]!
-
-  key: String
+  id: String!
 
   kind: NonDeprecatedFlaggingKind
 
   nodeType: FlaggingNodeKind!
+
+  parentId: String
 
   placeholder: String
 
@@ -24944,6 +24974,16 @@ input CreateOrUpdateShippingZoneInput {
   Weight ranges and cost data for the shipping zone
   """
   weightRanges: [WeightRangeInput!]!
+
+  """
+  The name of the shipping zone
+  """
+  name: String
+
+  """
+  The UI source from which the shipping zone is created
+  """
+  source: String
 
   """
   A unique identifier for the client performing the mutation.

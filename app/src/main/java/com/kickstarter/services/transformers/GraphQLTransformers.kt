@@ -8,6 +8,7 @@ import com.kickstarter.BuildPaymentPlanQuery
 import com.kickstarter.CreateAttributionEventMutation
 import com.kickstarter.CreateOrUpdateBackingAddressMutation
 import com.kickstarter.FetchProjectRewardsQuery
+import com.kickstarter.FlaggingOptionsQuery
 import com.kickstarter.PledgedProjectsOverviewQuery
 import com.kickstarter.TriggerThirdPartyEventMutation
 import com.kickstarter.UpdateBackerCompletedMutation
@@ -37,6 +38,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.CheckoutWave
 import com.kickstarter.models.Comment
 import com.kickstarter.models.EnvironmentalCommitment
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.models.Item
 import com.kickstarter.models.Location
 import com.kickstarter.models.Order
@@ -73,6 +75,7 @@ import com.kickstarter.type.CreateOrUpdateBackingAddressInput
 import com.kickstarter.type.CreditCardPaymentType
 import com.kickstarter.type.CurrencyCode
 import com.kickstarter.type.Feature
+import com.kickstarter.type.FlaggingNodeKind
 import com.kickstarter.type.PledgeManagerStateEnum
 import com.kickstarter.type.PledgeProjectsOverviewSort
 import com.kickstarter.type.RewardType
@@ -536,6 +539,23 @@ fun categoryTransformer(categoryFragment: com.kickstarter.fragment.Category?): C
         .parentId(parentId)
         .parentName(parentName)
         .build()
+}
+
+/**
+ * Transform a single `flaggingOptions` GraphQL node into our own [FlaggingOption] data model.
+ * @param node FlaggingOptionsQuery.FlaggingOption
+ * @return FlaggingOption
+ */
+fun flaggingOptionTransformer(node: FlaggingOptionsQuery.FlaggingOption): FlaggingOption {
+    return FlaggingOption(
+        id = node.id,
+        parentId = node.parentId,
+        kind = node.kind?.rawValue,
+        isGroup = node.nodeType == FlaggingNodeKind.GROUP,
+        title = node.title,
+        subtitle = node.subtitle,
+        placeholder = node.placeholder
+    )
 }
 
 /**

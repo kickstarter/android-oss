@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.FlagKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.isNotNull
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.models.Project
+import com.kickstarter.type.FlaggingContent
 import com.kickstarter.ui.IntentKey
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -25,6 +28,9 @@ interface ReportProjectViewModel {
         /** The category selected by the user in [ReportProjectScreen]*/
         fun kind(kind: String)
 
+        /** The placeholder for the selected option, shown in the [FormularyScreen] details field (API flow). */
+        fun inputPlaceholder(placeholder: String?)
+
         /** The tag associated a ClickableText onClickCallback in [ReportProjectScreen]*/
         fun openExternalBrowser(tag: String)
     }
@@ -35,6 +41,12 @@ interface ReportProjectViewModel {
         fun finish(): Observable<ReportProjectViewModel.NavigationResult>
         fun progressBarIsVisible(): Observable<Boolean>
         fun openExternalBrowserWithUrl(): Observable<String>
+
+        /** The flat list of flagging options fetched from the API (empty while the flag is off). */
+        fun flaggingOptions(): Observable<List<FlaggingOption>>
+
+        /** The placeholder for the currently selected option (empty when none/null). */
+        fun placeholder(): Observable<String>
     }
 
     class ReportProjectViewModel(
@@ -53,16 +65,30 @@ interface ReportProjectViewModel {
         private val finish = PublishSubject.create<NavigationResult>()
         private val progressBarVisible = PublishSubject.create<Boolean>()
         private val openExternal = BehaviorSubject.create<String>()
+        private val flaggingOptions = BehaviorSubject.createDefault<List<FlaggingOption>>(emptyList())
+        private val placeholder = BehaviorSubject.createDefault("")
 
         private val sendButtonPressed = PublishSubject.create<Unit>()
         private val inputDetails = PublishSubject.create<String>()
         private val flaggingKind = PublishSubject.create<String>()
         private val urlTag = PublishSubject.create<String>()
 
+        val isReportFlowEnabled: Boolean = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_REPORT_PROJECT) ?: false
+
         private fun arguments() = this.arguments?.let { Observable.just(it) } ?: Observable.empty()
         private val disposables = CompositeDisposable()
 
         init {
+
+            if (isReportFlowEnabled) {
+                disposables.add(
+                    apolloClient.flaggingOptions(FlaggingContent.PROJECT)
+                        .subscribe(
+                            { flaggingOptions.onNext(it) },
+                            { /* No loading/error UI for now. */ }
+                        )
+                )
+            }
 
             val project = arguments()
                 .map {
@@ -157,6 +183,12 @@ interface ReportProjectViewModel {
         override fun openExternalBrowserWithUrl(): Observable<String> =
             this.openExternal
 
+        override fun flaggingOptions(): Observable<List<FlaggingOption>> =
+            this.flaggingOptions
+
+        override fun placeholder(): Observable<String> =
+            this.placeholder
+
         // - Inputs
         override fun createFlagging() {
             sendButtonPressed.onNext(Unit)
@@ -168,6 +200,10 @@ interface ReportProjectViewModel {
 
         override fun kind(kind: String) {
             flaggingKind.onNext(kind)
+        }
+
+        override fun inputPlaceholder(placeholder: String?) {
+            this.placeholder.onNext(placeholder ?: "")
         }
 
         override fun openExternalBrowser(tag: String) {

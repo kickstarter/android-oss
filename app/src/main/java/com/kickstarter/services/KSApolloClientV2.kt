@@ -34,6 +34,7 @@ import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.FetchProjectStoryQuery
 import com.kickstarter.FetchProjectsQuery
 import com.kickstarter.FetchSimilarProjectsQuery
+import com.kickstarter.FlaggingOptionsQuery
 import com.kickstarter.GetBackingQuery
 import com.kickstarter.GetCommentQuery
 import com.kickstarter.GetLocationsQuery
@@ -89,6 +90,7 @@ import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.models.Location
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentValidationResponse
@@ -118,6 +120,7 @@ import com.kickstarter.services.transformers.decodeRelayId
 import com.kickstarter.services.transformers.encodeRelayId
 import com.kickstarter.services.transformers.extensions.toStoriedProject
 import com.kickstarter.services.transformers.extensions.toVideoFeedEnvelope
+import com.kickstarter.services.transformers.flaggingOptionTransformer
 import com.kickstarter.services.transformers.getCreateAttributionEventMutation
 import com.kickstarter.services.transformers.getCreateOrUpdateBackingAddressMutation
 import com.kickstarter.services.transformers.getPledgedProjectsOverviewQuery
@@ -132,6 +135,7 @@ import com.kickstarter.services.transformers.updateTransformer
 import com.kickstarter.services.transformers.userPrivacyTransformer
 import com.kickstarter.type.BackingState
 import com.kickstarter.type.CurrencyCode
+import com.kickstarter.type.FlaggingContent
 import com.kickstarter.type.NonDeprecatedFlaggingKind
 import com.kickstarter.type.PaymentTypes
 import com.kickstarter.type.ProjectRewardsSort
@@ -161,6 +165,9 @@ interface ApolloClientTypeV2 {
         details: String,
         flaggingKind: String
     ): Observable<String>
+
+    /** Fetches the flagging options (groups + kinds) for the given [contentType] as a flat list. */
+    fun flaggingOptions(contentType: FlaggingContent = FlaggingContent.PROJECT): Observable<List<FlaggingOption>>
 
     fun userPrivacy(): Observable<UserPrivacy>
     fun watchProject(project: Project): Observable<Project>
@@ -520,6 +527,31 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     }.addToDisposable(disposables)
                 return@defer ps
             }
+        }
+    }
+
+    override fun flaggingOptions(contentType: FlaggingContent): Observable<List<FlaggingOption>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<FlaggingOption>>()
+            val query = FlaggingOptionsQuery(contentType = contentType)
+
+            service.query(
+                query = query
+            ).rxSingle()
+                .doOnError { throwable ->
+                    ps.onError(throwable)
+                }
+                .subscribe { response ->
+                    if (response.hasErrors()) {
+                        ps.onError(Exception(response.errors?.first()?.message))
+                    } else {
+                        ps.onNext(
+                            response.data?.flaggingOptions?.map { flaggingOptionTransformer(it) } ?: emptyList()
+                        )
+                    }
+                    ps.onComplete()
+                }.addToDisposable(disposables)
+            return@defer ps
         }
     }
 

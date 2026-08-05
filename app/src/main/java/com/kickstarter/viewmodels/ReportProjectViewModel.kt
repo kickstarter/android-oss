@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.FlaggingOption
@@ -59,6 +59,7 @@ interface ReportProjectViewModel {
         data class NavigationResult(val hasFinished: Boolean, val flaggingKind: String)
 
         private val apolloClient = requireNotNull(environment.apolloClientV2())
+        private val statsigClient = requireNotNull(environment.statsigClient())
 
         private val userEmail = BehaviorSubject.create<String>()
         private val projectUrl = BehaviorSubject.create<String>()
@@ -73,7 +74,10 @@ interface ReportProjectViewModel {
         private val flaggingKind = PublishSubject.create<String>()
         private val urlTag = PublishSubject.create<String>()
 
-        val isReportFlowEnabled: Boolean = environment.featureFlagClient()?.getBoolean(FlagKey.ANDROID_REPORT_PROJECT) ?: false
+        /** Whether the new API-driven report flow is enabled via the Statsig gate. */
+        val isReportFlowEnabled: Boolean =
+            statsigClient.isReady.value &&
+                statsigClient.checkGate(StatsigGateKey.ANDROID_REPORT_PROJECT.key)
 
         private fun arguments() = this.arguments?.let { Observable.just(it) } ?: Observable.empty()
         private val disposables = CompositeDisposable()

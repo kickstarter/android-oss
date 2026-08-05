@@ -3,9 +3,9 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.MockStatsigClient
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
-import com.kickstarter.mock.MockFeatureFlagClient
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.FlaggingOption
@@ -63,10 +63,12 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
 
     private fun getEnvironmentWithReportFlow(options: List<FlaggingOption>) =
         environment().toBuilder()
-            .featureFlagClient(object : MockFeatureFlagClient() {
-                override fun getBoolean(flagKey: FlagKey): Boolean =
-                    flagKey == FlagKey.ANDROID_REPORT_PROJECT
-            })
+            .statsigClient(
+                MockStatsigClient(
+                    context = application(),
+                    gateMap = mapOf(StatsigGateKey.ANDROID_REPORT_PROJECT.key to true)
+                )
+            )
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {
                     return Observable.just(

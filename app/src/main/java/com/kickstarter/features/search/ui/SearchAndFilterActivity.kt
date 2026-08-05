@@ -36,6 +36,7 @@ class SearchAndFilterActivity : ComponentActivity() {
             viewModelFactory = SearchAndFilterViewModel.Factory(env)
             filterMenuViewModelFactory = FilterMenuViewModel.Factory(env)
             filterMenuViewModel.getRootCategories()
+            filterMenuViewModel.getTags()
 
             setContent {
                 KickstarterApp {

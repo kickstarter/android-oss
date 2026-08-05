@@ -552,4 +552,78 @@ class SearchAndFilterViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle()
         assertTrue(viewModel.isVideoFeedBannerVisible.value)
     }
+
+    @Test
+    fun `test updateParamsToSearchWith tagId sets DiscoveryParams tagId and triggers search`() = runTest {
+        var params: DiscoveryParams? = null
+        val projectList = listOf(ProjectFactory.project())
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .apolloClientV2(
+                object : MockApolloClientV2() {
+                    override suspend fun getSearchProjects(
+                        discoveryParams: DiscoveryParams,
+                        cursor: String?
+                    ): Result<SearchEnvelope> {
+                        params = discoveryParams
+                        return Result.success(SearchEnvelope(projectList))
+                    }
+                })
+            .statsigClient(MockStatsigClient(context = application()))
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        val searchState = mutableListOf<SearchUIState>()
+        backgroundScope.launch(dispatcher) {
+            viewModel.updateParamsToSearchWith(
+                projectSort = DiscoveryParams.Sort.MAGIC,
+                tagId = 123
+            )
+            viewModel.searchUIState.toList(searchState)
+        }
+
+        advanceUntilIdle()
+        assertEquals(params?.tagId(), 123)
+        assertEquals(searchState.last().popularProjectsList, projectList)
+    }
+
+    @Test
+    fun `test isOpenCallsEnabled is true when gate is enabled`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .statsigClient(
+                MockStatsigClient(
+                    context = application(),
+                    gateMap = mapOf(StatsigGateKey.ANDROID_OPEN_CALLS.key to true)
+                )
+            )
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        advanceUntilIdle()
+        assertTrue(viewModel.isOpenCallsEnabled.value)
+    }
+
+    @Test
+    fun `test isOpenCallsEnabled is false when gate is disabled`() = runTest {
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val environment = environment()
+            .toBuilder()
+            .statsigClient(
+                MockStatsigClient(
+                    context = application(),
+                    gateMap = mapOf(StatsigGateKey.ANDROID_OPEN_CALLS.key to false)
+                )
+            )
+            .build()
+
+        setUpEnvironment(environment, dispatcher)
+
+        advanceUntilIdle()
+        assertFalse(viewModel.isOpenCallsEnabled.value)
+    }
 }

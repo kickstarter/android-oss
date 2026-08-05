@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,6 +129,8 @@ fun VideoFeedScreen(
     // settledPage fires after the animation completes, so the data is always ready.
     val watchTimeByPage = remember { mutableMapOf<Int, Pair<Long, Long>>() }
     var shareData: SocialShareData? by remember { mutableStateOf(null) }
+
+    var isMuted by rememberSaveable { mutableStateOf(false) }
 
     val statusBarInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val iconTopPadding = maxOf(dimensions.videoFeedCloseButtonTopPadding, statusBarInset + dimensions.paddingSmall)
@@ -225,6 +228,8 @@ fun VideoFeedScreen(
                     isActive = pagerState.currentPage == page,
                     hideUi = hideUi,
                     previewImageUrl = item.previewImageUrl,
+                    isMuted = isMuted,
+                    onMuteToggle = { isMuted = !isMuted },
                     onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
                     onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
                     onBecameInactive = { watchTimeMs, videoDurationMs ->

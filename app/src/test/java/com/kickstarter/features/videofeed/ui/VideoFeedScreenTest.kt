@@ -13,6 +13,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -29,6 +30,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayerTestTag
 import org.junit.Test
 import org.robolectric.annotation.Config
 
@@ -828,6 +830,34 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag("${VideoFeedScreenTestTag.VIDEO_FEED_HIDE_UI_BUTTON.name}_${project.id()}")
             .assertIsDisplayed()
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `mute button appears with the controls and toggles between mute and unmute labels`() {
+        val project = ProjectFactory.project().toBuilder().id(12001L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(environment = environment(), items = items)
+            }
+        }
+
+        // - While playing, the mute button is hidden along with the play/pause controls.
+        composeTestRule.onNodeWithContentDescription("Mute", useUnmergedTree = true)
+            .assertDoesNotExist()
+
+        // - Tapping the video reveals the controls; videos start unmuted, so the action is "Mute".
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Mute", useUnmergedTree = true)
+            .assertIsDisplayed()
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        // - After tapping it is muted, so the button's action becomes "Unmute".
+        composeTestRule.onNodeWithContentDescription("Unmute", useUnmergedTree = true)
             .assertIsDisplayed()
     }
 

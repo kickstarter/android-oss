@@ -79,12 +79,18 @@ class ReportProjectActivity : ComponentActivity() {
                                     padding = paddingValue,
                                     options = options,
                                     onOptionSelected = { option ->
-                                        option.kind?.let { viewModel.inputs.kind(it) }
-                                        viewModel.inputs.inputPlaceholder(option.placeholder)
-                                        shouldNavigate = true
+                                        option.kind?.let { kind ->
+                                            viewModel.inputs.kind(kind)
+                                            viewModel.inputs.inputPlaceholder(option.placeholder)
+                                            shouldNavigate = true
+                                        }
                                     },
                                     onOpenUrl = { url ->
-                                        ApplicationUtils.openUrlExternally(this@ReportProjectActivity, url)
+                                        if (url.startsWith("http://", ignoreCase = true) ||
+                                            url.startsWith("https://", ignoreCase = true)
+                                        ) {
+                                            ApplicationUtils.openUrlExternally(this@ReportProjectActivity, url)
+                                        }
                                     }
                                 )
                             } else {

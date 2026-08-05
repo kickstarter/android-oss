@@ -64,8 +64,8 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
     private fun getEnvironmentWithReportFlow(options: List<FlaggingOption>) =
         environment().toBuilder()
             .featureFlagClient(object : MockFeatureFlagClient() {
-                override fun getBoolean(FlagKey: FlagKey): Boolean =
-                    FlagKey == com.kickstarter.libs.featureflag.FlagKey.ANDROID_REPORT_PROJECT
+                override fun getBoolean(flagKey: FlagKey): Boolean =
+                    flagKey == FlagKey.ANDROID_REPORT_PROJECT
             })
             .apolloClientV2(object : MockApolloClientV2() {
                 override fun userPrivacy(): Observable<UserPrivacy> {

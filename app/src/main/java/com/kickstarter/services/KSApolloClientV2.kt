@@ -538,19 +538,21 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
             service.query(
                 query = query
             ).rxSingle()
-                .doOnError { throwable ->
-                    ps.onError(throwable)
-                }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    } else {
-                        ps.onNext(
-                            response.data?.flaggingOptions?.map { flaggingOptionTransformer(it) } ?: emptyList()
-                        )
+                .subscribe(
+                    { response ->
+                        if (response.hasErrors()) {
+                            ps.onError(Exception(response.errors?.first()?.message))
+                        } else {
+                            ps.onNext(
+                                response.data?.flaggingOptions?.map { flaggingOptionTransformer(it) } ?: emptyList()
+                            )
+                            ps.onComplete()
+                        }
+                    },
+                    { throwable ->
+                        ps.onError(throwable)
                     }
-                    ps.onComplete()
-                }.addToDisposable(disposables)
+                ).addToDisposable(disposables)
             return@defer ps
         }
     }

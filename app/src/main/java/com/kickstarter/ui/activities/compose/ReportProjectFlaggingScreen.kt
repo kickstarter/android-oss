@@ -63,7 +63,6 @@ fun ReportProjectFlaggingScreen(
             .padding(padding)
             .fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.padding(padding))
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()

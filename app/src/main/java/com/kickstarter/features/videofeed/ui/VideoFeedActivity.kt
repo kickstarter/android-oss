@@ -116,6 +116,10 @@ class VideoFeedActivity : ComponentActivity() {
                         val cta = if (isPlaying) CtaContextName.VIDEO_PLAY else CtaContextName.VIDEO_PAUSE
                         viewModel.onCTAClicked(project, cta)
                     },
+                    onMuteToggleTap = { project, isMuted ->
+                        val cta = if (isMuted) CtaContextName.VIDEO_MUTE else CtaContextName.VIDEO_UNMUTE
+                        viewModel.onCTAClicked(project, cta)
+                    },
                     onProgressBarTap = { videoFeedItem, progress ->
                         viewModel.onProgressBarTapped(videoFeedItem, progress)
                     },

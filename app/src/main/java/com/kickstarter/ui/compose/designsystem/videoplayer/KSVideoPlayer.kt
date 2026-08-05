@@ -227,8 +227,9 @@ private class TextureViewListeners(
  * centered mute/unmute toggle, which is shown alongside the play/pause control.
  * @param overlayContent A slot for adding custom UI elements on top of the video player (e.g., Badges,
  * titles, actionButtons). These elements are placed in a [BoxScope] and are drawn above the video and its controls.
- * @param onMuteToggle Invoked when the user taps the mute/unmute button. The caller owns the mute
- * state and should flip the value passed back as [isMuted].
+ * @param onMuteToggle Invoked when the user taps the mute/unmute button, with the resulting mute
+ * state (true = now muted). The caller owns the mute state and should apply the reported value to
+ * [isMuted].
  */
 @Composable
 fun KSVideoPlayer(
@@ -240,7 +241,7 @@ fun KSVideoPlayer(
     player: ExoPlayer? = null,
     isMuted: Boolean = false,
     overlayContent: @Composable BoxScope.(HazeState) -> Unit = {},
-    onMuteToggle: () -> Unit = {},
+    onMuteToggle: (isMuted: Boolean) -> Unit = {},
     onPlayPauseToggle: (isPlaying: Boolean) -> Unit = {},
     onProgressBarInteraction: (currentProgress: Float) -> Unit = {},
     onBecameInactive: (watchTimeMs: Long, videoDurationMs: Long) -> Unit = { _, _ -> },
@@ -511,7 +512,7 @@ fun KSVideoPlayer(
             visible = showControls,
             isMuted = isMuted,
             hazeState = hazeState,
-            onClick = onMuteToggle
+            onClick = { onMuteToggle(!isMuted) }
         )
 
         Column(

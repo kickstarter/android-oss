@@ -909,16 +909,17 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `tapping the mute button invokes onMuteToggle`() {
+    fun `tapping the mute button reports the resulting mute state`() {
         val mockPlayer = mock(ExoPlayer::class.java)
-        var toggleCount = 0
+        var reportedMuted: Boolean? = null
         composeTestRule.setContent {
             KSTheme {
                 KSVideoPlayer(
                     videoUrl = "https://example.com/video.mp4",
                     isActive = true,
+                    isMuted = false,
                     player = mockPlayer,
-                    onMuteToggle = { toggleCount++ }
+                    onMuteToggle = { reportedMuted = it }
                 )
             }
         }
@@ -930,7 +931,8 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_MUTE_BUTTON.name, useUnmergedTree = true)
             .performClick()
 
-        assertEquals(1, toggleCount)
+        // - Was unmuted, so tapping reports the resulting state: now muted.
+        assertEquals(true, reportedMuted)
     }
 
     @Test
@@ -963,7 +965,7 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
                     isActive = true,
                     isMuted = isMuted,
                     player = mockPlayer,
-                    onMuteToggle = { isMuted = !isMuted }
+                    onMuteToggle = { isMuted = it }
                 )
             }
         }

@@ -112,6 +112,7 @@ fun VideoFeedScreen(
     onVideoImpression: (item: VideoFeedItem, position: Int) -> Unit = { _, _ -> },
     onVideoPageSettled: (videoFeedItem: VideoFeedItem, toPosition: Int, fromVideoFeedItem: VideoFeedItem, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
     onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
+    onMuteToggleTap: (project: Project, isMuted: Boolean) -> Unit = { _, _ -> },
     onProgressBarTap: (item: VideoFeedItem, progress: Float) -> Unit = { _, _ -> },
     onShareCTAClick: (project: Project) -> Unit = { _ -> },
     onVideoPlaybackError: (item: VideoFeedItem, position: Int, error: PlaybackException, isActive: Boolean) -> Unit = { _, _, _, _ -> }
@@ -229,7 +230,10 @@ fun VideoFeedScreen(
                     hideUi = hideUi,
                     previewImageUrl = item.previewImageUrl,
                     isMuted = isMuted,
-                    onMuteToggle = { isMuted = !isMuted },
+                    onMuteToggle = { muted ->
+                        isMuted = muted
+                        onMuteToggleTap(project, muted)
+                    },
                     onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
                     onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
                     onBecameInactive = { watchTimeMs, videoDurationMs ->

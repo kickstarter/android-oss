@@ -862,6 +862,37 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun `mute toggle reports the project and resulting mute state`() {
+        var capturedProject: Project? = null
+        var capturedMuted: Boolean? = null
+
+        val project = ProjectFactory.project().toBuilder().id(12004L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    onMuteToggleTap = { p, muted ->
+                        capturedProject = p
+                        capturedMuted = muted
+                    }
+                )
+            }
+        }
+
+        // - Reveal the controls, then tap mute (starts unmuted, so this mutes it).
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Mute", useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+        assertEquals(true, capturedMuted)
+    }
+
+    @Test
     fun `HideUI toggle button is displayed with a button role`() {
         val project = ProjectFactory.project().toBuilder().id(11002L).build()
         val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))

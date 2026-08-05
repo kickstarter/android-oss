@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -181,12 +180,13 @@ fun FlaggingNodeRow(
                     )
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = node.title,
+                    HtmlLinkText(
+                        html = node.title,
                         style = typographyV2.subHeadline.copy(
                             fontWeight = FontWeight.Bold,
                             color = colors.kds_support_700
-                        )
+                        ),
+                        onOpenUrl = onOpenUrl
                     )
                     node.subtitle?.let {
                         HtmlLinkText(
@@ -223,10 +223,15 @@ private fun Divider() {
     )
 }
 
+private val ANCHOR_REGEX = Regex("<a href=\"([^\"]*)\">(.*?)</a>")
+private val HTML_TAG_REGEX = Regex("<[^>]*>")
+
+private fun String.stripHtmlTags(): String = replace(HTML_TAG_REGEX, "")
+
 /**
  * Renders a server-provided string that may contain real `<a href="url">label</a>` anchors (zero, one, or
- * many). Anchors become green, underlined clickable spans that invoke [onOpenUrl]; everything else renders
- * as plain styled text.
+ * many). Anchors become green, underlined clickable spans that invoke [onOpenUrl]; any other HTML tags are
+ * stripped and the remaining text renders plainly, so malformed server content never leaks as raw markup.
  */
 @Composable
 fun HtmlLinkText(
@@ -234,13 +239,12 @@ fun HtmlLinkText(
     style: TextStyle,
     onOpenUrl: (String) -> Unit = {}
 ) {
-    val anchorRegex = remember { Regex("<a href=\"([^\"]*)\">(.*?)</a>") }
     val annotatedText = buildAnnotatedString {
         var lastIndex = 0
-        for (match in anchorRegex.findAll(html)) {
-            append(html.substring(lastIndex, match.range.first))
+        for (match in ANCHOR_REGEX.findAll(html)) {
+            append(html.substring(lastIndex, match.range.first).stripHtmlTags())
             val url = match.groupValues[1]
-            val label = match.groupValues[2]
+            val label = match.groupValues[2].stripHtmlTags()
             pushStringAnnotation(tag = "URL", annotation = url)
             withStyle(
                 style = SpanStyle(
@@ -253,7 +257,7 @@ fun HtmlLinkText(
             pop()
             lastIndex = match.range.last + 1
         }
-        append(html.substring(lastIndex))
+        append(html.substring(lastIndex).stripHtmlTags())
     }
 
     ClickableText(
@@ -389,7 +393,9 @@ private fun sampleFlaggingOptions(): List<FlaggingOption> = listOf(
         parentId = "project/intellectual_property_violation",
         kind = "COPYRIGHT",
         isGroup = false,
-        title = "This project is violating my copyright or trademark.",
+        title = "Kickstarter takes claims of intellectual property infringement seriously. For more information, " +
+            "please visit our <a href=\"https://www.kickstarter.com/help/copyright\">Copyright Policy</a> and our " +
+            "<a href=\"https://www.kickstarter.com/help/trademark\">Trademark Policy</a>.",
         subtitle = null,
         placeholder = null
     )

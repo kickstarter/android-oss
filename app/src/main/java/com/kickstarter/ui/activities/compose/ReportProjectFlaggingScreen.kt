@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -100,6 +101,11 @@ fun FlaggingNodeRow(
         val expanded = remember { mutableStateOf(false) }
         Column(modifier = Modifier.animateContentSize()) {
             Row(
+                verticalAlignment = if (node.subtitle.isNullOrEmpty()) {
+                    Alignment.CenterVertically
+                } else {
+                    Alignment.Top
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { expanded.value = !expanded.value }
@@ -160,6 +166,11 @@ fun FlaggingNodeRow(
     } else {
         Column {
             Row(
+                verticalAlignment = if (node.subtitle.isNullOrEmpty()) {
+                    Alignment.CenterVertically
+                } else {
+                    Alignment.Top
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onOptionSelected(node) }
@@ -259,15 +270,73 @@ fun HtmlLinkText(
  * Mock data provided for the compose preview
  */
 private fun sampleFlaggingOptions(): List<FlaggingOption> = listOf(
+    // our_rules (L1) → prohibited_items (L2) → vices (L3) → options (L4)
     FlaggingOption(
         id = "project/our_rules",
         parentId = "project",
         kind = null,
         isGroup = true,
         title = "This project breaks one of <a href=\"https://www.kickstarter.com/rules\">Our Rules</a>",
-        subtitle = "All projects on Kickstarter must create something to share with others.",
+        subtitle = "All projects on Kickstarter must create something to share with others. They can't offer " +
+            "<a href=\"https://www.kickstarter.com/rules/prohibited\">prohibited items</a> or offer funds to charity.",
         placeholder = null
     ),
+    FlaggingOption(
+        id = "project/our_rules/prohibited_items",
+        parentId = "project/our_rules",
+        kind = null,
+        isGroup = true,
+        title = "Prohibited items",
+        subtitle = "Projects may not offer items mentioned in our " +
+            "<a href=\"https://www.kickstarter.com/rules/prohibited\">prohibited items</a> list.",
+        placeholder = null
+    ),
+    FlaggingOption(
+        id = "project/our_rules/prohibited_items/vices",
+        parentId = "project/our_rules/prohibited_items",
+        kind = null,
+        isGroup = true,
+        title = "Drugs, alcohol or weapons",
+        subtitle = null,
+        placeholder = null
+    ),
+    FlaggingOption(
+        id = "project/our_rules/prohibited_items/vices/vices_drugs",
+        parentId = "project/our_rules/prohibited_items/vices",
+        kind = "VICES_DRUGS",
+        isGroup = false,
+        title = "Drugs, tobacco, vaporizers and paraphernalia",
+        subtitle = "Ex: CBD oil, hookah equipment, vape juice, glass pipes",
+        placeholder = "Please provide any additional context about your report that could be helpful."
+    ),
+    FlaggingOption(
+        id = "project/our_rules/prohibited_items/vices/vices_alcohol",
+        parentId = "project/our_rules/prohibited_items/vices",
+        kind = "VICES_ALCOHOL",
+        isGroup = false,
+        title = "Alcohol as a reward",
+        subtitle = "Ex: Bottles of beer, wine or liquor, growler fill-ups",
+        placeholder = "Please provide any additional context about your report that could be helpful."
+    ),
+    FlaggingOption(
+        id = "project/our_rules/prohibited_items/health_claims",
+        parentId = "project/our_rules/prohibited_items",
+        kind = null,
+        isGroup = true,
+        title = "Health claims or regulated items",
+        subtitle = null,
+        placeholder = null
+    ),
+    FlaggingOption(
+        id = "project/our_rules/prohibited_items/health_claims/health_claims",
+        parentId = "project/our_rules/prohibited_items/health_claims",
+        kind = "HEALTH_CLAIMS",
+        isGroup = false,
+        title = "Claims to cure, treat, or prevent an illness or condition",
+        subtitle = "Ex: Claims to treat symptoms of endometriosis, diagnose cancer, cure autism",
+        placeholder = "Please provide any additional context about your report that could be helpful."
+    ),
+    // our_rules (L1) → resale (L2) → option (L3)
     FlaggingOption(
         id = "project/our_rules/resale",
         parentId = "project/our_rules",
@@ -286,6 +355,7 @@ private fun sampleFlaggingOptions(): List<FlaggingOption> = listOf(
         subtitle = null,
         placeholder = "Please provide a URL(s) showing the reward currently available for purchase elsewhere."
     ),
+    // community_guidelines (L1) → options (L2)
     FlaggingOption(
         id = "project/community_guidelines",
         parentId = "project",
@@ -293,6 +363,34 @@ private fun sampleFlaggingOptions(): List<FlaggingOption> = listOf(
         isGroup = true,
         title = "Report spam or abusive behavior",
         subtitle = "Our <a href=\"https://www.kickstarter.com/help/community\">Community Guidelines</a> prohibit spam.",
+        placeholder = null
+    ),
+    FlaggingOption(
+        id = "project/community_guidelines/guidelines_spam",
+        parentId = "project/community_guidelines",
+        kind = "GUIDELINES_SPAM",
+        isGroup = false,
+        title = "Spam",
+        subtitle = "Ex: Using email lists from outside sources, link bombing.",
+        placeholder = "Please provide additional context about this content or behavior."
+    ),
+    // intellectual_property_violation (L1) → option (L2)
+    FlaggingOption(
+        id = "project/intellectual_property_violation",
+        parentId = "project",
+        kind = null,
+        isGroup = true,
+        title = "Intellectual property violation",
+        subtitle = "A project is infringing on your copyright or trademark.",
+        placeholder = null
+    ),
+    FlaggingOption(
+        id = "project/intellectual_property_violation/copyright",
+        parentId = "project/intellectual_property_violation",
+        kind = "COPYRIGHT",
+        isGroup = false,
+        title = "This project is violating my copyright or trademark.",
+        subtitle = null,
         placeholder = null
     )
 )

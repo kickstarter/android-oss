@@ -185,9 +185,6 @@ fun FormularyScreen(
         var details by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
         val apiPlaceholder = outputs.placeholder().subscribeAsState(initial = "").value
-        val detailsLabel =
-            if (apiPlaceholder.isNotEmpty()) apiPlaceholder
-            else stringResource(id = R.string.Tell_us_more_details)
         OutlinedTextField(
             modifier = Modifier
                 .focusRequester(focusRequester)
@@ -201,7 +198,12 @@ fun FormularyScreen(
                 inputs.inputDetails(it)
                 details = it
             },
-            label = { Text(detailsLabel) },
+            label = { Text(stringResource(id = R.string.Tell_us_more_details)) },
+            placeholder = {
+                if (apiPlaceholder.isNotEmpty()) {
+                    Text(apiPlaceholder)
+                }
+            },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colors.kds_support_200,
                 unfocusedContainerColor = colors.kds_support_200,

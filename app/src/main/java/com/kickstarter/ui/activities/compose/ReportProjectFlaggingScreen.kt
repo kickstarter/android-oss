@@ -43,9 +43,11 @@ import com.kickstarter.ui.compose.designsystem.KSTheme.colors
 import com.kickstarter.ui.compose.designsystem.KSTheme.typographyV2
 
 /**
- * The API-driven report-project screen (feature-flag ON path). Renders the flat [FlaggingOption] list as a
- * recursive, nested accordion: GROUP nodes expand/collapse their children in place; OPTION leaves invoke
- * [onOptionSelected] (→ formulary). Real `<a href>` links in titles/subtitles open via [onOpenUrl].
+ * The API-driven report-project screen.
+ * Renders the flat [FlaggingOption] list as a recursive, nested accordion:
+ * GROUP nodes expand/collapse their children in place;
+ * OPTION leaves invoke [onOptionSelected] (→ formulary).
+ * Real `<a href>` links in titles/subtitles open via [onOpenUrl].
  */
 @Composable
 fun ReportProjectFlaggingScreen(
@@ -81,8 +83,9 @@ fun ReportProjectFlaggingScreen(
 }
 
 /**
- * A single node of the flagging tree. GROUP → an expandable header that renders its children recursively
- * (indentation grows with [depth]); OPTION → a selectable leaf that navigates to the formulary.
+ * A single node of the flagging tree.
+ * GROUP → an expandable header that renders its children recursively (indentation grows with [depth]);
+ * OPTION → a selectable leaf that navigates to the formulary.
  */
 @Composable
 fun FlaggingNodeRow(
@@ -253,6 +256,9 @@ fun HtmlLinkText(
     )
 }
 
+/**
+ * Mock data provided for the compose preview
+ */
 private fun sampleFlaggingOptions(): List<FlaggingOption> = listOf(
     FlaggingOption(
         id = "project/our_rules",

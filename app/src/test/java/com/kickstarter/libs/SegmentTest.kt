@@ -41,8 +41,8 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREA
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_MUTE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_SAVE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_UNMUTE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL

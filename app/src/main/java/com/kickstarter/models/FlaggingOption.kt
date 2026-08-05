@@ -4,9 +4,10 @@ package com.kickstarter.models
  * A single node from the `flaggingOptions` GraphQL query, flattened into a list.
  *
  * The backend returns the flagging options tree as a flat, pre-order list. Each node carries its own
- * [id] (its path, e.g. `project/our_rules/prohibited_items`) and its [parentId] (the parent's path),
- * which together let us rebuild the hierarchy client-side. [isGroup] nodes are expandable headings;
- * option (leaf) nodes carry a non-null [kind] which is the value sent to `createFlagging`.
+ * [id] (its path, e.g. `project/our_rules/prohibited_items`) and its
+ * [parentId] (the parent's path).
+ * [isGroup] nodes are expandable headings;
+ * [kind] which is the value sent to `createFlagging`.
  */
 data class FlaggingOption(
     val id: String,

@@ -1943,13 +1943,14 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackVideoFeedCTAClicked(project, ctaType = VIDEO_SAVE, watchTimeAtClick = 3000L)
+        val videoId = 55555L
+        segment.trackVideoFeedCTAClicked(project, videoId = videoId, ctaType = VIDEO_SAVE, watchTimeAtClick = 3000L)
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
         val props = this.propertiesTest.value ?: mapOf()
         assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
         assertEquals(VIDEO_SAVE.contextName, props[CONTEXT_CTA.contextName])
-        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(videoId.toString(), props["video_feed_video_id"])
         assertEquals(project.id().toString(), props["video_feed_project_id"])
         assertEquals(3000L, props["video_feed_watch_time_at_click"])
     }
@@ -1961,19 +1962,20 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
+        val videoId = 77777L
 
         // - Muting fires CTA_CLICKED with the video_mute context.
-        segment.trackVideoFeedCTAClicked(project, ctaType = VIDEO_MUTE)
+        segment.trackVideoFeedCTAClicked(project, videoId = videoId, ctaType = VIDEO_MUTE)
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
         var props = this.propertiesTest.value ?: mapOf()
         assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
         assertEquals(VIDEO_MUTE.contextName, props[CONTEXT_CTA.contextName])
-        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(videoId.toString(), props["video_feed_video_id"])
         assertEquals(project.id().toString(), props["video_feed_project_id"])
 
         // - Unmuting fires CTA_CLICKED with the video_unmute context.
-        segment.trackVideoFeedCTAClicked(project, ctaType = VIDEO_UNMUTE)
+        segment.trackVideoFeedCTAClicked(project, videoId = videoId, ctaType = VIDEO_UNMUTE)
 
         this.segmentTrack.assertValues(CTA_CLICKED.eventName, CTA_CLICKED.eventName)
         props = this.propertiesTest.value ?: mapOf()

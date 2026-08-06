@@ -77,12 +77,12 @@ class VideoFeedActivity : ComponentActivity() {
                         showRatingDialogWidget()
                     },
                     onClose = { onBackPressedDispatcher.onBackPressed() },
-                    onProfileClick = { project ->
-                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_CREATOR)
+                    onProfileClick = { project, videoId ->
+                        viewModel.onCTAClicked(project, videoId, CtaContextName.VIDEO_CREATOR)
                         startCreatorBioWebViewActivity(project)
                     },
-                    onBookmarkClick = { project, index ->
-                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_SAVE)
+                    onBookmarkClick = { project, videoId, index ->
+                        viewModel.onCTAClicked(project, videoId, CtaContextName.VIDEO_SAVE)
                         if (viewModel.isUserLoggedIn.value) {
                             viewModel.bookmarkProject(project, index)
                         } else {
@@ -112,19 +112,19 @@ class VideoFeedActivity : ComponentActivity() {
                     onVideoPageSettled = { videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs ->
                         viewModel.onVideoPageSettled(videoFeedItem, toPosition, fromVideoFeedItem, watchTimeMs, videoDurationMs)
                     },
-                    onPlayPauseTap = { project, isPlaying ->
+                    onPlayPauseTap = { project, videoId, isPlaying ->
                         val cta = if (isPlaying) CtaContextName.VIDEO_PLAY else CtaContextName.VIDEO_PAUSE
-                        viewModel.onCTAClicked(project, cta)
+                        viewModel.onCTAClicked(project, videoId, cta)
                     },
-                    onMuteToggleTap = { project, isMuted ->
+                    onMuteToggleTap = { project, videoId, isMuted ->
                         val cta = if (isMuted) CtaContextName.VIDEO_MUTE else CtaContextName.VIDEO_UNMUTE
-                        viewModel.onCTAClicked(project, cta)
+                        viewModel.onCTAClicked(project, videoId, cta)
                     },
                     onProgressBarTap = { videoFeedItem, progress ->
                         viewModel.onProgressBarTapped(videoFeedItem, progress)
                     },
-                    onShareCTAClick = { project ->
-                        viewModel.onCTAClicked(project, CtaContextName.VIDEO_SHARE)
+                    onShareCTAClick = { project, videoId ->
+                        viewModel.onCTAClicked(project, videoId, CtaContextName.VIDEO_SHARE)
                     },
                     onVideoPlaybackError = { videoFeedItem, position, error, isActive ->
                         viewModel.onVideoPlaybackError(videoFeedItem, position, error, isActive)

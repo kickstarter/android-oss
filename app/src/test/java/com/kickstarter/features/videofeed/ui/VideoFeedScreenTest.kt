@@ -216,7 +216,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onProfileClick = { capturedProject = it }
+                    onProfileClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -243,7 +243,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onProfileClick = { capturedProject = it }
+                    onProfileClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -378,7 +378,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onBookmarkClick = { p, _ -> capturedProject = p }
+                    onBookmarkClick = { p, _, _ -> capturedProject = p }
                 )
             }
         }
@@ -408,7 +408,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onBookmarkClick = { _, index -> capturedIndex = index }
+                    onBookmarkClick = { _, _, index -> capturedIndex = index }
                 )
             }
         }
@@ -448,7 +448,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onBookmarkClick = { p, _ -> capturedProject = p }
+                    onBookmarkClick = { p, _, _ -> capturedProject = p }
                 )
             }
         }
@@ -681,7 +681,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onShareCTAClick = { capturedProject = it }
+                    onShareCTAClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -779,7 +779,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onShareCTAClick = { shareImageUrl = it.photo()?.full() }
+                    onShareCTAClick = { p, _ -> shareImageUrl = p.photo()?.full() }
                 )
             }
         }
@@ -862,20 +862,23 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun `mute toggle reports the project and resulting mute state`() {
+    fun `mute toggle reports the project, video id and resulting mute state`() {
         var capturedProject: Project? = null
+        var capturedVideoId: Long? = null
         var capturedMuted: Boolean? = null
 
+        val videoId = 44444L
         val project = ProjectFactory.project().toBuilder().id(12004L).build()
-        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl, videoId = videoId))
 
         composeTestRule.setContent {
             KSTheme {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onMuteToggleTap = { p, muted ->
+                    onMuteToggleTap = { p, id, muted ->
                         capturedProject = p
+                        capturedVideoId = id
                         capturedMuted = muted
                     }
                 )
@@ -889,6 +892,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             .performClick()
 
         assertEquals(project, capturedProject)
+        assertEquals(videoId, capturedVideoId)
         assertEquals(true, capturedMuted)
     }
 

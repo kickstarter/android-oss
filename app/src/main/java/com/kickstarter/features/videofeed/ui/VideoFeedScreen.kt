@@ -104,17 +104,17 @@ fun VideoFeedScreen(
     onLoadMore: () -> Unit = {},
     onReachedLastVideo: () -> Unit = {},
     onClose: () -> Unit = {},
-    onProfileClick: (project: Project) -> Unit = { _ -> },
-    onBookmarkClick: (project: Project, index: Int) -> Unit = { _, _ -> },
+    onProfileClick: (project: Project, videoId: Long) -> Unit = { _, _ -> },
+    onBookmarkClick: (project: Project, videoId: Long, index: Int) -> Unit = { _, _, _ -> },
     onShareIntentReady: (Intent) -> Unit = {},
     preLaunchedCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     projectCallback: (project: Project, refTag: RefTag) -> Unit = { _, _ -> },
     onVideoImpression: (item: VideoFeedItem, position: Int) -> Unit = { _, _ -> },
     onVideoPageSettled: (videoFeedItem: VideoFeedItem, toPosition: Int, fromVideoFeedItem: VideoFeedItem, watchTimeMs: Long?, videoDurationMs: Long?) -> Unit = { _, _, _, _, _ -> },
-    onPlayPauseTap: (project: Project, isPlaying: Boolean) -> Unit = { _, _ -> },
-    onMuteToggleTap: (project: Project, isMuted: Boolean) -> Unit = { _, _ -> },
+    onPlayPauseTap: (project: Project, videoId: Long, isPlaying: Boolean) -> Unit = { _, _, _ -> },
+    onMuteToggleTap: (project: Project, videoId: Long, isMuted: Boolean) -> Unit = { _, _, _ -> },
     onProgressBarTap: (item: VideoFeedItem, progress: Float) -> Unit = { _, _ -> },
-    onShareCTAClick: (project: Project) -> Unit = { _ -> },
+    onShareCTAClick: (project: Project, videoId: Long) -> Unit = { _, _ -> },
     onVideoPlaybackError: (item: VideoFeedItem, position: Int, error: PlaybackException, isActive: Boolean) -> Unit = { _, _, _, _ -> }
 ) {
     // Append a trailing loading page while the next page is being fetched. The prefetch in the
@@ -232,9 +232,9 @@ fun VideoFeedScreen(
                     isMuted = isMuted,
                     onMuteToggle = { muted ->
                         isMuted = muted
-                        onMuteToggleTap(project, muted)
+                        onMuteToggleTap(project, item.videoId, muted)
                     },
-                    onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, isPlaying) },
+                    onPlayPauseToggle = { isPlaying -> onPlayPauseTap(project, item.videoId, isPlaying) },
                     onProgressBarInteraction = { currentProgress -> onProgressBarTap(item, currentProgress) },
                     onBecameInactive = { watchTimeMs, videoDurationMs ->
                         watchTimeByPage[page] = Pair(watchTimeMs, videoDurationMs)
@@ -266,8 +266,8 @@ fun VideoFeedScreen(
                                         bookmarkCount = bookmarkCount,
                                         isBookmarked = project.isStarred(),
                                         shareCount = shareCount,
-                                        onProfileClick = { onProfileClick(project) },
-                                        onBookmarkClick = { onBookmarkClick(project, page) },
+                                        onProfileClick = { onProfileClick(project, item.videoId) },
+                                        onBookmarkClick = { onBookmarkClick(project, item.videoId, page) },
                                         onShareClick = {
                                             shareData = SocialShareData(
                                                 projectName = project.name() ?: "",
@@ -275,7 +275,7 @@ fun VideoFeedScreen(
                                                 imageUrl = project.photo()?.full() ?: "",
                                                 creatorName = project.creator()?.name() ?: ""
                                             )
-                                            onShareCTAClick(project)
+                                            onShareCTAClick(project, item.videoId)
                                         },
                                         onMoreOptionsClick = {} // - Hiden for phase 1 of VideoFeed
                                     )

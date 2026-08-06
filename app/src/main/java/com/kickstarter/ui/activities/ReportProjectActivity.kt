@@ -20,9 +20,11 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.isDarkModeEnabled
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.compose.FormularyScreen
 import com.kickstarter.ui.activities.compose.ReportProjectCategoryScreen
+import com.kickstarter.ui.activities.compose.ReportProjectFlaggingScreen
 import com.kickstarter.ui.compose.designsystem.KickstarterApp
 import com.kickstarter.ui.extensions.finishWithAnimation
 import com.kickstarter.ui.toolbars.compose.TopToolBar
@@ -69,16 +71,39 @@ class ReportProjectActivity : ComponentActivity() {
                         )
                     },
                     content = { paddingValue ->
-                        if (!shouldNavigate)
-                            ReportProjectCategoryScreen(
-                                padding = paddingValue,
-                                navigationAction = {
-                                    viewModel.inputs.kind(it)
-                                    shouldNavigate = true
-                                },
-                                inputs = viewModel.inputs
-                            )
-                        else {
+                        if (!shouldNavigate) {
+                            if (viewModel.isReportFlowEnabled) {
+                                val options = viewModel.outputs.flaggingOptions()
+                                    .subscribeAsState(initial = emptyList<FlaggingOption>()).value
+                                ReportProjectFlaggingScreen(
+                                    padding = paddingValue,
+                                    options = options,
+                                    onOptionSelected = { option ->
+                                        option.kind?.let { kind ->
+                                            viewModel.inputs.kind(kind)
+                                            viewModel.inputs.inputPlaceholder(option.placeholder)
+                                            shouldNavigate = true
+                                        }
+                                    },
+                                    onOpenUrl = { url ->
+                                        if (url.startsWith("http://", ignoreCase = true) ||
+                                            url.startsWith("https://", ignoreCase = true)
+                                        ) {
+                                            ApplicationUtils.openUrlExternally(this@ReportProjectActivity, url)
+                                        }
+                                    }
+                                )
+                            } else {
+                                ReportProjectCategoryScreen(
+                                    padding = paddingValue,
+                                    navigationAction = {
+                                        viewModel.inputs.kind(it)
+                                        shouldNavigate = true
+                                    },
+                                    inputs = viewModel.inputs
+                                )
+                            }
+                        } else {
                             val finishResult = viewModel.outputs.finish().subscribeAsState(
                                 initial =
                                 ReportProjectViewModel.ReportProjectViewModel.NavigationResult(false, "")

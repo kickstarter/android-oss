@@ -36,6 +36,7 @@ enum class StatsigGateKey(val key: String) {
     ANDROID_PRELAUNCH_SOCIAL_SHARE("android_social_share"),
     ANDROID_PRELAUNCH_PROJECT_STORY("android_pre-launch_project_story"),
     ANDROID_OPEN_CALLS("android_open_calls"),
+    ANDROID_REPORT_PROJECT("android_report_project")
 }
 
 object StatsigExperiments {

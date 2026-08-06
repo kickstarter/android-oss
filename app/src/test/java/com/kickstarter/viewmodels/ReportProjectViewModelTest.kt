@@ -3,11 +3,15 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockStatsigClient
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.services.MockApolloClientV2
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.models.Project
 import com.kickstarter.models.UserPrivacy
+import com.kickstarter.type.FlaggingContent
 import com.kickstarter.type.FlaggingKind
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.ReportProjectViewModel.Companion.COMMUNITY_GUIDELINES
@@ -18,6 +22,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.After
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ReportProjectViewModelTest : KSRobolectricTestCase() {
@@ -29,6 +35,8 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
     private val finish = TestSubscriber.create<ReportProjectViewModel.ReportProjectViewModel.NavigationResult>()
     private val progressBarVisible = TestSubscriber.create<Boolean>()
     private val openExternal = TestSubscriber.create<String>()
+    private val flaggingOptions = TestSubscriber.create<List<FlaggingOption>>()
+    private val placeholder = TestSubscriber.create<String>()
     private val disposables = CompositeDisposable()
 
     private fun getEnvironment() = environment().toBuilder().apolloClientV2(object : MockApolloClientV2() {
@@ -46,6 +54,33 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
             return Observable.just(FlaggingKind.SPAM.rawValue)
         }
     }).build()
+
+    private fun sampleFlaggingOptions() = listOf(
+        FlaggingOption("project/our_rules", "project", null, true, "This project breaks one of Our Rules", "subtitle", null),
+        FlaggingOption("project/our_rules/resale", "project/our_rules", null, true, "Copying, reselling or plagiarism", null, null),
+        FlaggingOption("project/our_rules/resale/reselling", "project/our_rules/resale", "RESELLING", false, "Reselling", null, "Please provide a URL.")
+    )
+
+    private fun getEnvironmentWithReportFlow(options: List<FlaggingOption>) =
+        environment().toBuilder()
+            .statsigClient(
+                MockStatsigClient(
+                    context = application(),
+                    gateMap = mapOf(StatsigGateKey.ANDROID_REPORT_PROJECT.key to true)
+                )
+            )
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("Some Name", "some@email.com", true, true, true, true, "USD")
+                    )
+                }
+
+                override fun flaggingOptions(contentType: FlaggingContent): Observable<List<FlaggingOption>> {
+                    return Observable.just(options)
+                }
+            })
+            .build()
 
     private fun getBundle(project: Project): Bundle {
         val bundle = Bundle()
@@ -66,6 +101,8 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         disposables.add(this.vm.outputs.finish().subscribe { this.finish.onNext(it) })
         disposables.add(this.vm.outputs.openExternalBrowserWithUrl().subscribe { this.openExternal.onNext(it) })
         disposables.add(this.vm.outputs.progressBarIsVisible().subscribe { this.progressBarVisible.onNext(it) })
+        disposables.add(this.vm.outputs.flaggingOptions().subscribe { this.flaggingOptions.onNext(it) })
+        disposables.add(this.vm.outputs.placeholder().subscribe { this.placeholder.onNext(it) })
     }
 
     @Test
@@ -137,6 +174,34 @@ class ReportProjectViewModelTest : KSRobolectricTestCase() {
         email.assertValue("some@email.com")
         finish.assertNoValues()
         openExternal.assertNoValues()
+    }
+
+    @Test
+    fun testReportFlowDisabled_byDefault_flaggingOptionsEmpty() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(getEnvironment(), getBundle(project))
+
+        assertFalse(vm.isReportFlowEnabled)
+        flaggingOptions.assertValue(emptyList())
+    }
+
+    @Test
+    fun testReportFlowEnabled_flaggingOptionsFetched() {
+        val project = ProjectFactory.project()
+        val options = sampleFlaggingOptions()
+        setUpEnvironment(getEnvironmentWithReportFlow(options), getBundle(project))
+
+        assertTrue(vm.isReportFlowEnabled)
+        flaggingOptions.assertValue(options)
+    }
+
+    @Test
+    fun testPlaceholder_whenOptionSelected() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(getEnvironment(), getBundle(project))
+
+        vm.inputs.inputPlaceholder("Please provide more info")
+        placeholder.assertValues("", "Please provide more info")
     }
 
     @After

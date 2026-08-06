@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kickstarter.R
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.ui.compose.designsystem.KSButton
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.colors
@@ -56,6 +57,7 @@ fun FormularyScreenPreview() {
             override fun createFlagging() {}
             override fun inputDetails(s: String) {}
             override fun kind(kind: String) {}
+            override fun inputPlaceholder(placeholder: String?) {}
             override fun openExternalBrowser(tag: String) {}
         }
 
@@ -65,6 +67,8 @@ fun FormularyScreenPreview() {
             override fun finish(): Observable<ReportProjectViewModel.ReportProjectViewModel.NavigationResult> = Observable.empty()
             override fun progressBarIsVisible(): Observable<Boolean> = Observable.empty()
             override fun openExternalBrowserWithUrl(): Observable<String> = Observable.empty()
+            override fun flaggingOptions(): Observable<List<FlaggingOption>> = Observable.empty()
+            override fun placeholder(): Observable<String> = Observable.empty()
         }
 
         FormularyScreen(
@@ -180,6 +184,7 @@ fun FormularyScreen(
 
         var details by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
+        val apiPlaceholder = outputs.placeholder().subscribeAsState(initial = "").value
         OutlinedTextField(
             modifier = Modifier
                 .focusRequester(focusRequester)
@@ -194,6 +199,11 @@ fun FormularyScreen(
                 details = it
             },
             label = { Text(stringResource(id = R.string.Tell_us_more_details)) },
+            placeholder = {
+                if (apiPlaceholder.isNotEmpty()) {
+                    Text(apiPlaceholder)
+                }
+            },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colors.kds_support_200,
                 unfocusedContainerColor = colors.kds_support_200,

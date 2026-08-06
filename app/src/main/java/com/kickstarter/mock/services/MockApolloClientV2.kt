@@ -33,6 +33,7 @@ import com.kickstarter.models.CompleteOrderPayload
 import com.kickstarter.models.CreatePaymentIntentInput
 import com.kickstarter.models.CreatorDetails
 import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.FlaggingOption
 import com.kickstarter.models.Location
 import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentValidationResponse
@@ -57,6 +58,7 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackerCompletedData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.type.CurrencyCode
+import com.kickstarter.type.FlaggingContent
 import com.kickstarter.viewmodels.usecases.TPEventInputData
 import io.reactivex.Observable
 import java.util.Collections
@@ -172,6 +174,58 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override fun createFlagging(project: Project?, details: String, flaggingKind: String): io.reactivex.Observable<String> {
         return io.reactivex.Observable.empty<String>()
+    }
+
+    override fun flaggingOptions(contentType: FlaggingContent): io.reactivex.Observable<List<FlaggingOption>> {
+        return io.reactivex.Observable.just(
+            listOf(
+                FlaggingOption(
+                    id = "project/our_rules",
+                    parentId = "project",
+                    kind = null,
+                    isGroup = true,
+                    title = "This project breaks one of Our Rules",
+                    subtitle = "All projects on Kickstarter must create something to share with others.",
+                    placeholder = null
+                ),
+                FlaggingOption(
+                    id = "project/our_rules/resale",
+                    parentId = "project/our_rules",
+                    kind = null,
+                    isGroup = true,
+                    title = "Copying, reselling or plagiarism",
+                    subtitle = "Projects cannot plagiarize, offer items that aren't produced by the creator.",
+                    placeholder = null
+                ),
+                FlaggingOption(
+                    id = "project/our_rules/resale/reselling",
+                    parentId = "project/our_rules/resale",
+                    kind = "RESELLING",
+                    isGroup = false,
+                    title = "This project is reselling or repackaging an existing product.",
+                    subtitle = null,
+                    placeholder = "Please provide a URL(s) showing the reward currently available for purchase elsewhere."
+                ),
+                FlaggingOption(
+                    id = "project/community_guidelines",
+                    parentId = "project",
+                    kind = null,
+                    isGroup = true,
+                    title = "Report spam or abusive behavior",
+                    subtitle = "Our Community Guidelines prohibit spam and abusive behavior.",
+                    placeholder = null
+                ),
+                FlaggingOption(
+                    id = "project/community_guidelines/guidelines_spam",
+                    parentId = "project/community_guidelines",
+                    kind = "GUIDELINES_SPAM",
+                    isGroup = false,
+                    title = "Spam",
+                    subtitle = "Ex: Using email lists from outside sources, link bombing.",
+                    placeholder = "Please provide additional context about this content or behavior."
+                )
+            )
+        )
     }
 
     override fun userPrivacy(): io.reactivex.Observable<UserPrivacy> {

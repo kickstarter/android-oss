@@ -71,7 +71,9 @@ import com.kickstarter.ui.compose.designsystem.KSControlIcon
 import com.kickstarter.ui.compose.designsystem.KSTheme
 import com.kickstarter.ui.compose.designsystem.KSTheme.dimensions
 import com.kickstarter.ui.compose.designsystem.KSVideoScrubBar
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Mute
 import com.kickstarter.ui.compose.designsystem.videoplayer.icons.Play
+import com.kickstarter.ui.compose.designsystem.videoplayer.icons.VolumeUp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -81,6 +83,7 @@ enum class KSVideoPlayerTestTag {
     VIDEO_PLAYER_SURFACE,
     VIDEO_PLAYER_CONTROLS,
     VIDEO_PLAYER_PLAY_BUTTON,
+    VIDEO_PLAYER_MUTE_BUTTON,
     VIDEO_PLAYER_FORWARD_BUTTON,
     VIDEO_PLAYER_REWIND_BUTTON,
     VIDEO_PLAYER_PROGRESS_BAR,
@@ -219,8 +222,14 @@ private class TextureViewListeners(
  * //TODO will potentially change in future versions to not create internally any instance
  * @param player An optional, pre-configured [ExoPlayer] instance. If null, a default instance
  * is created and managed internally, then released when the Composable is disposed.
+ * @param isMuted When true the player's audio is silenced (volume 0); when false it plays at full
+ * volume. Hoisted by the caller so a single mute preference can be shared across pages. Drives the
+ * centered mute/unmute toggle, which is shown alongside the play/pause control.
  * @param overlayContent A slot for adding custom UI elements on top of the video player (e.g., Badges,
  * titles, actionButtons). These elements are placed in a [BoxScope] and are drawn above the video and its controls.
+ * @param onMuteToggle Invoked when the user taps the mute/unmute button, with the resulting mute
+ * state (true = now muted). The caller owns the mute state and should apply the reported value to
+ * [isMuted].
  */
 @Composable
 fun KSVideoPlayer(
@@ -230,7 +239,9 @@ fun KSVideoPlayer(
     hideUi: Boolean = false,
     previewImageUrl: String? = null,
     player: ExoPlayer? = null,
+    isMuted: Boolean = false,
     overlayContent: @Composable BoxScope.(HazeState) -> Unit = {},
+    onMuteToggle: (isMuted: Boolean) -> Unit = {},
     onPlayPauseToggle: (isPlaying: Boolean) -> Unit = {},
     onProgressBarInteraction: (currentProgress: Float) -> Unit = {},
     onBecameInactive: (watchTimeMs: Long, videoDurationMs: Long) -> Unit = { _, _ -> },
@@ -306,6 +317,10 @@ fun KSVideoPlayer(
                 delay(500)
             }
         }
+    }
+
+    LaunchedEffect(exoPlayer, isMuted) {
+        exoPlayer.volume = if (isMuted) 0f else 1f
     }
 
     // - control functions are wrapped in remember(exoPlayer).
@@ -490,6 +505,16 @@ fun KSVideoPlayer(
             playPauseCallback = onToggleControls
         )
 
+        MuteButton(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = dimensions.videoFeedMuteButtonCenterOffset),
+            visible = showControls,
+            isMuted = isMuted,
+            hazeState = hazeState,
+            onClick = { onMuteToggle(!isMuted) }
+        )
+
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -633,6 +658,45 @@ private fun ControlsContainer(
                 contentDescription = stringResource(id = R.string.Play)
             )
         }
+    }
+}
+
+/**
+ * Glassmorphism mute/unmute toggle shown over the video. The icon reflects the current audio state
+ * ([Mute] when muted, [VolumeUp] when unmuted) and the accessibility label describes the action the
+ * tap performs. It animates in/out via [visible] using the same transition as the play/pause
+ * control, so the two appear and disappear together.
+ */
+@Composable
+private fun MuteButton(
+    visible: Boolean,
+    isMuted: Boolean,
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null,
+    onClick: () -> Unit = {}
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn() + scaleIn(
+            initialScale = 0.6f,
+            animationSpec = spring(
+                dampingRatio = 0.6f,
+                stiffness = 300f
+            )
+        ),
+        exit = fadeOut() + scaleOut(targetScale = 0.8f),
+        modifier = modifier
+    ) {
+        val label = stringResource(id = if (isMuted) R.string.fpo_Unmute else R.string.fpo_Mute)
+        KSControlIcon(
+            icon = if (isMuted) Mute else VolumeUp,
+            size = dimensions.videoFeedMuteButtonSize,
+            onClick = onClick,
+            hazeState = hazeState,
+            contentDescription = label,
+            onClickLabel = label,
+            modifier = Modifier.testTag(KSVideoPlayerTestTag.VIDEO_PLAYER_MUTE_BUTTON.name)
+        )
     }
 }
 

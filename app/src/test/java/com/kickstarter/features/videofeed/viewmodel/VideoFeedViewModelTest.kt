@@ -427,7 +427,7 @@ class VideoFeedViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment(), dispatcher)
 
-        viewModel.onCTAClicked(project, CtaContextName.VIDEO_SAVE)
+        viewModel.onCTAClicked(project, videoId = 33333L, ctaType = CtaContextName.VIDEO_SAVE)
 
         segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }

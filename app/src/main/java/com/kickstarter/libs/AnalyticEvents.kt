@@ -1012,13 +1012,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackVideoFeedCTAClicked(
         project: Project,
+        videoId: Long,
         ctaType: EventContextValues.CtaContextName,
         watchTimeAtClick: Long? = null
     ) {
         val props = HashMap<String, Any>()
         props[CONTEXT_PAGE.contextName] = VIDEO_FEED.contextName
         props[CONTEXT_CTA.contextName] = ctaType.contextName
-        props["video_feed_video_id"] = project.id().toString()
+        props["video_feed_video_id"] = videoId.toString()
         props["video_feed_project_id"] = project.id().toString()
         watchTimeAtClick?.let { props["video_feed_watch_time_at_click"] = it }
         client.track(CTA_CLICKED.eventName, props)

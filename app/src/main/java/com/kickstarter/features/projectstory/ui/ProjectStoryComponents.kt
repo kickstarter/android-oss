@@ -12,8 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.LocalPinnableContainer
-import androidx.compose.ui.layout.PinnableContainer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Bullet
@@ -220,9 +218,6 @@ fun WebViewComponent(url: String) {
     Timber.d("WebViewComponent($url)")
     lateinit var context: Context
 
-    val pinnedHandle: PinnableContainer.PinnedHandle? = LocalPinnableContainer.current?.pin()
-    Timber.d("pinnedHandle: $pinnedHandle")
-
     @SuppressLint("SetJavaScriptEnabled")
     AndroidView(
         modifier = Modifier
@@ -251,7 +246,6 @@ fun WebViewComponent(url: String) {
         },
         onRelease = {
             Timber.d("onRelease()")
-            pinnedHandle?.release()
         }
     )
 }

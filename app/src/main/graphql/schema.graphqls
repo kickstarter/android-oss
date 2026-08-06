@@ -75,6 +75,11 @@ type Query {
   europeanUnionLocation: Location!
 
   """
+  Fetches flagging kinds given a content type
+  """
+  flaggingOptions(contentType: FlaggingContent!): [FlaggingNode!]!
+
+  """
   Fetches a address given its id.
   """
   fulfillmentAddress(id: ID!): Address
@@ -161,6 +166,10 @@ type Query {
   """
   partnersGrid("Whether to only return published revision. Used for previewing unpublished revisions." published: Boolean): [Partner!]!
 
+  passwordlessAppleSignInConfig: PasswordlessAppleSignInConfig!
+
+  passwordlessTurnstileSiteKey: String!
+
   photoForEditor(id: ID!): Photo
 
   pledgeManagerOptOutReasons: [OptOutReason!]!
@@ -190,12 +199,12 @@ type Query {
   """
   project(slug: String, pid: Int): Project
 
-  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, projectId: ID, projectName: String, reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], projectPublicState: [AdminProjectState!], creatorHrcTier: [CreatorHrcStatusTier!], assigneeFilter: TaskAssigneeFilter, owners: [ID!], sortColumn: ProjectInvestigationSort, sortDirection: OpenSearchSort, "Page number of results to fetch" page: Int, "Number of results to return per page" perPage: Int, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
+  projectInvestigations("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "For looking up a specific investigation" projectId: ID, searchQuery: InvestigationsSearchQuery, "Seed for ordering the projects" seed: Int): ProjectInvestigationConnection!
 
   """
   Get some projects
   """
-  projects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Get projects backed by the current user." backed: Boolean, "Get projects where the current user is a collaborator." collaborated: Boolean, "Get projects in only this category." categoryId: String, "Get projects created by the current user." created: Boolean, "social (backed by people I'm following)." following: Boolean, "Get projects with a USD goal amount in this bucket." goal: GoalBuckets, "Get projects from this location." locationId: ID, "Get projects with a USD pledged amount in this bucket." pledged: PledgedBuckets, "Get projects with a raised percent in this bucket." raised: RaisedBuckets, "Get projects recommended for the current user." recommended: Boolean, "The recommendations models to use" recommendationsModels: [RecommendationsModel!], "The source for recommendations." recommendationsSource: [RecommendationsSource!], "Seed for ordering the projects" seed: Int, "Find projects similar to the given project by pid." similarToPid: String, "Find projects similar to the given project term." similarTo: String, "The sort order for returned projects." sort: ProjectSort, "Get project selected as staff picks." staffPicks: Boolean, "Get projects starred by the current user." starred: Boolean, "Get projects with this state." state: PublicProjectState, "Get projects with this tag." tagId: Int, "Project search term." term: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Get projects with deadlines after this date" deadlineAfter: DateTime, "Get projects with deadlines before this date" deadlineBefore: DateTime, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): ProjectsConnectionWithTotalCount
+  projects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Get projects backed by the current user." backed: Boolean, "Get projects where the current user is a collaborator." collaborated: Boolean, "Get projects in only this category." categoryId: String, "Get projects created by the current user." created: Boolean, "DEPRECATED: Social discover filtering is no longer supported and this argument is ignored." following: Boolean, "Get projects with a USD goal amount in this bucket." goal: GoalBuckets, "Get projects from this location." locationId: ID, "Get projects with a USD pledged amount in this bucket." pledged: PledgedBuckets, "Get projects with a raised percent in this bucket." raised: RaisedBuckets, "Get projects recommended for the current user." recommended: Boolean, "The recommendations models to use" recommendationsModels: [RecommendationsModel!], "The source for recommendations." recommendationsSource: [RecommendationsSource!], "Seed for ordering the projects" seed: Int, "Find projects similar to the given project by pid." similarToPid: String, "Find projects similar to the given project term." similarTo: String, "The sort order for returned projects." sort: ProjectSort, "Get project selected as staff picks." staffPicks: Boolean, "Get projects starred by the current user." starred: Boolean, "Get projects with this state." state: PublicProjectState, "Get projects with this tag." tagId: Int, "Project search term." term: String, "A list of pids corresponding to projects to be excluded from the results" excludePids: [Int!], "Get projects with deadlines after this date" deadlineAfter: DateTime, "Get projects with deadlines before this date" deadlineBefore: DateTime, "Latitude of the location." lat: Float, "Longitude of the location." long: Float, "Maximum distance in kilometers from the given coordinates." radius: Float, "Use the session location to search for locations." useSessionLocation: Boolean, "Filter by coordinates." filterByCoordinates: Boolean): ProjectsConnectionWithTotalCount
 
   """
   Editorialized quiz projects for the taste profile quiz.
@@ -238,6 +247,11 @@ type Query {
   Root location for shipping rewards
   """
   shippingRoot: Location!
+
+  """
+  Whether the current session has completed step-up verification
+  """
+  stepUpVerified: Boolean!
 
   """
   Countries that can launch projects.
@@ -335,6 +349,11 @@ type User implements Node {
   This user's saved shipping addresses
   """
   addresses("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): AddressConnection
+
+  """
+  The set of notes attached to this user
+  """
+  adminNotes("Column to order the list of notes by" orderBy: String, "Order in ascending or descending order" order: OrderDirection): [Note!]
 
   """
   Indicates whether or not the user allows other Kickstarter users to follow them
@@ -662,6 +681,16 @@ type User implements Node {
   membershipProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): MembershipProjectsConnection
 
   """
+  Users that this user has a message thread with.
+  """
+  messagedUsers("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): MessagedUsersConnection!
+
+  """
+  Users muted by this user.
+  """
+  mutedUsers("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "The type of notification that a user was muted for by this user." mutingScope: NotificationScopeType): UserMutesConnection!
+
+  """
   The user's provided name.
   """
   name: String!
@@ -707,6 +736,11 @@ type User implements Node {
   projectNotifications: [Notification!]
 
   """
+  Projects that were backed by the current user that were created by this user (empty if looking at yourself). Always returns projects in order from most recently backed to least recently backed
+  """
+  projectsBackedByMe("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): UserBackedProjectsConnection
+
+  """
   The user's recent searches
   """
   recentSearches: [RecentSearch!]
@@ -715,6 +749,11 @@ type User implements Node {
   Projects a user has saved.
   """
   savedProjects("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Filter projects by publically accessible state." state: PublicProjectState, "Get saved projects with deadlines after this date" deadlineAfter: DateTime, "Get saved projects with deadlines before this date" deadlineBefore: DateTime, "Get saved projects that are upcoming" upcoming: Boolean, "Get saved projects that have launched" launched: Boolean): UserSavedProjectsConnection
+
+  """
+  The list of enabled settings for a user
+  """
+  settings: [UserSettings!]!
 
   """
   Is the user's profile public
@@ -797,6 +836,12 @@ The list of available public features
 """
 enum Feature {
   device_components
+
+  passwordless
+
+  passwordless_email_change
+
+  passwordless_step_up
 
   show_posts_feed
 
@@ -922,6 +967,8 @@ enum Feature {
 
   pl_usd_currency_2025
 
+  se_usd_currency_2026
+
   sg_usd_currency_2025
 
   se_currency_selector
@@ -937,10 +984,6 @@ enum Feature {
   segment_hide_project_deadline_property
 
   web_error_on_retry_of_failed_3ds_backing
-
-  hide_facebook_login_button_2022
-
-  creator_onboarding_flow_2021
 
   updated_risks_flow
 
@@ -980,10 +1023,6 @@ enum Feature {
 
   prelaunch_story_exception
 
-  creator_nav_refresh
-
-  sku_editing_2024
-
   superbacker_progress
 
   backers_can_choose_plot_v1
@@ -1001,8 +1040,6 @@ enum Feature {
   KDS_messages_app
 
   KDS_messages_app_backer_filter
-
-  discover_ui_2025
 
   pledge_management_reward_setup
 
@@ -1094,17 +1131,59 @@ enum Feature {
 
   improving_refund_orchestration_2026
 
+  pm_order_edit_refunds_2026
+
+  pm_updates_on_fulfillment_page_2026
+
   vat_flexibility_2026
 
   vertical_video_feed_2026
 
   backer_survey_edits_2026
 
+  collaborator_analytics_ids_edit_permission
+
   backer_additional_addons_2026
 
   allow_order_level_surcharge_for_AU_backers
 
-  segmented_shipping_backer_2026
+  hide_item_variants_peak_2026
+
+  combo_shipping_phase_1
+
+  new_rules_page_2026
+
+  collaborator_active_membership_limit
+
+  kds_notifications
+
+  new_rules_page_revision
+
+  enable_6_hour_segmented_address_locking
+
+  enable_24_hour_segmented_address_locking
+
+  peak_design_backer_report_sku_by_reward_breakdown
+
+  saved_searches_2026
+
+  batch_backer_report
+
+  enable_early_pm_launch
+
+  shopify_integration_2026
+
+  user_muting
+
+  SKU_management_2026
+
+  pause_pledge_manager_2026
+
+  allow_editing_reward_audience_in_project_build
+
+  project_notice_2026_updates
+
+  custom_country_surcharges_2026
 }
 
 """
@@ -1222,277 +1301,384 @@ type Validation {
 }
 
 """
-The connection type for CreditCard.
+A note attached to a notable object
 """
-type UserCreditCardTypeConnection {
+type Note {
   """
-  A list of edges.
+  The action associated with the note (comprised of the name and the reason)
   """
-  edges: [CreditCardEdge]
+  action: String
 
   """
-  A list of nodes.
+  The name of the action being taken
   """
-  nodes: [CreditCard]
+  actionName: String
 
   """
-  Information to aid in pagination.
+  The reason the action was taken
   """
-  pageInfo: PageInfo!
+  actionReason: String
 
-  totalCount: Int!
+  """
+  The body of the note
+  """
+  body: String
+
+  """
+  When the note was created
+  """
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  """
+  The object the note is about
+  """
+  notable: Notable!
+
+  """
+  The display name for the notable that is linked to this note
+  """
+  notableDisplay: String!
+
+  """
+  The URL to the notable
+  """
+  notablePath: String!
+
+  """
+  The type of the notable for this note
+  """
+  notableType: String!
+
+  """
+  The user who created the note
+  """
+  notetaker: User
 }
 
 """
-Information about pagination in a connection.
+An ISO 8601-encoded datetime
 """
-type PageInfo {
+scalar ISO8601DateTime
+
+union Notable = Task|Project|User|Backing|Order
+
+"""
+A task that needs to be actioned on by Kickstarter staff
+"""
+type Task implements Node {
   """
-  When paginating forwards, the cursor to continue.
+  The admin assigned to this task
   """
-  endCursor: String
+  admin: User
 
   """
-  When paginating forwards, are there more items?
+  The category of the task
   """
-  hasNextPage: Boolean!
+  category: TaskProjectReportCategory!
 
   """
-  When paginating backwards, are there more items?
+  When the task was completed
   """
-  hasPreviousPage: Boolean!
+  completedAt: ISO8601DateTime
 
   """
-  When paginating backwards, the cursor to continue.
+  When the task was created
   """
-  startCursor: String
+  createdAt: ISO8601DateTime!
+
+  """
+  The number of flaggings for this task
+  """
+  flaggingsCount: Int!
+
+  id: ID!
+
+  """
+  The latest admin note on this task
+  """
+  latestAdminNote: Note
+
+  """
+  The latest flagging associated with this task
+  """
+  latestFlagging: Flagging
+
+  """
+  The latest Zendesk ticket associated with this task
+  """
+  latestZendeskTicket: ZendeskTicket
+
+  """
+  The project associated with this task
+  """
+  project: Project
+
+  """
+  Whether this is a real issue
+  """
+  realIssue: Boolean
+
+  """
+  The current state of the task
+  """
+  state: TaskState!
+
+  """
+  When the task was last updated
+  """
+  updatedAt: ISO8601DateTime!
+
+  """
+  The user associated with this task
+  """
+  user: User
 }
 
 """
-An edge in a connection.
+Task states
 """
-type CreditCardEdge {
+enum TaskState {
   """
-  A cursor for use in pagination.
+  New task
   """
-  cursor: String!
+  new
 
   """
-  The item at the end of the edge.
+  Open task (alias for new)
   """
-  node: CreditCard
+  open
+
+  """
+  Completed task
+  """
+  completed
+
+  """
+  Completed task, marked as issue
+  """
+  issue
+
+  """
+  Completed task, marked as nonissue
+  """
+  nonissue
 }
 
 """
-A credit card on file.
+Project report task categories.
 """
-type CreditCard {
+enum TaskProjectReportCategory {
   """
-  When the credit card expires.
+  Category: vices-drugs
   """
-  expirationDate: Date!
-
-  """
-  The card ID
-  """
-  id: String!
+  vices_drugs
 
   """
-  The last four digits of the credit card number.
+  Category: vices-alcohol
   """
-  lastFour: String!
-
-  """
-  The card type, but in lowercase.
-  """
-  lowercaseType: LowercaseCreditCardTypes!
+  vices_alcohol
 
   """
-  The card's payment type.
+  Category: vices-weapons
   """
-  paymentType: CreditCardPaymentType!
-
-  """
-  The card's state.
-  """
-  state: CreditCardState!
+  vices_weapons
 
   """
-  Stripe card id
+  Category: health-claims
   """
-  stripeCardId: String!
-
-  """
-  The card type.
-  """
-  type: CreditCardTypes!
-}
-
-"""
-ISO Date: YYYY-MM-DD
-"""
-scalar Date
-
-"""
-Credit card types.
-"""
-enum CreditCardTypes {
-  AMEX
-
-  DISCOVER
-
-  JCB
-
-  MASTERCARD
-
-  VISA
-
-  DINERS
-
-  UNIONPAY
-
-  LINK
-}
-
-"""
-Credit card types.
-"""
-enum LowercaseCreditCardTypes {
-  amex
-
-  discover
-
-  jcb
-
-  mastercard
-
-  visa
-
-  diners
-
-  unionpay
-
-  link
-}
-
-"""
-Credit card payment types.
-"""
-enum CreditCardPaymentType {
-  ANDROID_PAY
-
-  APPLE_PAY
-
-  BANK_ACCOUNT
-
-  CREDIT_CARD
-}
-
-"""
-States of Credit Cards
-"""
-enum CreditCardState {
-  UNAUTHORIZED
-
-  VERIFYING
-
-  ACTIVE
-
-  INACTIVE
-}
-
-"""
-The connection type for BankAccount.
-"""
-type BankAccountConnection {
-  """
-  A list of edges.
-  """
-  edges: [BankAccountEdge]
+  health_claims
 
   """
-  A list of nodes.
+  Category: health-regulations
   """
-  nodes: [BankAccount]
+  health_regulations
 
   """
-  Information to aid in pagination.
+  Category: health-gmos
   """
-  pageInfo: PageInfo!
-}
-
-"""
-An edge in a connection.
-"""
-type BankAccountEdge {
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
+  health_gmos
 
   """
-  The item at the end of the edge.
+  Category: health-live-animals
   """
-  node: BankAccount
-}
-
-"""
-A bank account.
-"""
-type BankAccount {
-  """
-  The bank name if available.
-  """
-  bankName: String
-
-  id: String!
+  health_live_animals
 
   """
-  The last four digits of the account number.
+  Category: health-energy-food-and-drink
   """
-  lastFour: String!
+  health_energy_food_and_drink
 
   """
-  The stripe bank account id
+  Category: financial-contests-coupons
   """
-  stripeCardId: String!
-}
-
-"""
-The connection type for Project.
-"""
-type UserBackedProjectsConnection {
-  """
-  A list of edges.
-  """
-  edges: [ProjectEdge]
+  financial_contests_coupons
 
   """
-  A list of nodes.
+  Category: financial-services
   """
-  nodes: [Project]
+  financial_services
 
   """
-  Information to aid in pagination.
+  Category: financial-political-donations
   """
-  pageInfo: PageInfo!
-
-  totalCount: Int! @deprecated(reason: "Please use backingsCount instead.")
-}
-
-"""
-An edge in a connection.
-"""
-type ProjectEdge {
-  """
-  A cursor for use in pagination.
-  """
-  cursor: String!
+  financial_political_donations
 
   """
-  The item at the end of the edge.
+  Category: offensive-content-hate
   """
-  node: Project
+  offensive_content_hate
+
+  """
+  Category: offensive-content-porn
+  """
+  offensive_content_porn
+
+  """
+  Category: prohibited-items
+  """
+  prohibited_items
+
+  """
+  Category: reselling
+  """
+  reselling
+
+  """
+  Category: plagiarism
+  """
+  plagiarism
+
+  """
+  Category: resale
+  """
+  resale
+
+  """
+  Category: misrep-support-impersonation
+  """
+  misrep_support_impersonation
+
+  """
+  Category: misrep-support-outstanding-fulfillment
+  """
+  misrep_support_outstanding_fulfillment
+
+  """
+  Category: misrep-support-suspicious-pledging
+  """
+  misrep_support_suspicious_pledging
+
+  """
+  Category: misrep-support-other
+  """
+  misrep_support_other
+
+  """
+  Category: misrep-support
+  """
+  misrep_support
+
+  """
+  Category: not-project-charity
+  """
+  not_project_charity
+
+  """
+  Category: not-project-stunt-or-hoax
+  """
+  not_project_stunt_or_hoax
+
+  """
+  Category: not-project-personal-expenses
+  """
+  not_project_personal_expenses
+
+  """
+  Category: not-project-barebones
+  """
+  not_project_barebones
+
+  """
+  Category: not-project-other
+  """
+  not_project_other
+
+  """
+  Category: not-project
+  """
+  not_project
+
+  """
+  Category: prototype-misrepresentation
+  """
+  prototype_misrepresentation
+
+  """
+  Category: false-claims
+  """
+  false_claims
+
+  """
+  Category: guidelines-spam
+  """
+  guidelines_spam
+
+  """
+  Category: guidelines-abuse
+  """
+  guidelines_abuse
+
+  """
+  Category: guidelines-violation
+  """
+  guidelines_violation
+
+  """
+  Category: undisclosed-ai-use
+  """
+  undisclosed_ai_use
+
+  """
+  Category: post-funding-reward-not-as-described
+  """
+  post_funding_reward_not_as_described
+
+  """
+  Category: post-funding-reward-delayed
+  """
+  post_funding_reward_delayed
+
+  """
+  Category: post-funding-shipped-never-received
+  """
+  post_funding_shipped_never_received
+
+  """
+  Category: post-funding-creator-selling-elsewhere
+  """
+  post_funding_creator_selling_elsewhere
+
+  """
+  Category: post-funding-creator-uncommunicative
+  """
+  post_funding_creator_uncommunicative
+
+  """
+  Category: post-funding-creator-inappropriate
+  """
+  post_funding_creator_inappropriate
+
+  """
+  Category: post-funding-suspicious-third-party
+  """
+  post_funding_suspicious_third_party
+
+  """
+  Category: post-funding-issues
+  """
+  post_funding_issues
 }
 
 """
@@ -1534,6 +1720,11 @@ type Project implements Node & Commentable {
   """
   addressCollectionForDigitalReward: Boolean
 
+  """
+  The set of notes attached to this project
+  """
+  adminNotes("Column to order the list of notes by" orderBy: String, "Order in ascending or descending order" order: OrderDirection): [Note!]
+
   aiDisclosure: AiDisclosure
 
   """
@@ -1572,16 +1763,6 @@ type Project implements Node & Commentable {
   averageSentiment: Float!
 
   """
-  The date on which backer additional addons should end, if custom end date option selected. If this field is null, assume the feature is not enabled, the end condition is not custom end date, or the creator has not set this value yet
-  """
-  backerAdditionalAddonsEndAt: DateTime
-
-  """
-  When backer additional addon order edits should end, if enabled by the creator. If this field is null, assume the feature is not enabled, or the creator has not set this value yet
-  """
-  backerAdditionalAddonsEndCondition: BackerAdditionalAddonsEndConditionType
-
-  """
   The lockout date for address collection
   """
   backerAddressLockoutDate: DateTime
@@ -1602,24 +1783,9 @@ type Project implements Node & Commentable {
   backerSurvey: BackerSurvey
 
   """
-  The date on which backer survey edits should end, if creator select the custom end date option
-  """
-  backerSurveyEditsEndAt: DateTime
-
-  """
-  When should backer survey edits end, if enabled by the creator
-  """
-  backerSurveyEditsEndCondition: BackerSurveyEditsEndConditionType
-
-  """
   An optional introduction to the backer survey.
   """
   backerSurveyIntro("The width of embedded assets in pixels." assetWidth: Int): HTML
-
-  """
-  Backers of the project
-  """
-  backers("Limit the number of backers returned" limit: Int, "Limit to backers that the current user is following" followed: Boolean): [User!]
 
   """
   Total backers for the project
@@ -1905,6 +2071,11 @@ type Project implements Node & Commentable {
   Exchange rate for the current user's currency
   """
   fxRate: Float!
+
+  """
+  Currency code for the current user's currency
+  """
+  fxRateCurrency: CurrencyCode!
 
   """
   The project's title converted to a slug.
@@ -2319,6 +2490,11 @@ type Project implements Node & Commentable {
   postCampaignPledgingEnabled: Boolean!
 
   """
+  Project-level configuration for late pledging, pledge redemption, and order edits.
+  """
+  postCampaignProjectConfig: PostCampaignProjectConfig
+
+  """
   Number of watchers from post-launch
   """
   postLaunchWatchesCount: Int!
@@ -2541,6 +2717,11 @@ type Project implements Node & Commentable {
   showSignalOfFulfillmentModal: Boolean!
 
   """
+  The SKU bundles associated with this project
+  """
+  skuBundles: [SkuBundle!]
+
+  """
   The project's unique URL identifier.
   """
   slug: String!
@@ -2671,6 +2852,11 @@ type Project implements Node & Commentable {
   userWasRemoved: Boolean!
 
   """
+  Whether a project uses shipping zones at pledge or not
+  """
+  usesShippingZonesAtPledge: Boolean!
+
+  """
   Name of user on verified account
   """
   verifiedCreatorName: String
@@ -2754,6 +2940,31 @@ type CommentConnection {
 }
 
 """
+Information about pagination in a connection.
+"""
+type PageInfo {
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
+}
+
+"""
 An edge in a connection.
 """
 type CommentEdge {
@@ -2788,7 +2999,7 @@ type Comment implements Node {
   authorBadges: [CommentBadge]
 
   """
-  Whether the author has canceled their pledge
+  Whether the author has canceled their pledge or been refunded
   """
   authorCanceledPledge: Boolean!
 
@@ -2943,6 +3154,16 @@ type Backing implements Node {
   The backer
   """
   backer: User
+
+  """
+  The lockout date for address collection
+  """
+  backerAddressLockoutDate: DateTime
+
+  """
+  Whether or not the backer address lockout date has passed.
+  """
+  backerAddressLockoutDatePassed: Boolean!
 
   """
   If the backer_completed_at is set or not
@@ -4018,6 +4239,11 @@ type ItemVariant {
   id: ID!
 
   """
+  The item that the variant belongs to
+  """
+  item: RewardItem!
+
+  """
   The name (e.g. 'Hoodie Small Blue Checkered')
   """
   name: String!
@@ -4385,6 +4611,11 @@ type Reward implements Node {
   shippingEnabled: Boolean!
 
   """
+  Shipping availability and matching rule for a reward at a given country.
+  """
+  shippingForLocation("ISO country code (e.g. \"US\", \"GB\") to check shipping availability for" countryCode: CountryCode!): ShippingForLocation!
+
+  """
   Shipping preference for this reward
   """
   shippingPreference: ShippingPreference
@@ -4523,6 +4754,11 @@ enum RewardType {
 }
 
 """
+ISO Date: YYYY-MM-DD
+"""
+scalar Date
+
+"""
 The connection type for RewardItem.
 """
 type RewardItemsConnection {
@@ -4656,7 +4892,71 @@ type ShippingRule implements Node {
   """
   The shipping location to which the rule pertains.
   """
-  location: Location!
+  location: Location
+
+  """
+  The shipping zone to which the rule pertains
+  """
+  shippingZone: ShippingZone
+}
+
+"""
+A shipping zone configured for a project
+"""
+type ShippingZone {
+  id: ID!
+
+  """
+  Whether it has rest of the world location
+  """
+  isRoot: Boolean!
+
+  """
+  The locations included in the zone.
+  """
+  locations: [Location!]!
+
+  """
+  Optional name for the shipping zone
+  """
+  name: String
+
+  """
+  The project the shipping zone belongs
+  """
+  project: Project!
+
+  """
+  Weight ranges with cost, relevant to the zone.
+  """
+  weightRanges: [WeightRange!]!
+}
+
+"""
+A min and max weight range with associated cost
+"""
+type WeightRange {
+  """
+  The cost for this weight range.
+  """
+  cost: Int!
+
+  """
+  The cost for this weight range, formatted.
+  """
+  costFormatted: String!
+
+  id: ID!
+
+  """
+  The max of the weight range (optional)
+  """
+  max: Float
+
+  """
+  The min of the weight range
+  """
+  min: Float!
 }
 
 """
@@ -4729,12 +5029,17 @@ type ShippingRate {
   """
   The shipping location for which this shipping rate is defined.
   """
-  location: Location!
+  location: Location
 
   """
   The item or reward for which this shipping rate is defined.
   """
   shippable: Shippable!
+
+  """
+  The shipping zone for which this shipping rate is defined.
+  """
+  shippingZone: ShippingZone
 }
 
 union Shippable = Reward|RewardItem
@@ -4757,6 +5062,21 @@ enum PrereqCompletionStatus {
   Prereq is complete
   """
   complete
+}
+
+"""
+Shipping availability for a reward at a given location.
+"""
+type ShippingForLocation {
+  """
+  True when reward can be pledged from country. Always true for digital / local-pickup rewards.
+  """
+  canPledgeInLocation: Boolean!
+
+  """
+  The shipping rule matching the given country, if one exists.
+  """
+  shippingRule: SimpleShippingRule
 }
 
 """
@@ -5470,6 +5790,11 @@ type DigitalFile {
   distributionCount: Int!
 
   """
+  Whether the file is distributed automatically (via item/SKU attachments) or manually
+  """
+  distributionMethod: DigitalFileDistributionMethod!
+
+  """
   The number of users who have downloaded the file
   """
   downloadedCount: Int!
@@ -5533,6 +5858,18 @@ type ActiveStorageBlob {
 }
 
 union DigitalFileAttachable = RewardItem|ItemVariant
+
+enum DigitalFileDistributionMethod {
+  """
+  File is distributed automatically if it has item/SKU attachments
+  """
+  AUTOMATIC
+
+  """
+  File is distributed manually by the creator
+  """
+  MANUAL
+}
 
 """
 Selected fields on a SetupIntent from Stripe for a given backing.
@@ -5651,6 +5988,141 @@ enum SetupIntentErrorType {
 }
 
 union PaymentSource = BankAccount|CreditCard
+
+"""
+A bank account.
+"""
+type BankAccount {
+  """
+  The bank name if available.
+  """
+  bankName: String
+
+  id: String!
+
+  """
+  The last four digits of the account number.
+  """
+  lastFour: String!
+
+  """
+  The stripe bank account id
+  """
+  stripeCardId: String!
+}
+
+"""
+A credit card on file.
+"""
+type CreditCard {
+  """
+  When the credit card expires.
+  """
+  expirationDate: Date!
+
+  """
+  The card ID
+  """
+  id: String!
+
+  """
+  The last four digits of the credit card number.
+  """
+  lastFour: String!
+
+  """
+  The card type, but in lowercase.
+  """
+  lowercaseType: LowercaseCreditCardTypes!
+
+  """
+  The card's payment type.
+  """
+  paymentType: CreditCardPaymentType!
+
+  """
+  The card's state.
+  """
+  state: CreditCardState!
+
+  """
+  Stripe card id
+  """
+  stripeCardId: String!
+
+  """
+  The card type.
+  """
+  type: CreditCardTypes!
+}
+
+"""
+Credit card types.
+"""
+enum CreditCardTypes {
+  AMEX
+
+  DISCOVER
+
+  JCB
+
+  MASTERCARD
+
+  VISA
+
+  DINERS
+
+  UNIONPAY
+
+  LINK
+}
+
+"""
+Credit card types.
+"""
+enum LowercaseCreditCardTypes {
+  amex
+
+  discover
+
+  jcb
+
+  mastercard
+
+  visa
+
+  diners
+
+  unionpay
+
+  link
+}
+
+"""
+Credit card payment types.
+"""
+enum CreditCardPaymentType {
+  ANDROID_PAY
+
+  APPLE_PAY
+
+  BANK_ACCOUNT
+
+  CREDIT_CARD
+}
+
+"""
+States of Credit Cards
+"""
+enum CreditCardState {
+  UNAUTHORIZED
+
+  VERIFYING
+
+  ACTIVE
+
+  INACTIVE
+}
 
 """
 Various backing states.
@@ -5903,6 +6375,11 @@ An order.
 """
 type Order implements Node {
   """
+  Whether add-on edits are enabled for order edits
+  """
+  addonsEditable: Boolean!
+
+  """
   The delivery or home address associated with the order.
   """
   address: Address
@@ -6056,6 +6533,11 @@ type Order implements Node {
   The associated user
   """
   customer: User!
+
+  """
+  Add-ons to display in checkout, including selected sold-out add-ons in current order context
+  """
+  displayableCrossSells: [Reward!]!
 
   """
   Whether the order is in a finalized state
@@ -6414,6 +6896,11 @@ type OrderEdit {
   crossSellsTotalFormatted: String!
 
   """
+  Add-ons to display in order edits, including sold-out add-ons selected in current edit context
+  """
+  displayableCrossSells: [Reward!]!
+
+  """
   Line items that were edited as part of the edit
   """
   editLineItems: [OrderEditLineItem!]!
@@ -6589,6 +7076,11 @@ enum OrderEditStateEnum {
   rejected
 
   """
+  refunded
+  """
+  refunded
+
+  """
   failed
   """
   failed
@@ -6634,6 +7126,16 @@ A shipment included in an Order.
 """
 type Shipment {
   """
+  The Address associated with a Shipment
+  """
+  address: Address
+
+  """
+  The date after which the address for this shipment can no longer be updated.
+  """
+  addressLockoutDate: DateTime
+
+  """
   The cost of this shipment. This is the total amount charged for shipping (base amount), minus the amount charged at pledge (voucher amount).
   """
   cost: Int!
@@ -6651,6 +7153,11 @@ type Shipment {
   parentId: ID
 
   """
+  The order items included in this shipment.
+  """
+  shipmentOrderItems: [ShipmentOrderItem!]
+
+  """
   The tracking number for this shipment.
   """
   trackingNumber: String
@@ -6664,6 +7171,18 @@ type Shipment {
   Datetime the shipment was last updated
   """
   updatedAt: DateTime!
+}
+
+"""
+An order item included in a shipment.
+"""
+type ShipmentOrderItem {
+  id: ID!
+
+  """
+  The order item included in the shipment
+  """
+  orderItem: OrderItem!
 }
 
 """
@@ -6998,11 +7517,6 @@ type PaymentIncrement {
 
   stateReason: PaymentIncrementStateReason
 }
-
-"""
-An ISO 8601-encoded datetime
-"""
-scalar ISO8601DateTime
 
 enum PaymentIncrementStateReason {
   """
@@ -7412,6 +7926,11 @@ type Refund implements Node {
   refundDetailsPath: String!
 
   """
+  The current state of the refund
+  """
+  state: String
+
+  """
   The total refunded from this refund attempt, formatted
   """
   totalFormatted: String!
@@ -7490,6 +8009,11 @@ type RefundAdjustmentData {
   The adjustment details for the shipping and shipping tax
   """
   shipping: String
+
+  """
+  The state of the adjustment
+  """
+  state: String
 
   """
   The reason for the adjustment state
@@ -8403,6 +8927,21 @@ type CategoryProjectsConnection {
 }
 
 """
+An edge in a connection.
+"""
+type ProjectEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: Project
+}
+
+"""
 Publically visible project states.
 """
 enum PublicProjectState {
@@ -9083,6 +9622,15 @@ enum TagScope {
 }
 
 """
+Ordering direction values
+"""
+enum OrderDirection {
+  ASC
+
+  DESC
+}
+
+"""
 A submission for a project on Kickstarter.
 """
 type Submission {
@@ -9209,6 +9757,11 @@ type Video implements Node {
   A video's tracks
   """
   tracks("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String): VideoTracksConnection
+
+  """
+  A video's orientation
+  """
+  videoOrientation: VideoOrientation!
 
   """
   A video's sources (hls, high, base)
@@ -9622,6 +10175,15 @@ type VideoTrackCue implements Node {
 }
 
 """
+Possible video orientations.
+"""
+enum VideoOrientation {
+  horizontal
+
+  vertical
+}
+
+"""
 A report by a user.
 """
 type Flagging implements Node {
@@ -9923,6 +10485,16 @@ enum FlaggingKind {
   backing-spam
   """
   BACKING_SPAM
+
+  """
+  phishing
+  """
+  PHISHING
+
+  """
+  copyright
+  """
+  COPYRIGHT
 }
 
 """
@@ -10182,65 +10754,6 @@ enum VatOptOutReasonEnum {
   other_custom
   """
   other_custom
-}
-
-"""
-A shipping zone configured for a project
-"""
-type ShippingZone {
-  id: ID!
-
-  """
-  Whether it has rest of the world location
-  """
-  isRoot: Boolean!
-
-  """
-  The locations included in the zone.
-  """
-  locations: [Location!]!
-
-  """
-  Optional name for the shipping zone
-  """
-  name: String
-
-  """
-  The project the shipping zone belongs
-  """
-  project: Project!
-
-  """
-  Weight ranges with cost, relevant to the zone.
-  """
-  weightRanges: [WeightRange!]!
-}
-
-"""
-A min and max weight range with associated cost
-"""
-type WeightRange {
-  """
-  The cost for this weight range.
-  """
-  cost: Int!
-
-  """
-  The cost for this weight range, formatted.
-  """
-  costFormatted: String!
-
-  id: ID!
-
-  """
-  The max of the weight range (optional)
-  """
-  max: Float
-
-  """
-  The min of the weight range
-  """
-  min: Float!
 }
 
 """
@@ -10793,7 +11306,7 @@ type CreatorInterview implements Node & Commentable & Postable {
   """
   The interview answers associated with the creator interview.
   """
-  answers("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Includes skipped answers" withSkipped: Boolean, "Includes blank answers" withBlank: Boolean): InterviewAnswerConnection!
+  answers("Returns the first _n_ elements from the list." first: Int, "Returns the elements in the list that come after the specified cursor." after: String, "Returns the last _n_ elements from the list." last: Int, "Returns the elements in the list that come before the specified cursor." before: String, "Includes skipped answers" withSkipped: Boolean, "Includes blank answers" withBlank: Boolean): InterviewAnswerConnection
 
   """
   The attached poll for the post.
@@ -11140,7 +11653,7 @@ type FreeformPost implements Node & Commentable & Postable {
   """
   Return an itemized version of the post body. This feature is in BETA: types can change anytime!
   """
-  bodyRichText: RichTextComponent!
+  bodyRichText: RichTextComponent
 
   """
   True if the current user can comment (considers restrictions)
@@ -11332,6 +11845,55 @@ type ProjectActions {
   Whether or not the external survey should be displayed
   """
   showExternalSurvey: Boolean!
+}
+
+type PostCampaignProjectConfig {
+  """
+  Fields associated with configuring backer-initiated order edits
+  """
+  backerOrderEditsConfig: BackerOrderEditsConfig!
+}
+
+type BackerOrderEditsConfig {
+  """
+  The date on which backer additional addons should end, if custom end date option selected. If this field is null, assume the feature is not enabled, the end condition is not custom end date, or the creator has not set this value yet
+  """
+  additionalAddonsEndAt: DateTime
+
+  """
+  When backer additional addon order edits should end, if enabled by the creator. If this field is null, assume the feature is not enabled, or the creator has not set this value yet
+  """
+  additionalAddonsEndCondition: BackerAdditionalAddonsEndConditionType
+
+  """
+  Whether add_on edits are currently enabled
+  """
+  addonsEditable: Boolean!
+
+  """
+  The translated copy for order edits CTA. Returns null if backer order edits are not enabled.
+  """
+  orderEditsCtaCopy: String
+
+  """
+  Whether to display the backer order edits CTA banner
+  """
+  showOrderEditsCta: Boolean!
+
+  """
+  The date on which backer survey edits should end, if if custom end date option selected.If this field is null, assume the feature is not enabled, the end condition is not custom end date, or the creator has not set this value yet
+  """
+  surveyEditsEndAt: DateTime
+
+  """
+  When should backer survey edits end, if enabled by the creatorIf this field is null, assume the feature is not enabled, or the creator has not set this value yet
+  """
+  surveyEditsEndCondition: BackerSurveyEditsEndConditionType
+
+  """
+  Whether survey edits are currently enabled
+  """
+  surveysEditable: Boolean!
 }
 
 """
@@ -11622,6 +12184,11 @@ input BackerReportSearchQuery {
   sqlFilterSkus: SqlFilterOperator
 
   """
+  Filter by SKU bundle IDs
+  """
+  skuBundles: [ID!]
+
+  """
   Filter by backer selected shipping location
   """
   locations: [ID!]
@@ -11848,6 +12415,11 @@ type SkuCount {
   id: Int!
 
   """
+  The item associated with this SKU
+  """
+  item: RewardItem!
+
+  """
   The name of the item associated with the SKU
   """
   itemName: String!
@@ -11871,6 +12443,50 @@ type SkuCount {
   The SKU value
   """
   sku: String!
+
+  """
+  The SKU bundles associated with this SKU
+  """
+  skuBundles: [SkuBundle!]
+}
+
+"""
+A SKU bundle.
+"""
+type SkuBundle {
+  id: ID!
+
+  """
+  Whether or not the SKU bundle is included in locked shipments
+  """
+  isLocked: Boolean!
+
+  """
+  The name of the SKU bundle
+  """
+  name: String!
+
+  """
+  The rewards included in the order
+  """
+  skuBundleItemVariants: [SkuBundleItemVariant!]!
+}
+
+"""
+Item variants included in a SKU bundle
+"""
+type SkuBundleItemVariant {
+  id: ID!
+
+  """
+  The item variant included in the SKU bundle
+  """
+  itemVariant: ItemVariant!
+
+  """
+  The number of an item variant in a SKU bundle
+  """
+  quantity: String
 }
 
 """
@@ -12057,6 +12673,11 @@ enum ShippingTypeEnum {
   flat_rate
   """
   flat_rate
+
+  """
+  combo
+  """
+  combo
 }
 
 """
@@ -12284,6 +12905,137 @@ type ShopifyVariant {
 }
 
 """
+A Zendesk ticket associated with a task
+"""
+type ZendeskTicket implements Node {
+  """
+  When the ticket was created
+  """
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  """
+  The status of the Zendesk ticket
+  """
+  status: String
+
+  """
+  The subject of the Zendesk ticket
+  """
+  subject: String
+
+  """
+  The URL to view the ticket in Zendesk
+  """
+  ticketZendeskPageUrl: String
+
+  """
+  When the ticket was last updated
+  """
+  updatedAt: ISO8601DateTime!
+
+  """
+  The Zendesk ticket ID
+  """
+  zendeskTicketId: String
+}
+
+"""
+The connection type for CreditCard.
+"""
+type UserCreditCardTypeConnection {
+  """
+  A list of edges.
+  """
+  edges: [CreditCardEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [CreditCard]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type CreditCardEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: CreditCard
+}
+
+"""
+The connection type for BankAccount.
+"""
+type BankAccountConnection {
+  """
+  A list of edges.
+  """
+  edges: [BankAccountEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [BankAccount]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+}
+
+"""
+An edge in a connection.
+"""
+type BankAccountEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The item at the end of the edge.
+  """
+  node: BankAccount
+}
+
+"""
+The connection type for Project.
+"""
+type UserBackedProjectsConnection {
+  """
+  A list of edges.
+  """
+  edges: [ProjectEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [Project]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int! @deprecated(reason: "Please use backingsCount instead.")
+}
+
+"""
 The connection type for Backing.
 """
 type UserBackingsConnection {
@@ -12340,15 +13092,6 @@ type UserCreatedProjectsConnection {
   pageInfo: PageInfo!
 
   totalCount: Int!
-}
-
-"""
-Ordering direction values
-"""
-enum OrderDirection {
-  ASC
-
-  DESC
 }
 
 """
@@ -12958,6 +13701,61 @@ enum UserRestrictionKind {
 }
 
 """
+An individual user setting
+"""
+type UserSettings implements Node {
+  """
+  When the setting was created
+  """
+  createdAt: ISO8601DateTime!
+
+  id: ID!
+
+  """
+  The name of the setting
+  """
+  name: UserSetting!
+
+  """
+  When the setting was last updated
+  """
+  updatedAt: ISO8601DateTime!
+}
+
+"""
+Possible user settings
+"""
+enum UserSetting {
+  manual_play_videos
+
+  superbacker_not_visible
+
+  confirmed_apple_id_disconnect_token
+
+  expired_apple_id_disconnect_token
+
+  confirmed_watch_notice
+
+  confirmed_signal_notice
+
+  opted_out_of_recommendations
+
+  viz_notification
+
+  opt_in_ksr_research
+
+  show_public_profile
+
+  dismissed_taste_profile_toast
+
+  dismissed_pyl_toast
+
+  dismissed_reward_images_toast
+
+  admin_message_badge
+}
+
+"""
 Recent search.
 """
 type RecentSearch {
@@ -13010,6 +13808,59 @@ type SavedSearchSegment implements Node {
   Origin of the saved search segment
   """
   segmentOrigin: String!
+}
+
+"""
+The connection type for User.
+"""
+type UserMutesConnection {
+  """
+  A list of edges.
+  """
+  edges: [UserEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [User]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
+}
+
+"""
+The notification scopes for UserMutes
+"""
+enum NotificationScopeType {
+  MESSAGES
+
+  BACKED_PROJECTS
+}
+
+"""
+The connection type for User.
+"""
+type MessagedUsersConnection {
+  """
+  A list of edges.
+  """
+  edges: [UserEdge]
+
+  """
+  A list of nodes.
+  """
+  nodes: [User]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  totalCount: Int!
 }
 
 """
@@ -13553,6 +14404,11 @@ type VideoFeedItem {
   The project associated with this feed item
   """
   project: Project!
+
+  """
+  Orientation of project video
+  """
+  videoOrientation: VideoOrientation!
 }
 
 """
@@ -13961,7 +14817,7 @@ type ProjectCollection {
   """
   The projects to display in this collection
   """
-  projects("The number of projects needed for this collection" count: Int = 4, "Whether to use V3 of our Recommendations API for this data" useApiV3: Boolean = false): [Project!]!
+  projects("The number of projects needed for this collection" count: Int = 4): [Project!]!
 
   """
   The raw search query to populate the project collection
@@ -14210,6 +15066,11 @@ type FeaturedProjectCollection {
   The currently featured project
   """
   currentlyFeaturedProject: FeaturedProjectItem!
+
+  """
+  The translated text of the button for showing more results
+  """
+  customButtonText: String
 
   """
   The featured project items in this collection
@@ -15524,7 +16385,7 @@ type ProjectInvestigation implements Node {
   """
   The tasks associated with the investigation
   """
-  tasks(reportStatuses: [TaskState!], reportCategories: [TaskProjectReportCategory!], assigneeFilter: TaskAssigneeFilter, adminIds: [ID!], sortColumn: ProjectInvestigationTaskSort, sortDirection: OpenSearchSort): [Task!]!
+  tasks(searchQuery: TasksSearchQuery): [Task!]!
 
   """
   The number of Zendesk tickets in the project.
@@ -15533,384 +16394,20 @@ type ProjectInvestigation implements Node {
 }
 
 """
-A task that needs to be actioned on by Kickstarter staff
+Search parameters for tasks query.
 """
-type Task implements Node {
-  """
-  The admin assigned to this task
-  """
-  admin: User
+input TasksSearchQuery {
+  reportStatuses: [TaskState!]
 
-  """
-  The category of the task
-  """
-  category: TaskProjectReportCategory!
+  reportCategories: [TaskProjectReportCategory!]
 
-  """
-  When the task was completed
-  """
-  completedAt: ISO8601DateTime
+  assigneeFilter: TaskAssigneeFilter = assigned
 
-  """
-  When the task was created
-  """
-  createdAt: ISO8601DateTime!
+  adminIds: [ID!]
 
-  """
-  The number of flaggings for this task
-  """
-  flaggingsCount: Int!
+  sortColumn: ProjectInvestigationTaskSort = created_at
 
-  id: ID!
-
-  """
-  The latest admin note on this task
-  """
-  latestAdminNote: Note
-
-  """
-  The latest flagging associated with this task
-  """
-  latestFlagging: Flagging
-
-  """
-  The latest Zendesk ticket associated with this task
-  """
-  latestZendeskTicket: ZendeskTicket
-
-  """
-  The project associated with this task
-  """
-  project: Project
-
-  """
-  Whether this is a real issue
-  """
-  realIssue: Boolean
-
-  """
-  The current state of the task
-  """
-  state: TaskState!
-
-  """
-  When the task was last updated
-  """
-  updatedAt: ISO8601DateTime!
-
-  """
-  The user associated with this task
-  """
-  user: User
-}
-
-"""
-Task states
-"""
-enum TaskState {
-  """
-  New task
-  """
-  new
-
-  """
-  Open task (alias for new)
-  """
-  open
-
-  """
-  Completed task
-  """
-  completed
-
-  """
-  Completed task, marked as issue
-  """
-  issue
-
-  """
-  Completed task, marked as nonissue
-  """
-  nonissue
-}
-
-"""
-Project report task categories.
-"""
-enum TaskProjectReportCategory {
-  """
-  Category: vices-drugs
-  """
-  vices_drugs
-
-  """
-  Category: vices-alcohol
-  """
-  vices_alcohol
-
-  """
-  Category: vices-weapons
-  """
-  vices_weapons
-
-  """
-  Category: health-claims
-  """
-  health_claims
-
-  """
-  Category: health-regulations
-  """
-  health_regulations
-
-  """
-  Category: health-gmos
-  """
-  health_gmos
-
-  """
-  Category: health-live-animals
-  """
-  health_live_animals
-
-  """
-  Category: health-energy-food-and-drink
-  """
-  health_energy_food_and_drink
-
-  """
-  Category: financial-contests-coupons
-  """
-  financial_contests_coupons
-
-  """
-  Category: financial-services
-  """
-  financial_services
-
-  """
-  Category: financial-political-donations
-  """
-  financial_political_donations
-
-  """
-  Category: offensive-content-hate
-  """
-  offensive_content_hate
-
-  """
-  Category: offensive-content-porn
-  """
-  offensive_content_porn
-
-  """
-  Category: prohibited-items
-  """
-  prohibited_items
-
-  """
-  Category: reselling
-  """
-  reselling
-
-  """
-  Category: plagiarism
-  """
-  plagiarism
-
-  """
-  Category: resale
-  """
-  resale
-
-  """
-  Category: misrep-support-impersonation
-  """
-  misrep_support_impersonation
-
-  """
-  Category: misrep-support-outstanding-fulfillment
-  """
-  misrep_support_outstanding_fulfillment
-
-  """
-  Category: misrep-support-suspicious-pledging
-  """
-  misrep_support_suspicious_pledging
-
-  """
-  Category: misrep-support-other
-  """
-  misrep_support_other
-
-  """
-  Category: misrep-support
-  """
-  misrep_support
-
-  """
-  Category: not-project-charity
-  """
-  not_project_charity
-
-  """
-  Category: not-project-stunt-or-hoax
-  """
-  not_project_stunt_or_hoax
-
-  """
-  Category: not-project-personal-expenses
-  """
-  not_project_personal_expenses
-
-  """
-  Category: not-project-barebones
-  """
-  not_project_barebones
-
-  """
-  Category: not-project-other
-  """
-  not_project_other
-
-  """
-  Category: not-project
-  """
-  not_project
-
-  """
-  Category: prototype-misrepresentation
-  """
-  prototype_misrepresentation
-
-  """
-  Category: false-claims
-  """
-  false_claims
-
-  """
-  Category: guidelines-spam
-  """
-  guidelines_spam
-
-  """
-  Category: guidelines-abuse
-  """
-  guidelines_abuse
-
-  """
-  Category: guidelines-violation
-  """
-  guidelines_violation
-
-  """
-  Category: undisclosed-ai-use
-  """
-  undisclosed_ai_use
-
-  """
-  Category: post-funding-reward-not-as-described
-  """
-  post_funding_reward_not_as_described
-
-  """
-  Category: post-funding-reward-delayed
-  """
-  post_funding_reward_delayed
-
-  """
-  Category: post-funding-shipped-never-received
-  """
-  post_funding_shipped_never_received
-
-  """
-  Category: post-funding-creator-selling-elsewhere
-  """
-  post_funding_creator_selling_elsewhere
-
-  """
-  Category: post-funding-creator-uncommunicative
-  """
-  post_funding_creator_uncommunicative
-
-  """
-  Category: post-funding-creator-inappropriate
-  """
-  post_funding_creator_inappropriate
-
-  """
-  Category: post-funding-suspicious-third-party
-  """
-  post_funding_suspicious_third_party
-
-  """
-  Category: post-funding-issues
-  """
-  post_funding_issues
-}
-
-"""
-A note attached to a notable object
-"""
-type Note {
-  """
-  The action associated with the note
-  """
-  action: String
-
-  """
-  The body of the note
-  """
-  body: String
-
-  """
-  When the note was created
-  """
-  createdAt: ISO8601DateTime!
-
-  id: ID!
-
-  """
-  The user who created the note
-  """
-  notetaker: User
-}
-
-"""
-A Zendesk ticket associated with a task
-"""
-type ZendeskTicket implements Node {
-  """
-  When the ticket was created
-  """
-  createdAt: ISO8601DateTime!
-
-  id: ID!
-
-  """
-  The status of the Zendesk ticket
-  """
-  status: String
-
-  """
-  The subject of the Zendesk ticket
-  """
-  subject: String
-
-  """
-  The URL to view the ticket in Zendesk
-  """
-  ticketZendeskPageUrl: String
-
-  """
-  When the ticket was last updated
-  """
-  updatedAt: ISO8601DateTime!
-
-  """
-  The Zendesk ticket ID
-  """
-  zendeskTicketId: String
+  sortDirection: OpenSearchSort = desc
 }
 
 """
@@ -15937,6 +16434,39 @@ enum ProjectInvestigationTaskSort {
   latest_flagging_at
 
   latest_admin_note_at
+}
+
+"""
+Search parameters for Project Investigations query.
+"""
+input InvestigationsSearchQuery {
+  projectName: String
+
+  reportStatuses: [TaskState!]
+
+  reportCategories: [TaskProjectReportCategory!]
+
+  projectPublicState: [AdminProjectState!]
+
+  creatorHrcTier: [CreatorHrcStatusTier!]
+
+  assigneeFilter: TaskAssigneeFilter = assigned
+
+  adminIds: [ID!]
+
+  sortColumn: ProjectInvestigationSort
+
+  sortDirection: OpenSearchSort
+
+  """
+  Page number of results to fetch
+  """
+  page: Int
+
+  """
+  Number of results to return per page
+  """
+  perPage: Int
 }
 
 """
@@ -16095,6 +16625,341 @@ type PartnerLanguage {
   name: String!
 }
 
+type PasswordlessAppleSignInConfig {
+  clientId: String!
+
+  redirectUri: String!
+
+  scope: String!
+
+  usePopup: Boolean!
+}
+
+"""
+A flagging option or grouping.
+"""
+type FlaggingNode {
+  id: String!
+
+  kind: NonDeprecatedFlaggingKind
+
+  nodeType: FlaggingNodeKind!
+
+  parentId: String
+
+  placeholder: String
+
+  subtitle: String
+
+  title: String!
+}
+
+"""
+The bucket for a flagging (general reason). Does not included deprecated kinds.
+"""
+enum NonDeprecatedFlaggingKind {
+  """
+  prohibited-items
+  """
+  PROHIBITED_ITEMS
+
+  """
+  charity
+  """
+  CHARITY
+
+  """
+  resale
+  """
+  RESALE
+
+  """
+  false-claims
+  """
+  FALSE_CLAIMS
+
+  """
+  misrep-support
+  """
+  MISREP_SUPPORT
+
+  """
+  not-project
+  """
+  NOT_PROJECT
+
+  """
+  guidelines-violation
+  """
+  GUIDELINES_VIOLATION
+
+  """
+  post-funding-issues
+  """
+  POST_FUNDING_ISSUES
+
+  """
+  spam
+  """
+  SPAM
+
+  """
+  vices-drugs
+  """
+  VICES_DRUGS
+
+  """
+  vices-alcohol
+  """
+  VICES_ALCOHOL
+
+  """
+  vices-weapons
+  """
+  VICES_WEAPONS
+
+  """
+  health-claims
+  """
+  HEALTH_CLAIMS
+
+  """
+  health-regulations
+  """
+  HEALTH_REGULATIONS
+
+  """
+  health-gmos
+  """
+  HEALTH_GMOS
+
+  """
+  health-live-animals
+  """
+  HEALTH_LIVE_ANIMALS
+
+  """
+  health-energy-food-and-drink
+  """
+  HEALTH_ENERGY_FOOD_AND_DRINK
+
+  """
+  financial-contests-coupons
+  """
+  FINANCIAL_CONTESTS_COUPONS
+
+  """
+  financial-services
+  """
+  FINANCIAL_SERVICES
+
+  """
+  financial-political-donations
+  """
+  FINANCIAL_POLITICAL_DONATIONS
+
+  """
+  offensive-content-hate
+  """
+  OFFENSIVE_CONTENT_HATE
+
+  """
+  offensive-content-porn
+  """
+  OFFENSIVE_CONTENT_PORN
+
+  """
+  reselling
+  """
+  RESELLING
+
+  """
+  plagiarism
+  """
+  PLAGIARISM
+
+  """
+  prototype-misrepresentation
+  """
+  PROTOTYPE_MISREPRESENTATION
+
+  """
+  undisclosed-ai-use
+  """
+  UNDISCLOSED_AI_USE
+
+  """
+  misrep-support-impersonation
+  """
+  MISREP_SUPPORT_IMPERSONATION
+
+  """
+  misrep-support-outstanding-fulfillment
+  """
+  MISREP_SUPPORT_OUTSTANDING_FULFILLMENT
+
+  """
+  misrep-support-suspicious-pledging
+  """
+  MISREP_SUPPORT_SUSPICIOUS_PLEDGING
+
+  """
+  misrep-support-other
+  """
+  MISREP_SUPPORT_OTHER
+
+  """
+  not-project-charity
+  """
+  NOT_PROJECT_CHARITY
+
+  """
+  not-project-stunt-or-hoax
+  """
+  NOT_PROJECT_STUNT_OR_HOAX
+
+  """
+  not-project-personal-expenses
+  """
+  NOT_PROJECT_PERSONAL_EXPENSES
+
+  """
+  not-project-barebones
+  """
+  NOT_PROJECT_BAREBONES
+
+  """
+  not-project-other
+  """
+  NOT_PROJECT_OTHER
+
+  """
+  guidelines-spam
+  """
+  GUIDELINES_SPAM
+
+  """
+  guidelines-abuse
+  """
+  GUIDELINES_ABUSE
+
+  """
+  post-funding-reward-not-as-described
+  """
+  POST_FUNDING_REWARD_NOT_AS_DESCRIBED
+
+  """
+  post-funding-reward-delayed
+  """
+  POST_FUNDING_REWARD_DELAYED
+
+  """
+  post-funding-shipped-never-received
+  """
+  POST_FUNDING_SHIPPED_NEVER_RECEIVED
+
+  """
+  post-funding-creator-selling-elsewhere
+  """
+  POST_FUNDING_CREATOR_SELLING_ELSEWHERE
+
+  """
+  post-funding-creator-uncommunicative
+  """
+  POST_FUNDING_CREATOR_UNCOMMUNICATIVE
+
+  """
+  post-funding-creator-inappropriate
+  """
+  POST_FUNDING_CREATOR_INAPPROPRIATE
+
+  """
+  post-funding-suspicious-third-party
+  """
+  POST_FUNDING_SUSPICIOUS_THIRD_PARTY
+
+  """
+  comment-abuse
+  """
+  COMMENT_ABUSE
+
+  """
+  comment-doxxing
+  """
+  COMMENT_DOXXING
+
+  """
+  comment-offtopic
+  """
+  COMMENT_OFFTOPIC
+
+  """
+  comment-spam
+  """
+  COMMENT_SPAM
+
+  """
+  backing-abuse
+  """
+  BACKING_ABUSE
+
+  """
+  backing-doxxing
+  """
+  BACKING_DOXXING
+
+  """
+  backing-fraud
+  """
+  BACKING_FRAUD
+
+  """
+  backing-spam
+  """
+  BACKING_SPAM
+
+  """
+  phishing
+  """
+  PHISHING
+
+  """
+  copyright
+  """
+  COPYRIGHT
+}
+
+enum FlaggingNodeKind {
+  GROUP
+
+  OPTION
+}
+
+"""
+The bucket for the type of content that can be flagged.
+"""
+enum FlaggingContent {
+  """
+  project
+  """
+  PROJECT
+
+  """
+  comment
+  """
+  COMMENT
+
+  """
+  backing
+  """
+  BACKING
+
+  """
+  message
+  """
+  MESSAGE
+}
+
 """
 The mutation root of the Kickstarter GraphQL interface
 """
@@ -16120,6 +16985,26 @@ type Mutation {
   activatePrelaunch(input: ActivateProjectPrelaunchInput!): ActivateProjectPrelaunchPayload
 
   """
+  Adds the same note to several tasks
+  """
+  addNoteToTasks(input: AddNoteToTasksInput!): AddNoteToTasksPayload
+
+  """
+  Lets the current admin leave a text only note on a project
+  """
+  addProjectNote(input: AddProjectNoteInput!): AddProjectNotePayload
+
+  """
+  Lets the current admin leave a text only note on a task
+  """
+  addTaskNote(input: AddTaskNoteInput!): AddTaskNotePayload
+
+  """
+  Lets the current admin leave a text only note on a user
+  """
+  addUserNote(input: AddUserNoteInput!): AddUserNotePayload
+
+  """
   Adds a user to a secret reward user group
   """
   addUserToSecretRewardGroup(input: AddUserToSecretRewardGroupInput!): AddUserToSecretRewardGroupPayload
@@ -16128,6 +17013,11 @@ type Mutation {
   Updates the toggle-able options of the spreadsheet graph
   """
   answerProjectFeedbackQuestion(input: AnswerProjectFeedbackQuestionInput!): AnswerProjectFeedbackQuestionPayload
+
+  """
+  Begin passwordless sign in with Apple credentials.
+  """
+  appleLogin(input: AppleLoginInput!): AppleLoginPayload
 
   """
   Given a checkout that already exists, this mutation just applies a specific payment source to its backing. That's it! If you need to create a checkout and backing from scratch, use CreateBackingType.
@@ -16153,6 +17043,11 @@ type Mutation {
   Batch updates addresses for users's active survey responses
   """
   batchUpdateSurveyResponseAddresses(input: BatchUpdateSurveyResponseAddressesInput!): BatchUpdateSurveyResponseAddressesPayload
+
+  """
+  Begin passwordless email change for a logged-in user.
+  """
+  beginEmailChange(input: BeginEmailChangeInput!): BeginEmailChangePayload
 
   """
   Block a user
@@ -16389,6 +17284,11 @@ type Mutation {
   createOrUpdateShop(input: CreateOrUpdateShopInput!): CreateOrUpdateShopPayload
 
   """
+  Creates/updates a SKU bundle
+  """
+  createOrUpdateSkuBundle(input: CreateOrUpdateSkuBundleInput!): CreateOrUpdateSkuBundlePayload
+
+  """
   Create or update a shipment's tracking number
   """
   createOrUpdateTrackingNumber(input: CreateOrUpdateTrackingNumberInput!): CreateOrUpdateTrackingNumberPayload
@@ -16476,11 +17376,6 @@ type Mutation {
   Creates a track event
   """
   createTrackEvent(input: CreateTrackEventInput!): CreateTrackEventPayload
-
-  """
-  Creates a new registered user
-  """
-  createUser(input: CreateUserInput!): CreateUserPayload
 
   """
   Add a user's slug.
@@ -16615,6 +17510,11 @@ type Mutation {
   deleteShippingZone(input: DeleteShippingZoneInput!): DeleteShippingZonePayload
 
   """
+  Deletes a SKU bundle and associated SKU bundle item variants
+  """
+  deleteSkuBundle(input: DeleteSkuBundleInput!): DeleteSkuBundlePayload
+
+  """
   Deletes a stock location and associated address
   """
   deleteStockLocation(input: DeleteStockLocationInput!): DeleteStockLocationPayload
@@ -16635,6 +17535,11 @@ type Mutation {
   deleteVideoTrack(input: DeleteVideoTrackInput!): DeleteVideoTrackPayload
 
   """
+  Deliver an email OTP challenge for a passwordless email OTP step.
+  """
+  deliverPasswordlessEmailOtp(input: DeliverPasswordlessEmailOtpInput!): DeliverPasswordlessEmailOtpPayload
+
+  """
   Adds disliked projects to a users taste profile
   """
   dislikeProject(input: DislikeProjectInput!): DislikeProjectPayload
@@ -16653,6 +17558,11 @@ type Mutation {
   Generates a download URL for a digital access resource and tracks the download attempt.
   """
   downloadDigitalAccessResource(input: DownloadDigitalAccessResourceInput!): DownloadDigitalAccessResourcePayload
+
+  """
+  Begin passwordless sign in with email.
+  """
+  emailLogin(input: EmailLoginInput!): EmailLoginPayload
 
   """
   End late pledges for a Kickstarter project.
@@ -16725,9 +17635,19 @@ type Mutation {
   lockAddresses(input: LockAddressesInput!): LockAddressesPayload
 
   """
+  Locks a segment of backer addresses for a project
+  """
+  lockAddressesByBackerSegment(input: LockAddressesByBackerSegmentInput!): LockAddressesByBackerSegmentPayload
+
+  """
   Migrate's a project's eligible backings to new fulfillment status tool.
   """
   migrateToFulfillmentStatus(input: MigrateToFulfillmentStatusInput!): MigrateToFulfillmentStatusPayload
+
+  """
+  Mute a user for a specific scope
+  """
+  muteUser(input: MuteUserInput!): MuteUserPayload
 
   """
   Opt in to a pledge manager
@@ -16738,6 +17658,21 @@ type Mutation {
   Opt out of a pledge manager
   """
   optOutOfPledgeManager(input: OptOutOfPledgeManagerInput!): OptOutOfPledgeManagerPayload
+
+  """
+  Complete a passwordless email change for a finished login attempt.
+  """
+  passwordlessChangeEmail(input: PasswordlessChangeEmailInput!): PasswordlessChangeEmailPayload
+
+  """
+  Complete sign in for a finished passwordless login attempt.
+  """
+  passwordlessLogin(input: PasswordlessLoginInput!): PasswordlessLoginPayload
+
+  """
+  Complete passwordless sign up for a login attempt.
+  """
+  passwordlessSignup(input: PasswordlessSignupInput!): PasswordlessSignupPayload
 
   """
   Delete a user's payment source
@@ -16996,6 +17931,11 @@ type Mutation {
   unlikeProject(input: UnlikeProjectInput!): UnlikeProjectPayload
 
   """
+  Unmute a user for a specific scope
+  """
+  unmuteUser(input: UnmuteUserInput!): UnmuteUserPayload
+
+  """
   Unpin a project update
   """
   unpinPost(input: UnpinPostInput!): UnpinPostPayload
@@ -17119,6 +18059,11 @@ type Mutation {
   """
   updateProjectCollaborator(input: UpdateProjectCollaboratorInput!): UpdateProjectCollaboratorPayload
 
+  """
+  Update project notification for a user
+  """
+  updateProjectNotification(input: UpdateProjectNotificationInput!): UpdateProjectNotificationPayload
+
   updateProjectPaymentSource(input: UpdateProjectPaymentSourceInput!): UpdateProjectPaymentSourcePayload
 
   updateProjectRiskStrategies(input: UpdateProjectRiskStrategiesInput!): UpdateProjectRiskStrategiesPayload
@@ -17199,6 +18144,11 @@ type Mutation {
   send email verification
   """
   userSendEmailVerification(input: UserSendEmailVerificationInput!): UserSendEmailVerificationPayload
+
+  """
+  Verify a passwordless email OTP challenge.
+  """
+  verifyEmailOtp(input: VerifyEmailOtpInput!): VerifyEmailOtpPayload
 
   watchProject(input: WatchProjectInput!): WatchProjectPayload
 }
@@ -17821,7 +18771,7 @@ Autogenerated input type of CancelProject
 input CancelProjectInput {
   id: ID!
 
-  password: String!
+  password: String
 
   """
   A unique identifier for the client performing the mutation.
@@ -17879,7 +18829,7 @@ Autogenerated input type of DeleteProject
 input DeleteProjectInput {
   id: ID!
 
-  password: String!
+  password: String
 
   """
   A unique identifier for the client performing the mutation.
@@ -18619,7 +19569,10 @@ input SendMessageInput {
 
   body: String!
 
-  gRecaptchaResponse: String!
+  """
+  DEPRECATED: No longer used. This argument will be removed in a future release.
+  """
+  gRecaptchaResponse: String
 
   """
   A unique identifier for the client performing the mutation.
@@ -19404,6 +20357,11 @@ input BackerReportSelection {
   sqlFilterSkus: SqlFilterOperator
 
   """
+  Filter by SKU bundle IDs
+  """
+  skuBundles: [ID!]
+
+  """
   Filter by backer selected shipping location
   """
   locations: [ID!]
@@ -19612,39 +20570,6 @@ input UpdateUserSettingInput {
 }
 
 """
-Possible user settings
-"""
-enum UserSetting {
-  manual_play_videos
-
-  superbacker_not_visible
-
-  confirmed_apple_id_disconnect_token
-
-  expired_apple_id_disconnect_token
-
-  confirmed_watch_notice
-
-  confirmed_signal_notice
-
-  opted_out_of_recommendations
-
-  viz_notification
-
-  opt_in_ksr_research
-
-  show_public_profile
-
-  dismissed_taste_profile_toast
-
-  dismissed_pyl_toast
-
-  dismissed_reward_images_toast
-
-  admin_message_badge
-}
-
-"""
 Autogenerated return type of UpdateUserAccount
 """
 type UpdateUserAccountPayload {
@@ -19660,10 +20585,19 @@ type UpdateUserAccountPayload {
 Autogenerated input type of UpdateUserAccount
 """
 input UpdateUserAccountInput {
+  """
+  Deprecated: only used when changing a password.
+  """
   currentPassword: String
 
+  """
+  Deprecated: new password for legacy password changes.
+  """
   password: String
 
+  """
+  Deprecated: confirmation for the password field.
+  """
   passwordConfirmation: String
 
   email: Email
@@ -19774,6 +20708,42 @@ input UpdateUserNotificationFrequencyInput {
 }
 
 """
+Autogenerated return type of UpdateProjectNotification
+"""
+type UpdateProjectNotificationPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  projectNotification: Notification
+}
+
+"""
+Autogenerated input type of UpdateProjectNotification
+"""
+input UpdateProjectNotificationInput {
+  """
+  While project updates are usually the only topic, if we introduced new ones, we could set this here
+  """
+  topic: UserNotificationTopic
+
+  """
+  These can be set individually, but both mobile and email will be set if omitted
+  """
+  kind: UserNotificationKind
+
+  value: Boolean!
+
+  projectId: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of CreateUserUrls
 """
 type CreateUserUrlsPayload {
@@ -19868,59 +20838,6 @@ input ClearUserUnseenActivityInput {
 }
 
 """
-Autogenerated return type of CreateUser
-"""
-type CreateUserPayload {
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-
-  user: User
-}
-
-"""
-Autogenerated input type of CreateUser
-"""
-input CreateUserInput {
-  name: String!
-
-  email: String!
-
-  emailConfirmation: String!
-
-  """
-  If the user agrees to opt into weekly newsletters
-  """
-  optIntoNewsletters: Boolean = false
-
-  """
-  If the user agrees to opt into receiving surveys for user research
-  """
-  optIntoUserResearch: Boolean = false
-
-  password: String!
-
-  """
-  Supply if creating an account via backing flow -- used for tracking purposes
-  """
-  projectPid: String
-
-  recaptchaV2Token: String
-
-  recaptchaV3Token: String
-
-  checkoutId: String
-
-  n: String!
-
-  """
-  A unique identifier for the client performing the mutation.
-  """
-  clientMutationId: String
-}
-
-"""
 Autogenerated return type of SignInWithApple
 """
 type SignInWithApplePayload {
@@ -19945,6 +20862,264 @@ input SignInWithAppleInput {
   authCode: String!
 
   iosAppId: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of EmailLogin
+"""
+type EmailLoginPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  loginAttempt: LoginAttempt!
+}
+
+"""
+A passwordless login attempt.
+"""
+type LoginAttempt {
+  defaultName: String!
+
+  email: String!
+
+  emailOtpChallengePresent: Boolean!
+
+  failedAttemptsLeft: Int!
+
+  id: ID!
+
+  nextAuthStep: NextAuthStep!
+
+  otpDeliverableIn: Int!
+
+  otpSendsLeft: Int!
+}
+
+"""
+The next step required to complete passwordless authentication.
+"""
+enum NextAuthStep {
+  """
+  Enter a code sent to email.
+  """
+  EMAIL_OTP
+
+  """
+  Create a new account to continue.
+  """
+  SIGNUP
+
+  """
+  Complete sign in.
+  """
+  LOGIN
+
+  """
+  Complete a verified email change.
+  """
+  EMAIL_CHANGE
+}
+
+"""
+Autogenerated input type of EmailLogin
+"""
+input EmailLoginInput {
+  email: String!
+
+  cfTurnstileResponse: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of BeginEmailChange
+"""
+type BeginEmailChangePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  loginAttempt: LoginAttempt!
+}
+
+"""
+Autogenerated input type of BeginEmailChange
+"""
+input BeginEmailChangeInput {
+  email: String!
+
+  cfTurnstileResponse: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AppleLogin
+"""
+type AppleLoginPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  loginAttempt: LoginAttempt!
+}
+
+"""
+Autogenerated input type of AppleLogin
+"""
+input AppleLoginInput {
+  appleAuthCode: String!
+
+  firstName: String
+
+  lastName: String
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of VerifyEmailOtp
+"""
+type VerifyEmailOtpPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  loginAttempt: LoginAttempt!
+}
+
+"""
+Autogenerated input type of VerifyEmailOtp
+"""
+input VerifyEmailOtpInput {
+  loginAttemptId: ID!
+
+  otpGuess: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of DeliverPasswordlessEmailOtp
+"""
+type DeliverPasswordlessEmailOtpPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  loginAttempt: LoginAttempt!
+}
+
+"""
+Autogenerated input type of DeliverPasswordlessEmailOtp
+"""
+input DeliverPasswordlessEmailOtpInput {
+  loginAttemptId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of PasswordlessLogin
+"""
+type PasswordlessLoginPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of PasswordlessLogin
+"""
+input PasswordlessLoginInput {
+  loginAttemptId: ID!
+
+  rememberMe: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of PasswordlessSignup
+"""
+type PasswordlessSignupPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  loginAttempt: LoginAttempt!
+}
+
+"""
+Autogenerated input type of PasswordlessSignup
+"""
+input PasswordlessSignupInput {
+  loginAttemptId: ID!
+
+  name: String!
+
+  newsletterOptIn: Boolean!
+
+  optInKsrResearch: Boolean!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of PasswordlessChangeEmail
+"""
+type PasswordlessChangeEmailPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  me: User!
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of PasswordlessChangeEmail
+"""
+input PasswordlessChangeEmailInput {
+  loginAttemptId: ID!
 
   """
   A unique identifier for the client performing the mutation.
@@ -20344,7 +21519,9 @@ input ShippingRateInput {
 
   cost: Int
 
-  locationId: String!
+  locationId: String
+
+  shippingZoneId: String
 }
 
 """
@@ -20355,7 +21532,9 @@ input ShippingRuleInput {
 
   cost: Int!
 
-  locationId: String!
+  locationId: String
+
+  shippingZoneId: String
 
   estimatedMin: Int
 
@@ -20568,271 +21747,6 @@ input CreateFlaggingInput {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-}
-
-"""
-The bucket for a flagging (general reason). Does not included deprecated kinds.
-"""
-enum NonDeprecatedFlaggingKind {
-  """
-  prohibited-items
-  """
-  PROHIBITED_ITEMS
-
-  """
-  charity
-  """
-  CHARITY
-
-  """
-  resale
-  """
-  RESALE
-
-  """
-  false-claims
-  """
-  FALSE_CLAIMS
-
-  """
-  misrep-support
-  """
-  MISREP_SUPPORT
-
-  """
-  not-project
-  """
-  NOT_PROJECT
-
-  """
-  guidelines-violation
-  """
-  GUIDELINES_VIOLATION
-
-  """
-  post-funding-issues
-  """
-  POST_FUNDING_ISSUES
-
-  """
-  spam
-  """
-  SPAM
-
-  """
-  vices-drugs
-  """
-  VICES_DRUGS
-
-  """
-  vices-alcohol
-  """
-  VICES_ALCOHOL
-
-  """
-  vices-weapons
-  """
-  VICES_WEAPONS
-
-  """
-  health-claims
-  """
-  HEALTH_CLAIMS
-
-  """
-  health-regulations
-  """
-  HEALTH_REGULATIONS
-
-  """
-  health-gmos
-  """
-  HEALTH_GMOS
-
-  """
-  health-live-animals
-  """
-  HEALTH_LIVE_ANIMALS
-
-  """
-  health-energy-food-and-drink
-  """
-  HEALTH_ENERGY_FOOD_AND_DRINK
-
-  """
-  financial-contests-coupons
-  """
-  FINANCIAL_CONTESTS_COUPONS
-
-  """
-  financial-services
-  """
-  FINANCIAL_SERVICES
-
-  """
-  financial-political-donations
-  """
-  FINANCIAL_POLITICAL_DONATIONS
-
-  """
-  offensive-content-hate
-  """
-  OFFENSIVE_CONTENT_HATE
-
-  """
-  offensive-content-porn
-  """
-  OFFENSIVE_CONTENT_PORN
-
-  """
-  reselling
-  """
-  RESELLING
-
-  """
-  plagiarism
-  """
-  PLAGIARISM
-
-  """
-  prototype-misrepresentation
-  """
-  PROTOTYPE_MISREPRESENTATION
-
-  """
-  undisclosed-ai-use
-  """
-  UNDISCLOSED_AI_USE
-
-  """
-  misrep-support-impersonation
-  """
-  MISREP_SUPPORT_IMPERSONATION
-
-  """
-  misrep-support-outstanding-fulfillment
-  """
-  MISREP_SUPPORT_OUTSTANDING_FULFILLMENT
-
-  """
-  misrep-support-suspicious-pledging
-  """
-  MISREP_SUPPORT_SUSPICIOUS_PLEDGING
-
-  """
-  misrep-support-other
-  """
-  MISREP_SUPPORT_OTHER
-
-  """
-  not-project-charity
-  """
-  NOT_PROJECT_CHARITY
-
-  """
-  not-project-stunt-or-hoax
-  """
-  NOT_PROJECT_STUNT_OR_HOAX
-
-  """
-  not-project-personal-expenses
-  """
-  NOT_PROJECT_PERSONAL_EXPENSES
-
-  """
-  not-project-barebones
-  """
-  NOT_PROJECT_BAREBONES
-
-  """
-  not-project-other
-  """
-  NOT_PROJECT_OTHER
-
-  """
-  guidelines-spam
-  """
-  GUIDELINES_SPAM
-
-  """
-  guidelines-abuse
-  """
-  GUIDELINES_ABUSE
-
-  """
-  post-funding-reward-not-as-described
-  """
-  POST_FUNDING_REWARD_NOT_AS_DESCRIBED
-
-  """
-  post-funding-reward-delayed
-  """
-  POST_FUNDING_REWARD_DELAYED
-
-  """
-  post-funding-shipped-never-received
-  """
-  POST_FUNDING_SHIPPED_NEVER_RECEIVED
-
-  """
-  post-funding-creator-selling-elsewhere
-  """
-  POST_FUNDING_CREATOR_SELLING_ELSEWHERE
-
-  """
-  post-funding-creator-uncommunicative
-  """
-  POST_FUNDING_CREATOR_UNCOMMUNICATIVE
-
-  """
-  post-funding-creator-inappropriate
-  """
-  POST_FUNDING_CREATOR_INAPPROPRIATE
-
-  """
-  post-funding-suspicious-third-party
-  """
-  POST_FUNDING_SUSPICIOUS_THIRD_PARTY
-
-  """
-  comment-abuse
-  """
-  COMMENT_ABUSE
-
-  """
-  comment-doxxing
-  """
-  COMMENT_DOXXING
-
-  """
-  comment-offtopic
-  """
-  COMMENT_OFFTOPIC
-
-  """
-  comment-spam
-  """
-  COMMENT_SPAM
-
-  """
-  backing-abuse
-  """
-  BACKING_ABUSE
-
-  """
-  backing-doxxing
-  """
-  BACKING_DOXXING
-
-  """
-  backing-fraud
-  """
-  BACKING_FRAUD
-
-  """
-  backing-spam
-  """
-  BACKING_SPAM
 }
 
 """
@@ -21873,6 +22787,58 @@ enum ProjectUpdateRequestLocation {
 }
 
 """
+Autogenerated return type of MuteUser
+"""
+type MuteUserPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  currentUser: User!
+}
+
+"""
+Autogenerated input type of MuteUser
+"""
+input MuteUserInput {
+  mutedUserId: ID!
+
+  notificationScope: NotificationScopeType!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of UnmuteUser
+"""
+type UnmuteUserPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  currentUser: User
+}
+
+"""
+Autogenerated input type of UnmuteUser
+"""
+input UnmuteUserInput {
+  mutedUserId: ID!
+
+  notificationScope: NotificationScopeType!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
 Autogenerated return type of TriggerThirdPartyEvent
 """
 type TriggerThirdPartyEventPayload {
@@ -22680,7 +23646,10 @@ type AssignTasksPayload {
   """
   clientMutationId: String
 
-  success: Boolean!
+  """
+  All the tasks that were assigned
+  """
+  tasks: [Task!]!
 }
 
 """
@@ -22732,7 +23701,10 @@ type CompleteTasksPayload {
   """
   clientMutationId: String
 
-  success: Boolean!
+  """
+  All the tasks that were completed
+  """
+  tasks: [Task!]!
 }
 
 """
@@ -22768,6 +23740,113 @@ input ClaimUnclaimedInvestigationReportsInput {
   projectInvestigationId: ID!
 
   userId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AddTaskNote
+"""
+type AddTaskNotePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  task: Task!
+}
+
+"""
+Autogenerated input type of AddTaskNote
+"""
+input AddTaskNoteInput {
+  taskId: ID!
+
+  body: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AddNoteToTasks
+"""
+type AddNoteToTasksPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  All the tasks that had a note added to them
+  """
+  tasks: [Task!]!
+}
+
+"""
+Autogenerated input type of AddNoteToTasks
+"""
+input AddNoteToTasksInput {
+  taskIds: [ID!]!
+
+  body: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AddUserNote
+"""
+type AddUserNotePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  user: User!
+}
+
+"""
+Autogenerated input type of AddUserNote
+"""
+input AddUserNoteInput {
+  userId: ID!
+
+  body: String!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of AddProjectNote
+"""
+type AddProjectNotePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  project: Project!
+}
+
+"""
+Autogenerated input type of AddProjectNote
+"""
+input AddProjectNoteInput {
+  projectId: ID!
+
+  body: String!
 
   """
   A unique identifier for the client performing the mutation.
@@ -23897,6 +24976,16 @@ input CreateOrUpdateShippingZoneInput {
   weightRanges: [WeightRangeInput!]!
 
   """
+  The name of the shipping zone
+  """
+  name: String
+
+  """
+  The UI source from which the shipping zone is created
+  """
+  source: String
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -24285,6 +25374,11 @@ input SubmitOrderEditInput {
   orderEditId: ID!
 
   """
+  Whether the order edit is backer-initiated
+  """
+  backerInitiated: Boolean
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -24336,6 +25430,16 @@ input CreateOrUpdateDraftOrderEditInput {
   removalIds: [ID!]
 
   """
+  Whether to clear existing additions before adding new additions
+  """
+  shouldReplaceAdditions: Boolean
+
+  """
+  Whether to update additions in-place if an ID is provided in the input object
+  """
+  shouldUpdateAdditions: Boolean
+
+  """
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
@@ -24346,6 +25450,8 @@ Data necessary to create an order edit addition or upgrade
 """
 input NewRewardInput {
   id: ID!
+
+  existingAdditionId: Int
 
   answers: [AnswerInput]
 
@@ -24603,9 +25709,13 @@ Autogenerated input type of ConfigureBackerOrderEdits
 input ConfigureBackerOrderEditsInput {
   projectId: ID!
 
-  backerSurveyEditsEndCondition: String
+  backerSurveyEditsEndCondition: BackerSurveyEditsEndConditionType
 
   backerSurveyEditsEndAt: Int
+
+  additionalAddonsEndCondition: BackerAdditionalAddonsEndConditionType
+
+  additionalAddonsEndAt: Int
 
   """
   A unique identifier for the client performing the mutation.
@@ -24640,6 +25750,113 @@ input UpdateSurveyResponsesInput {
   lineItemUpdates: [LineItemInput!]!
 
   backerQuestionAnswers: [AnswerInput!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of LockAddressesByBackerSegment
+"""
+type LockAddressesByBackerSegmentPayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  success: Boolean!
+}
+
+"""
+Autogenerated input type of LockAddressesByBackerSegment
+"""
+input LockAddressesByBackerSegmentInput {
+  projectId: ID!
+
+  segmentId: ID!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Autogenerated return type of CreateOrUpdateSkuBundle
+"""
+type CreateOrUpdateSkuBundlePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  The newly created SKU bundle
+  """
+  skuBundle: SkuBundle!
+}
+
+"""
+Autogenerated input type of CreateOrUpdateSkuBundle
+"""
+input CreateOrUpdateSkuBundleInput {
+  """
+  The project id
+  """
+  projectId: ID!
+
+  """
+  The id of an existing SKU bundle to update
+  """
+  existingSkuBundleId: ID
+
+  """
+  The name for the SKU bundle
+  """
+  skuBundleName: String!
+
+  """
+  A hash of item variants and their quantities for this SKU bundle
+  """
+  itemVariantsAndQuantity: [ItemVariantAndQuantityInput!]!
+
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+}
+
+"""
+Input required for updating a SKU bundle variants
+"""
+input ItemVariantAndQuantityInput {
+  itemVariantId: ID!
+
+  quantity: Int
+}
+
+"""
+Autogenerated return type of DeleteSkuBundle
+"""
+type DeleteSkuBundlePayload {
+  """
+  A unique identifier for the client performing the mutation.
+  """
+  clientMutationId: String
+
+  """
+  Project associated with the SKU bundle
+  """
+  project: Project!
+}
+
+"""
+Autogenerated input type of DeleteSkuBundle
+"""
+input DeleteSkuBundleInput {
+  skuBundleId: ID!
 
   """
   A unique identifier for the client performing the mutation.
@@ -25441,7 +26658,7 @@ input IssueRefundsInput {
   """
   Reason for the refund
   """
-  reason: String!
+  reason: RefundReasonType!
 
   """
   Message to include with the refund
@@ -25479,6 +26696,11 @@ type SerializedRefundData {
   Deducted refund amount formatted as currency string
   """
   deductedRefundAmountFormatted: String
+
+  """
+  Indicates if this refund is deduction-only
+  """
+  deductionOnlyRefund: Boolean!
 
   """
   Amount of associated refund charge (in cents)
@@ -25528,12 +26750,12 @@ type SerializedRefundData {
   """
   Total tax refund amount (in cents)
   """
-  totalTaxRefundAmountCents: Int!
+  totalTaxRefundAmountCents: Int
 
   """
   Total tax refund amount formatted as currency string
   """
-  totalTaxRefundAmountFormatted: String!
+  totalTaxRefundAmountFormatted: String
 }
 
 """
@@ -25622,8 +26844,6 @@ input FinalizeRefundInput {
 
   isFullRefund: Boolean
 
-  refundSource: String!
-
   """
   Line items to refund for partial refund
   """
@@ -25667,7 +26887,7 @@ input PartialRefundPledgeInput {
   """
   Addons to be refunded
   """
-  addons: [RewardRefundInput!]
+  addOns: [RewardRefundInput!]
 
   """
   Bonus amount to be refunded
@@ -25705,7 +26925,7 @@ input RewardRefundInput {
   refundItemId: String
 
   """
-  Shipping amount to be refunded
+  Whether the item should be removed from the pledge or order
   """
   removed: Boolean
 }

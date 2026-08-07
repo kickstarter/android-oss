@@ -883,5 +883,107 @@ class KSVideoPlayerTest() : KSRobolectricTestCase() {
         verify(mockPlayer, never()).prepare()
     }
 
+    @Test
+    fun `mute button appears with the controls and is hidden while playing`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        // - While playing, the controls (and the mute button) are hidden.
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_MUTE_BUTTON.name, useUnmergedTree = true)
+            .assertDoesNotExist()
+
+        // - Tapping the surface reveals the controls; the mute button appears with them.
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_MUTE_BUTTON.name, useUnmergedTree = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `tapping the mute button reports the resulting mute state`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        var reportedMuted: Boolean? = null
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    isMuted = false,
+                    player = mockPlayer,
+                    onMuteToggle = { reportedMuted = it }
+                )
+            }
+        }
+
+        // - Reveal the controls so the mute button is present.
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_MUTE_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+
+        // - Was unmuted, so tapping reports the resulting state: now muted.
+        assertEquals(true, reportedMuted)
+    }
+
+    @Test
+    fun `player audio is silenced when isMuted is true`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    isMuted = true,
+                    player = mockPlayer
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        verify(mockPlayer).volume = 0f
+    }
+
+    @Test
+    fun `toggling isMuted updates the player volume`() {
+        val mockPlayer = mock(ExoPlayer::class.java)
+        var isMuted by mutableStateOf(false)
+        composeTestRule.setContent {
+            KSTheme {
+                KSVideoPlayer(
+                    videoUrl = "https://example.com/video.mp4",
+                    isActive = true,
+                    isMuted = isMuted,
+                    player = mockPlayer,
+                    onMuteToggle = { isMuted = it }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        // - Starts unmuted (full volume)
+        verify(mockPlayer, atLeastOnce()).volume = 1f
+
+        // - Reveal the controls so the mute button is present, then tap it.
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_MUTE_BUTTON.name, useUnmergedTree = true)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        // - Tapping mute silences the player
+        verify(mockPlayer).volume = 0f
+    }
+
     private fun <T> any(): T = org.mockito.ArgumentMatchers.any()
 }

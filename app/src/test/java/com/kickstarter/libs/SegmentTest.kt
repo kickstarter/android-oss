@@ -41,8 +41,10 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.MESSAGE_CREA
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SURVEY_RESPONSE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_MUTE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_PROGRESS_BAR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_SAVE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.VIDEO_UNMUTE
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.ALL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
@@ -1941,15 +1943,43 @@ class SegmentTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackVideoFeedCTAClicked(project, ctaType = VIDEO_SAVE, watchTimeAtClick = 3000L)
+        val videoId = 55555L
+        segment.trackVideoFeedCTAClicked(project, videoId = videoId, ctaType = VIDEO_SAVE, watchTimeAtClick = 3000L)
 
         this.segmentTrack.assertValue(CTA_CLICKED.eventName)
         val props = this.propertiesTest.value ?: mapOf()
         assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
         assertEquals(VIDEO_SAVE.contextName, props[CONTEXT_CTA.contextName])
-        assertEquals(project.id().toString(), props["video_feed_video_id"])
+        assertEquals(videoId.toString(), props["video_feed_video_id"])
         assertEquals(project.id().toString(), props["video_feed_project_id"])
         assertEquals(3000L, props["video_feed_watch_time_at_click"])
+    }
+
+    @Test
+    fun testVideoFeedMuteAndUnmuteCTAClicked_Properties() {
+        val project = ProjectFactory.project()
+        val client = client(null)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+        val videoId = 77777L
+
+        // - Muting fires CTA_CLICKED with the video_mute context.
+        segment.trackVideoFeedCTAClicked(project, videoId = videoId, ctaType = VIDEO_MUTE)
+
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+        var props = this.propertiesTest.value ?: mapOf()
+        assertEquals(VIDEO_FEED.contextName, props[CONTEXT_PAGE.contextName])
+        assertEquals(VIDEO_MUTE.contextName, props[CONTEXT_CTA.contextName])
+        assertEquals(videoId.toString(), props["video_feed_video_id"])
+        assertEquals(project.id().toString(), props["video_feed_project_id"])
+
+        // - Unmuting fires CTA_CLICKED with the video_unmute context.
+        segment.trackVideoFeedCTAClicked(project, videoId = videoId, ctaType = VIDEO_UNMUTE)
+
+        this.segmentTrack.assertValues(CTA_CLICKED.eventName, CTA_CLICKED.eventName)
+        props = this.propertiesTest.value ?: mapOf()
+        assertEquals(VIDEO_UNMUTE.contextName, props[CONTEXT_CTA.contextName])
     }
 
     @Test

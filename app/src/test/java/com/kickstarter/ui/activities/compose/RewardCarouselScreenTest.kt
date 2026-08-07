@@ -1,6 +1,8 @@
 package com.kickstarter.ui.activities.compose.projectpage
 
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -15,6 +17,7 @@ import androidx.compose.ui.test.performScrollToIndex
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.RewardsItemFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -119,9 +122,9 @@ class RewardCarouselScreenTest : KSRobolectricTestCase() {
     fun `test expired rewards are not selectable`() {
         val context = context()
 
-        val reward = RewardFactory.reward().toBuilder().id(0L).build()
-        val rewardEndingSoon = RewardFactory.endingSoon().toBuilder().id(1L).build()
-        val rewardExpired = RewardFactory.ended().toBuilder().id(2L).build()
+        val reward = RewardFactory.reward().toBuilder().id(1L).isAvailable(true).build()
+        val rewardEndingSoon = RewardFactory.endingSoon().toBuilder().id(2L).isAvailable(true).build()
+        val rewardExpired = RewardFactory.ended().toBuilder().id(4L).isAvailable(false).build()
 
         val rewards = listOf(
             reward, rewardEndingSoon, rewardExpired
@@ -162,9 +165,200 @@ class RewardCarouselScreenTest : KSRobolectricTestCase() {
             ).assert(
                 hasAnyDescendant(
                     SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
-                        and hasText(context().getString(R.string.No_longer_available))
+                        and hasText(context.getString(R.string.No_longer_available))
                         and isNotEnabled()
                 )
+            )
+        }
+    }
+
+    @Test
+    fun `test reward selectability given an existing backing`() {
+        val context = context()
+
+        val noReward = RewardFactory.noReward()
+        val reward = RewardFactory.reward().toBuilder().id(1L).hasAddons(true).isAvailable(true).build()
+        val rewardEndingSoon = RewardFactory.endingSoon().toBuilder().id(2L).hasAddons(true).isAvailable(true).build()
+        val rewardExpiredExplicit = RewardFactory.ended().toBuilder().id(3L).hasAddons(true).isAvailable(false).build()
+        val rewardLimitReached = RewardFactory.limitReached().toBuilder().id(4L).hasAddons(true).isAvailable(false).build()
+
+        val rewards = listOf(
+            noReward, reward, rewardEndingSoon, rewardExpiredExplicit, rewardLimitReached
+        )
+
+        val backingState = mutableStateOf(BackingFactory.backing(reward))
+
+        composeTestRule.setContent {
+            val project = remember(backingState.value) {
+                Project.builder().state(Project.STATE_LIVE).backing(backingState.value).build()
+            }
+
+            KSTheme {
+                RewardCarouselScreen(
+                    lazyRowState = rememberLazyListState(),
+                    environment = environment(),
+                    rewards = rewards,
+                    project = project,
+                    backing = project.backing(),
+                    onRewardSelected = {},
+                    currentShippingRule = ShippingRuleFactory.usShippingRule(),
+                    countryList = listOf(ShippingRuleFactory.usShippingRule()),
+                    onShippingRuleSelected = {}
+                )
+            }
+        }
+
+        with(rewardCarousel) {
+            var targetReward = noReward
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                )
+            )
+
+            targetReward = reward
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                ) and hasAnyDescendant(hasText(context.getString(R.string.Your_selection)))
+            )
+
+            targetReward = rewardExpiredExplicit
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.No_longer_available))
+                        and isNotEnabled()
+                )
+            )
+
+            targetReward = rewardLimitReached
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.No_longer_available))
+                        and isNotEnabled()
+                )
+            )
+        }
+
+        backingState.value = BackingFactory.backing(rewardExpiredExplicit)
+
+        with(rewardCarousel) {
+            var targetReward = noReward
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                )
+            )
+
+            targetReward = reward
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                )
+            )
+
+            targetReward = rewardExpiredExplicit
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                ) and hasAnyDescendant(hasText(context.getString(R.string.Your_selection)))
+            )
+
+            targetReward = rewardLimitReached
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.No_longer_available))
+                        and isNotEnabled()
+                )
+            )
+        }
+
+        backingState.value = BackingFactory.backing(rewardLimitReached)
+
+        with(rewardCarousel) {
+            var targetReward = noReward
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                )
+            )
+
+            targetReward = reward
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                )
+            )
+
+            targetReward = rewardExpiredExplicit
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.No_longer_available))
+                        and isNotEnabled()
+                )
+            )
+
+            targetReward = rewardLimitReached
+            performScrollToIndex(rewards.indexOf(targetReward))
+            composeTestRule.onNodeWithTag(
+                RewardCarouselTestTag.REWARD_CARD.name + targetReward.id()
+            ).assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(SemanticsProperties.Role, Role.Button)
+                        and hasText(context.getString(R.string.Select))
+                        and isEnabled()
+                ) and hasAnyDescendant(hasText(context.getString(R.string.Your_selection)))
             )
         }
     }

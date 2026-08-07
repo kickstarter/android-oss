@@ -61,6 +61,8 @@ class EventContextValues {
         DENY("deny"),
         VIDEO_PLAY("video_play"),
         VIDEO_PAUSE("video_pause"),
+        VIDEO_MUTE("video_mute"),
+        VIDEO_UNMUTE("video_unmute"),
         VIDEO_FORWARD("video_forward"),
         VIDEO_PROGRESS_BAR("video_progress_bar"),
         VIDEO_SAVE("video_save"),

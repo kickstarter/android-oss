@@ -144,8 +144,8 @@ class VideoFeedViewModel(
         analyticEvents.trackVideoFeedProgressBarTap(item, percentageWatched, watchTimeAtClick)
     }
 
-    fun onCTAClicked(project: Project, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {
-        analyticEvents.trackVideoFeedCTAClicked(project, ctaType, watchTimeAtClick)
+    fun onCTAClicked(project: Project, videoId: Long, ctaType: CtaContextName, watchTimeAtClick: Long? = null) {
+        analyticEvents.trackVideoFeedCTAClicked(project, videoId, ctaType, watchTimeAtClick)
     }
 
     /**

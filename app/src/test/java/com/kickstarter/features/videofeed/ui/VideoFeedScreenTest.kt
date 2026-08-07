@@ -13,6 +13,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -29,6 +30,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.ui.compose.designsystem.KSTheme
+import com.kickstarter.ui.compose.designsystem.videoplayer.KSVideoPlayerTestTag
 import org.junit.Test
 import org.robolectric.annotation.Config
 
@@ -214,7 +216,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onProfileClick = { capturedProject = it }
+                    onProfileClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -241,7 +243,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onProfileClick = { capturedProject = it }
+                    onProfileClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -376,7 +378,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onBookmarkClick = { p, _ -> capturedProject = p }
+                    onBookmarkClick = { p, _, _ -> capturedProject = p }
                 )
             }
         }
@@ -406,7 +408,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onBookmarkClick = { _, index -> capturedIndex = index }
+                    onBookmarkClick = { _, _, index -> capturedIndex = index }
                 )
             }
         }
@@ -446,7 +448,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onBookmarkClick = { p, _ -> capturedProject = p }
+                    onBookmarkClick = { p, _, _ -> capturedProject = p }
                 )
             }
         }
@@ -679,7 +681,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onShareCTAClick = { capturedProject = it }
+                    onShareCTAClick = { p, _ -> capturedProject = p }
                 )
             }
         }
@@ -777,7 +779,7 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
                 VideoFeedScreen(
                     environment = environment(),
                     items = items,
-                    onShareCTAClick = { shareImageUrl = it.photo()?.full() }
+                    onShareCTAClick = { p, _ -> shareImageUrl = p.photo()?.full() }
                 )
             }
         }
@@ -829,6 +831,69 @@ class VideoFeedScreenTest : KSRobolectricTestCase() {
             .assertIsDisplayed()
         composeTestRule.onNodeWithTag(KSVideoCampaignCardTestTag.BUTTON.name, useUnmergedTree = true)
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `mute button appears with the controls and toggles between mute and unmute labels`() {
+        val project = ProjectFactory.project().toBuilder().id(12001L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(environment = environment(), items = items)
+            }
+        }
+
+        // - While playing, the mute button is hidden along with the play/pause controls.
+        composeTestRule.onNodeWithContentDescription("Mute", useUnmergedTree = true)
+            .assertDoesNotExist()
+
+        // - Tapping the video reveals the controls; videos start unmuted, so the action is "Mute".
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Mute", useUnmergedTree = true)
+            .assertIsDisplayed()
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        // - After tapping it is muted, so the button's action becomes "Unmute".
+        composeTestRule.onNodeWithContentDescription("Unmute", useUnmergedTree = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `mute toggle reports the project, video id and resulting mute state`() {
+        var capturedProject: Project? = null
+        var capturedVideoId: Long? = null
+        var capturedMuted: Boolean? = null
+
+        val videoId = 44444L
+        val project = ProjectFactory.project().toBuilder().id(12004L).build()
+        val items = listOf(VideoFeedItem(badges = emptyList(), project = project, hlsUrl = hlsUrl, videoId = videoId))
+
+        composeTestRule.setContent {
+            KSTheme {
+                VideoFeedScreen(
+                    environment = environment(),
+                    items = items,
+                    onMuteToggleTap = { p, id, muted ->
+                        capturedProject = p
+                        capturedVideoId = id
+                        capturedMuted = muted
+                    }
+                )
+            }
+        }
+
+        // - Reveal the controls, then tap mute (starts unmuted, so this mutes it).
+        composeTestRule.onNodeWithTag(KSVideoPlayerTestTag.VIDEO_PLAYER_SURFACE.name).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithContentDescription("Mute", useUnmergedTree = true)
+            .performClick()
+
+        assertEquals(project, capturedProject)
+        assertEquals(videoId, capturedVideoId)
+        assertEquals(true, capturedMuted)
     }
 
     @Test

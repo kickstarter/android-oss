@@ -1118,10 +1118,13 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
         startPMOrderEditWebview.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
     }
 
     @Test
@@ -1138,10 +1141,13 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         startProjectActivity.assertNoValues()
         startProjectActivityForCheckout.assertNoValues()
         startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
         startProjectActivityToSave.assertNoValues()
         startPreLaunchProjectActivity.assertNoValues()
         startProjectSurveyActivity.assertNoValues()
         startPMOrderEditWebview.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
     }
 
     private fun intentWithData(url: String): Intent {

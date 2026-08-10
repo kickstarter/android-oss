@@ -39,6 +39,7 @@ import com.kickstarter.ui.compose.designsystem.kds_create_500
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.extensions.setUpConnectivityStatusCheck
 import com.kickstarter.ui.extensions.startPreLaunchProjectActivity
+import com.kickstarter.ui.extensions.startVideoFeed
 import com.kickstarter.ui.extensions.startWebViewActivity
 import com.kickstarter.viewmodels.SplashScreenViewModel
 import com.kickstarter.viewmodels.SplashUIState
@@ -174,6 +175,11 @@ class SplashScreenActivity : AppCompatActivity() {
 
                 startPMActivity(uri.toString())
             }.addToDisposable(disposables)
+
+        viewModel.outputs.startVideoFeedActivity()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startVideoFeedActivity() }
+            .addToDisposable(disposables)
     }
 
     private fun projectIntent(uri: Uri): Intent {
@@ -289,6 +295,12 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun startPMActivity(url: String) {
         ApplicationUtils.startNewDiscoveryActivity(this)
         startWebViewActivity(url)
+        finish()
+    }
+
+    private fun startVideoFeedActivity() {
+        ApplicationUtils.startNewDiscoveryActivity(this)
+        startVideoFeed(ThirdPartyEventValues.ScreenName.DEEPLINK.value)
         finish()
     }
 

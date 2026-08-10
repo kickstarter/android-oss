@@ -29,6 +29,7 @@ import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.libs.utils.extensions.isSignupUri
 import com.kickstarter.libs.utils.extensions.isUserSurveyUri
 import com.kickstarter.libs.utils.extensions.isVerificationEmailUrl
+import com.kickstarter.libs.utils.extensions.isVideoFeedUri
 import com.kickstarter.libs.utils.extensions.isWebViewUri
 import com.kickstarter.libs.utils.extensions.secretRewardToken
 import org.junit.Test
@@ -70,6 +71,8 @@ class UriExtTest : KSRobolectricTestCase() {
     private val updatesUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts")
     private val updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id")
     private val userSurveyUri = Uri.parse("https://www.ksr.com/users/user-param/surveys/survey-id")
+    private val videoFeedUri = Uri.parse("https://www.ksr.com/video-feed")
+    private val videoFeedKsrUri = Uri.parse("ksr://www.ksr.com/video-feed")
     private val webEndpoint = "https://www.ksr.com"
     private val discoverSortUri = Uri.parse("https://www.kickstarter.com/discover/advanced?sort=ending-soon")
 
@@ -226,6 +229,14 @@ class UriExtTest : KSRobolectricTestCase() {
     fun testUri_isUserSurveyUri() {
         assertTrue(userSurveyUri.isUserSurveyUri(webEndpoint))
         assertFalse(projectSurveyUri.isUserSurveyUri(webEndpoint))
+    }
+
+    @Test
+    fun testUri_isVideoFeedUri() {
+        assertTrue(videoFeedUri.isVideoFeedUri(webEndpoint))
+        assertTrue(videoFeedKsrUri.isVideoFeedUri(webEndpoint))
+        assertFalse(projectUri.isVideoFeedUri(webEndpoint))
+        assertFalse(discoverScopeUri.isVideoFeedUri(webEndpoint))
     }
 
     @Test

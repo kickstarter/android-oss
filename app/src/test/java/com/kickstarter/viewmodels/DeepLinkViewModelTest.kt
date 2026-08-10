@@ -53,6 +53,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
     private val startPreLaunchProjectActivity = TestSubscriber<Pair<Uri, Project>>()
     private val startProjectSurveyActivity = TestSubscriber<Pair<Uri, Boolean>>()
     private val startPMOrderEditWebview = TestSubscriber<Uri>()
+    private val startVideoFeedActivity = TestSubscriber<Unit>()
     private val finishDeeplinkActivity = TestSubscriber<Unit>()
     private val disposables = CompositeDisposable()
 
@@ -82,6 +83,7 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
         vm.outputs.startPreLaunchProjectActivity().subscribe { startPreLaunchProjectActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startProjectSurvey().subscribe { startProjectSurveyActivity.onNext(it) }.addToDisposable(disposables)
         vm.outputs.startPMWebview().subscribe { startPMOrderEditWebview.onNext(it) }.addToDisposable(disposables)
+        vm.outputs.startVideoFeedActivity().subscribe { startVideoFeedActivity.onNext(it) }.addToDisposable(disposables)
         FirebaseHelper.mutableIdentifier().value = "Test"
         ksApplication.mutableInitializationState.value = InitializationState.NOT_STARTED
     }
@@ -1100,6 +1102,52 @@ class DeepLinkViewModelTest : KSRobolectricTestCase() {
                 return Observable.just(project.toBuilder().state("successful").build())
             }
         }
+    }
+
+    @Test
+    fun testVideoFeedDeeplink_startsVideoFeedActivity() {
+        val url = "https://www.kickstarter.com/video-feed"
+        val environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
+
+        vm.runInitializations()
+
+        startVideoFeedActivity.assertValueCount(1)
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
+    }
+
+    @Test
+    fun testVideoFeedDeeplink_startsVideoFeedActivity_KSR_schema() {
+        val url = "ksr://www.kickstarter.com/video-feed"
+        val environment = environment().toBuilder().featureFlagClient(MockFeatureFlagClient()).build()
+        setUpEnvironment(intent = intentWithData(url), environment = environment)
+
+        vm.runInitializations()
+
+        startVideoFeedActivity.assertValueCount(1)
+        startBrowser.assertNoValues()
+        startDiscoveryActivity.assertNoValues()
+        startProjectActivity.assertNoValues()
+        startProjectActivityForCheckout.assertNoValues()
+        startProjectActivityForComment.assertNoValues()
+        startProjectActivityForUpdate.assertNoValues()
+        startProjectActivityForCommentToUpdate.assertNoValues()
+        startProjectActivityToSave.assertNoValues()
+        startPreLaunchProjectActivity.assertNoValues()
+        startProjectSurveyActivity.assertNoValues()
+        startPMOrderEditWebview.assertNoValues()
+        finishDeeplinkActivity.assertNoValues()
     }
 
     private fun intentWithData(url: String): Intent {

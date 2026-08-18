@@ -40,9 +40,6 @@ class CurrentConfigV2(
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
             .filter { `object`: Config? -> `object`.isNotNull() }
             .compose(Transformers.neverErrorV2())
-            .doOnNext {
-                Timber.d("Config from Asset: ${it.countryCode()}")
-            }
             .subscribeOn(Schedulers.io())
 
         // Loads config from string preference
@@ -51,9 +48,6 @@ class CurrentConfigV2(
             .map { json: String? -> gson.fromJson(json, Config::class.java) }
             .filter { `object`: Config? -> `object`.isNotNull() }
             .compose(Transformers.neverErrorV2())
-            .doOnNext {
-                Timber.d("Config from Prefs: ${it.countryCode()}")
-            }
             .subscribeOn(Schedulers.io())
 
         // Seed config observable with what's cached
@@ -61,7 +55,6 @@ class CurrentConfigV2(
             Observable.concat(prefConfig, diskConfig)
                 .take(1)
                 .subscribe { v: Config ->
-                    Timber.d("Seed from cache config.onNext(... ${v.countryCode()}...)")
                     config.onNext(v)
                 }
         )
@@ -69,13 +62,7 @@ class CurrentConfigV2(
         // Cache any new values to preferences
         disposables.add(
             config
-                .doOnNext {
-                    Timber.d("config.doOnNext: ${it.countryCode()}")
-                }
                 .skip(1)
-                .doOnNext {
-                    Timber.d("config.skip(1).doOnNext: ${it.countryCode()}")
-                }
                 .filter { `object`: Config? -> `object`.isNotNull() }
                 .subscribe { c: Config? ->
                     Timber.d("Cache new configPreference.set(... ${c?.countryCode()}...)")
@@ -93,7 +80,6 @@ class CurrentConfigV2(
     }
 
     override fun config(config: Config) {
-        Timber.d("fun config(Config): config.onNext(... ${config.countryCode()}...)")
         this.config.onNext(config)
     }
 

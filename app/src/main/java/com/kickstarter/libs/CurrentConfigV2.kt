@@ -58,9 +58,14 @@ class CurrentConfigV2(
         )
 
         // Cache any new values to preferences
-        config.skip(1)
-            .filter { `object`: Config? -> `object`.isNotNull() }
-            .subscribe { c: Config? -> configPreference.set(gson.toJson(c, Config::class.java)) }.dispose()
+        disposables.add(
+            config
+                .skip(1)
+                .filter { `object`: Config? -> `object`.isNotNull() }
+                .subscribe { c: Config? ->
+                    configPreference.set(gson.toJson(c, Config::class.java))
+                }
+        )
     }
 
     /**

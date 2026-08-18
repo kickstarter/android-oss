@@ -17,6 +17,7 @@ import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNull
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -384,6 +385,34 @@ object RewardViewUtils {
             }
         } else {
             return EMPTY_STRING
+        }
+    }
+
+    /* Tested by RewardCarouselScreenTest.kt */
+    fun isRewardSelectable(reward: Reward, project: Project, selectedLocationId: Long?, backing: Backing?): Boolean {
+        return when {
+            RewardUtils.isNoReward(reward) -> true
+
+            reward.hasAddons() &&
+                    backing?.rewardId() == reward.id() &&
+                    (
+                            project.isLive || (
+                                    project.postCampaignPledgingEnabled() == true &&
+                                            project.isInPostCampaignPledgingPhase() == true
+                                    )
+
+                            ) -> true
+
+            !reward.isAvailable() -> false
+
+            !RewardUtils.isShippableToLocation(reward, selectedLocationId) -> false
+
+            !reward.hasAddons() && backing?.isBacked(reward) != true -> true
+
+            backing?.rewardId() != reward.id() &&
+                    RewardUtils.isAvailableForProject(project, reward) -> true
+
+            else -> false
         }
     }
 }

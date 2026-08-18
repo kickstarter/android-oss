@@ -39,6 +39,7 @@ import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingCountryLocationsWrapper
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.Tag
 import com.kickstarter.models.User
@@ -462,6 +463,10 @@ open class MockApolloClientV2 : ApolloClientTypeV2 {
 
     override suspend fun fetchSimilarProjects(pid: Long): Result<List<Project>> {
         return Result.success(listOf())
+    }
+
+    override suspend fun fetchShippingCountryLocations(forProject: Boolean, slug: String?): Result<ShippingCountryLocationsWrapper> {
+        return Result.success(ShippingCountryLocationsWrapper())
     }
 
     override fun cleanDisposables() {

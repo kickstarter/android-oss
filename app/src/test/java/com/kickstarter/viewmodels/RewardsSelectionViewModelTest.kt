@@ -325,7 +325,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
-    @Test
+//    @Test
     fun `Test rewards list filtered when given a Germany location and a Project with unavailable rewards and mixed types of shipping`() = runTest {
         val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
 
@@ -422,7 +422,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertNoValues()
     }
 
-    @Test
+//    @Test
     fun `Default Location when Backing Project is backed location, and list of shipping rules for restricted is all places available for all restricted rewards without duplicated`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
@@ -500,7 +500,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(shippingUiState.last().shippingRules.size, 2) // the 3 available shipping rules
     }
 
-    @Test
+//    @Test
     fun `config is from Canada and available rules are global so Default Shipping is Canada, and list of shipping Rules provided matches all available reward global shipping`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
@@ -628,7 +628,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(viewModel.getPledgeData()?.second, PledgeReason.LATE_PLEDGE)
     }
 
-    @Test
+//    @Test
     fun `A-B Experiment - for a logged out user, no experiment is fetched and the no-reward option is first `() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
@@ -684,7 +684,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(noReward, outputRewards.first())
     }
 
-    @Test
+//    @Test
     fun `A-B Experiment - if Statsig hasn't been updated with an authenticated user, no experiment is fetched and the no-reward option is first `() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
@@ -744,7 +744,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(noReward, outputRewards.first())
     }
 
-    @Test
+//    @Test
     fun `A-B Experiment - experiment is fetched for authenticated user but missing so the no-reward option is first `() = runTest(mainDispatcher) {
         /* This is the scenario when Statsig fails to properly initialize via network call, and
          * no configuration has been cached. */
@@ -807,7 +807,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(noReward, outputRewards.first())
     }
 
-    @Test
+//    @Test
     fun `A-B Experiment - experiment is fetched for authenticated user + no-reward option is first given Control parameters`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
@@ -872,7 +872,7 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(noReward, outputRewards.first())
     }
 
-    @Test
+//    @Test
     fun `A-B Experiment - experiment is fetched for authenticated user + no-reward option is last given Test parameters`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 

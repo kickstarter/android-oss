@@ -182,11 +182,11 @@ fun RewardCarouselScreen(
                     // .fillMaxHeight(),
                     state = lazyRowState,
                     contentPadding =
-                        PaddingValues(
-                            start = KSTheme.dimensions.paddingMedium,
-                            end = KSTheme.dimensions.paddingMedium,
-                            top = KSTheme.dimensions.paddingMedium
-                        ),
+                    PaddingValues(
+                        start = KSTheme.dimensions.paddingMedium,
+                        end = KSTheme.dimensions.paddingMedium,
+                        top = KSTheme.dimensions.paddingMedium
+                    ),
                     horizontalArrangement = Arrangement.spacedBy(KSTheme.dimensions.paddingMediumLarge)
                 ) {
 
@@ -251,21 +251,21 @@ fun RewardCarouselScreen(
                                 description = reward.description(),
                                 title = reward.title(),
                                 backerCountBadgeText =
-                                    if (reward.backersCount().isNullOrZero()) ""
-                                    else {
-                                        environment.ksString()?.let {
-                                            it.format(
-                                                "rewards_info_backer_count_backers",
-                                                requireNotNull(reward.backersCount()),
-                                                "backer_count",
-                                                NumberUtils.format(requireNotNull(reward.backersCount()))
-                                            )
-                                        }
-                                    },
+                                if (reward.backersCount().isNullOrZero()) ""
+                                else {
+                                    environment.ksString()?.let {
+                                        it.format(
+                                            "rewards_info_backer_count_backers",
+                                            requireNotNull(reward.backersCount()),
+                                            "backer_count",
+                                            NumberUtils.format(requireNotNull(reward.backersCount()))
+                                        )
+                                    }
+                                },
                                 image = reward.image(),
                                 isCTAButtonEnabled = ctaButtonEnabled,
                                 includes = if (RewardUtils.isItemized(reward) && !reward.rewardsItems()
-                                        .isNullOrEmpty() && environment.ksString().isNotNull()
+                                    .isNullOrEmpty() && environment.ksString().isNotNull()
                                 ) {
                                     reward.rewardsItems()?.map { rewardItems ->
                                         environment.ksString()?.format(
@@ -292,47 +292,47 @@ fun RewardCarouselScreen(
                                 },
                                 ctaButtonText = stringResource(id = ctaButtonText),
                                 expirationDateText =
-                                    environment.ksString()?.let {
-                                        if (RewardUtils.deadlineCountdownValue(reward) <= 0) ""
-                                        else "" + RewardUtils.deadlineCountdownValue(reward) + " " + RewardUtils.deadlineCountdownDetail(
-                                            reward,
-                                            context,
-                                            it
-                                        )
-                                    },
+                                environment.ksString()?.let {
+                                    if (RewardUtils.deadlineCountdownValue(reward) <= 0) ""
+                                    else "" + RewardUtils.deadlineCountdownValue(reward) + " " + RewardUtils.deadlineCountdownDetail(
+                                        reward,
+                                        context,
+                                        it
+                                    )
+                                },
                                 shippingSummaryText =
-                                    environment.ksString()?.let { ksString ->
-                                        if (RewardUtils.isShippable(reward)) {
-                                            RewardUtils.shippingSummary(reward)?.let {
-                                                RewardViewUtils.shippingSummary(
-                                                    context = context,
-                                                    ksString = ksString,
-                                                    it
-                                                )
-                                            }
-                                        } else {
-                                            ""
+                                environment.ksString()?.let { ksString ->
+                                    if (RewardUtils.isShippable(reward)) {
+                                        RewardUtils.shippingSummary(reward)?.let {
+                                            RewardViewUtils.shippingSummary(
+                                                context = context,
+                                                ksString = ksString,
+                                                it
+                                            )
                                         }
-                                    },
+                                    } else {
+                                        ""
+                                    }
+                                },
                                 remainingText =
-                                    environment.ksString()?.let { ksString ->
-                                        RewardViewUtils.getQuantityRemainingString(context, ksString, reward)
-                                    },
+                                environment.ksString()?.let { ksString ->
+                                    RewardViewUtils.getQuantityRemainingString(context, ksString, reward)
+                                },
                                 estimatedShippingCost =
-                                    if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
-                                        environment.ksCurrency()?.let { ksCurrency ->
-                                            environment.ksString()?.let { ksString ->
-                                                RewardViewUtils.getEstimatedShippingCost(
-                                                    context = context,
-                                                    ksCurrency = ksCurrency,
-                                                    ksString = ksString,
-                                                    project = project,
-                                                    reward = reward,
-                                                    locationId = currentShippingRule.location()?.id() ?: Location.builder().build().id(),
-                                                )
-                                            }
+                                if (!RewardUtils.isDigital(reward) && RewardUtils.isShippable(reward) && !RewardUtils.isLocalPickup(reward)) {
+                                    environment.ksCurrency()?.let { ksCurrency ->
+                                        environment.ksString()?.let { ksString ->
+                                            RewardViewUtils.getEstimatedShippingCost(
+                                                context = context,
+                                                ksCurrency = ksCurrency,
+                                                ksString = ksString,
+                                                project = project,
+                                                reward = reward,
+                                                locationId = currentShippingRule.location()?.id() ?: Location.builder().build().id(),
+                                            )
                                         }
-                                    } else null,
+                                    }
+                                } else null,
                                 addonsPillVisible = reward.hasAddons(),
                                 isCTAButtonVisible = project.isAllowedToPledge(),
                                 isSecret = reward.isSecretReward() == true,

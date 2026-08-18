@@ -5,7 +5,6 @@ import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
 import com.kickstarter.libs.utils.extensions.isAllowedToPledge
-import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Location
@@ -186,11 +185,9 @@ class GetShippingRulesUseCase(
 
     private fun List<Reward>.firstUnselectableReward(): Int {
         return this.indexOfFirst { reward ->
-            !RewardViewUtils.isRewardSelectable(reward, project,defaultShippingRule.location()?.id(), backing)
+            !RewardViewUtils.isRewardSelectable(reward, project, defaultShippingRule.location()?.id(), backing)
         }
     }
-
-
 
     /**
      * In case the project is backing, return the backed shippingRule

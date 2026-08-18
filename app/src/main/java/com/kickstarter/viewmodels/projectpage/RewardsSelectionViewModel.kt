@@ -124,7 +124,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             val slug = project.slug() ?: ""
             val shouldFetchShippableCountries = slug.isNotBlank()
 
-            Timber.d("RewardsSelectionViewModel: fetching rewards & shipping locations for project: $slug")
             val shippingLocationsDeferred = async { apolloClient.fetchShippingCountryLocations(shouldFetchShippableCountries, slug) }
             val rewardsDeferred = async { runCatching { apolloClient.getRewardsFromProject(slug).asFlow().first() } }
 
@@ -138,8 +137,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
                 }
                 .let(RewardUtils::filterHasStarted)
 
-            Timber.d("RewardsSelectionViewModel: fetched rewards for project $slug: ${rewards.joinToString(",") { "(${it.id()}, ${it.title()}, ${it.shippingPreference()})" }}")
-
             val itemizedRewards = rewards.filterNot { RewardUtils.isNoReward(it) }
             val allRewardsHaveRestrictedShipping =
                 itemizedRewards.isNotEmpty() && itemizedRewards.all { RewardUtils.shipsToRestrictedLocations(it) }
@@ -152,20 +149,12 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
 
             /* When fixed, we will use `shippingLocationsWrapper.shippableCountriesForProject` regardless. */
             val shippingLocations = if (allRewardsHaveRestrictedShipping) {
-                Timber.d("RewardsSelectionViewModel: all rewards ship to restricted locations")
-                Timber.d("RewardsSelectionViewModel: use extracted shipping locations from rewards")
                 itemizedRewards.flatMap { it.shippingRules() ?: emptyList() }.mapNotNull { it.location() }.distinctBy { it.id() }
             } else {
-                Timber.d("RewardsSelectionViewModel: not all rewards ship to restricted locations")
-                Timber.d("RewardsSelectionViewModel: use `shippableCountriesForProject`")
                 shippingLocationsWrapper.shippableCountriesForProject ?: shippingLocationsWrapper.shippingCountryLocations
             }
 
-            Timber.d("RewardsSelectionViewModel: determined shipping locations for project $slug: ${shippingLocations.size} ${shippingLocations.joinToString(",") { "(${it.id()}, ${it.name()})" }}")
-
             val config = currentConfig.asFlow().first()
-
-            Timber.d("RewardsSelectionViewModel: current config: ${config.countryCode()}")
 
             val defaultLocation = getDefaultLocation(config, project, shippingLocations)
             selectedShippingRule = ShippingRule.builder().location(defaultLocation).build()
@@ -369,7 +358,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         }
         return mutableRewards
     }
-    
+
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

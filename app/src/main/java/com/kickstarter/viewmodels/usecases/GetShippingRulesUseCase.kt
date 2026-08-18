@@ -2,11 +2,9 @@ package com.kickstarter.viewmodels.usecases
 
 import com.kickstarter.libs.Config
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.getDefaultLocationFrom
 import com.kickstarter.libs.utils.extensions.isAllowedToPledge
 import com.kickstarter.libs.utils.extensions.isNotNull
-import com.kickstarter.models.Backing
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -48,8 +46,7 @@ class GetShippingRulesUseCase(
     private val projectRewards: List<Reward> = emptyList(),
     private val scope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val noRewardPlacement: NoRewardPlacement = NoRewardPlacement.START,
-    private val backing: Backing? = null
+    private val noRewardPlacement: NoRewardPlacement = NoRewardPlacement.START
 ) {
 
     private val filteredRewards = mutableListOf<Reward>()
@@ -171,21 +168,9 @@ class GetShippingRulesUseCase(
         }
         noReward?.let {
             when (noRewardPlacement) {
-                NoRewardPlacement.END -> filteredRewards.firstUnselectableReward().let { index ->
-                    if (index == -1) {
-                        filteredRewards.add(it)
-                    } else {
-                        filteredRewards.add(index, it)
-                    }
-                }
+                NoRewardPlacement.END -> filteredRewards.add(it)
                 else -> filteredRewards.add(0, it)
             }
-        }
-    }
-
-    private fun List<Reward>.firstUnselectableReward(): Int {
-        return this.indexOfFirst { reward ->
-            !RewardViewUtils.isRewardSelectable(reward, project, defaultShippingRule.location()?.id(), backing)
         }
     }
 

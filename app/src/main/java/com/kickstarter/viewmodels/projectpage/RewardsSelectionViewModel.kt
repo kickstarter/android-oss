@@ -324,7 +324,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         shippingRuleUseCaseDispatcher = dispatcher
     }
 
-    /* --- START --- */
     private fun getDefaultLocation(
         config: Config,
         project: Project,
@@ -370,9 +369,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         }
         return mutableRewards
     }
-
-    /* --- END --- */
-
+    
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

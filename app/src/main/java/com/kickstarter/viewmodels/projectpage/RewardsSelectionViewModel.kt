@@ -1,29 +1,33 @@
 package com.kickstarter.viewmodels.projectpage
 
+import androidx.annotation.RestrictTo
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.kickstarter.libs.Config
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.featureflag.StatsigException
-import com.kickstarter.libs.featureflag.StatsigExperiments
+import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Backing
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingCountryLocationsWrapper
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.usecases.GetShippingRulesUseCase
-import com.kickstarter.viewmodels.usecases.NoRewardPlacement
 import com.kickstarter.viewmodels.usecases.ShippingRulesState
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -31,16 +35,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.coroutines.cancellation.CancellationException
+import timber.log.Timber
 
 data class RewardSelectionUIState(
     val selectedReward: Reward = Reward.builder().build(),
@@ -53,9 +54,6 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private val analytics = requireNotNull(environment.analytics())
     private val apolloClient = requireNotNull(environment.apolloClientV2())
     private val currentConfig = requireNotNull(environment.currentConfigV2()?.observable())
-
-    private val currentUserV2 = requireNotNull(environment.currentUserV2())
-    private val statsigClient = requireNotNull(environment.statsigClient())
 
     private lateinit var currentProjectData: ProjectData
     private var pReason: PledgeReason? = null
@@ -78,14 +76,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             )
 
     private val mutableShippingUIState = MutableStateFlow(ShippingRulesState())
-    val shippingUIState: StateFlow<ShippingRulesState>
-        get() = mutableShippingUIState
-            .asStateFlow()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(),
-                initialValue = ShippingRulesState(),
-            )
+    val shippingUIState: StateFlow<ShippingRulesState> = mutableShippingUIState.asStateFlow()
 
     private val mutableFlowUIRequest = MutableSharedFlow<FlowUIState>()
     val flowUIRequest: SharedFlow<FlowUIState>
@@ -93,6 +84,13 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             .asSharedFlow()
 
     fun provideProjectData(projectData: ProjectData) {
+        val refreshData = if (::currentProjectData.isInitialized)
+            currentProjectData.project().id() != projectData.project().id()
+        else
+            true
+
+        /* In the future, if `refreshData` is false, we can probably just return here. */
+
         shippingRulesUseCase = null
         currentProjectData = projectData
         previousUserBacking =
@@ -107,50 +105,66 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             else -> PledgeReason.PLEDGE
         }
         val project = projectData.project()
+        val backing = projectData.backing() ?: projectData.project().backing()
         viewModelScope.launch {
             emitCurrentState()
+        }
 
-            var noRewardPlacement = NoRewardPlacement.START
-            val currentUserIsLoggedIn = currentUserV2.isLoggedIn.asFlow().first()
-            if (currentUserIsLoggedIn) {
-                try {
-                    /* The timeout reflects how long we are willing to wait for `Statsig.initialize()`
-                     * and `Statsig.updateUser()` when an authenticated user is deep-linked to Project Page; or
-                     * just `Statsig.updateUser()` after the user completes the auth flow upon clicking 'Back this project'.
-                     * We could also _not_ wait, and access the StateFlow values directly, but this will result in an
-                     * even less consistent and deterministic experience for users. */
-                    noRewardPlacement = withTimeoutOrNull(STATSIG_TIMEOUT) {
-                        statsigClient.isReady.first { it }
-                        statsigClient.statsigUser.first { it.userID != null }
-                        val experiment = statsigClient.getExperiment(StatsigExperiments.MoveNoRewardOption.name)
-                        val placeAtEnd = experiment.getBooleanIfPresent(StatsigExperiments.MoveNoRewardOption.parameters.PLACE_AT_END)
-                        if (placeAtEnd == true) NoRewardPlacement.END else NoRewardPlacement.START
-                    } ?: noRewardPlacement
-                } catch (cancellationException: CancellationException) {
-                    throw cancellationException
-                } catch (exception: Exception) {
-                    FirebaseCrashlytics.getInstance().recordException(StatsigException(exception))
-                }
+        if (!refreshData) return
+
+        viewModelScope.launch(CoroutineExceptionHandler { _, throwable -> Timber.e(throwable, "CoroutineExceptionHandler") }) {
+            mutableShippingUIState.update { previous ->
+                previous.copy(loading = true)
             }
 
-            apolloClient.getRewardsFromProject(project.slug() ?: "")
-                .asFlow()
-                .combine(currentConfig.asFlow()) { rewardsList, config ->
-                    if (shippingRulesUseCase == null) {
-                        shippingRulesUseCase = GetShippingRulesUseCase(
-                            project = projectData.project(),
-                            config = config,
-                            projectRewards = rewardsList,
-                            viewModelScope,
-                            shippingRuleUseCaseDispatcher,
-                            noRewardPlacement,
-                        )
-                    }
-                    shippingRulesUseCase?.invoke()
-                    emitShippingUIState()
+            val slug = project.slug() ?: ""
+            val shouldFetchShippableCountries = slug.isNotBlank()
+
+            val shippingLocationsDeferred = async { apolloClient.fetchShippingCountryLocations(shouldFetchShippableCountries, slug) }
+            val rewardsDeferred = async { runCatching { apolloClient.getRewardsFromProject(slug).asFlow().first() } }
+
+            val rewardsResult = rewardsDeferred.await()
+            val rewards = rewardsResult
+                .getOrElse { throwable ->
+                    Timber.d(throwable, "Error fetching rewards for project: $slug")
+                    /* There was previously no code path or user journey for dealing with a failure to fetch rewards here,
+                      * so we will use an empty list of rewards in the interim. */
+                    emptyList()
                 }
-                .catch { }
-                .collect()
+                .let(RewardUtils::filterHasStarted)
+
+            val itemizedRewards = rewards.filterNot { RewardUtils.isNoReward(it) }
+            val allRewardsHaveRestrictedShipping =
+                itemizedRewards.isNotEmpty() && itemizedRewards.all { RewardUtils.shipsToRestrictedLocations(it) }
+
+            val shippingLocationsResult = shippingLocationsDeferred.await()
+            val shippingLocationsWrapper = shippingLocationsResult.getOrElse { throwable ->
+                Timber.d(throwable, "Error fetching shipping locations for project: $slug")
+                ShippingCountryLocationsWrapper()
+            }
+
+            /* When fixed, we will use `shippingLocationsWrapper.shippableCountriesForProject` regardless. */
+            val shippingLocations = if (allRewardsHaveRestrictedShipping) {
+                itemizedRewards.flatMap { it.shippingRules() ?: emptyList() }.mapNotNull { it.location() }.distinctBy { it.id() }
+            } else {
+                shippingLocationsWrapper.shippableCountriesForProject ?: shippingLocationsWrapper.shippingCountryLocations
+            }
+
+            val config = currentConfig.asFlow().first()
+
+            val defaultLocation = getDefaultLocation(config, project, shippingLocations)
+            selectedShippingRule = ShippingRule.builder().location(defaultLocation).build()
+            val sortedRewards = rewards.sortedByDescending { RewardViewUtils.isRewardSelectable(it, project, defaultLocation.id(), backing) }
+            val repositionedRewards = repositionRewards(sortedRewards, project, defaultLocation.id(), backing)
+
+            mutableShippingUIState.update { previous ->
+                previous.copy(
+                    loading = false,
+                    shippingRules = shippingLocations.toShippingRules(),
+                    selectedShippingRule = selectedShippingRule,
+                    filteredRw = repositionedRewards
+                )
+            }
         }
     }
 
@@ -204,6 +218,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         }
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
     private suspend fun emitShippingUIState() {
         // - collect useCase flow and update shippingUIState
         shippingRulesUseCase?.shippingRulesState?.collectLatest { shippingUseCase ->
@@ -227,9 +242,20 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
      * @param shippingRule is the new selected location
      */
     fun selectedShippingRule(shippingRule: ShippingRule) {
-        viewModelScope.launch {
-            shippingRulesUseCase?.filterBySelectedRule(shippingRule)
-            emitShippingUIState()
+        selectedShippingRule = shippingRule
+
+        val selectedLocationId = shippingRule.location()?.id()
+        val rewards = mutableShippingUIState.value.filteredRw
+        val project = currentProjectData.project()
+        val backing = currentProjectData.backing() ?: project.backing()
+        val sortedRewards = rewards.sortedByDescending { RewardViewUtils.isRewardSelectable(it, project, selectedLocationId, backing) }
+        val repositionedRewards = repositionRewards(sortedRewards, project, selectedLocationId, backing)
+
+        mutableShippingUIState.update { previous ->
+            previous.copy(
+                selectedShippingRule = selectedShippingRule,
+                filteredRw = repositionedRewards
+            )
         }
     }
 
@@ -283,14 +309,56 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
         shippingRuleUseCaseDispatcher = dispatcher
     }
 
+    private fun getDefaultLocation(
+        config: Config,
+        project: Project,
+        shippingLocations: List<Location>,
+    ): Location {
+        val backingLocation =
+            if (project.isBacking() && project.backing()?.locationId() != null) {
+                /* While it's worth ensuring the backing location is in `shippingLocations`,
+                 * we should probably just keep and use Backing.location() itself in GraphQLTransformers,
+                 * instead of pulling out a separate `locationId` */
+                val backingLocationId = project.backing()!!.locationId()!!
+                shippingLocations.firstOrNull { it.id() == backingLocationId }
+            } else {
+                null
+            }
+        return backingLocation
+            ?: shippingLocations.firstOrNull { it.country() == config.countryCode() }
+            ?: shippingLocations.firstOrNull()
+            ?: Location.builder().build()
+    }
+
+    private fun List<Location>.toShippingRules() =
+        this.map { location -> ShippingRule.builder().location(location).build() }
+
+    private fun indexOfFirstUnselectableReward(rewards: List<Reward>, project: Project, selectedLocationId: Long?, backing: Backing?): Int {
+        return rewards.indexOfFirst { reward ->
+            !RewardViewUtils.isRewardSelectable(reward, project, selectedLocationId, backing)
+        }
+    }
+
+    private fun repositionRewards(rewards: List<Reward>, project: Project, selectedLocationId: Long?, backing: Backing?): List<Reward> {
+        val noRewardOptionIndex = rewards.indexOfFirst { RewardUtils.isNoReward(it) }
+        if (noRewardOptionIndex < 0) return rewards
+
+        val mutableRewards = rewards.toMutableList()
+        val noRewardOption = mutableRewards.removeAt(noRewardOptionIndex)
+        val firstUnselectableRewardIndex =
+            indexOfFirstUnselectableReward(mutableRewards, project, selectedLocationId, backing)
+        if (firstUnselectableRewardIndex == -1) {
+            mutableRewards.add(noRewardOption)
+        } else {
+            mutableRewards.add(firstUnselectableRewardIndex, noRewardOption)
+        }
+        return mutableRewards
+    }
+
     class Factory(private val environment: Environment, private var shippingRulesUseCase: GetShippingRulesUseCase? = null) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return RewardsSelectionViewModel(environment = environment, shippingRulesUseCase) as T
         }
-    }
-
-    companion object {
-        private const val STATSIG_TIMEOUT = 500L
     }
 }

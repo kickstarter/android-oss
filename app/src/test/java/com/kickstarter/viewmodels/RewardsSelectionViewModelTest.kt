@@ -34,6 +34,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Ignore
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -308,7 +309,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
-//    @Test
+    @Ignore("May be migrated in a separate ticket (see PR associated with CHECK-357).")
+    @Test
     fun `Test rewards list filtered when given a Germany location and a Project with unavailable rewards and mixed types of shipping`() = runTest {
         val testShippingRulesList = ShippingRulesEnvelopeFactory.shippingRules()
 
@@ -405,7 +407,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         this@RewardsSelectionViewModelTest.segmentTrack.assertNoValues()
     }
 
-//    @Test
+    @Ignore("May be migrated in a separate ticket (see PR associated with CHECK-357).")
+    @Test
     fun `Default Location when Backing Project is backed location, and list of shipping rules for restricted is all places available for all restricted rewards without duplicated`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 
@@ -483,7 +486,8 @@ class RewardsSelectionViewModelTest : KSRobolectricTestCase() {
         assertEquals(shippingUiState.last().shippingRules.size, 2) // the 3 available shipping rules
     }
 
-//    @Test
+    @Ignore("May be migrated in a separate ticket (see PR associated with CHECK-357).")
+    @Test
     fun `config is from Canada and available rules are global so Default Shipping is Canada, and list of shipping Rules provided matches all available reward global shipping`() = runTest(mainDispatcher) {
         Dispatchers.setMain(mainDispatcher)
 

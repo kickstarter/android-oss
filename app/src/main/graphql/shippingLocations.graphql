@@ -1,0 +1,19 @@
+query FetchShippingCountryLocations(
+    $forProject: Boolean!,
+    $slug: String,
+) {
+    shippingCountryLocations {
+        id
+        displayableName
+        name
+        country
+    }
+    project(slug: $slug) @include(if: $forProject) {
+        shippableCountriesExpanded {
+            id
+            displayableName
+            name
+            country
+        }
+    }
+}

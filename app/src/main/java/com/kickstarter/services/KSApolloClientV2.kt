@@ -33,6 +33,7 @@ import com.kickstarter.FetchProjectQuery
 import com.kickstarter.FetchProjectRewardsQuery
 import com.kickstarter.FetchProjectStoryQuery
 import com.kickstarter.FetchProjectsQuery
+import com.kickstarter.FetchShippingCountryLocationsQuery
 import com.kickstarter.FetchSimilarProjectsQuery
 import com.kickstarter.FlaggingOptionsQuery
 import com.kickstarter.GetBackingQuery
@@ -97,6 +98,7 @@ import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.PaymentValidationResponse
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingCountryLocationsWrapper
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.Tag
 import com.kickstarter.models.User
@@ -277,6 +279,8 @@ interface ApolloClientTypeV2 {
 
     suspend fun watchProjectSuspend(project: Project): Result<Project>
     suspend fun unWatchProjectSuspend(project: Project): Result<Project>
+
+    suspend fun fetchShippingCountryLocations(forProject: Boolean, slug: String?): Result<ShippingCountryLocationsWrapper>
 
     fun cleanDisposables()
 }
@@ -2130,6 +2134,39 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
                     .build()
             }
         } ?: emptyList()
+    }
+
+    override suspend fun fetchShippingCountryLocations(forProject: Boolean, slug: String?): Result<ShippingCountryLocationsWrapper> = executeForResult {
+        val query = FetchShippingCountryLocationsQuery(
+            forProject = forProject,
+            slug = Optional.present(slug)
+        )
+
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { responseData ->
+            ShippingCountryLocationsWrapper(
+                shippingCountryLocations = responseData.shippingCountryLocations.map {
+                    Location.builder()
+                        .id(decodeRelayId(it.id) ?: -1)
+                        .displayableName(it.displayableName)
+                        .name(it.name)
+                        .country(it.country)
+                        .build()
+                },
+                shippableCountriesForProject = responseData.project?.shippableCountriesExpanded?.map {
+                    Location.builder()
+                        .id(decodeRelayId(it.id) ?: -1)
+                        .displayableName(it.displayableName)
+                        .name(it.name)
+                        .country(it.country)
+                        .build()
+                }
+            )
+        } ?: ShippingCountryLocationsWrapper()
     }
 
     sealed class KSApolloClientV2Exception(

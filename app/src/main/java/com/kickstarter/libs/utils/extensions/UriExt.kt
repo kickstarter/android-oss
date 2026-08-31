@@ -205,6 +205,10 @@ fun Uri.isUserSurveyUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && USER_SURVEY.matcher(path()).matches()
 }
 
+fun Uri.isVideoFeedUri(webEndpoint: String): Boolean {
+    return isKickstarterUri(webEndpoint) && VIDEO_FEED_PATTERN.matcher(path()).matches()
+}
+
 fun Uri.isWebUri(webEndpoint: String): Boolean {
     return isKickstarterUri(webEndpoint) && !isApiUri(webEndpoint)
 }
@@ -343,6 +347,11 @@ private val PROJECT_UPDATES_PATTERN = Pattern.compile(
 // /users/:user_param/surveys/:survey_response_id": userSurvey
 private val USER_SURVEY = Pattern.compile(
     "\\A\\/users(\\/[a-zA-Z0-9_-]+)?\\/surveys\\/[a-zA-Z0-9-_]+\\z"
+)
+
+// /video-feed
+private val VIDEO_FEED_PATTERN = Pattern.compile(
+    "\\A\\/video-feed\\/?\\z"
 )
 
 private val MAIN_PAGE_OPEN_BUTTON_QUERYPARAMS = Pattern.compile(

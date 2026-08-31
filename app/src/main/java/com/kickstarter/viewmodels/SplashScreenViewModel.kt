@@ -44,6 +44,7 @@ import com.kickstarter.libs.utils.extensions.isProjectUri
 import com.kickstarter.libs.utils.extensions.isRewardFulfilledDl
 import com.kickstarter.libs.utils.extensions.isSettingsUrl
 import com.kickstarter.libs.utils.extensions.isTrue
+import com.kickstarter.libs.utils.extensions.isVideoFeedUri
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientTypeV2
@@ -124,6 +125,9 @@ interface SplashScreenViewModel {
 
         /** Emits a Project and RefTag pair when we should start the [com.kickstarter.ui.activities.PreLaunchProjectPageActivity].  */
         fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>>
+
+        /** Emits when we should start the [com.kickstarter.features.videofeed.ui.VideoFeedActivity].  */
+        fun startVideoFeedActivity(): Observable<Unit>
     }
 
     class DeepLinkViewModel(environment: Environment, private val application: KSApplication, private val intent: Intent?, private val externalCall: CustomNetworkClient) :
@@ -140,6 +144,7 @@ interface SplashScreenViewModel {
         private val startProjectSurvey = BehaviorSubject.create<Pair<Uri, Boolean>>()
 
         private val startPMWebview = BehaviorSubject.create<Uri>()
+        private val startVideoFeedActivity = BehaviorSubject.create<Unit>()
         private val updateUserPreferences = BehaviorSubject.create<Boolean>()
         private val finishDeeplinkActivity = BehaviorSubject.create<Unit>()
         private val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -405,6 +410,13 @@ interface SplashScreenViewModel {
                     startPMWebview.onNext(it)
                 }.addToDisposable(disposables)
 
+            uriFromIntent
+                .filter { it.isNotNull() }
+                .filter { it.isVideoFeedUri(webEndpoint) }
+                .subscribe {
+                    startVideoFeedActivity.onNext(Unit)
+                }.addToDisposable(disposables)
+
             currentUser.observable()
                 .filter { it.isPresent() }
                 .map { it.getValue() }
@@ -473,6 +485,7 @@ interface SplashScreenViewModel {
                         ffClient.getBoolean(FlagKey.ANDROID_EDIT_ORDER)
                     )
                 }
+                .filter { !it.isVideoFeedUri(webEndpoint) }
 
             Observable.merge(projectPreview, unsupportedDeepLink)
                 .map { obj: Uri -> obj.toString() }
@@ -559,6 +572,8 @@ interface SplashScreenViewModel {
         override fun startPMWebview(): Observable<Uri> = startPMWebview
 
         override fun startPreLaunchProjectActivity(): Observable<Pair<Uri, Project>> = startPreLaunchProjectActivity
+
+        override fun startVideoFeedActivity(): Observable<Unit> = startVideoFeedActivity
     }
 
     class Factory(private val environment: Environment, private val intent: Intent? = null, private val customNetworkClient: CustomNetworkClient? = null) : ViewModelProvider.Factory {

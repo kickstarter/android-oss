@@ -22,6 +22,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
+import com.kickstarter.models.toStripePaymentSheetResult
 import com.kickstarter.ui.activities.DisclaimerItems
 import com.kickstarter.ui.activities.PledgeDelegate
 import com.kickstarter.ui.activities.compose.projectpage.CheckoutScreen
@@ -295,7 +296,7 @@ class CrowdfundCheckoutFragment : Fragment() {
         }
 
         val onPaymentSheetResult = PaymentSheetResultCallback { paymentSheetResult ->
-            this.viewModel.paymentSheetResult(paymentSheetResult)
+            this.viewModel.paymentSheetResult(paymentSheetResult.toStripePaymentSheetResult())
             when (paymentSheetResult) {
                 is PaymentSheetResult.Canceled -> {
                     binding?.composeView?.let { view ->

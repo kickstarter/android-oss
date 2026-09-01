@@ -25,6 +25,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.StripePaymentSheetResult
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.getBackingData
 import com.kickstarter.models.extensions.isFromPaymentSheet
@@ -36,7 +37,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.viewmodels.usecases.SendThirdPartyEventUseCaseV2
-import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -70,6 +70,7 @@ data class CheckoutUIState(
 )
 
 data class PaymentSheetPresenterState(val setupClientId: String = "")
+
 class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? = null) : ViewModel() {
     val analytics = requireNotNull(environment.analytics())
     val apolloClient = requireNotNull(environment.apolloClientV2())
@@ -609,24 +610,25 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     }
 
     /**
-     * If @param = PaymentSheetResult.Failed or PaymentSheetResult.Canceled
+     * If Stripe's `PaymentSheetResult` is PaymentSheetResult.Failed or PaymentSheetResult.Canceled
      * reload remove the payment methods added via payment sheet and keep only those
      * obtained via `apolloClient.getStoredCards()`. PaymentSheetResult.Canceled will be produce
      * by a failed/abandoned 3DS challenge
      *
      * If @PaymentSheetResult.Completed stop loading state
      */
-    fun paymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+
+    fun paymentSheetResult(paymentSheetResult: StripePaymentSheetResult) {
         when (paymentSheetResult) {
-            PaymentSheetResult.Canceled,
-            is PaymentSheetResult.Failed -> {
+            is StripePaymentSheetResult.Canceled,
+            is StripePaymentSheetResult.Failed -> {
                 scope.launch {
                     val updatedList = storedCards.filter { !it.isFromPaymentSheet() }
                     storedCards = updatedList
                     emitCurrentState(isLoading = false)
                 }
             }
-            PaymentSheetResult.Completed -> {
+            is StripePaymentSheetResult.Completed -> {
                 scope.launch {
                     emitCurrentState(isLoading = false)
                 }

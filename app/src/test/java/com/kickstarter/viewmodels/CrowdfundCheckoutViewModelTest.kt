@@ -31,6 +31,7 @@ import com.kickstarter.models.PaymentPlan
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.models.StripePaymentSheetResult
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
@@ -45,7 +46,6 @@ import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.PaymentSheetPresenterState
 import com.kickstarter.viewmodels.usecases.TPEventInputData
-import com.stripe.android.paymentsheet.PaymentSheetResult
 import io.reactivex.Observable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -1371,7 +1371,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         backgroundScope.launch(dispatcher) {
             viewModel.paymentSheetPresented(true)
             viewModel.newlyAddedPaymentMethod(StoredCardFactory.fromPaymentSheetCard())
-            viewModel.paymentSheetResult(PaymentSheetResult.Completed)
+            viewModel.paymentSheetResult(StripePaymentSheetResult.Completed)
             viewModel.crowdfundCheckoutUIState.toList(uiState)
         }
 
@@ -1450,7 +1450,7 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         advanceUntilIdle()
 
         backgroundScope.launch(dispatcher) {
-            viewModel.paymentSheetResult(PaymentSheetResult.Failed(Throwable()))
+            viewModel.paymentSheetResult(StripePaymentSheetResult.Failed(Throwable()))
         }
 
         assertEquals(uiState.last().storeCards, cards)

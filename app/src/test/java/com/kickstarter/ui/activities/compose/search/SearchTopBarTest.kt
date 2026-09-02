@@ -416,7 +416,7 @@ class SearchTopBarTest : KSRobolectricTestCase() {
     )
 
     @Test
-    fun `Open Calls pill shown when gate enabled and hidden when disabled`() {
+    fun `Open Calls pill shown when gate enabled`() {
         val env = environment()
             .toBuilder()
             .currentUserV2(MockCurrentUserV2(UserFactory.user()))

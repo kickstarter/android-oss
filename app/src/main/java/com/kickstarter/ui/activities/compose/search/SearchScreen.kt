@@ -489,7 +489,10 @@ fun SearchScreen(
 
     val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
     val currentOpenCallTag = remember { mutableStateOf<Tag?>(null) }
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { if (isOpenCallsEnabled) FilterPages.entries.size else FilterPages.entries.size - 1 }
+    )
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)

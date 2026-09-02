@@ -42,7 +42,7 @@ fun OpenCallsSheet(
     onNavigate: () -> Unit = {}
 ) {
     val dimensions = KSTheme.dimensions
-    val selectedTag = remember { mutableStateOf(currentTag) }
+    val selectedTag = remember(currentTag) { mutableStateOf(currentTag) }
 
     KSTheme {
         Surface(

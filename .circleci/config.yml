@@ -21,15 +21,29 @@ commands:
   install-sdk-37:
     description: |
       Explicitly install the Android SDK Platform 37 and matching build-tools.
-      API 37 is brand new — CircleCI's Android machine images may not have it
-      preinstalled yet regardless of dated tag, so this decouples our
-      compileSdk/targetSdk 37 build from whatever the image happens to bundle.
+      The sdkmanager baked into the CircleCI Android image predates API 37's
+      publish and can't even see it in its repository listing ("Failed to
+      find package 'platforms;android-37'", same root cause as the "SDK XML
+      versions up to 3 but version 4 was encountered" warning) — so we fetch
+      a fresh cmdline-tools build first and use that binary instead of the
+      stale one on PATH.
     steps:
       - run:
           name: Install Android SDK 37 platform & build-tools
           command: |
-            yes | sdkmanager --licenses || true
-            sdkmanager "platforms;android-37" "build-tools;37.0.0"
+            set -e
+            SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+            curl -sSL -o /tmp/cmdline-tools.zip \
+              https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip
+            rm -rf "$SDK_ROOT/cmdline-tools/fresh" /tmp/cmdline-tools-extract
+            mkdir -p /tmp/cmdline-tools-extract
+            unzip -q /tmp/cmdline-tools.zip -d /tmp/cmdline-tools-extract
+            mkdir -p "$SDK_ROOT/cmdline-tools"
+            mv /tmp/cmdline-tools-extract/cmdline-tools "$SDK_ROOT/cmdline-tools/fresh"
+            rm -rf /tmp/cmdline-tools-extract /tmp/cmdline-tools.zip
+            SDKMANAGER="$SDK_ROOT/cmdline-tools/fresh/bin/sdkmanager"
+            yes | "$SDKMANAGER" --licenses --sdk_root="$SDK_ROOT" || true
+            "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-37" "build-tools;37.0.0"
 jobs:
   build:
     <<: *base_job

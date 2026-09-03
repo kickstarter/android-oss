@@ -4,8 +4,8 @@ aws_cli_setup: &aws_cli_setup
 base_job: &base_job
   executor:
     name: android/android-machine
-    resource-class: xlarge
-    tag: 2026.05.1 #https://circleci.com/developer/images/image/cimg/android
+    resource-class: xlarge.gen2
+    tag: 2026.05.1 #https://circleci.com/developer/images/image/cimg/android — Gen2 image, requires .gen2 resource class
   working_directory: "~/project"
   environment:
     TERM: dumb

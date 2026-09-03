@@ -4,8 +4,8 @@ aws_cli_setup: &aws_cli_setup
 base_job: &base_job
   executor:
     name: android/android-machine
-    resource-class: xlarge.gen2
-    tag: 2026.05.1 #https://circleci.com/developer/images/image/cimg/android — Gen2 image, requires .gen2 resource class
+    resource-class: xlarge
+    tag: 2025.10.1 #https://circleci.com/developer/images/image/cimg/android — last confirmed-working tag+resource-class combo for this orb (2.5.0); API 37 is provisioned explicitly below since no image bundles it yet
   working_directory: "~/project"
   environment:
     TERM: dumb
@@ -17,6 +17,19 @@ orbs:
   android: circleci/android@2.5.0
   aws-cli: circleci/aws-cli@3.1
   codecov: codecov/codecov@3.2.4
+commands:
+  install-sdk-37:
+    description: |
+      Explicitly install the Android SDK Platform 37 and matching build-tools.
+      API 37 is brand new — CircleCI's Android machine images may not have it
+      preinstalled yet regardless of dated tag, so this decouples our
+      compileSdk/targetSdk 37 build from whatever the image happens to bundle.
+    steps:
+      - run:
+          name: Install Android SDK 37 platform & build-tools
+          command: |
+            yes | sdkmanager --licenses || true
+            sdkmanager "platforms;android-37" "build-tools;37.0.0"
 jobs:
   build:
     <<: *base_job
@@ -24,14 +37,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
+      - install-sdk-37
       - run: make bootstrap-circle
       - run:
           name: Install dependencies
           command: ./gradlew dependencies
       - save_cache:
-          key: v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+          key: v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
           paths:
             - ~/.gradle
             - ~/.android
@@ -49,8 +63,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
+      - install-sdk-37
       - attach_workspace:
           at: ~/project
       - run:
@@ -84,10 +99,11 @@ jobs:
       - run:
           name: List Android SDK packages
           command: sdkmanager --list
+      - install-sdk-37
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - attach_workspace:
           at: ~/project
       - android/create-avd:
@@ -123,8 +139,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - attach_workspace:
           at: ~/project
       - run:
@@ -137,8 +153,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - attach_workspace:
           at: ~/project
       - run:
@@ -151,8 +167,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - attach_workspace:
           at: ~/project
       - run:
@@ -165,8 +181,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - restore_cache:
           keys:
             - v1-bundler-{{ checksum "Gemfile.lock" }}
@@ -195,8 +211,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - restore_cache:
           keys:
             - v1-bundler-{{ checksum "Gemfile.lock" }}
@@ -223,8 +239,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
+            - v6-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v6-android-
       - restore_cache:
           keys:
             - v1-bundler-{{ checksum "Gemfile.lock" }}

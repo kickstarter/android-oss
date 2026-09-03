@@ -55,10 +55,10 @@ if (file('signing.gradle').exists()) {
 
 android {
     defaultConfig {
-        compileSdk = 36
+        compileSdk = 37
         applicationId "com.kickstarter"
         minSdkVersion 27
-        targetSdk = 36
+        targetSdk = 37
         testApplicationId "com.kickstarter.internal.debug.test"
         testInstrumentationRunner "com.kickstarter.screenshoot.testing.KSScreenShotTestRunner"
 
@@ -305,7 +305,7 @@ dependencies {
     implementation "dev.chrisbanes.haze:haze:1.7.2"
 
     // Exoplayer
-    def exoplayer= '1.8.0'
+    def exoplayer= '1.9.0'
     implementation "androidx.media3:media3-ui:$exoplayer"
     implementation "androidx.media3:media3-exoplayer-hls:$exoplayer"
     implementation "androidx.media3:media3-datasource:$exoplayer"
@@ -332,7 +332,7 @@ dependencies {
     // Testing
     testImplementation "junit:junit:4.13.2"
     testImplementation 'org.mockito:mockito-core:5.18.0'
-    testImplementation 'org.robolectric:robolectric:4.15.1'
+    testImplementation 'org.robolectric:robolectric:4.16.0'
     testImplementation "androidx.test:core:1.7.0"
     androidTestImplementation 'androidx.annotation:annotation:1.9.1'
     testImplementation "androidx.compose.ui:ui-test-junit4:$androidxComposeUiTestVersion"

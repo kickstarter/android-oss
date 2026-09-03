@@ -79,6 +79,7 @@ import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
+import com.kickstarter.models.Tag
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.type.ProjectSort
@@ -138,8 +139,8 @@ fun PagerPreview() {
                     currentCategory = categories[0],
                     categories = categories,
                     onDismiss = { dismissed.add(true) },
-                    onApply = { state, category, bucket, location, amountBucket, _, _, _, _, goalBucket -> appliedFilters.add(Pair(state, category)) },
-                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount, _, _, _, _, goalBucketCount ->
+                    onApply = { state, category, bucket, location, amountBucket, _, _, _, _, goalBucket, openCallTag -> appliedFilters.add(Pair(state, category)) },
+                    updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucketCount, _, _, _, _, goalBucketCount, openCallsCount ->
                         selectedCounts.add(
                             statusCount to categoryCount
                         )
@@ -291,9 +292,18 @@ fun SearchAndFilterScreen(
     val isLoading = searchUIState.isLoading
     val hasMorePages = searchUIState.hasMore
     val isVideoFeedBannerVisible by searchViewModel.isVideoFeedBannerVisible.collectAsStateWithLifecycle()
+    val isOpenCallsEnabled by searchViewModel.isOpenCallsEnabled.collectAsStateWithLifecycle()
 
     val categoriesState by filterMenuVM.filterMenuUIState.collectAsStateWithLifecycle()
     val categories = categoriesState.categoriesList
+    val tags = categoriesState.tagsList
+
+    // - Fetch the Creative Prompt tags only once the Open Calls gate resolves to enabled.
+    LaunchedEffect(isOpenCallsEnabled) {
+        if (isOpenCallsEnabled) {
+            filterMenuVM.getTags()
+        }
+    }
 
     val errorAction = setUpErrorActions(snackbarHostState)
 
@@ -334,7 +344,7 @@ fun SearchAndFilterScreen(
                     projectCallback(projAndRef)
                 }
             },
-            onApplySearchWithParams = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket ->
+            onApplySearchWithParams = { category, sort, projectState, percentageBucket, location, amountRaisedBucket, recomended, projectsLoved, saved, social, goalBucket, openCallTag ->
                 searchViewModel.updateParamsToSearchWith(
                     category = category,
                     projectSort = sort
@@ -347,12 +357,15 @@ fun SearchAndFilterScreen(
                     recommended = recomended,
                     projectsLoved = projectsLoved,
                     savedProjects = saved,
-                    social = social
+                    social = social,
+                    tagId = openCallTag?.id()?.toInt()
                 )
             },
             shouldShowPhase = phaseff,
             isVideoFeedBannerVisible = isVideoFeedBannerVisible,
-            onVideoFeedBannerClicked = onVideoFeedBannerClicked
+            onVideoFeedBannerClicked = onVideoFeedBannerClicked,
+            tags = tags,
+            isOpenCallsEnabled = isOpenCallsEnabled
         )
     }
 
@@ -420,12 +433,16 @@ fun SearchScreen(
         Boolean,
         Boolean,
         Boolean,
-        DiscoveryParams.GoalBuckets?
-    ) -> Unit = { _, _, _, _, _, _, _, _, _, _, _ ->
+        DiscoveryParams.GoalBuckets?,
+        Tag?
+    ) -> Unit = { _, _, _, _, _, _, _, _, _, _, _, _ ->
     },
     shouldShowPhase: Boolean = true,
     isVideoFeedBannerVisible: Boolean = false,
-    onVideoFeedBannerClicked: () -> Unit = {}
+    onVideoFeedBannerClicked: () -> Unit = {},
+    tags: List<Tag> = listOf(),
+    isOpenCallsEnabled: Boolean = false,
+    isFromDeepLink: Boolean = false
 ) {
     var currentSearchTerm by rememberSaveable { mutableStateOf("") }
 
@@ -446,7 +463,8 @@ fun SearchScreen(
             FilterRowPillType.PROJECTS_LOVED.name to 0,
             FilterRowPillType.SAVED.name to 0,
             FilterRowPillType.FOLLOWING.name to 0,
-            FilterRowPillType.GOAL.name to 0
+            FilterRowPillType.GOAL.name to 0,
+            FilterRowPillType.OPEN_CALLS.name to 0
         )
     }
 
@@ -470,7 +488,11 @@ fun SearchScreen(
     val currentRecommended = remember { mutableStateOf<Boolean>(false) }
 
     val currentGoal = remember { mutableStateOf<DiscoveryParams.GoalBuckets?>(null) }
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { FilterPages.entries.size })
+    val currentOpenCallTag = remember { mutableStateOf<Tag?>(null) }
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { if (isOpenCallsEnabled) FilterPages.entries.size else FilterPages.entries.size - 1 }
+    )
 
     val activeBottomSheet = remember {
         mutableStateOf<FilterRowPillType?>(null)
@@ -511,6 +533,9 @@ fun SearchScreen(
                     locationText = currentLocation.value?.displayableName() ?: stringResource(R.string.Location),
                     amountRaisedText = currentAmountRaised.value?.let { textForBucket(it) } ?: stringResource(R.string.Amount_raised),
                     goalText = currentGoal.value?.let { textForGoalPill(it) } ?: stringResource(R.string.Goal),
+                    openCallsText = currentOpenCallTag.value?.name() ?: stringResource(R.string.fpo_Open_calls),
+                    isOpenCallsEnabled = isOpenCallsEnabled,
+                    isFromDeepLink = isFromDeepLink,
                     recommendedStatus = currentRecommended,
                     projectsLovedStatus = currentStaffPicked,
                     savedProjects = currentStarred,
@@ -552,7 +577,8 @@ fun SearchScreen(
                             currentStaffPicked.value,
                             currentStarred.value,
                             currentSocial.value,
-                            currentGoal.value
+                            currentGoal.value,
+                            currentOpenCallTag.value
                         )
                     },
                     shouldShowPhase = shouldShowPhase
@@ -594,6 +620,7 @@ fun SearchScreen(
                         currentStarred.value = false
                         currentSocial.value = false
                         currentGoal.value = null
+                        currentOpenCallTag.value = null
                         onApplySearchWithParams(
                             currentCategory.value,
                             currentSort.value,
@@ -605,7 +632,8 @@ fun SearchScreen(
                             currentStaffPicked.value,
                             currentStarred.value,
                             currentSocial.value,
-                            currentGoal.value
+                            currentGoal.value,
+                            currentOpenCallTag.value
                         )
                     }
                 )
@@ -749,6 +777,9 @@ fun SearchScreen(
                 currentSavedProjects = currentStarred,
                 currentFollowing = currentSocial,
                 currentGoal = currentGoal,
+                currentOpenCallTag = currentOpenCallTag,
+                tags = tags,
+                isOpenCallsEnabled = isOpenCallsEnabled,
                 shouldShowPhase = shouldShowPhase,
                 isSheetOpen = isSheetOpen
             )
@@ -769,7 +800,8 @@ enum class FilterPages {
     PERCENTAGE_RAISED,
     LOCATION,
     AMOUNT_RAISED,
-    GOAL
+    GOAL,
+    OPEN_CALLS
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -786,6 +818,9 @@ fun FilterPagerSheet(
     currentProjectsLoved: MutableState<Boolean> = remember { mutableStateOf(false) },
     currentSavedProjects: MutableState<Boolean> = remember { mutableStateOf(false) },
     currentFollowing: MutableState<Boolean> = remember { mutableStateOf(false) },
+    currentOpenCallTag: Tag? = null,
+    tags: List<Tag> = listOf(),
+    isOpenCallsEnabled: Boolean = false,
     onDismiss: () -> Unit,
     onApply: (
         DiscoveryParams.State?,
@@ -797,7 +832,8 @@ fun FilterPagerSheet(
         Boolean,
         Boolean,
         Boolean,
-        DiscoveryParams.GoalBuckets?
+        DiscoveryParams.GoalBuckets?,
+        Tag?
     ) -> Unit,
     updateSelectedCounts: (
         projectStatusCount: Int?,
@@ -809,7 +845,8 @@ fun FilterPagerSheet(
         projectsLoved: Int?,
         savedProjects: Int?,
         social: Int?,
-        goalBucket: Int?
+        goalBucket: Int?,
+        openCallsCount: Int?
     ) -> Unit,
     pagerState: PagerState,
     sheetState: SheetState,
@@ -822,6 +859,7 @@ fun FilterPagerSheet(
     val location = remember { mutableStateOf(currentLocation) }
     val amountRaised = remember { mutableStateOf(currentAmountRaised) }
     val goal = remember { mutableStateOf(currentGoal) }
+    val openCallTag = remember { mutableStateOf(currentOpenCallTag) }
 
     // - In case de bottomSheet is dismissed without the user pressing
     // - see results button, should return to default states
@@ -850,6 +888,10 @@ fun FilterPagerSheet(
             if (currentGoal != goal.value) {
                 goal.value = currentGoal
             }
+
+            if (currentOpenCallTag != openCallTag.value) {
+                openCallTag.value = currentOpenCallTag
+            }
         }
     }
 
@@ -874,6 +916,7 @@ fun FilterPagerSheet(
                 selectedSaved = currentSavedProjects,
                 selectedSocial = currentFollowing,
                 selectedGoal = currentGoal,
+                selectedOpenCallTag = openCallTag.value,
                 onDismiss = {
                     onDismiss.invoke()
                 },
@@ -892,6 +935,7 @@ fun FilterPagerSheet(
                             location.value = null
                             amountRaised.value = null
                             goal.value = null
+                            openCallTag.value = null
                         }
                         applyUserSelection(
                             onApply = onApply,
@@ -905,6 +949,7 @@ fun FilterPagerSheet(
                             savedProjects = currentSavedProjects.value,
                             social = currentFollowing.value,
                             goalBucket = goal.value,
+                            openCallTag = openCallTag.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss,
@@ -940,9 +985,15 @@ fun FilterPagerSheet(
                             pagerState.animateScrollToPage(FilterPages.GOAL.ordinal)
                         }
                     }
+                    if (filterType == FilterType.OPEN_CALLS) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(FilterPages.OPEN_CALLS.ordinal)
+                        }
+                    }
                 },
-                availableFilters = if (shouldShowPhase) FilterType.values().asList()
-                else FilterType.values().asList().filter { it != FilterType.OTHERS }
+                availableFilters = FilterType.values().asList()
+                    .filter { shouldShowPhase || it != FilterType.OTHERS }
+                    .filter { isOpenCallsEnabled || it != FilterType.OPEN_CALLS }
             )
 
             FilterPages.CATEGORIES.ordinal -> CategorySelectionSheet(
@@ -967,6 +1018,7 @@ fun FilterPagerSheet(
                             projectsLoved = currentProjectsLoved.value,
                             savedProjects = currentSavedProjects.value,
                             social = currentFollowing.value,
+                            openCallTag = openCallTag.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -997,6 +1049,7 @@ fun FilterPagerSheet(
                             projectsLoved = currentProjectsLoved.value,
                             savedProjects = currentSavedProjects.value,
                             social = currentFollowing.value,
+                            openCallTag = openCallTag.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -1026,6 +1079,7 @@ fun FilterPagerSheet(
                             projectsLoved = currentProjectsLoved.value,
                             savedProjects = currentSavedProjects.value,
                             social = currentFollowing.value,
+                            openCallTag = openCallTag.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -1055,6 +1109,7 @@ fun FilterPagerSheet(
                             projectsLoved = currentProjectsLoved.value,
                             savedProjects = currentSavedProjects.value,
                             social = currentFollowing.value,
+                            openCallTag = openCallTag.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -1084,6 +1139,38 @@ fun FilterPagerSheet(
                             projectsLoved = currentProjectsLoved.value,
                             savedProjects = currentSavedProjects.value,
                             social = currentFollowing.value,
+                            openCallTag = openCallTag.value,
+                            updateSelectedCounts = updateSelectedCounts,
+                            onDismiss = onDismiss,
+                            shouldDismiss = applyAndDismiss
+                        )
+                    }
+                }
+            )
+
+            FilterPages.OPEN_CALLS.ordinal -> OpenCallsSheet(
+                tags = tags,
+                currentTag = openCallTag.value,
+                onNavigate = {
+                    coroutineScope.launch { pagerState.animateScrollToPage(FilterPages.MAIN_FILTER.ordinal) }
+                },
+                onDismiss = onDismiss,
+                onApply = { selectedTag, applyAndDismiss ->
+                    openCallTag.value = selectedTag
+                    if (applyAndDismiss != null) {
+                        applyUserSelection(
+                            onApply = onApply,
+                            projectState = projectState.value,
+                            category = category.value,
+                            percentageRaisedBucket = percentageBucket.value,
+                            amountRaisedBucket = amountRaised.value,
+                            goalBucket = goal.value,
+                            location = location.value,
+                            recommended = currentRecommended.value,
+                            projectsLoved = currentProjectsLoved.value,
+                            savedProjects = currentSavedProjects.value,
+                            social = currentFollowing.value,
+                            openCallTag = openCallTag.value,
                             updateSelectedCounts = updateSelectedCounts,
                             onDismiss = onDismiss,
                             shouldDismiss = applyAndDismiss
@@ -1113,7 +1200,8 @@ private fun applyUserSelection(
         projectsLoved: Boolean,
         savedProjects: Boolean,
         social: Boolean,
-        goalBucket: DiscoveryParams.GoalBuckets?
+        goalBucket: DiscoveryParams.GoalBuckets?,
+        openCallTag: Tag?
     ) -> Unit,
     projectState: DiscoveryParams.State?,
     category: Category?,
@@ -1125,6 +1213,7 @@ private fun applyUserSelection(
     savedProjects: Boolean,
     social: Boolean,
     goalBucket: DiscoveryParams.GoalBuckets?,
+    openCallTag: Tag?,
     updateSelectedCounts: (
         projectStatusCount: Int?,
         categoryCount: Int?,
@@ -1135,7 +1224,8 @@ private fun applyUserSelection(
         projectsLoved: Int?,
         savedProjects: Int?,
         social: Int?,
-        goalBucketCount: Int?
+        goalBucketCount: Int?,
+        openCallsCount: Int?
     ) -> Unit,
     onDismiss: () -> Unit,
     shouldDismiss: Boolean
@@ -1150,7 +1240,8 @@ private fun applyUserSelection(
         projectsLoved,
         savedProjects,
         social,
-        goalBucket
+        goalBucket,
+        openCallTag
     )
 
     updateSelectedCounts(
@@ -1163,7 +1254,8 @@ private fun applyUserSelection(
         if (projectsLoved) 1 else 0,
         if (savedProjects) 1 else 0,
         if (social) 1 else 0,
-        if (goalBucket != null) 1 else 0
+        if (goalBucket != null) 1 else 0,
+        if (openCallTag != null) 1 else 0
     )
     if (shouldDismiss) {
         onDismiss.invoke()
@@ -1235,6 +1327,12 @@ private fun onPillPressedOpensBottomSheet(
                     //     mainFilterMenuState.show()
                 }
             }
+            FilterRowPillType.OPEN_CALLS -> {
+                coroutineScope.launch {
+                    isSheetOpen.value = true
+                    pagerState.animateScrollToPage(FilterPages.OPEN_CALLS.ordinal)
+                }
+            }
             FilterRowPillType.SAVED,
             FilterRowPillType.PROJECTS_LOVED,
             FilterRowPillType.FOLLOWING,
@@ -1260,7 +1358,8 @@ private fun SheetContent(
         Boolean,
         Boolean,
         Boolean,
-        DiscoveryParams.GoalBuckets?
+        DiscoveryParams.GoalBuckets?,
+        Tag?
     ) -> Unit,
     currentSort: MutableState<DiscoveryParams.Sort>,
     currentProjectState: MutableState<DiscoveryParams.State?>,
@@ -1280,6 +1379,9 @@ private fun SheetContent(
     currentProjectsLoved: MutableState<Boolean> = mutableStateOf(false),
     currentSavedProjects: MutableState<Boolean> = mutableStateOf(false),
     currentFollowing: MutableState<Boolean> = mutableStateOf(false),
+    currentOpenCallTag: MutableState<Tag?> = mutableStateOf(null),
+    tags: List<Tag> = listOf(),
+    isOpenCallsEnabled: Boolean = false,
     shouldShowPhase: Boolean = true,
     isSheetOpen: MutableState<Boolean>
 ) {
@@ -1300,6 +1402,7 @@ private fun SheetContent(
         FilterRowPillType.SAVED,
         FilterRowPillType.FOLLOWING,
         FilterRowPillType.GOAL,
+        FilterRowPillType.OPEN_CALLS,
         FilterRowPillType.FILTER -> {
             FilterPagerSheet(
                 sheetState = sheetState,
@@ -1314,11 +1417,14 @@ private fun SheetContent(
                 currentSavedProjects = currentSavedProjects,
                 currentFollowing = currentFollowing,
                 currentGoal = currentGoal.value,
+                currentOpenCallTag = currentOpenCallTag.value,
+                tags = tags,
+                isOpenCallsEnabled = isOpenCallsEnabled,
                 categories = categories,
                 onDismiss = {
                     isSheetOpen.value = false
                 },
-                onApply = { project, category, percentageBucket, location, amountRaisedBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
+                onApply = { project, category, percentageBucket, location, amountRaisedBucket, recommended, projectsLoved, savedProjects, following, goalBucket, openCallTag ->
                     currentProjectState.value = project
                     currentCategory.value = category
                     currentPercentage.value = percentageBucket
@@ -1329,6 +1435,7 @@ private fun SheetContent(
                     currentSavedProjects.value = savedProjects
                     currentFollowing.value = following
                     currentGoal.value = goalBucket
+                    currentOpenCallTag.value = openCallTag
                     projectStatusPillText.value = when (project) {
                         DiscoveryParams.State.LIVE -> liveString
                         DiscoveryParams.State.SUCCESSFUL -> successfulString
@@ -1348,10 +1455,11 @@ private fun SheetContent(
                         currentProjectsLoved.value,
                         currentSavedProjects.value,
                         currentFollowing.value,
-                        currentGoal.value
+                        currentGoal.value,
+                        currentOpenCallTag.value
                     )
                 },
-                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket, recommended, projectsLoved, savedProjects, following, goalBucket ->
+                updateSelectedCounts = { statusCount, categoryCount, raisedBucket, location, amountBucket, recommended, projectsLoved, savedProjects, following, goalBucket, openCallsCount ->
 
                     selectedFilterCounts[FilterRowPillType.FILTER.name] =
                         (statusCount ?: 0) + (categoryCount ?: 0) + (raisedBucket ?: 0) +
@@ -1360,7 +1468,7 @@ private fun SheetContent(
                         (if (currentProjectsLoved.value.isTrue()) 1 else 0) +
                         (if (currentSavedProjects.value.isTrue()) 1 else 0) +
                         (if (currentFollowing.value.isTrue()) 1 else 0) +
-                        (goalBucket ?: 0)
+                        (goalBucket ?: 0) + (openCallsCount ?: 0)
 
                     statusCount?.let {
                         selectedFilterCounts[FilterRowPillType.PROJECT_STATUS.name] = it
@@ -1396,6 +1504,9 @@ private fun SheetContent(
                     goalBucket?.let {
                         selectedFilterCounts[FilterRowPillType.GOAL.name] = it
                     }
+                    openCallsCount?.let {
+                        selectedFilterCounts[FilterRowPillType.OPEN_CALLS.name] = it
+                    }
                 },
                 shouldShowPhase = shouldShowPhase
             )
@@ -1419,7 +1530,8 @@ private fun SheetContent(
                         currentProjectsLoved.value,
                         currentSavedProjects.value,
                         currentFollowing.value,
-                        currentGoal.value
+                        currentGoal.value,
+                        currentOpenCallTag.value
                     )
 
                     selectedFilterCounts[FilterRowPillType.SORT.name] =

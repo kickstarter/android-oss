@@ -363,12 +363,12 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         currentCategory = categories[0],
                         categories = categories,
                         onDismiss = { dismissed.add(true) },
-                        onApply = { state, category, _, _, _, _, _, _, _, _ ->
+                        onApply = { state, category, _, _, _, _, _, _, _, _, _ ->
                             appliedFilters.add(
                                 Pair(state, category)
                             )
                         },
-                        updateSelectedCounts = { statusCount, categoryCount, _, _, _, _, _, _, _, _ ->
+                        updateSelectedCounts = { statusCount, categoryCount, _, _, _, _, _, _, _, _, _ ->
                             selectedCounts.add(
                                 statusCount to categoryCount
                             )
@@ -426,7 +426,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         categories = categories,
                         currentPercentage = DiscoveryParams.RaisedBuckets.BUCKET_2,
                         onDismiss = { dismissed.add(true) },
-                        onApply = { state, category, bucket, location, amountBucket, recommended, projectsLoved, saved, social, goalBucket ->
+                        onApply = { state, category, bucket, location, amountBucket, recommended, projectsLoved, saved, social, goalBucket, _ ->
                             appliedFilters.add(state)
                             appliedFilters.add(category)
                             appliedFilters.add(bucket)
@@ -438,7 +438,7 @@ class SearchScreenTest : KSRobolectricTestCase() {
                             appliedFilters.add(social)
                             appliedFilters.add(goalBucket)
                         },
-                        updateSelectedCounts = { statusCount, categoryCount, bucket, location, amountCount, recommended, projectsLoved, saved, social, goal ->
+                        updateSelectedCounts = { statusCount, categoryCount, bucket, location, amountCount, recommended, projectsLoved, saved, social, goal, openCallsCount ->
                             selectedCounts.add(statusCount)
                             selectedCounts.add(categoryCount)
                             selectedCounts.add(bucket)
@@ -495,8 +495,8 @@ class SearchScreenTest : KSRobolectricTestCase() {
                         currentCategory = categories[0],
                         categories = categories,
                         onDismiss = { },
-                        onApply = { _, _, _, _, _, _, _, _, _, _ -> },
-                        updateSelectedCounts = { _, _, _, _, _, _, _, _, _, _ ->
+                        onApply = { _, _, _, _, _, _, _, _, _, _, _ -> },
+                        updateSelectedCounts = { _, _, _, _, _, _, _, _, _, _, _ ->
                         },
                         pagerState = testPagerState,
                         sheetState = testSheetState,

@@ -19,6 +19,7 @@ import com.kickstarter.features.search.viewmodel.FilterMenuViewModel
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.TagFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.compose.designsystem.BottomSheetFooterTestTags
@@ -404,6 +405,37 @@ class FilterMenuSheetTest : KSRobolectricTestCase() {
 
         composeTestRule
             .onNodeWithText(textForBucket)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `Open Calls row is displayed with selected tag as subtext`() {
+        val env = environment()
+            .toBuilder()
+            .currentUserV2(MockCurrentUserV2(UserFactory.user()))
+            .build()
+        val fakeViewModel = FilterMenuViewModel(env)
+        val tag = TagFactory.witchstarter()
+        composeTestRule.setContent {
+            KSTheme {
+                CompositionLocalProvider(LocalFilterMenuViewModel provides fakeViewModel) {
+                    Surface {
+                        FilterMenuSheet(selectedOpenCallTag = tag)
+                    }
+                }
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.LIST)
+            .performScrollToNode(hasTestTag(FilterMenuTestTags.OPEN_CALLS_ROW))
+
+        composeTestRule
+            .onNodeWithTag(FilterMenuTestTags.OPEN_CALLS_ROW)
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(tag.name())
             .assertIsDisplayed()
     }
 }

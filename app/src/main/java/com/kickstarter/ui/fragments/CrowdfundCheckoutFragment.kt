@@ -117,10 +117,12 @@ class CrowdfundCheckoutFragment : Fragment() {
                         viewModel.presentPaymentSheetStates.collectAsStateWithLifecycle().value
                     val setUpIntent = paymentSheetPresenter.setupClientId
 
+                    val projectCurrencyCode = pledgeData?.projectData()?.project()?.currency()
+
                     configurePaymentSheet(paymentSheetPresenter.setupClientId)
                     LaunchedEffect(key1 = setUpIntent) {
                         if (setUpIntent.isNotEmpty() && email.isNotEmpty()) {
-                            flowControllerPresentPaymentOption(setUpIntent, email)
+                            flowControllerPresentPaymentOption(setUpIntent, email, projectCurrencyCode)
                         }
                     }
 
@@ -205,11 +207,13 @@ class CrowdfundCheckoutFragment : Fragment() {
         return view
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String, googlePayCurrencyCode: String? = null) {
         context?.let {
+            val googlePayEnabled = viewModel.isPaymentSheetGooglePayEnabled()
+            Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCurrencyCode: $googlePayCurrencyCode")
             flowController.configureWithSetupIntent(
                 setupIntentClientSecret = clientSecret,
-                configuration = it.getPaymentSheetConfiguration(userEmail),
+                configuration = it.getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCurrencyCode),
                 callback = ::onConfigured
             )
         }

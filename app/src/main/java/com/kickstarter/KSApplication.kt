@@ -23,6 +23,7 @@ import com.kickstarter.libs.featureflag.StatsigClient
 import com.kickstarter.libs.featureflag.StatsigException
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.utils.GooglePayAvailabilityUtil
 import com.kickstarter.viewmodels.InitializationState
 import io.reactivex.exceptions.OnErrorNotImplementedException
 import io.reactivex.exceptions.UndeliverableException
@@ -70,6 +71,9 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent, Image
     @Inject
     lateinit var statsigClient: StatsigClient
 
+    @Inject
+    lateinit var apiEndpoint: ApiEndpoint
+
     /**
      * - A CoroutineScope tied to the Application lifecycle
      *  used to initialize dependencies that require coroutines and early on network calls.
@@ -110,6 +114,10 @@ open class KSApplication : MultiDexApplication(), IKSApplicationComponent, Image
         // Only log for internal builds
         if (BuildConfig.FLAVOR == "internal") {
             plant(Timber.DebugTree())
+        }
+
+        if (apiEndpoint != ApiEndpoint.PRODUCTION) {
+            GooglePayAvailabilityUtil.overrideGooglePayAvailabilityClient()
         }
 
         createErrorHandler()

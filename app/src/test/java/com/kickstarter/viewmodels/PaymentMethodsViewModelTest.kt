@@ -4,6 +4,8 @@ import android.util.Pair
 import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockStatsigClient
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.services.MockApolloClientV2
 import com.kickstarter.models.Project
@@ -273,5 +275,27 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
         this.progressBarIsVisible.assertValues(false, true, false, true, false, true, false, true, false)
         this.showError.assertValues(errorString)
         this.successSaving.assertNoValues()
+    }
+
+    @Test
+    fun testIsPaymentSheetGooglePayEnabled_whenFlagIsOn() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key to true)
+        )
+        setUpEnvironment(environment().toBuilder().statsigClient(statsigClient).build())
+
+        assertTrue(vm.outputs.isPaymentSheetGooglePayEnabled())
+    }
+
+    @Test
+    fun testIsPaymentSheetGooglePayEnabled_whenFlagIsOff() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key to false)
+        )
+        setUpEnvironment(environment().toBuilder().statsigClient(statsigClient).build())
+
+        assertFalse(vm.outputs.isPaymentSheetGooglePayEnabled())
     }
 }

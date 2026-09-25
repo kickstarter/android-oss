@@ -6,7 +6,9 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
@@ -1604,5 +1606,27 @@ class CrowdfundCheckoutViewModelTest : KSRobolectricTestCase() {
         assertNull(updateData.amount)
         assertNull(updateData.locationId)
         assertNull(updateData.rewardsIds)
+    }
+
+    @Test
+    fun testIsPaymentSheetGooglePayEnabled_whenFlagIsOn() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key to true)
+        )
+        setUpEnvironment(environment().toBuilder().statsigClient(statsigClient).build())
+
+        assertTrue(viewModel.isPaymentSheetGooglePayEnabled())
+    }
+
+    @Test
+    fun testIsPaymentSheetGooglePayEnabled_whenFlagIsOff() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key to false)
+        )
+        setUpEnvironment(environment().toBuilder().statsigClient(statsigClient).build())
+
+        assertFalse(viewModel.isPaymentSheetGooglePayEnabled())
     }
 }

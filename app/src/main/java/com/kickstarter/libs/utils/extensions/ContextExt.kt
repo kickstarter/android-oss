@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.OptIn
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.ui.SharedPreferenceKey
 import com.kickstarter.ui.activities.AppThemes
@@ -195,17 +197,50 @@ fun Context.showAlertDialog(
 /**
  * Provides the configuration for the PaymentSheet, following the specs
  *  @see [link](https://stripe.com/docs/payments/accept-a-payment?platform=android&ui=elements#android-flowcontroller)
+ *
+ * @param googlePayCurrencyCode The three-letter ISO 4217 alphabetic currency code, e.g. "USD" or "EUR".
+ * Required in order to support Google Pay when processing a Setup Intent.
  */
-fun Context.getPaymentSheetConfiguration(userEmail: String): PaymentSheet.Configuration {
+fun Context.getPaymentSheetConfiguration(
+    userEmail: String,
+    googlePayEnabled: Boolean = false,
+    googlePayCurrencyCode: String? = null
+): PaymentSheet.Configuration {
     val stripeLinkEnabled = this.getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_STRIPE_LINK) ?: false
     // TODO: Wait for stripe to devise a client-side option for turning off link
+    val googlePayConfiguration = this.getGooglePayConfiguration(googlePayEnabled, googlePayCurrencyCode)
 
     return PaymentSheet.Configuration(
         merchantDisplayName = getString(R.string.app_name),
         allowsDelayedPaymentMethods = true,
         appearance = this.getPaymentSheetAppearance(),
-        defaultBillingDetails = PaymentSheet.BillingDetails(email = userEmail)
+        defaultBillingDetails = PaymentSheet.BillingDetails(email = userEmail),
+        googlePay = googlePayConfiguration,
     )
+}
+
+@VisibleForTesting
+fun Context.getGooglePayConfiguration(
+    enabled: Boolean,
+    currencyCode: String?
+): PaymentSheet.GooglePayConfiguration? {
+    val currencyCode = currencyCode?.trim()?.takeIf { it.isNotEmpty() }
+
+    val googlePayEnvironment =
+        if (this.getEnvironment()?.webEndpoint() == Secrets.WebEndpoint.PRODUCTION) {
+            PaymentSheet.GooglePayConfiguration.Environment.Production
+        } else {
+            PaymentSheet.GooglePayConfiguration.Environment.Test
+        }
+
+    // `currencyCode` is required to use Google Pay with Setup Intents
+    return if (enabled && currencyCode != null) {
+        PaymentSheet.GooglePayConfiguration(
+            environment = googlePayEnvironment,
+            countryCode = "US",
+            currencyCode = currencyCode
+        )
+    } else null
 }
 
 /**

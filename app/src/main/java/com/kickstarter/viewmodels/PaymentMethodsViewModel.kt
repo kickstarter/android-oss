@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kickstarter.DeletePaymentSourceMutation
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.errorsV2
 import com.kickstarter.libs.rx.transformers.Transformers.neverErrorV2
@@ -67,6 +68,8 @@ interface Outputs {
 
     /** Emits in case SavePaymentMethod returns success output  */
     fun successSaving(): Observable<String>
+
+    fun isPaymentSheetGooglePayEnabled(): Boolean
 }
 
 class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMethodsAdapter.Delegate, Inputs, Outputs {
@@ -89,6 +92,8 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     private val loadingConfirmed = PublishSubject.create<Boolean>()
 
     private val apolloClient = requireNotNull(environment.apolloClientV2())
+
+    private val statsigClient = requireNotNull(environment.statsigClient())
     private val compositeDisposable = CompositeDisposable()
 
     val inputs: Inputs = this
@@ -297,6 +302,9 @@ class PaymentMethodsViewModel(environment: Environment) : ViewModel(), PaymentMe
     @Override
     override fun successSaving(): Observable<String> =
         this.successSaving
+
+    override fun isPaymentSheetGooglePayEnabled(): Boolean =
+        statsigClient.configReady.value && statsigClient.checkGate(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key)
 
     class Factory(private val environment: Environment) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

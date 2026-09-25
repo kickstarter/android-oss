@@ -110,7 +110,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             emitCurrentState()
         }
 
-        if (!refreshData) return
+//        if (!refreshData) return
 
         viewModelScope.launch(CoroutineExceptionHandler { _, throwable -> Timber.e(throwable, "CoroutineExceptionHandler") }) {
             mutableShippingUIState.update { previous ->

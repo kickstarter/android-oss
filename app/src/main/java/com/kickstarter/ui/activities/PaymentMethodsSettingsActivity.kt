@@ -25,6 +25,7 @@ import com.stripe.android.paymentsheet.model.PaymentOption
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 
 class PaymentMethodsSettingsActivity : AppCompatActivity() {
 
@@ -149,9 +150,11 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
     }
 
     private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
+        val googlePayEnabled = viewModel.outputs.isPaymentSheetGooglePayEnabled()
+        Timber.d("googlePayEnabled: $googlePayEnabled")
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = this.getPaymentSheetConfiguration(userEmail),
+            configuration = this.getPaymentSheetConfiguration(userEmail, googlePayEnabled, "USD"),
             callback = ::onConfigured
         )
     }

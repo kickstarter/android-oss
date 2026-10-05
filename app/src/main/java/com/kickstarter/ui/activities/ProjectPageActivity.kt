@@ -123,6 +123,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 const val REFRESH = "refresh"
 
@@ -718,7 +719,8 @@ class ProjectPageActivity :
                         latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
                             flowControllerPresentPaymentOption(
                                 it,
-                                latePledgeCheckoutUIState.userEmail
+                                latePledgeCheckoutUIState.userEmail,
+                                latePledgeCheckoutUIState.projectCurrency
                             )
                         }
                     }
@@ -1439,10 +1441,12 @@ class ProjectPageActivity :
         }
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String) {
+    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String, googlePayCurrencyCode: String? = null) {
+        val googlePayEnabled = latePledgeCheckoutViewModel.isPaymentSheetGooglePayEnabled()
+        Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCurrencyCode: $googlePayCurrencyCode")
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = getPaymentSheetConfiguration(userEmail),
+            configuration = getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCurrencyCode),
             callback = ::onConfigured
         )
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
@@ -60,7 +61,8 @@ data class LatePledgeCheckoutUIState(
     val selectedRewards: List<Reward> = emptyList(),
     val shippingAmount: Double = 0.0,
     val checkoutTotal: Double = 0.0,
-    val isPledgeButtonEnabled: Boolean = true
+    val isPledgeButtonEnabled: Boolean = true,
+    val projectCurrency: String? = null
 )
 
 class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
@@ -78,6 +80,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private var buttonEnabled = true
 
     private var stripe: Stripe = requireNotNull(environment.stripe())
+
+    private val statsigClient = requireNotNull(environment.statsigClient())
 
     private var clientSecretForNewCard: String = ""
     private var newStoredCard: StoredCard? = null
@@ -434,6 +438,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
                 checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
                 isPledgeButtonEnabled = buttonEnabled && !isLoading,
+                projectCurrency = this.pledgeData?.projectData()?.project()?.currency()
             )
         )
     }
@@ -548,6 +553,9 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             createCheckout()
         }
     }
+
+    fun isPaymentSheetGooglePayEnabled(): Boolean =
+        statsigClient.configReady.value && statsigClient.checkGate(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key)
 
     class Factory(private val environment: Environment) :
         ViewModelProvider.Factory {

@@ -4,6 +4,8 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
+import com.kickstarter.libs.MockStatsigClient
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
@@ -840,5 +842,62 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(state.last().isPledgeButtonEnabled, true)
         assertEquals(state.last().isLoading, false)
+    }
+
+    @Test
+    fun `test isPaymentSheetGooglePayEnabled when flag is on`() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(
+                StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key to true
+            )
+        )
+
+        setUpEnvironment(environment().toBuilder().statsigClient(statsigClient).build())
+
+        assertTrue(viewModel.isPaymentSheetGooglePayEnabled())
+    }
+
+    @Test
+    fun `test isPaymentSheetGooglePayEnabled when flag is off`() {
+        val statsigClient = MockStatsigClient(
+            context = application(),
+            gateMap = mapOf(
+                StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key to false
+            )
+        )
+
+        setUpEnvironment(environment().toBuilder().statsigClient(statsigClient).build())
+
+        assertFalse(viewModel.isPaymentSheetGooglePayEnabled())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test project currency derived from pledge data`() = runTest {
+        val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(34.0).build()
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .currency("EUR")
+            .build()
+
+        val projectData = ProjectDataFactory.project(project = project)
+        val pledgeData = PledgeData.with(PledgeFlowContext.LATE_PLEDGES, projectData, rw)
+
+        setUpEnvironment(environment())
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.providePledgeData(pledgeData)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        advanceUntilIdle()
+
+        assertEquals("EUR", state.last().projectCurrency)
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ThirdPartyEventValues
@@ -78,6 +79,7 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
     val cookieManager = requireNotNull(environment.cookieManager())
     val sharedPreferences = requireNotNull(environment.sharedPreferences())
     val ffClient = requireNotNull(environment.featureFlagClient())
+    val statsigClient = requireNotNull(environment.statsigClient())
 
     private var pledgeData: PledgeData? = null
     private var checkoutData: CheckoutData? = null // TOD potentially needs to change with user card input
@@ -580,6 +582,9 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
             }
         }
     }
+
+    fun isPaymentSheetGooglePayEnabled(): Boolean =
+        statsigClient.configReady.value && statsigClient.checkGate(StatsigGateKey.ANDROID_PAYMENTSHEET_GOOGLE_PAY.key)
 
     /**
      * PaymentSheet has been presented to the user, stop loading until

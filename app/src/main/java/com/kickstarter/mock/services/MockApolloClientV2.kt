@@ -66,11 +66,11 @@ import java.util.Collections
 
 open class MockApolloClientV2 : ApolloClientTypeV2 {
 
-    override fun getRewardsFromProject(
+    override suspend fun getRewardsFromProject(
         slug: String,
         sort: com.kickstarter.type.ProjectRewardsSort
-    ): io.reactivex.Observable<List<Reward>> {
-        return io.reactivex.Observable.just(emptyList())
+    ): Result<List<Reward>> {
+        return Result.success(emptyList())
     }
 
     override fun watchProject(project: Project): io.reactivex.Observable<Project> {

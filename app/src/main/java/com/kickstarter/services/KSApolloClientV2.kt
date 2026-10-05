@@ -260,10 +260,10 @@ interface ApolloClientTypeV2 {
     fun createOrUpdateBackingAddress(eventInput: CreateOrUpdateBackingAddressData): Observable<Boolean>
     fun completeOrder(orderInput: CompleteOrderInput): Observable<CompleteOrderPayload>
     fun getPledgedProjectsOverviewPledges(inputData: PledgedProjectsOverviewQueryData): Observable<PledgedProjectsOverviewEnvelope>
-    fun getRewardsFromProject(
+    suspend fun getRewardsFromProject(
         slug: String,
         sort: com.kickstarter.type.ProjectRewardsSort = com.kickstarter.type.ProjectRewardsSort.ELIGIBILITY
-    ): Observable<List<Reward>>
+    ): Result<List<Reward>>
     fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan>
     fun updateBackerCompleted(inputData: UpdateBackerCompletedData): Observable<Boolean>
     suspend fun addUserToSecretRewardGroup(project: Project, secretRewardToken: String): Result<Project>
@@ -800,50 +800,38 @@ class KSApolloClientV2(val service: ApolloClient, val gson: Gson) : ApolloClient
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getRewardsFromProject(
+    override suspend fun getRewardsFromProject(
         slug: String,
         sort: ProjectRewardsSort
-    ): Observable<List<Reward>> {
-        return Observable.defer {
-            val ps = PublishSubject.create<List<Reward>>()
-            val query = FetchProjectRewardsQuery(
-                slug = slug,
-                sort = Optional.present(sort)
-            )
+    ): Result<List<Reward>> = executeForResult {
+        val query = FetchProjectRewardsQuery(
+            slug = slug,
+            sort = Optional.present(sort)
+        )
 
-            this.service.query(query)
-                .rxFlowable()
-                .subscribeOn(Schedulers.io())
-                .doOnError {
-                    ps.onError(it)
+        val response = this.service.query(query).execute()
+
+        if (response.hasErrors())
+            throw buildClientException(response.errors)
+
+        response.data?.let { data ->
+            val rwList: List<Reward?> = data.project?.rewards?.nodes?.map {
+                it?.reward?.let { rwGr ->
+                    rewardTransformer(
+                        rewardGr = rwGr,
+                        allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
+                        rewardItems = complexRewardItemsTransformer(it.items?.rewardItems),
+                        simpleShippingRules = it.simpleShippingRulesExpanded.filterNotNull(),
+                        rewardImage = it.rewardImage
+                    )
                 }
-                .subscribe { response ->
-                    if (response.hasErrors()) {
-                        ps.onError(Exception(response.errors?.first()?.message))
-                    }
-                    response.data?.let { data ->
-                        val rwList: List<Reward?> = data.project?.rewards?.nodes?.map {
-                            it?.reward?.let { rwGr ->
-
-                                rewardTransformer(
-                                    rewardGr = rwGr,
-                                    allowedAddons = it.allowedAddons.pageInfo.startCursor?.isNotEmpty() ?: false,
-                                    rewardItems = complexRewardItemsTransformer(it.items?.rewardItems),
-                                    simpleShippingRules = it.simpleShippingRulesExpanded.filterNotNull(),
-                                    rewardImage = it.rewardImage
-                                )
-                            }
-                        } ?: emptyList<Reward>()
-                        // - API does not provide the Reward no reward, we need to add it first
-                        val minPledge = data.project?.minPledge?.toDouble() ?: 1.0
-                        val modifiedRewards = rwList.filterNotNull().toMutableList()
-                        modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
-                        ps.onNext(modifiedRewards.toList())
-                    }
-                    ps.onComplete()
-                }.addToDisposable(disposables)
-            return@defer ps
-        }
+            } ?: emptyList<Reward>()
+            // - API does not provide the Reward no reward, we need to add it first
+            val minPledge = data.project?.minPledge?.toDouble() ?: 1.0
+            val modifiedRewards = rwList.filterNotNull().toMutableList()
+            modifiedRewards.add(0, RewardFactory.noReward().toBuilder().minimum(minPledge).build())
+            modifiedRewards
+        } ?: emptyList()
     }
 
     override fun buildPaymentPlan(input: BuildPaymentPlanData): Observable<PaymentPlan> {

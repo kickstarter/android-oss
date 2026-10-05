@@ -56,6 +56,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
     private val currentConfig = requireNotNull(environment.currentConfigV2()?.observable())
 
     private lateinit var currentProjectData: ProjectData
+    private var previousProjectData: ProjectData? = null
     private var pReason: PledgeReason? = null
     private var previousUserBacking: Backing? = null
     private var previouslyBackedReward: Reward? = null
@@ -84,12 +85,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             .asSharedFlow()
 
     fun provideProjectData(projectData: ProjectData) {
-        val refreshData = if (::currentProjectData.isInitialized)
-            currentProjectData.project().id() != projectData.project().id()
-        else
-            true
-
-        /* In the future, if `refreshData` is false, we can probably just return here. */
+        previousProjectData = if (::currentProjectData.isInitialized) currentProjectData else null
 
         shippingRulesUseCase = null
         currentProjectData = projectData
@@ -110,7 +106,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             emitCurrentState()
         }
 
-        if (!refreshData) return
+        if (previousProjectData?.project()?.id() == currentProjectData.project().id()) return
 
         viewModelScope.launch(CoroutineExceptionHandler { _, throwable -> Timber.e(throwable, "CoroutineExceptionHandler") }) {
             mutableShippingUIState.update { previous ->
@@ -121,7 +117,7 @@ class RewardsSelectionViewModel(private val environment: Environment, private va
             val shouldFetchShippableCountries = slug.isNotBlank()
 
             val shippingLocationsDeferred = async { apolloClient.fetchShippingCountryLocations(shouldFetchShippableCountries, slug) }
-            val rewardsDeferred = async { runCatching { apolloClient.getRewardsFromProject(slug).asFlow().first() } }
+            val rewardsDeferred = async { apolloClient.getRewardsFromProject(slug) }
 
             val rewardsResult = rewardsDeferred.await()
             val rewards = rewardsResult

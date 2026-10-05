@@ -720,6 +720,7 @@ class ProjectPageActivity :
                             flowControllerPresentPaymentOption(
                                 it,
                                 latePledgeCheckoutUIState.userEmail,
+                                latePledgeCheckoutUIState.projectCountryCode,
                                 latePledgeCheckoutUIState.projectCurrency
                             )
                         }
@@ -1441,12 +1442,17 @@ class ProjectPageActivity :
         }
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String, googlePayCurrencyCode: String? = null) {
+    private fun flowControllerPresentPaymentOption(
+        clientSecret: String,
+        userEmail: String,
+        googlePayCountryCode: String? = null,
+        googlePayCurrencyCode: String? = null
+    ) {
         val googlePayEnabled = latePledgeCheckoutViewModel.isPaymentSheetGooglePayEnabled()
-        Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCurrencyCode: $googlePayCurrencyCode")
+        Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCountryCode: $googlePayCountryCode, googlePayCurrencyCode: $googlePayCurrencyCode")
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCurrencyCode),
+            configuration = getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCountryCode, googlePayCurrencyCode),
             callback = ::onConfigured
         )
     }

@@ -18,7 +18,8 @@ class Project private constructor(
     private val backing: Backing?,
     private val category: Category?,
     private val commentsCount: Int?,
-    private val country: String, // e.g.: US
+    private val country: String, // e.g.: United States
+    private val countryCode: String, // e.g.: US
     private val createdAt: DateTime,
     private val creator: User,
     private val currency: String, // e.g.: USD
@@ -89,6 +90,7 @@ class Project private constructor(
     fun category() = this.category
     fun commentsCount() = this.commentsCount
     fun country() = this.country
+    fun countryCode() = this.countryCode
     fun createdAt() = this.createdAt
     fun creator() = this.creator
     fun currency() = this.currency
@@ -161,6 +163,7 @@ class Project private constructor(
         private var category: Category? = null,
         private var commentsCount: Int? = null,
         private var country: String = "",
+        private var countryCode: String = "",
         private var createdAt: DateTime = DateTime.now(),
         private var creator: User = User.builder().build(),
         private var currency: String = "",
@@ -234,6 +237,7 @@ class Project private constructor(
         fun category(category: Category?) = apply { this.category = category }
         fun commentsCount(commentsCount: Int?) = apply { this.commentsCount = commentsCount }
         fun country(country: String?) = apply { this.country = country ?: "" }
+        fun countryCode(countryCode: String?) = apply { this.countryCode = countryCode ?: "" }
         fun createdAt(createdAt: DateTime?) = apply { createdAt?.let { this.createdAt = it } }
         fun creator(creator: User?) = apply { creator?.let { this.creator = it } }
         fun currency(currency: String?) = apply { currency?.let { this.currency = it } }
@@ -353,6 +357,7 @@ class Project private constructor(
             category = category,
             commentsCount = commentsCount,
             country = country,
+            countryCode = countryCode,
             createdAt = createdAt,
             creator = creator,
             currency = currency,
@@ -424,6 +429,7 @@ class Project private constructor(
         category = category,
         commentsCount = commentsCount,
         country = country,
+        countryCode = countryCode,
         createdAt = createdAt,
         creator = creator,
         currency = currency,
@@ -607,6 +613,7 @@ class Project private constructor(
                 category() == other.category() &&
                 commentsCount() == other.commentsCount() &&
                 country() == other.country() &&
+                countryCode() == other.countryCode() &&
                 createdAt() == other.createdAt() &&
                 creator() == other.creator() &&
                 createdAt() == other.createdAt() &&

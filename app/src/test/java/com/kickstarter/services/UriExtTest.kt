@@ -2,7 +2,9 @@ package com.kickstarter.services
 
 import android.net.Uri
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.libs.utils.extensions.hasSecretRewardToken
+import com.kickstarter.libs.utils.extensions.isApiUri
 import com.kickstarter.libs.utils.extensions.isBackingDetailsUri
 import com.kickstarter.libs.utils.extensions.isCheckoutUri
 import com.kickstarter.libs.utils.extensions.isDiscoverCategoriesPath
@@ -320,5 +322,12 @@ class UriExtTest : KSRobolectricTestCase() {
         assertEquals("abc123", uriWithToken.secretRewardToken())
         assertEquals("", uriWithEmptyToken.secretRewardToken())
         assertEquals("", uriWithoutToken.secretRewardToken())
+    }
+
+    @Test
+    fun testUri_isApiUri_withStagingEndpoint() {
+        val endpoint = Secrets.Api.Endpoint.STAGING
+        val uri = Uri.parse("$endpoint/v1/config")
+        assertTrue(uri.isApiUri(endpoint))
     }
 }

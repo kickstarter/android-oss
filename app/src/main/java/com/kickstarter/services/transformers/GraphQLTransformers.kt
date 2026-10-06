@@ -318,6 +318,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
     } else null
     val commentsCount = projectFragment?.commentsCount ?: 0
     val country = projectFragment?.country?.country?.name ?: ""
+    val countryCode = projectFragment?.country?.country?.code?.name ?: ""
     val createdAt = projectFragment?.createdAt
     val creator = userTransformer(projectFragment?.creator?.user)
     val currency = projectFragment?.currency?.name ?: ""
@@ -429,6 +430,7 @@ fun projectTransformer(projectFragment: FullProject?): Project {
         .category(category)
         .commentsCount(commentsCount)
         .country(country)
+        .countryCode(countryCode)
         .createdAt(createdAt)
         .creator(creator)
         .currency(currency)

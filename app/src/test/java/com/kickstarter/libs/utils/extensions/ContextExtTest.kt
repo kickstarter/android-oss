@@ -7,9 +7,11 @@ class ContextExtTest : KSRobolectricTestCase() {
     @Test
     fun `test getGooglePayConfiguration()`() {
         val context = application()
-        assertNull(context.getGooglePayConfiguration(false, "USD"))
-        assertNull(context.getGooglePayConfiguration(true, null))
-        assertNull(context.getGooglePayConfiguration(true, " "))
-        assertNotNull(context.getGooglePayConfiguration(true, "EUR"))
+        assertNull(context.getGooglePayConfiguration(false, "US", "USD"))
+        assertNull(context.getGooglePayConfiguration(true, null, "USD"))
+        assertNull(context.getGooglePayConfiguration(true, " ", "USD"))
+        assertNull(context.getGooglePayConfiguration(true, "US", null))
+        assertNull(context.getGooglePayConfiguration(true, "US", " "))
+        assertNotNull(context.getGooglePayConfiguration(true, "DE", "EUR"))
     }
 }

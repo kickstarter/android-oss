@@ -198,17 +198,23 @@ fun Context.showAlertDialog(
  * Provides the configuration for the PaymentSheet, following the specs
  *  @see [link](https://stripe.com/docs/payments/accept-a-payment?platform=android&ui=elements#android-flowcontroller)
  *
+ * @param googlePayCountryCode The two-letter ISO country code, e.g. "US" or "GB".
  * @param googlePayCurrencyCode The three-letter ISO 4217 alphabetic currency code, e.g. "USD" or "EUR".
  * Required in order to support Google Pay when processing a Setup Intent.
  */
 fun Context.getPaymentSheetConfiguration(
     userEmail: String,
     googlePayEnabled: Boolean = false,
+    googlePayCountryCode: String? = null,
     googlePayCurrencyCode: String? = null
 ): PaymentSheet.Configuration {
     val stripeLinkEnabled = this.getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_STRIPE_LINK) ?: false
     // TODO: Wait for stripe to devise a client-side option for turning off link
-    val googlePayConfiguration = this.getGooglePayConfiguration(googlePayEnabled, googlePayCurrencyCode)
+    val googlePayConfiguration = this.getGooglePayConfiguration(
+        googlePayEnabled,
+        googlePayCountryCode,
+        googlePayCurrencyCode
+    )
 
     return PaymentSheet.Configuration(
         merchantDisplayName = getString(R.string.app_name),
@@ -222,8 +228,10 @@ fun Context.getPaymentSheetConfiguration(
 @VisibleForTesting
 fun Context.getGooglePayConfiguration(
     enabled: Boolean,
+    countryCode: String?,
     currencyCode: String?
 ): PaymentSheet.GooglePayConfiguration? {
+    val countryCode = countryCode?.trim()?.takeIf { it.isNotEmpty() }
     val currencyCode = currencyCode?.trim()?.takeIf { it.isNotEmpty() }
 
     val googlePayEnvironment =
@@ -234,10 +242,10 @@ fun Context.getGooglePayConfiguration(
         }
 
     // `currencyCode` is required to use Google Pay with Setup Intents
-    return if (enabled && currencyCode != null) {
+    return if (enabled && countryCode != null && currencyCode != null) {
         PaymentSheet.GooglePayConfiguration(
             environment = googlePayEnvironment,
-            countryCode = "US",
+            countryCode = countryCode,
             currencyCode = currencyCode
         )
     } else null

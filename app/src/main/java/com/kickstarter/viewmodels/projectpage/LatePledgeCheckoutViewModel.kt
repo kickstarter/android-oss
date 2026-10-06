@@ -62,6 +62,7 @@ data class LatePledgeCheckoutUIState(
     val shippingAmount: Double = 0.0,
     val checkoutTotal: Double = 0.0,
     val isPledgeButtonEnabled: Boolean = true,
+    val projectCountryCode: String? = null,
     val projectCurrency: String? = null
 )
 
@@ -438,6 +439,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 shippingAmount = this.pledgeData?.shippingCostIfShipping() ?: 0.0,
                 checkoutTotal = this.pledgeData?.checkoutTotalAmount() ?: 0.0,
                 isPledgeButtonEnabled = buttonEnabled && !isLoading,
+                projectCountryCode = this.pledgeData?.projectData()?.project()?.countryCode(),
                 projectCurrency = this.pledgeData?.projectData()?.project()?.currency()
             )
         )

@@ -874,11 +874,12 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `test project currency derived from pledge data`() = runTest {
+    fun `test project country code & currency derived from pledge data`() = runTest {
         val rw = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(34.0).build()
         val project = ProjectFactory.project().toBuilder()
             .isInPostCampaignPledgingPhase(true)
             .postCampaignPledgingEnabled(true)
+            .countryCode("DE")
             .currency("EUR")
             .build()
 
@@ -898,6 +899,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
         advanceUntilIdle()
 
+        assertEquals("DE", state.last().projectCountryCode)
         assertEquals("EUR", state.last().projectCurrency)
     }
 }

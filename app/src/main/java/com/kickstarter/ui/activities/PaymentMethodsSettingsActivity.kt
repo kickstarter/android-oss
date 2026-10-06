@@ -154,7 +154,7 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         Timber.d("googlePayEnabled: $googlePayEnabled")
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = this.getPaymentSheetConfiguration(userEmail, googlePayEnabled, "USD"),
+            configuration = this.getPaymentSheetConfiguration(userEmail, googlePayEnabled, "US", "USD"),
             callback = ::onConfigured
         )
     }

@@ -117,12 +117,13 @@ class CrowdfundCheckoutFragment : Fragment() {
                         viewModel.presentPaymentSheetStates.collectAsStateWithLifecycle().value
                     val setUpIntent = paymentSheetPresenter.setupClientId
 
+                    val projectCountryCode = pledgeData?.projectData()?.project()?.countryCode()
                     val projectCurrencyCode = pledgeData?.projectData()?.project()?.currency()
 
                     configurePaymentSheet(paymentSheetPresenter.setupClientId)
                     LaunchedEffect(key1 = setUpIntent) {
                         if (setUpIntent.isNotEmpty() && email.isNotEmpty()) {
-                            flowControllerPresentPaymentOption(setUpIntent, email, projectCurrencyCode)
+                            flowControllerPresentPaymentOption(setUpIntent, email, projectCountryCode, projectCurrencyCode)
                         }
                     }
 
@@ -207,13 +208,18 @@ class CrowdfundCheckoutFragment : Fragment() {
         return view
     }
 
-    private fun flowControllerPresentPaymentOption(clientSecret: String, userEmail: String, googlePayCurrencyCode: String? = null) {
+    private fun flowControllerPresentPaymentOption(
+        clientSecret: String,
+        userEmail: String,
+        googlePayCountryCode: String? = null,
+        googlePayCurrencyCode: String? = null
+    ) {
         context?.let {
             val googlePayEnabled = viewModel.isPaymentSheetGooglePayEnabled()
-            Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCurrencyCode: $googlePayCurrencyCode")
+            Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCountryCode: $googlePayCountryCode, googlePayCurrencyCode: $googlePayCurrencyCode")
             flowController.configureWithSetupIntent(
                 setupIntentClientSecret = clientSecret,
-                configuration = it.getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCurrencyCode),
+                configuration = it.getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCountryCode, googlePayCurrencyCode),
                 callback = ::onConfigured
             )
         }

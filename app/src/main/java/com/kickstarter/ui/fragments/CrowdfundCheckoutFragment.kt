@@ -18,6 +18,8 @@ import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
+import com.kickstarter.libs.utils.extensions.isGooglePay
+import com.kickstarter.libs.utils.extensions.isLink
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -294,8 +296,13 @@ class CrowdfundCheckoutFragment : Fragment() {
 
         val paymentOptionCallback = PaymentOptionCallback { paymentOption ->
             paymentOption?.let {
+                // In crowdfund checkout, `lastFourDigits` serves as an intermediate display label
                 val storedCard = StoredCard.Builder(
-                    lastFourDigits = paymentOption.label.takeLast(4),
+                    lastFourDigits = if (paymentOption.isLink() || paymentOption.isGooglePay()) {
+                        paymentOption.label
+                    } else {
+                        paymentOption.label.takeLast(4)
+                    },
                     resourceId = paymentOption.drawableResourceId,
                     clientSetupId = setupClientId
                 ).build()

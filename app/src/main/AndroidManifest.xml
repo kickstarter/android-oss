@@ -85,10 +85,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/profile/verify_email"
-                    android:scheme="https" />
+                <data android:scheme="https" />
+                <data android:host="*.kickstarter.com" />
+                <data android:pathPrefix="/profile/verify_email" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="stg.ksr.io" />
+                <data android:pathPrefix="/profile/verify_email" />
             </intent-filter>
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -252,53 +260,51 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:exported="true">
-            <!-- Marketing Emails Domains  -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- Generic Production App Links. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="www.kickstarter.com"
-                    android:scheme="https" />
+                <data android:scheme="https" />
+                <data android:host="www.kickstarter.com" />
             </intent-filter>
-            <!-- Website Main page deeplink  -->
+            <!-- Path-restricted Production App Links. Wildcard for internal consistency.  -->
+            <!-- Historical support for `staging.`, `environment.dev.` -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="*.kickstarter.com"
-                    android:scheme="ksr" />
+
+                <data android:scheme="https" />
+                <data android:host="*.kickstarter.com" />
+                <data android:pathPrefix="/projects" />
+                <data android:pathPrefix="/settings/" />
             </intent-filter>
+            <!-- Path-restricted Staging App Links. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/projects"
-                    android:scheme="https" />
+                <data android:scheme="https" />
+                <data android:host="stg.ksr.io" />
+                <data android:pathPrefix="/projects" />
+                <data android:pathPrefix="/settings/" />
+            </intent-filter>
+            <!-- Generic custom-scheme links. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/projects"
-                    android:scheme="ksr" />
-
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/settings/"
-                    android:scheme="ksr" />
-                <data
-                    android:host="*.kickstarter.com"
-                    android:pathPrefix="/settings/"
-                    android:scheme="https" />
+                <data android:scheme="ksr" />
+                <data android:host="*.kickstarter.com" />
+                <data android:host="stg.ksr.io" />
             </intent-filter>
         </activity>
         <!-- SERVICES, PROVIDERS, RECEIVERS -->

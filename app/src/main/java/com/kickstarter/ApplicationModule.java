@@ -517,9 +517,13 @@ public class ApplicationModule {
   @WebEndpoint
   @NonNull
   static String provideWebEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
-    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
-      "https://www.kickstarter.com" :
-      apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
+    if (apiEndpoint == ApiEndpoint.PRODUCTION) {
+      return Secrets.WebEndpoint.PRODUCTION;
+    }
+    if (apiEndpoint == ApiEndpoint.STAGING) {
+      return Secrets.WebEndpoint.STAGING;
+    }
+    return apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
   }
 
   @Provides

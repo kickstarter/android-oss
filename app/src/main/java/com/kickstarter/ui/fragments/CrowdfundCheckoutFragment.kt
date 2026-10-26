@@ -303,7 +303,11 @@ class CrowdfundCheckoutFragment : Fragment() {
                     } else {
                         paymentOption.label.takeLast(4)
                     },
-                    resourceId = paymentOption.drawableResourceId,
+                    resourceId = if (paymentOption.isGooglePay()) {
+                        R.drawable.google_pay_mark_stored_card
+                    } else {
+                        paymentOption.drawableResourceId
+                    },
                     clientSetupId = setupClientId
                 ).build()
                 this.viewModel.newlyAddedPaymentMethod(storedCard)

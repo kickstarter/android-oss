@@ -1012,7 +1012,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         segment.trackPledgeSubmitCTA(
             CheckoutDataFactory.checkoutData(20.0, 30.0),
-            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons())
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward(), listOfAddons()),
+            walletType = "google_pay"
         )
 
         assertSessionProperties(user)
@@ -1024,12 +1025,56 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["checkout_id"])
+        assertEquals("google_pay", expectedProperties["checkout_wallet_type"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.segmentTrack.assertValues(CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testLatePledgeCheckoutProperties_withWallet() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackLatePledgeSubmitCTA(
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.LATE_PLEDGES, projectData, reward(), listOfAddons()),
+            walletType = "google_pay"
+        )
+
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
+        assertEquals("credit_card", expectedProperties["checkout_payment_type"])
+        assertEquals("google_pay", expectedProperties["checkout_wallet_type"])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
+    }
+
+    @Test
+    fun testLatePledgeCheckoutProperties_withoutWallet() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe { this.segmentTrack.onNext(it) }.addToDisposable(disposables)
+        client.eventProperties.subscribe { this.propertiesTest.onNext(it) }.addToDisposable(disposables)
+        val segment = AnalyticEvents(listOf(client))
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackLatePledgeSubmitCTA(
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.LATE_PLEDGES, projectData, reward(), listOfAddons())
+        )
+
+        val expectedProperties = this.propertiesTest.value ?: mapOf()
+        assertEquals("credit_card", expectedProperties["checkout_payment_type"])
+        assertNull(expectedProperties["checkout_wallet_type"])
+        this.segmentTrack.assertValue(CTA_CLICKED.eventName)
     }
 
     @Test
@@ -1169,6 +1214,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = this.propertiesTest.value ?: mapOf()
         assertNull(expectedProperties["checkout_id"])
+        assertNull(expectedProperties["checkout_wallet_type"])
         assertEquals("fix_errored_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(true, expectedProperties["project_user_is_backer"])

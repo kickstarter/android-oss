@@ -23,6 +23,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.UserPrivacy
 import com.kickstarter.services.mutations.CreateCheckoutData
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.viewmodels.projectpage.LatePledgeCheckoutUIState
@@ -261,6 +262,125 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
+    fun `test wallet type is reconciled with refreshed payment source`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCard.builder().id(paymentSourceId).build()
+        val refreshedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .stripeCardId("pm_google_pay")
+            .build()
+        val otherCard = StoredCardFactory.discoverCard()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(refreshedCard, otherCard))
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+
+        val cards = state.last().storeCards
+        assertEquals("google_pay", cards.first { it.id() == paymentSourceId }.walletType())
+        assertEquals("pm_google_pay", cards.first { it.id() == paymentSourceId }.stripeCardId())
+        assertNull(cards.first { it.id() == otherCard.id() }.walletType())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test ordinary PaymentSheet card has no wallet type`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCard.builder().id(paymentSourceId).build()
+        val refreshedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .stripeCardId("pm_card")
+            .build()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(refreshedCard))
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected(null)
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+
+        assertNull(state.last().storeCards.single().walletType())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test failed PaymentSheet flow clears pending wallet type`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCard.builder().id(paymentSourceId).build()
+        val refreshedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .stripeCardId("pm_card")
+            .build()
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(listOf(refreshedCard))
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onNewCardFailed()
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+
+        assertNull(state.last().storeCards.single().walletType())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun test_when_new_card_adding_fails_then_state_emits() = runTest {
         val user = UserFactory.user()
         val currentUserV2 = MockCurrentUserV2(initialUser = user)
@@ -303,6 +423,199 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
         )
 
         assertEquals(state.size, 3)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test new manual card has no wallet type`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .build()
+        val refreshedCard = savedCard.toBuilder()
+            .stripeCardId("pm_ksr_card")
+            .build()
+        val cardList = mutableListOf(refreshedCard)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cardList)
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected(null)
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+
+        assertNull(state.last().storeCards.single().walletType())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test new digital wallet card results in payment source with wallet type when refreshed`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .build()
+        val refreshedCard = savedCard.toBuilder()
+            .stripeCardId("pm_ksr_google_pay")
+            .build()
+        val otherCard = StoredCardFactory.discoverCard()
+        val cardList = mutableListOf(refreshedCard, otherCard)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cardList)
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+
+        val cards = state.last().storeCards
+        val newCard = cards.first { it.id() == paymentSourceId }
+        val existingCard = cards.first { it.id() == otherCard.id() }
+
+        assertEquals("google_pay", newCard.walletType())
+        assertEquals("pm_ksr_google_pay", newCard.stripeCardId())
+        assertNull(existingCard.walletType())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test onNewCardFailed clears pending wallet type`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .build()
+        val refreshedCard = savedCard.toBuilder()
+            .stripeCardId("pm_ksr_card")
+            .build()
+        val cardList = mutableListOf(refreshedCard)
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cardList)
+                }
+            })
+            .build()
+
+        setUpEnvironment(environment)
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onNewCardFailed()
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+
+        assertNull(state.last().storeCards.single().walletType())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `test wallet types are retained when returning to checkout`() = runTest {
+        val paymentSourceId = "payment-source-id"
+        val savedCard = StoredCardFactory.visa().toBuilder()
+            .id(paymentSourceId)
+            .build()
+        val refreshedCard = savedCard.toBuilder()
+            .stripeCardId("pm_ksr_google_pay")
+            .build()
+        val cardList = mutableListOf(refreshedCard)
+
+        val currentUserV2 = MockCurrentUserV2(UserFactory.user())
+
+        val environment = environment().toBuilder()
+            .apolloClientV2(object : MockApolloClientV2() {
+                override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                    return Observable.just(savedCard)
+                }
+
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(cardList)
+                }
+
+                override fun userPrivacy(): Observable<UserPrivacy> {
+                    return Observable.just(
+                        UserPrivacy("Some Name", "some@email.com", true, true, true, true, "USD")
+                    )
+                }
+            })
+            .currentUserV2(currentUserV2)
+            .build()
+
+        setUpEnvironment(environment)
+
+        val reward = RewardFactory.rewardWithShipping().toBuilder().latePledgeAmount(34.0).build()
+        val project = ProjectFactory.project().toBuilder()
+            .isInPostCampaignPledgingPhase(true)
+            .postCampaignPledgingEnabled(true)
+            .rewards(listOf(reward))
+            .build()
+        val pledgeData = PledgeData.with(
+            PledgeFlowContext.LATE_PLEDGES,
+            ProjectDataFactory.project(project),
+            reward
+        )
+
+        val state = mutableListOf<LatePledgeCheckoutUIState>()
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        backgroundScope.launch(dispatcher) {
+            viewModel.provideScopeAndDispatcher(this, dispatcher)
+            viewModel.latePledgeCheckoutUIState.toList(state)
+        }
+
+        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onNewCardSuccessfullyAdded()
+        advanceUntilIdle()
+        assertEquals("google_pay", state.last().storeCards.single().walletType())
+
+        viewModel.providePledgeData(pledgeData)
+        advanceUntilIdle()
+
+        assertEquals("google_pay", state.last().storeCards.single().walletType())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

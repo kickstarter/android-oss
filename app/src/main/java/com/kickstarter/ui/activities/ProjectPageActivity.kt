@@ -72,6 +72,7 @@ import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.reduceProjectPayload
 import com.kickstarter.libs.utils.extensions.showLatePledgeFlow
 import com.kickstarter.libs.utils.extensions.toVisibility
+import com.kickstarter.libs.utils.extensions.walletType
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
@@ -824,7 +825,7 @@ class ProjectPageActivity :
                         checkoutTotal = checkoutTotal,
                         onPledgeCtaClicked = { selectedCard, isIncremental ->
                             selectedCard?.apply {
-                                latePledgeCheckoutViewModel.sendSubmitCTAEvent()
+                                latePledgeCheckoutViewModel.sendSubmitCTAEvent(selectedCard)
                                 latePledgeCheckoutViewModel.onPledgeButtonClicked(
                                     selectedCard = selectedCard,
                                 )
@@ -1395,6 +1396,7 @@ class ProjectPageActivity :
     // Update the UI with the returned PaymentOption
     private fun onPaymentOption(paymentOption: PaymentOption?) {
         paymentOption?.let {
+            latePledgeCheckoutViewModel.onPaymentOptionSelected(it.walletType())
             flowController.confirm()
             latePledgeCheckoutViewModel.loading()
         }

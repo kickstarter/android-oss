@@ -10,3 +10,10 @@ fun PaymentOption.isGooglePay(): Boolean =
 
 fun PaymentOption.isLink(): Boolean =
     this.paymentMethodType == PaymentMethod.Type.Link.code
+
+fun PaymentOption.walletType(): String? =
+    when {
+        this.isGooglePay() -> PAYMENT_METHOD_TYPE_GOOGLE_PAY
+        this.isLink() -> PaymentMethod.Type.Link.code
+        else -> null
+    }

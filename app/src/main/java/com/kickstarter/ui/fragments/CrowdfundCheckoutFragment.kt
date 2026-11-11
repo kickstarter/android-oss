@@ -20,6 +20,7 @@ import com.kickstarter.libs.utils.extensions.getEnvironment
 import com.kickstarter.libs.utils.extensions.getPaymentSheetConfiguration
 import com.kickstarter.libs.utils.extensions.isGooglePay
 import com.kickstarter.libs.utils.extensions.isLink
+import com.kickstarter.libs.utils.extensions.walletType
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
@@ -308,7 +309,8 @@ class CrowdfundCheckoutFragment : Fragment() {
                     } else {
                         paymentOption.drawableResourceId
                     },
-                    clientSetupId = setupClientId
+                    clientSetupId = setupClientId,
+                    walletType = paymentOption.walletType()
                 ).build()
                 this.viewModel.newlyAddedPaymentMethod(storedCard)
                 Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")

@@ -43,11 +43,13 @@ class StoredCardTest : TestCase() {
             .lastFourDigits("1234")
             .clientSetupId("ClientSetupID")
             .resourceId(1234)
+            .walletType("google_pay")
             .build()
 
         val resourceID = storedCard.getCardTypeDrawable()
         assertEquals(storedCard.lastFourDigits(), "1234")
         assertEquals(storedCard.type(), CreditCardTypes.UNKNOWN__)
+        assertEquals(storedCard.walletType(), "google_pay")
         assertEquals(resourceID, 1234)
     }
 
@@ -80,9 +82,12 @@ class StoredCardTest : TestCase() {
     fun testStoredCardToBuilder() {
         val lastFourDigits = "3556"
         val storedCard = StoredCardFactory.visa().toBuilder()
-            .lastFourDigits(lastFourDigits).build()
+            .lastFourDigits(lastFourDigits)
+            .walletType("google_pay")
+            .build()
 
         assertEquals(storedCard.lastFourDigits(), lastFourDigits)
+        assertEquals(storedCard.toBuilder().build().walletType(), "google_pay")
     }
 
     @Test

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.PaymentOptionWalletType
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -85,7 +86,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private val statsigClient = requireNotNull(environment.statsigClient())
 
     private var clientSecretForNewCard: String = ""
-    private var pendingWalletType: String? = null
+    private var pendingWalletType: PaymentOptionWalletType? = null
     private val walletTypesByPaymentSourceId = mutableMapOf<String, String>()
     private var newStoredCard: StoredCard? = null
     private var errorAction: (message: String?) -> Unit = {}
@@ -192,7 +193,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun onPaymentOptionSelected(walletType: String?) {
+    fun onPaymentOptionSelected(walletType: PaymentOptionWalletType?) {
         pendingWalletType = walletType
     }
 
@@ -209,7 +210,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             }.map { savedCard ->
                 savedCard.id()?.let { paymentSourceId ->
                     walletType?.let {
-                        walletTypesByPaymentSourceId[paymentSourceId] = it
+                        walletTypesByPaymentSourceId[paymentSourceId] = it.identifier
                     }
                 }
                 refreshUserCards()

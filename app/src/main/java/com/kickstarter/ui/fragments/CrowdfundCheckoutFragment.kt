@@ -310,7 +310,7 @@ class CrowdfundCheckoutFragment : Fragment() {
                         paymentOption.drawableResourceId
                     },
                     clientSetupId = setupClientId,
-                    walletType = paymentOption.walletType()
+                    walletType = paymentOption.walletType()?.identifier
                 ).build()
                 this.viewModel.newlyAddedPaymentMethod(storedCard)
                 Timber.d(" ${this.javaClass.canonicalName} onPaymentOption with ${storedCard.lastFourDigits()} and ${storedCard.clientSetupId()}")

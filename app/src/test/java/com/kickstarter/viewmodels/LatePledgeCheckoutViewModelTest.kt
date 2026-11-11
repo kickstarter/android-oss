@@ -7,6 +7,7 @@ import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.MockStatsigClient
 import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.extensions.PaymentOptionWalletType
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -292,7 +293,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onPaymentOptionSelected(PaymentOptionWalletType.GOOGLE_PAY)
         viewModel.onNewCardSuccessfullyAdded()
         advanceUntilIdle()
 
@@ -371,7 +372,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onPaymentOptionSelected(PaymentOptionWalletType.GOOGLE_PAY)
         viewModel.onNewCardFailed()
         viewModel.onNewCardSuccessfullyAdded()
         advanceUntilIdle()
@@ -499,7 +500,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onPaymentOptionSelected(PaymentOptionWalletType.GOOGLE_PAY)
         viewModel.onNewCardSuccessfullyAdded()
         advanceUntilIdle()
 
@@ -545,7 +546,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onPaymentOptionSelected(PaymentOptionWalletType.GOOGLE_PAY)
         viewModel.onNewCardFailed()
         viewModel.onNewCardSuccessfullyAdded()
         advanceUntilIdle()
@@ -607,7 +608,7 @@ class LatePledgeCheckoutViewModelTest : KSRobolectricTestCase() {
             viewModel.latePledgeCheckoutUIState.toList(state)
         }
 
-        viewModel.onPaymentOptionSelected("google_pay")
+        viewModel.onPaymentOptionSelected(PaymentOptionWalletType.GOOGLE_PAY)
         viewModel.onNewCardSuccessfullyAdded()
         advanceUntilIdle()
         assertEquals("google_pay", state.last().storeCards.single().walletType())

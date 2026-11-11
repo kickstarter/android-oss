@@ -17,7 +17,8 @@ class PaymentOptionExtTest : KSRobolectricTestCase() {
 
         assertTrue(paymentOption.isGooglePay())
         assertFalse(paymentOption.isLink())
-        assertEquals(PAYMENT_METHOD_TYPE_GOOGLE_PAY, paymentOption.walletType())
+        assertEquals(PaymentOptionWalletType.GOOGLE_PAY, paymentOption.walletType())
+        assertEquals("google_pay", PaymentOptionWalletType.GOOGLE_PAY.identifier)
     }
 
     @Test
@@ -28,7 +29,8 @@ class PaymentOptionExtTest : KSRobolectricTestCase() {
 
         assertTrue(paymentOption.isLink())
         assertFalse(paymentOption.isGooglePay())
-        assertEquals(PaymentMethod.Type.Link.code, paymentOption.walletType())
+        assertEquals(PaymentOptionWalletType.LINK, paymentOption.walletType())
+        assertEquals("link", PaymentOptionWalletType.LINK.identifier)
     }
 
     @Test

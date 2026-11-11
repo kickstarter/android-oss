@@ -17,6 +17,8 @@ class PaymentOptionExtTest : KSRobolectricTestCase() {
 
         assertTrue(paymentOption.isGooglePay())
         assertFalse(paymentOption.isLink())
+        assertEquals(PaymentOptionWalletType.GOOGLE_PAY, paymentOption.walletType())
+        assertEquals("google_pay", PaymentOptionWalletType.GOOGLE_PAY.identifier)
     }
 
     @Test
@@ -27,5 +29,16 @@ class PaymentOptionExtTest : KSRobolectricTestCase() {
 
         assertTrue(paymentOption.isLink())
         assertFalse(paymentOption.isGooglePay())
+        assertEquals(PaymentOptionWalletType.LINK, paymentOption.walletType())
+        assertEquals("link", PaymentOptionWalletType.LINK.identifier)
+    }
+
+    @Test
+    fun `test card PaymentOption`() {
+        val paymentOption = mockk<PaymentOption> {
+            every { paymentMethodType } returns PaymentMethod.Type.Card.code
+        }
+
+        assertNull(paymentOption.walletType())
     }
 }

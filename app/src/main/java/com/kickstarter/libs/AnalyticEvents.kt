@@ -553,12 +553,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param checkoutData: The checkout data.
      * @param pledgeData: The selected pledge data.
+     * @param walletType: The wallet used for payment, if applicable.
      */
-    fun trackPledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData) {
+    fun trackPledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData, walletType: String? = null) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_SUBMIT.contextName)
         props[CONTEXT_TYPE.contextName] = CREDIT_CARD.contextName
         props[CONTEXT_PAGE.contextName] = CHECKOUT.contextName
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        walletType?.let { props["checkout_wallet_type"] = it }
         client.track(CTA_CLICKED.eventName, props)
     }
 
@@ -567,12 +569,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param checkoutData: The checkout data.
      * @param pledgeData: The selected pledge data.
+     * @param walletType: The wallet used for payment, if applicable.
      */
-    fun trackLatePledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData) {
+    fun trackLatePledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData, walletType: String? = null) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LATE_PLEDGE.contextName)
         props[CONTEXT_TYPE.contextName] = CREDIT_CARD.contextName
         props[CONTEXT_PAGE.contextName] = CHECKOUT.contextName
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        walletType?.let { props["checkout_wallet_type"] = it }
         client.track(CTA_CLICKED.eventName, props)
     }
 

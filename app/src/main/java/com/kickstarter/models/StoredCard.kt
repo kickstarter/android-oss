@@ -14,7 +14,8 @@ class StoredCard private constructor(
     private val type: CreditCardTypes?,
     private val resourceId: Int?,
     private val clientSetupId: String?,
-    private val stripeCardId: String?
+    private val stripeCardId: String?,
+    private val walletType: String?
 ) : Parcelable {
     fun id() = this.id
     fun expiration() = this.expiration
@@ -23,6 +24,7 @@ class StoredCard private constructor(
     fun resourceId() = this.resourceId
     fun clientSetupId() = this.clientSetupId
     fun stripeCardId() = this.stripeCardId
+    fun walletType() = this.walletType
 
     @Parcelize
     data class Builder(
@@ -32,7 +34,8 @@ class StoredCard private constructor(
         private var type: CreditCardTypes? = CreditCardTypes.UNKNOWN__,
         private var resourceId: Int? = null,
         private var clientSetupId: String? = null,
-        private var stripeCardId: String? = null
+        private var stripeCardId: String? = null,
+        private var walletType: String? = null
     ) : Parcelable {
         fun id(id: String?) = apply { this.id = id }
         fun lastFourDigits(lastFourDigits: String?) = apply { this.lastFourDigits = lastFourDigits }
@@ -41,6 +44,7 @@ class StoredCard private constructor(
         fun resourceId(resourceId: Int?) = apply { this.resourceId = resourceId }
         fun clientSetupId(clientSetupId: String?) = apply { this.clientSetupId = clientSetupId }
         fun stripeCardId(stripeCardId: String?) = apply { this.stripeCardId = stripeCardId }
+        fun walletType(walletType: String?) = apply { this.walletType = walletType }
         fun build() = StoredCard(
             id = id,
             lastFourDigits = lastFourDigits,
@@ -48,7 +52,8 @@ class StoredCard private constructor(
             type = type,
             resourceId = resourceId,
             clientSetupId = clientSetupId,
-            stripeCardId = stripeCardId
+            stripeCardId = stripeCardId,
+            walletType = walletType
         )
     }
 
@@ -60,7 +65,8 @@ class StoredCard private constructor(
                 expiration() == obj.expiration() &&
                 type() == obj.type() &&
                 resourceId() == obj.resourceId() &&
-                clientSetupId() == obj.clientSetupId()
+                clientSetupId() == obj.clientSetupId() &&
+                walletType() == obj.walletType()
         }
         return equals
     }
@@ -73,7 +79,11 @@ class StoredCard private constructor(
         id = id,
         lastFourDigits = lastFourDigits,
         expiration = expiration,
-        type = type
+        type = type,
+        resourceId = resourceId,
+        clientSetupId = clientSetupId,
+        stripeCardId = stripeCardId,
+        walletType = walletType
     )
 
     companion object {

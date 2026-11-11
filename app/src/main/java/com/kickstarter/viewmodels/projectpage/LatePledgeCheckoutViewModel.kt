@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.StatsigGateKey
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.extensions.PaymentOptionWalletType
 import com.kickstarter.libs.utils.extensions.checkoutTotalAmount
 import com.kickstarter.libs.utils.extensions.isNotNull
 import com.kickstarter.libs.utils.extensions.isTrue
@@ -85,6 +86,8 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     private val statsigClient = requireNotNull(environment.statsigClient())
 
     private var clientSecretForNewCard: String = ""
+    private var pendingWalletType: PaymentOptionWalletType? = null
+    private val walletTypesByPaymentSourceId = mutableMapOf<String, String>()
     private var newStoredCard: StoredCard? = null
     private var errorAction: (message: String?) -> Unit = {}
 
@@ -154,7 +157,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
 
                 userEmail = (privacyAndCards[0] as UserPrivacy).email
                 @Suppress("UNCHECKED_CAST")
-                storedCards = privacyAndCards[1] as List<StoredCard>
+                storedCards = (privacyAndCards[1] as List<StoredCard>).withWalletTypes()
                 emitCurrentState()
             }
         } catch (t: Throwable) {
@@ -190,7 +193,12 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
+    fun onPaymentOptionSelected(walletType: PaymentOptionWalletType?) {
+        pendingWalletType = walletType
+    }
+
     fun onNewCardSuccessfullyAdded() {
+        val walletType = pendingWalletType
         viewModelScope.launch(dispatcher) {
             apolloClient.savePaymentMethod(
                 SavePaymentMethodData(
@@ -199,11 +207,17 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
                 )
             ).asFlow().onStart {
                 emitCurrentState(isLoading = true)
-            }.map {
+            }.map { savedCard ->
+                savedCard.id()?.let { paymentSourceId ->
+                    walletType?.let {
+                        walletTypesByPaymentSourceId[paymentSourceId] = it.identifier
+                    }
+                }
                 refreshUserCards()
             }.catch {
                 resetPledgeButtonUIOnFailure()
             }.onCompletion {
+                pendingWalletType = null
                 emitCurrentState()
             }
                 .collect()
@@ -211,6 +225,7 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
     }
 
     fun onNewCardFailed() {
+        pendingWalletType = null
         viewModelScope.launch {
             emitCurrentState()
             resetPledgeButtonUIOnFailure()
@@ -222,12 +237,20 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
             .asFlow().onStart {
                 emitCurrentState(isLoading = true)
             }.map { cards ->
-                storedCards = cards
+                storedCards = cards.withWalletTypes()
             }.catch {
                 resetPledgeButtonUIOnFailure()
             }.onCompletion {
                 emitCurrentState()
             }.collect()
+    }
+
+    private fun List<StoredCard>.withWalletTypes() = this.map { card ->
+        walletTypesByPaymentSourceId[card.id()]?.let {
+            card.toBuilder()
+                .walletType(it)
+                .build()
+        } ?: card
     }
 
     fun onPledgeButtonClicked(selectedCard: StoredCard?) {
@@ -466,12 +489,13 @@ class LatePledgeCheckoutViewModel(val environment: Environment) : ViewModel() {
         }
     }
 
-    fun sendSubmitCTAEvent() {
+    fun sendSubmitCTAEvent(selectedCard: StoredCard? = null) {
         this.pledgeData?.let { pData ->
             this.checkoutData?.let { cData ->
                 this@LatePledgeCheckoutViewModel.analytics.trackLatePledgeSubmitCTA(
                     checkoutData = cData,
-                    pledgeData = pData
+                    pledgeData = pData,
+                    walletType = selectedCard?.walletType()
                 )
             }
         }

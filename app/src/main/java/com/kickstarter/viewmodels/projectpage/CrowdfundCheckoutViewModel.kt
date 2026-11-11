@@ -466,7 +466,11 @@ class CrowdfundCheckoutViewModel(val environment: Environment, bundle: Bundle? =
 
     private suspend fun createBacking() {
         if (checkoutData != null && pledgeData != null) {
-            analytics.trackPledgeSubmitCTA(requireNotNull(checkoutData), requireNotNull(pledgeData))
+            analytics.trackPledgeSubmitCTA(
+                requireNotNull(checkoutData),
+                requireNotNull(pledgeData),
+                selectedPaymentMethod.walletType()
+            )
         }
 
         val shouldNotSendId = pledgeData?.reward()?.let {

@@ -216,13 +216,13 @@ fun Context.getPaymentSheetConfiguration(
         googlePayCurrencyCode
     )
 
-    return PaymentSheet.Configuration(
-        merchantDisplayName = getString(R.string.app_name),
-        allowsDelayedPaymentMethods = true,
-        appearance = this.getPaymentSheetAppearance(),
-        defaultBillingDetails = PaymentSheet.BillingDetails(email = userEmail),
-        googlePay = googlePayConfiguration,
-    )
+    return PaymentSheet.Configuration.Builder(getString(R.string.app_name))
+        .allowsDelayedPaymentMethods(true)
+        .appearance(this.getPaymentSheetAppearance())
+        .defaultBillingDetails(PaymentSheet.BillingDetails(email = userEmail))
+        .googlePay(googlePayConfiguration)
+        .paymentMethodLayout(PaymentSheet.PaymentMethodLayout.Vertical)
+        .build()
 }
 
 @VisibleForTesting

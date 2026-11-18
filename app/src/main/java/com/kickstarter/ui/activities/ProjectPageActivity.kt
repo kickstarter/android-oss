@@ -116,9 +116,9 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.PaymentIntentResult
 import com.stripe.android.Stripe
 import com.stripe.android.StripeIntentResult
+import com.stripe.android.paymentsheet.PaymentOptionResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
-import com.stripe.android.paymentsheet.model.PaymentOption
 import com.stripe.android.view.CardInputWidget
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -230,11 +230,11 @@ class ProjectPageActivity :
 
         socialShareSetUp(binding.socialShareComposeView)
 
-        flowController = PaymentSheet.FlowController.create(
-            activity = this,
-            paymentOptionCallback = ::onPaymentOption,
-            paymentResultCallback = ::onPaymentSheetResult
+        flowController = PaymentSheet.FlowController.Builder(
+            ::onPaymentSheetResult,
+            ::onPaymentOptionResult
         )
+            .build(this)
         this.ksString = requireNotNull(environment.ksString())
 
         viewModel.configureWith(intent)
@@ -1394,8 +1394,10 @@ class ProjectPageActivity :
     }
 
     // Update the UI with the returned PaymentOption
-    private fun onPaymentOption(paymentOption: PaymentOption?) {
-        paymentOption?.let {
+    private fun onPaymentOptionResult(paymentOptionResult: PaymentOptionResult) {
+        Timber.d("onPaymentOptionResult: $paymentOptionResult")
+        if (paymentOptionResult.didCancel) return
+        paymentOptionResult.paymentOption?.let {
             latePledgeCheckoutViewModel.onPaymentOptionSelected(it.walletType())
             flowController.confirm()
             latePledgeCheckoutViewModel.loading()

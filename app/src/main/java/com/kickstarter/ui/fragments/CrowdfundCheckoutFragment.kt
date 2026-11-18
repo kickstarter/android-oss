@@ -38,7 +38,7 @@ import com.kickstarter.ui.extensions.startDisclaimerChromeTab
 import com.kickstarter.viewmodels.projectpage.CheckoutUIState
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel
 import com.kickstarter.viewmodels.projectpage.CrowdfundCheckoutViewModel.Factory
-import com.stripe.android.paymentsheet.PaymentOptionCallback
+import com.stripe.android.paymentsheet.PaymentOptionResultCallback
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.PaymentSheetResultCallback
@@ -295,8 +295,10 @@ class CrowdfundCheckoutFragment : Fragment() {
     // TODO: it does require specific VM callbacks
     private fun configurePaymentSheet(setupClientId: String) {
 
-        val paymentOptionCallback = PaymentOptionCallback { paymentOption ->
-            paymentOption?.let {
+        val onPaymentOptionResult = PaymentOptionResultCallback { paymentOptionResult ->
+            Timber.d("onPaymentOptionResult: $paymentOptionResult")
+            if (paymentOptionResult.didCancel) return@PaymentOptionResultCallback
+            paymentOptionResult.paymentOption?.let { paymentOption ->
                 // In crowdfund checkout, `lastFourDigits` serves as an intermediate display label
                 val storedCard = StoredCard.Builder(
                     lastFourDigits = if (paymentOption.isLink() || paymentOption.isGooglePay()) {
@@ -348,10 +350,10 @@ class CrowdfundCheckoutFragment : Fragment() {
             }
         }
 
-        flowController = PaymentSheet.FlowController.create(
-            fragment = this,
-            paymentOptionCallback = paymentOptionCallback,
-            paymentResultCallback = onPaymentSheetResult
+        flowController = PaymentSheet.FlowController.Builder(
+            onPaymentSheetResult,
+            onPaymentOptionResult
         )
+            .build(this)
     }
 }

@@ -19,9 +19,9 @@ import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.utils.WindowInsetsUtil
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
+import com.stripe.android.paymentsheet.PaymentOptionResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
-import com.stripe.android.paymentsheet.model.PaymentOption
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -59,11 +59,11 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         setUpConnectivityStatusCheck(lifecycle)
         setUpRecyclerView()
 
-        flowController = PaymentSheet.FlowController.create(
-            activity = this,
-            paymentOptionCallback = ::onPaymentOption,
-            paymentResultCallback = ::onPaymentSheetResult
+        flowController = PaymentSheet.FlowController.Builder(
+            ::onPaymentSheetResult,
+            ::onPaymentOptionResult
         )
+            .build(this)
 
         compositeDisposable.add(
             this.viewModel.outputs.cards()
@@ -167,8 +167,10 @@ class PaymentMethodsSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun onPaymentOption(paymentOption: PaymentOption?) {
-        paymentOption?.let {
+    private fun onPaymentOptionResult(paymentOptionResult: PaymentOptionResult) {
+        Timber.d("onPaymentOptionResult: $paymentOptionResult")
+        if (paymentOptionResult.didCancel) return
+        paymentOptionResult.paymentOption?.let {
             flowController.confirm()
             this.viewModel.inputs.confirmedLoading(true)
         }

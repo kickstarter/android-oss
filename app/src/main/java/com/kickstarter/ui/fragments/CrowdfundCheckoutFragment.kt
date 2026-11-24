@@ -303,8 +303,8 @@ class CrowdfundCheckoutFragment : Fragment() {
                 val storedCard = StoredCard.Builder(
                     lastFourDigits = if (paymentOption.isLink() || paymentOption.isGooglePay()) {
                         paymentOption.label
-                    } else {
-                        paymentOption.label.takeLast(4)
+                    } else { // paymentOption.paymentMethodType == PaymentMethod.Type.Card.code
+                        paymentOption.label.filter { it.isDigit() }.takeLast(4)
                     },
                     resourceId = if (paymentOption.isGooglePay()) {
                         R.drawable.google_pay_mark_stored_card

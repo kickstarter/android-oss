@@ -14,6 +14,7 @@ import com.kickstarter.R
 import com.kickstarter.databinding.FragmentCrowdfundCheckoutBinding
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.featureflag.FlagKey
+import com.kickstarter.libs.utils.MoneyUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.extensions.getEnvironment
@@ -43,6 +44,7 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.PaymentSheetResultCallback
 import timber.log.Timber
+import java.util.Locale
 
 class CrowdfundCheckoutFragment : Fragment() {
 
@@ -126,7 +128,13 @@ class CrowdfundCheckoutFragment : Fragment() {
                     configurePaymentSheet(paymentSheetPresenter.setupClientId)
                     LaunchedEffect(key1 = setUpIntent) {
                         if (setUpIntent.isNotEmpty() && email.isNotEmpty()) {
-                            flowControllerPresentPaymentOption(setUpIntent, email, projectCountryCode, projectCurrencyCode)
+                            val googlePayAmount = when (projectCountryCode) {
+                                Locale.US.country, Locale.CANADA.country -> 0L
+                                else -> projectCurrencyCode?.let {
+                                    MoneyUtils.toSmallestCurrencyUnit(totalAmount, it)
+                                }
+                            }
+                            flowControllerPresentPaymentOption(setUpIntent, email, projectCountryCode, projectCurrencyCode, googlePayAmount)
                         }
                     }
 
@@ -214,15 +222,23 @@ class CrowdfundCheckoutFragment : Fragment() {
     private fun flowControllerPresentPaymentOption(
         clientSecret: String,
         userEmail: String,
-        googlePayCountryCode: String? = null,
-        googlePayCurrencyCode: String? = null
+        googlePayCountryCode: String?,
+        googlePayCurrencyCode: String?,
+        googlePayAmount: Long?
     ) {
         context?.let {
             val googlePayEnabled = viewModel.isPaymentSheetGooglePayEnabled()
             Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCountryCode: $googlePayCountryCode, googlePayCurrencyCode: $googlePayCurrencyCode")
             flowController.configureWithSetupIntent(
                 setupIntentClientSecret = clientSecret,
-                configuration = it.getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCountryCode, googlePayCurrencyCode),
+                configuration = it.getPaymentSheetConfiguration(
+                    userEmail,
+                    googlePayEnabled,
+                    googlePayCountryCode,
+                    googlePayCurrencyCode,
+                    googlePayAmount = googlePayAmount,
+                    googlePayLabel = it.getString(R.string.Pledge_amount)
+                ),
                 callback = ::onConfigured
             )
         }

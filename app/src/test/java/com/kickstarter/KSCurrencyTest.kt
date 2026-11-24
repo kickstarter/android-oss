@@ -9,11 +9,13 @@ import com.kickstarter.mock.factories.ProjectFactory.caProject
 import com.kickstarter.mock.factories.ProjectFactory.project
 import com.kickstarter.mock.factories.ProjectFactory.ukProject
 import com.kickstarter.type.CurrencyCode
-import junit.framework.TestCase
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.math.RoundingMode
 
-class KSCurrencyTest : TestCase() {
+class KSCurrencyTest {
     @Test
     fun testFormatCurrency_withUserInCA() {
         val currency = createKSCurrency("CA")

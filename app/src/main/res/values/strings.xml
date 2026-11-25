@@ -124,4 +124,7 @@
   <string name="fpo_Open_calls" formatted="false">Open calls</string>
   <string name="fpo_Open_calls_all" formatted="false">All</string>
 
+  <!-- FPO for Google Pay payment sheet label -->
+  <string name="fpo_paymentsheet_google_pay_label">Authorize Kickstarter to charge</string>
+
 </resources>

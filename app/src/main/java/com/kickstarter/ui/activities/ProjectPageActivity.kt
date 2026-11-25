@@ -64,6 +64,7 @@ import com.kickstarter.libs.ProjectPagerTabs
 import com.kickstarter.libs.featureflag.FeatureFlagClientType
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName
+import com.kickstarter.libs.utils.MoneyUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.addToDisposable
@@ -125,6 +126,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Locale
 
 const val REFRESH = "refresh"
 
@@ -717,12 +719,21 @@ class ProjectPageActivity :
                     }
 
                     LaunchedEffect(Unit) {
-                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect {
+                        latePledgeCheckoutViewModel.clientSecretForNewPaymentMethod.collect { clientSecret ->
+                            val projectCountryCode = latePledgeCheckoutUIState.projectCountryCode
+                            val projectCurrencyCode = latePledgeCheckoutUIState.projectCurrency
+                            val googlePayAmount = when (projectCountryCode) {
+                                Locale.US.country, Locale.CANADA.country -> 0L
+                                else -> projectCurrencyCode?.let {
+                                    MoneyUtils.toSmallestCurrencyUnit(latePledgeCheckoutUIState.checkoutTotal, it)
+                                }
+                            }
                             flowControllerPresentPaymentOption(
-                                it,
+                                clientSecret,
                                 latePledgeCheckoutUIState.userEmail,
                                 latePledgeCheckoutUIState.projectCountryCode,
-                                latePledgeCheckoutUIState.projectCurrency
+                                latePledgeCheckoutUIState.projectCurrency,
+                                googlePayAmount
                             )
                         }
                     }
@@ -1449,14 +1460,22 @@ class ProjectPageActivity :
     private fun flowControllerPresentPaymentOption(
         clientSecret: String,
         userEmail: String,
-        googlePayCountryCode: String? = null,
-        googlePayCurrencyCode: String? = null
+        googlePayCountryCode: String?,
+        googlePayCurrencyCode: String?,
+        googlePayAmount: Long?
     ) {
         val googlePayEnabled = latePledgeCheckoutViewModel.isPaymentSheetGooglePayEnabled()
         Timber.d("googlePayEnabled: $googlePayEnabled, googlePayCountryCode: $googlePayCountryCode, googlePayCurrencyCode: $googlePayCurrencyCode")
         flowController.configureWithSetupIntent(
             setupIntentClientSecret = clientSecret,
-            configuration = getPaymentSheetConfiguration(userEmail, googlePayEnabled, googlePayCountryCode, googlePayCurrencyCode),
+            configuration = getPaymentSheetConfiguration(
+                userEmail,
+                googlePayEnabled,
+                googlePayCountryCode,
+                googlePayCurrencyCode,
+                googlePayAmount = googlePayAmount,
+                googlePayLabel = getString(R.string.Pledge_amount)
+            ),
             callback = ::onConfigured
         )
     }

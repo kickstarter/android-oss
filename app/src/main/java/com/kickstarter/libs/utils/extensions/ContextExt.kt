@@ -201,19 +201,25 @@ fun Context.showAlertDialog(
  * @param googlePayCountryCode The two-letter ISO country code, e.g. "US" or "GB".
  * @param googlePayCurrencyCode The three-letter ISO 4217 alphabetic currency code, e.g. "USD" or "EUR".
  * Required in order to support Google Pay when processing a Setup Intent.
+ * @param googlePayAmount An amount in the currency's smallest unit. Displayed in the Google Pay payment sheet for Setup Intents.
+ * @param googlePayLabel The label shown with the amount in the Google Pay payment sheet.
  */
 fun Context.getPaymentSheetConfiguration(
     userEmail: String,
     googlePayEnabled: Boolean = false,
     googlePayCountryCode: String? = null,
-    googlePayCurrencyCode: String? = null
+    googlePayCurrencyCode: String? = null,
+    googlePayAmount: Long? = null,
+    googlePayLabel: String = getString(R.string.fpo_paymentsheet_google_pay_label)
 ): PaymentSheet.Configuration {
     val stripeLinkEnabled = this.getEnvironment()?.featureFlagClient()?.getBoolean(FlagKey.ANDROID_STRIPE_LINK) ?: false
     // TODO: Wait for stripe to devise a client-side option for turning off link
     val googlePayConfiguration = this.getGooglePayConfiguration(
         googlePayEnabled,
         googlePayCountryCode,
-        googlePayCurrencyCode
+        googlePayCurrencyCode,
+        googlePayAmount,
+        googlePayLabel
     )
 
     return PaymentSheet.Configuration.Builder(getString(R.string.app_name))
@@ -229,7 +235,9 @@ fun Context.getPaymentSheetConfiguration(
 fun Context.getGooglePayConfiguration(
     enabled: Boolean,
     countryCode: String?,
-    currencyCode: String?
+    currencyCode: String?,
+    amount: Long? = null,
+    label: String
 ): PaymentSheet.GooglePayConfiguration? {
     val countryCode = countryCode?.trim()?.takeIf { it.isNotEmpty() }
     val currencyCode = currencyCode?.trim()?.takeIf { it.isNotEmpty() }
@@ -246,7 +254,9 @@ fun Context.getGooglePayConfiguration(
         PaymentSheet.GooglePayConfiguration(
             environment = googlePayEnvironment,
             countryCode = countryCode,
-            currencyCode = currencyCode
+            currencyCode = currencyCode,
+            amount = amount,
+            label = label,
         )
     } else null
 }

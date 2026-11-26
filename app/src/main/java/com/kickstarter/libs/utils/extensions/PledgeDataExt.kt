@@ -49,8 +49,12 @@ fun PledgeData.pledgeAmountTotalPlusBonus(): Double = this.pledgeAmountTotal() +
  * Total pledge Amount = Reward + AddOns( xQ)
  */
 fun PledgeData.pledgeAmountTotal(): Double {
-    // - Avoid project miss configuration where the creator did not configured somehow the late pledge reward correctly
-    var latePledge = if (this.reward().latePledgeAmount() == 0.0) this.reward().minimum() else this.reward().latePledgeAmount()
+    var latePledge = when {
+        RewardUtils.isNoReward(this.reward()) -> 0.0
+        // - Avoid project miss configuration where the creator did not configured somehow the late pledge reward correctly
+        this.reward().latePledgeAmount() == 0.0 -> this.reward().minimum()
+        else -> this.reward().latePledgeAmount()
+    }
     var crowdfund = this.reward().pledgeAmount()
 
     if (this.pledgeFlowContext() == PledgeFlowContext.LATE_PLEDGES) {

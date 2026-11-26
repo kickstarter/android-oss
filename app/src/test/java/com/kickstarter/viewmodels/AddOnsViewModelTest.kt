@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUserV2
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.extensions.pledgeAmountTotal
+import com.kickstarter.libs.utils.extensions.pledgeAmountTotalPlusBonus
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
@@ -560,5 +561,66 @@ class AddOnsViewModelTest : KSRobolectricTestCase() {
 
         assertEquals(uiState.last().addOns.size, 1) // -  only one addOn on the list
         assertEquals(uiState.last().addOns.first().id(), aDifferentAddOnReward.id()) // - making sure the addOn is the one started 2 hours ago
+    }
+
+    @Test
+    fun `new HKD crowdfunding no-reward pledge includes its minimum only once`() = runTest {
+        val project = ProjectFactory.project().toBuilder().currency("HKD").build()
+        val projectData = ProjectData.builder().project(project).build()
+        val noReward = RewardFactory.noReward().toBuilder().minimum(10.0).build()
+        val bundle = Bundle().apply {
+            putParcelable(
+                ArgumentsKey.PLEDGE_PLEDGE_DATA,
+                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, noReward)
+            )
+            putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        }
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        setup(dispatcher = dispatcher)
+
+        viewModel.provideBundle(bundle)
+        advanceUntilIdle()
+
+        val initialPledge = requireNotNull(viewModel.getPledgeDataAndReason()).first
+        assertEquals(10.0, initialPledge.bonusAmount())
+        assertEquals(0.0, initialPledge.reward().pledgeAmount())
+        assertEquals(10.0, initialPledge.pledgeAmountTotalPlusBonus())
+
+        viewModel.bonusAmountUpdated(20.0)
+        advanceUntilIdle()
+
+        val updatedPledge = requireNotNull(viewModel.getPledgeDataAndReason()).first
+        assertEquals(20.0, updatedPledge.pledgeAmountTotalPlusBonus())
+    }
+
+    @Test
+    fun `new HKD late no-reward pledge includes its minimum only once`() = runTest {
+        val project = ProjectFactory.project().toBuilder()
+            .currency("HKD")
+            .postCampaignPledgingEnabled(true)
+            .isInPostCampaignPledgingPhase(true)
+            .build()
+        val projectData = ProjectData.builder().project(project).build()
+        val noReward = RewardFactory.noReward().toBuilder().minimum(10.0).build()
+
+        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+        setup(dispatcher = dispatcher)
+
+        viewModel.provideProjectData(projectData)
+        viewModel.userRewardSelection(noReward)
+        advanceUntilIdle()
+
+        val initialPledge = requireNotNull(viewModel.getPledgeDataAndReason()).first
+        assertEquals(PledgeFlowContext.LATE_PLEDGES, initialPledge.pledgeFlowContext())
+        assertEquals(10.0, initialPledge.bonusAmount())
+        assertEquals(0.0, initialPledge.pledgeAmountTotal())
+        assertEquals(10.0, initialPledge.pledgeAmountTotalPlusBonus())
+
+        viewModel.bonusAmountUpdated(20.0)
+        advanceUntilIdle()
+
+        val updatedPledge = requireNotNull(viewModel.getPledgeDataAndReason()).first
+        assertEquals(20.0, updatedPledge.pledgeAmountTotalPlusBonus())
     }
 }

@@ -99,26 +99,31 @@ class AddOnsViewModel(
      * Used in Crowdfund checkout
      */
     fun provideBundle(bundle: Bundle?) {
-        bundle?.let {
-            pledgeData = it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
+        bundle?.let { bundle ->
+            pledgeData = bundle.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?
 
             // Send analytic event for crowdfund checkout
             this.sendEvent()
 
-            pReason = it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
+            pReason = bundle.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason
 
             pledgeData?.projectData()?.let {
                 projectData = it
+                project = it.project()
             }
 
             // New pledge, selected reward
             pledgeData?.reward()?.let { rw ->
-                currentUserReward = rw
-                bonusAmount = RewardUtils.minPledgeAmount(rw, project)
-            }
-
-            projectData?.project()?.let {
-                project = it
+                currentUserReward = if (RewardUtils.isNoReward(rw)) {
+                    rw.toBuilder().pledgeAmount(0.0).build()
+                } else {
+                    rw
+                }
+                bonusAmount = if (RewardUtils.isNoReward(rw)) {
+                    RewardUtils.minPledgeAmount(rw, project)
+                } else {
+                    0.0
+                }
             }
 
             pledgeData?.shippingRule()?.let {
@@ -265,7 +270,11 @@ class AddOnsViewModel(
         if (reward != currentUserReward) {
             currentUserReward = reward
             currentSelection.clear()
-            bonusAmount = 0.0
+            bonusAmount = if (RewardUtils.isNoReward(reward)) {
+                RewardUtils.minPledgeAmount(reward, project)
+            } else {
+                0.0
+            }
 
             scope.launch {
                 emitCurrentState()

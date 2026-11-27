@@ -84,8 +84,7 @@ fun BonusSupportContainer(
 ) {
     val bonusAmountMaxDigits = integerResource(R.integer.max_length)
     val isNoReward = RewardUtils.isNoReward(selectedReward)
-    val displayedTotalBonusAmount =
-        if (isNoReward) totalBonusSupport + minPledge else totalBonusSupport
+    val displayedTotalBonusAmount = totalBonusSupport
 
     Column {
         if (isNoReward) {
